@@ -1,6 +1,7 @@
 import { createSocket, /*AddressInfo,*/ Socket } from 'dgram'
 import { EventEmitter } from 'events'
 import { Util } from './atemUtil'
+import { CommandParser } from './atemCommandParser'
 
 export enum ConnectionState {
 	None = 0x00,
@@ -34,6 +35,8 @@ export class AtemSocket extends EventEmitter {
 	private _inFlightTimeout = 200
 	private _lastReceivedAt: number = Date.now()
 	private _inFlight: Array<{packetId: number, lastSent: number, packet: Buffer}> = []
+
+	private _commandParser: CommandParser = new CommandParser()
 
 	constructor (address: string, port: number) {
 		super()
@@ -99,7 +102,7 @@ export class AtemSocket extends EventEmitter {
 		this._sendPacket(buffer)
 
 		this._inFlight.push({ packetId: this._localPacketId, lastSent: Date.now(), packet: buffer })
-		console.log(this._localPacketId)
+		// console.log(this._localPacketId)
 		this._localPacketId++
 		if (this._maxPacketID < this._localPacketId) this._localPacketId = 0
 	}
@@ -159,6 +162,11 @@ export class AtemSocket extends EventEmitter {
 		let name = Util.parseString(buffer.slice(4, 8))
 
 		// console.log('COMMAND', `${name}(${length})`, buffer.slice(0, length))
+		let cmd = this._commandParser.commandFromRawName(name)
+		if (cmd) {
+			cmd.deserialize(buffer.slice(0, length).slice(8))
+			console.log(cmd.getAttributes())
+		}
 
 		this.emit('receivedStateChange', name, buffer.slice(0, length).slice(8))
 		if (buffer.length > length) {
@@ -167,7 +175,7 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	private _sendPacket (packet: Buffer) {
-		console.log('SEND', packet)
+		// console.log('SEND', packet)
 
 		this._socket.send(packet, 0, packet.length, this._port, this._address)
 	}
