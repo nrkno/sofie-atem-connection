@@ -1,32 +1,24 @@
 {
-  "name": "@superflytv/node-boilerplate-superflytv",
-  "version": "0.5.1",
-  "description": "Typescript Node.js library boilerplate for SuperFly.tv",
+  "name": "atem-connection",
+  "version": "0.0.0",
+  "description": "Typescript Node.js library for connecting with an ATEM switcher.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://bitbucket.org/superflytv/node-boilerplate.git"
+    "url": "git+https://github.com/nrkno/tv-automation-atem-connection.git"
   },
   "bugs": {
-    "url": "https://bitbucket.org/superflytv/node-boilerplate/issues"
+    "url": "https://github.com/nrkno/tv-automation-atem-connection/issues"
   },
-  "homepage": "https://bitbucket.org/superflytv/node-boilerplate#readme",
-  "author": {
-    "name": "Jesper Stærkær",
-    "email": "jesper@superfly.tv",
-    "url": "http://superfly.tv"
-  },
+  "homepage": "https://github.com/nrkno/tv-automation-atem-connection#readme",
+  "author": "miyukki <yusei1128@gmail.com>",
   "contributors": [
     {
-      "name": "Johan Nyman",
-      "email": "johan@superfly.tv",
-      "url": "http://superfly.tv"
-    },
-    {
-      "name": "Stephan Nordnes Eriksen",
-      "email": "Stephanruler@gmail.com"
+      "name": "Balte de Wit",
+      "email": "contact@balte.nl",
+      "url": "http://balte.nl"
     }
   ],
   "scripts": {
@@ -93,12 +85,14 @@
     "typescript": "^2.4.1"
   },
   "keywords": [
-    "typescript",
-    "javascript",
-    "open",
-    "source"
+    "atem",
+    "blackmagic",
+    "bmd",
+    "switcher",
+    "video"
   ],
   "dependencies": {
+    "pngjs": "^3.3.2",
     "tslib": "^1.9.0"
   },
   "standard-version": {
