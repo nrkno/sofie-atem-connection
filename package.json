@@ -1,0 +1,108 @@
+{
+  "name": "@superflytv/node-boilerplate-superflytv",
+  "version": "0.5.1",
+  "description": "Typescript Node.js library boilerplate for SuperFly.tv",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://bitbucket.org/superflytv/node-boilerplate.git"
+  },
+  "bugs": {
+    "url": "https://bitbucket.org/superflytv/node-boilerplate/issues"
+  },
+  "homepage": "https://bitbucket.org/superflytv/node-boilerplate#readme",
+  "author": {
+    "name": "Jesper Stærkær",
+    "email": "jesper@superfly.tv",
+    "url": "http://superfly.tv"
+  },
+  "contributors": [
+    {
+      "name": "Johan Nyman",
+      "email": "johan@superfly.tv",
+      "url": "http://superfly.tv"
+    },
+    {
+      "name": "Stephan Nordnes Eriksen",
+      "email": "Stephanruler@gmail.com"
+    }
+  ],
+  "scripts": {
+    "info": "npm-scripts-info",
+    "build": "trash dist && tsc -p tsconfig.json",
+    "lint": "tslint --project tsconfig.jest.json --config tslint.json",
+    "unit": "jest",
+    "test": "yarn lint && yarn unit",
+    "watch": "jest --watch",
+    "cov": "jest; opn coverage/lcov-report/index.html",
+    "cov-open": "opn coverage/lcov-report/index.html",
+    "send-coverage": "jest && codecov",
+    "docs": "yarn docs:html && opn docs/index.html",
+    "docs:html": "typedoc src/index.ts --excludePrivate --mode file --theme minimal --out docs",
+    "docs:json": "typedoc --mode file --json docs/typedoc.json src/index.ts",
+    "docs:publish": "yarn docs:html && echo \"gh-pages -d docs. DO THIS IN THE FUTURE\"",
+    "changelog": "standard-version",
+    "release": "yarn reset && yarn test && yarn docs:publish && yarn changelog",
+    "reset": "git clean -dfx && git reset --hard && yarn",
+    "ci": "yarn test",
+    "validate:dependencies": "nsp check"
+  },
+  "scripts-info": {
+    "info": "Display information about the scripts",
+    "build": "(Trash and re)build the library",
+    "lint": "Lint all typescript source files",
+    "unit": "Build the library and run unit tests",
+    "test": "Lint, build, and test the library",
+    "watch": "Watch source files, rebuild library on changes, rerun relevant tests",
+    "cov": "Run tests, generate the HTML coverage report, and open it in a browser",
+    "cov-open": "Open HTML coverage report in a browser",
+    "send-coverage": "CI task; Send coverage to codecov.",
+    "docs": "Generate HTML API documentation and open it in a browser",
+    "docs:publish": "Generate HTML API documentation and push it to GitHub Pages",
+    "docs:json": "Generate API documentation in typedoc JSON format",
+    "changelog": "Bump package.json version, update CHANGELOG.md, tag a release",
+    "reset": "Delete all untracked files and reset the repo to the last commit",
+    "release": "Clean, build, test, publish docs, and prepare release (a one-step publish process)",
+    "ci": "CI task; Run by circleci (or other) to verify integrity of repo",
+    "validate:dependencies": "Validate that dependencies does not have any known security issues"
+  },
+  "engines": {
+    "node": ">=4.5"
+  },
+  "devDependencies": {
+    "@types/jest": "^22.1.3",
+    "@types/node": "^8.0.4",
+    "codecov": "^2.2.0",
+    "cpx": "^1.5.0",
+    "gh-pages": "^1.0.0",
+    "jest": "^22.4.2",
+    "mkdirp": "^0.5.1",
+    "npm-scripts-info": "^0.3.6",
+    "nsp": "^3.2.1",
+    "nyc": "^11.0.3",
+    "opn-cli": "^3.1.0",
+    "sleep-ms": "^2.0.1",
+    "standard-version": "^4.0.0",
+    "trash-cli": "^1.4.0",
+    "ts-jest": "^22.0.4",
+    "tslint": "^5.4.3",
+    "tslint-config-standard": "^6.0.1",
+    "typedoc": "^0.8.0",
+    "typescript": "^2.4.1"
+  },
+  "keywords": [
+    "typescript",
+    "javascript",
+    "open",
+    "source"
+  ],
+  "dependencies": {
+    "tslib": "^1.9.0"
+  },
+  "standard-version": {
+    "message": "chore(release): %s [skip ci]",
+    "tagPrefix": ""
+  }
+}

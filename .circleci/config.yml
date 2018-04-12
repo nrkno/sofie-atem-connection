@@ -1,0 +1,165 @@
+defaults: &defaults
+  docker:
+    - image: circleci/node:8.0
+  working_directory: ~/node-boilerplate
+
+version: 2
+jobs:
+  checkout_code:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/node-boilerplate
+      - restore_cache:
+          keys:
+            - yarn-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-cache-{{ .Branch }}
+            - yarn-cache-
+      - run: yarn install
+      - save_cache:
+          key: yarn-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths: [node_modules]
+      - persist_to_workspace:
+          root: .
+          paths: [.]
+  check_vulnerabilities:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/node-boilerplate
+      - run: yarn install
+      - run: yarn validate:dependencies
+  test_node-8:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/node-boilerplate
+      - run: yarn install
+      - run: yarn ci
+  test_node-6:
+    docker:
+      - image: circleci/node:6
+    working_directory: ~/node-boilerplate
+    steps:
+      - attach_workspace:
+          at: ~/node-boilerplate
+      - run: yarn install
+      - run: yarn ci
+
+  send-coverage:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/node-boilerplate
+      - run: yarn install
+      - run: yarn send-coverage
+      - store_artifacts:
+          path: ./coverage/clover.xml
+          prefix: tests
+      - store_artifacts:
+          path: coverage
+          prefix: coverage
+      - store_test_results:
+          path: ./coverage/clover.xml
+
+  build:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/node-boilerplate
+      - run: yarn install
+      - run: yarn build
+      - persist_to_workspace:
+          root: .
+          paths: [.]
+
+  release:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/node-boilerplate
+      - add_ssh_keys:
+          fingerprints:
+            - "22:0a:33:b1:fe:7f:09:42:46:b0:aa:17:2b:cc:80:e2"
+      - run: yarn install
+      - run: git config --global user.email "stephanruler@gmail.com"
+      - run: git config --global user.name "stephan_ne"
+      - run: mkdir -p ~/.ssh
+      - run:
+          name: Add bitbucket to known hosts
+          command: ssh-keyscan -H bitbucket.org >> ~/.ssh/known_hosts
+      - run: yarn release
+      - run: git push --follow-tags origin HEAD
+      - persist_to_workspace:
+          root: .
+          paths: [.]
+
+  deployToNPM:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/node-boilerplate
+      - add_ssh_keys:
+          fingerprints:
+            - "22:0a:33:b1:fe:7f:09:42:46:b0:aa:17:2b:cc:80:e2"
+      - run: 
+          name: Write NPM Token to ~/.npmrc
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      # Use this when repo is properly open sourced. 
+      # - run:
+      #     name: Publish to NPM with yarn
+      #     command: NEW_VERSION=$(node -p "require('./package.json').version") && yarn publish --access=public --new-version=$NEW_VERSION
+      - deploy:
+          name: Publish to NPM with npm
+          command: npm publish --access=public
+      - persist_to_workspace:
+          root: .
+          paths: [.]
+
+workflows:
+  version: 2
+  test_build_deploy:
+    jobs:
+      - checkout_code
+      - check_vulnerabilities:
+          requires:
+            - checkout_code
+      - test_node-8:
+          requires:
+            - checkout_code
+      - test_node-6:
+          requires:
+            - checkout_code
+      - send-coverage:
+          requires:
+            - check_vulnerabilities
+            - test_node-6
+            - test_node-8
+          filters:
+            branches:
+              only:
+                - master
+      - release:
+          requires:
+            - send-coverage
+          filters:
+            branches:
+              only:
+                - master
+      # Open source release cycle for NPM deploy. Unocmment the below;
+      # - build:
+      #     requires:
+      #       - send-coverage
+      #       - release
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
+      # - deployToNPM:
+      #     requires:
+      #       - build
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
