@@ -1,5 +1,5 @@
 import IAbstractCommand from '../AbstractCommand'
-import { AtemState, MixEffect } from '../../lib/atemState'
+import { AtemState } from '../../lib/atemState'
 import { Util } from '../../lib/atemUtil'
 
 export class ProgramInputCommand implements IAbstractCommand {
