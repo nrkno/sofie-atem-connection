@@ -1,12 +1,18 @@
-import AbstractCommand from './AbstractCommand'
+import IAbstractCommand from '../AbstractCommand'
+import { AtemState } from '../../lib/atemState'
 
 export interface VersionInfo {
 	major: number
 	minor: number
 }
 
-export class VersionCommand implements AbstractCommand {
+export class VersionCommand implements IAbstractCommand {
+	resolve: () => void
+	reject: () => void
+
 	rawName = '_ver'
+	packetId: number
+
 	apiMajor: number
 	apiMinor: number
 
@@ -24,5 +30,10 @@ export class VersionCommand implements AbstractCommand {
 			major: this.apiMajor,
 			minor: this.apiMinor
 		}
+	}
+
+	applyToState (state: AtemState) {
+		state.info.apiVersion.major = this.apiMajor
+		state.info.apiVersion.minor = this.apiMinor
 	}
 }
