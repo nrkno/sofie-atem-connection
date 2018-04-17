@@ -1,7 +1,8 @@
-import { createSocket, /*AddressInfo,*/ Socket } from 'dgram'
+import { createSocket, Socket } from 'dgram'
 import { EventEmitter } from 'events'
 import { Util } from './atemUtil'
 import { CommandParser } from './atemCommandParser'
+import AbstractCommand from '../commands/AbstractCommand'
 
 export enum ConnectionState {
 	None = 0x00,
@@ -11,11 +12,11 @@ export enum ConnectionState {
 }
 
 export enum PacketFlag {
-	AckRequest = 0x01, // Ack called by Skaarhoj
-	Connect = 0x02, // Init called by Skaarhoj
+	AckRequest = 0x01,
+	Connect = 0x02,
 	Repeat = 0x04,
 	Error = 0x08,
-	AckReply = 0x16
+	AckReply = 0x10
 }
 
 export class AtemSocket extends EventEmitter {
@@ -23,29 +24,28 @@ export class AtemSocket extends EventEmitter {
 
 	private _localPacketId = 0
 	private _maxPacketID = 1 << 15 // Atem expects 15 not 16 bits before wrapping
-	private _sessionId: Array<number>
-	// private _remotePacketId: Array<number>
+	private _sessionId: number
 
 	private _address: string
 	private _port: number = 9910
 	private _socket: Socket
-	private _reconnectInterval = 500
+	private _reconnectInterval = 5000
 
-	// private _maxInFlight = 10
 	private _inFlightTimeout = 200
+	private _maxRetries = 5
 	private _lastReceivedAt: number = Date.now()
-	private _inFlight: Array<{packetId: number, lastSent: number, packet: Buffer}> = []
+	private _inFlight: Array<{packetId: number, lastSent: number, packet: Buffer, resent: number}> = []
 
 	private _commandParser: CommandParser = new CommandParser()
 
-	constructor (address: string, port: number) {
+	constructor (address?: string, port?: number) {
 		super()
-		this._address = address
-		this._port = port
+		this._address = address || this._address
+		this._port = port || this._port
 
 		this._socket = createSocket('udp4')
-		this._socket.bind(this._port + 1)
-		this._socket.on('message', (packet) => this._receivePacket(packet))
+		this._socket.bind(1024 + Math.floor(Math.random() * 64511))
+		this._socket.on('message', (packet, rinfo) => this._receivePacket(packet, rinfo))
 
 		setInterval(() => {
 			if (this._lastReceivedAt + this._reconnectInterval > Date.now()) return
@@ -54,7 +54,8 @@ export class AtemSocket extends EventEmitter {
 				this.emit('disconnect', null, null)
 			}
 			this._localPacketId = 1
-			this._sessionId = []
+			this._sessionId = 0
+			this.log('reconnect')
 			this.connect(this._address, this._port)
 		}, this._reconnectInterval)
 
@@ -78,105 +79,97 @@ export class AtemSocket extends EventEmitter {
 		console.log(args)
 	}
 
-	public _sendCommand (command: string, payload: string | Buffer) {
-		if (!Buffer.isBuffer(payload)) payload = new Buffer(payload)
-		// console.log(command)
+	get nextPacketId (): number {
+		return this._localPacketId
+	}
 
-		let buffer = new Buffer(20 + payload.length)
+	public _sendCommand (command: AbstractCommand) {
+		let payload = command.serialize()
+		this.log(payload)
+		let buffer = new Buffer(16 + payload.length)
 		buffer.fill(0)
 
-		buffer[0] = (20 + payload.length) / 256 | 0x08
-		buffer[1] = (20 + payload.length) % 256
+		buffer[0] = (16 + payload.length) / 256 | 0x08
+		buffer[1] = (16 + payload.length) % 256
 		buffer[2] = this._sessionId[0]
 		buffer[3] = this._sessionId[1]
 		buffer[10] = this._localPacketId / 256
 		buffer[11] = this._localPacketId % 256
-		buffer[12] = (8 + payload.length) / 256
-		buffer[13] = (8 + payload.length) % 256
-		buffer[16] = command.charCodeAt(0)
-		buffer[17] = command.charCodeAt(1)
-		buffer[18] = command.charCodeAt(2)
-		buffer[19] = command.charCodeAt(3)
+		buffer[12] = (4 + payload.length) / 256
+		buffer[13] = (4 + payload.length) % 256
 
-		payload.copy(buffer, 20)
+		payload.copy(buffer, 16)
 		this._sendPacket(buffer)
 
-		this._inFlight.push({ packetId: this._localPacketId, lastSent: Date.now(), packet: buffer })
-		// console.log(this._localPacketId)
+		this._inFlight.push({ packetId: this._localPacketId, lastSent: Date.now(), packet: buffer, resent: 0 })
 		this._localPacketId++
 		if (this._maxPacketID < this._localPacketId) this._localPacketId = 0
 	}
 
-	private _receivePacket (packet: Buffer) {
+	private _receivePacket (packet: Buffer, rinfo: any) {
+		this.log('RECV ' + packet)
+		this._lastReceivedAt = Date.now()
 		let length = ((packet[0] & 0x07) << 8) | packet[1]
-		// this._lastReceivedAt = Date.now()
-		// if (length !== remote.length) return
+		if (length !== rinfo.size) return
 
-		if (packet[0] > 16) return
 		let flags = packet[0] >> 3
-		this._sessionId = [packet[2], packet[3]]
+		// this._sessionId = [packet[2], packet[3]]
+		this._sessionId = packet[10] << 2 | packet[3]
 		let remotePacketId = packet[10] << 8 | packet[11]
-		// console.log(packet[10], packet[11])
 
 		// Send hello answer packet when receive connect flags
 		if (flags & PacketFlag.Connect && !(flags & PacketFlag.Repeat)) {
-			// console.log('hello answer', packet, this._connectionState)
 			this._sendPacket(Util.COMMAND_CONNECT_HELLO_ANSWER)
 		}
 
 		// Parse commands, Emit 'stateChanged' event after parse
 		if (flags & PacketFlag.AckRequest && length > 12) {
-			// console.log('Parse command')
-			this._parseCommand(packet.slice(12))
+			this._parseCommand(packet.slice(12), remotePacketId)
 		}
 
 		// Send ping packet, Emit 'connect' event after receive all stats
 		if (flags & PacketFlag.AckRequest && length === 12 && this._connectionState === ConnectionState.SynSent) {
-			// console.log('set connected', packet)
 			this._connectionState = ConnectionState.Established
 			this.emit('connect')
 		}
 
 		// Send ack packet (called by answer packet in Skaarhoj)
 		if (flags & PacketFlag.AckRequest && this._connectionState === ConnectionState.Established) {
-			// console.log('send ack', remotePacketId)
 			this._sendAck(remotePacketId)
 			this.emit('ping')
 		}
 
+		// Device ack'ed our command
 		if (flags & PacketFlag.AckReply && this._connectionState === ConnectionState.Established) {
-			// console.log(packet, this._localPacketId)
-			// console.log('command acked', packet)
+			let ackPacketId = packet[4] << 8 | packet[5]
 			for (let i in this._inFlight) {
-				if (remotePacketId === this._inFlight[i].packetId) {
-					// console.log(this._inFlight[i])
+				if (ackPacketId >= this._inFlight[i].packetId) {
+					this.emit('commandAcknowleged', this._inFlight[i].packetId)
 					delete this._inFlight[i]
 				}
 			}
-			// this._sendAck(remotePacketId)
 		}
 	}
 
-	private _parseCommand (buffer: Buffer) {
+	private _parseCommand (buffer: Buffer, packetId?: number) {
 		let length = Util.parseNumber(buffer.slice(0, 2))
 		let name = Util.parseString(buffer.slice(4, 8))
 
-		// console.log('COMMAND', `${name}(${length})`, buffer.slice(0, length))
+		// this.log('COMMAND', `${name}(${length})`, buffer.slice(0, length))
 		let cmd = this._commandParser.commandFromRawName(name)
 		if (cmd) {
 			cmd.deserialize(buffer.slice(0, length).slice(8))
-			console.log(cmd.getAttributes())
+			cmd.packetId = packetId || -1
+			this.emit('receivedStateChange', cmd)
 		}
 
-		this.emit('receivedStateChange', name, buffer.slice(0, length).slice(8))
 		if (buffer.length > length) {
-			this._parseCommand(buffer.slice(length))
+			this._parseCommand(buffer.slice(length), packetId)
 		}
 	}
 
 	private _sendPacket (packet: Buffer) {
-		// console.log('SEND', packet)
-
+		this.log('SEND ' + packet)
 		this._socket.send(packet, 0, packet.length, this._port, this._address)
 	}
 
@@ -185,10 +178,10 @@ export class AtemSocket extends EventEmitter {
 		buffer.fill(0)
 		buffer[0] = 0x80
 		buffer[1] = 0x0C
-		buffer[2] = this._sessionId[0]
-		buffer[3] = this._sessionId[1]
-		buffer[10] = packetId / 256
-		buffer[11] = packetId % 256
+		buffer[2] = this._sessionId >> 8
+		buffer[3] = this._sessionId & 0xFF
+		buffer[4] = packetId >> 8
+		buffer[5] = packetId & 0xFF
 		buffer[9] = 0x41
 		this._sendPacket(buffer)
 	}
@@ -196,8 +189,16 @@ export class AtemSocket extends EventEmitter {
 	private _checkForRetransmit () {
 		for (let sentPacket of this._inFlight) {
 			if (sentPacket && sentPacket.lastSent + this._inFlightTimeout < Date.now()) {
-				sentPacket.lastSent = Date.now()
-				this._sendPacket(sentPacket.packet)
+				if (sentPacket.resent <= this._maxRetries) {
+					sentPacket.lastSent = Date.now()
+					sentPacket.resent++
+					this.log('resend ' + sentPacket)
+					this._sendPacket(sentPacket.packet)
+				} else {
+					this._inFlight.splice(this._inFlight.indexOf(sentPacket), 1)
+					console.log('canceled ' + sentPacket)
+					// @todo: we should probably break up the connection here.
+				}
 			}
 		}
 	}
