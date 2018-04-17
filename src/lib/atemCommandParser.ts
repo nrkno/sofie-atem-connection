@@ -1,4 +1,4 @@
-import * as Commands from '../commands/index'
+import * as Commands from '../commands'
 import AbstractCommand from '../commands/AbstractCommand'
 
 export class CommandParser {
@@ -13,7 +13,9 @@ export class CommandParser {
 
 	commandFromRawName (name: string): AbstractCommand | undefined {
 		if (this.commands[name]) {
-			return Object.create((this.commands as any)[name]['prototype'])
+			// we instantiate a class based on the raw command name
+			return new (this.commands[name] as any)()
+			// return Object.create((this.commands as any)[name]['prototype'])
 		}
 		return undefined
 	}

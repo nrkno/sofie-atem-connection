@@ -1,2 +1,2 @@
-export * from './versionCommand'
-export * from './productIdentifierCommand'
+export * from './DeviceProfile'
+export * from './MixEffects'
