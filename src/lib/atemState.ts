@@ -1,11 +1,7 @@
 import { Model, TransitionStyle } from '../atem'
 
 export class AtemState {
-	_ver0: number
-	_ver1: number
-	_pin: string
-	model: Model
-	topology: AtemTopology = new AtemTopology()
+	info = new DeviceInfo()
 	video: AtemVideoState = new AtemVideoState()
 	channels: Array<{
 		name: string
@@ -15,18 +11,30 @@ export class AtemState {
 	audio: AtemAudioState = new AtemAudioState()
 }
 
-export class AtemTopology {
-	numberOfMEs: number
-	numberOfSources: number
-	numberOfColorGenerators: number
-	numberOfAUXs: number
-	numberOfTalkbackOutputs: number
-	numberOfMediaPlayers: number
-	numberOfSerialPorts: number
-	maxNumberOfHyperdecks: number
-	numberOfDVEs: number
-	numberOfStingers: number
-	numberOfSuperSources: number
+export class DeviceInfo {
+	apiVersion = new ApiInfo()
+	capabilities = new AtemCapabilites()
+	model: Model
+	productIdentifier: string
+}
+
+export class ApiInfo {
+	major: number
+	minor: number
+}
+
+export class AtemCapabilites {
+	MEs: number
+	sources: number
+	colorGenerators: number
+	auxilliaries: number
+	talkbackOutputs: number
+	mediaPlayers: number
+	serialPorts: number
+	maxHyperdecks: number
+	DVEs: number
+	stingers: number
+	superSources: number
 }
 
 export class AtemVideoState {
@@ -34,6 +42,13 @@ export class AtemVideoState {
 	downstreamKeyOn: Array<boolean> = []
 	downstreamTie: Array<boolean> = []
 	auxilliaries: Array<number> = []
+
+	getMe (index: number) {
+		if (!this.ME[index]) {
+			this.ME[index] = new MixEffect()
+		}
+		return this.ME[index]
+	}
 }
 
 export class AtemAudioState {
@@ -41,6 +56,13 @@ export class AtemAudioState {
 	hasMonitor: boolean
 	channels: Array<AudioChannel> = []
 	master: AudioChannel = new AudioChannel()
+
+	getMe (index: number) {
+		if (!this.channels[index]) {
+			this.channels[index] = new AudioChannel()
+		}
+		return this.channels[index]
+	}
 }
 
 export class MixEffect {
