@@ -74,9 +74,9 @@ export class AtemSocket extends EventEmitter {
 		this._connectionState = ConnectionState.SynSent
 	}
 
-	public log (args: any): void {
+	public log (args1: any, args2?: any, args3?: any): void {
 		// fallback, should be remapped by Atem class
-		console.log(args)
+		console.log(args1, args2, args3)
 	}
 
 	get nextPacketId (): number {
@@ -91,8 +91,8 @@ export class AtemSocket extends EventEmitter {
 
 		buffer[0] = (16 + payload.length) / 256 | 0x08
 		buffer[1] = (16 + payload.length) % 256
-		buffer[2] = this._sessionId[0]
-		buffer[3] = this._sessionId[1]
+		buffer[2] = this._sessionId >> 8
+		buffer[3] = this._sessionId & 0xff
 		buffer[10] = this._localPacketId / 256
 		buffer[11] = this._localPacketId % 256
 		buffer[12] = (4 + payload.length) / 256
@@ -107,14 +107,14 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	private _receivePacket (packet: Buffer, rinfo: any) {
-		this.log('RECV ' + packet)
+		this.log('RECV ', packet)
 		this._lastReceivedAt = Date.now()
 		let length = ((packet[0] & 0x07) << 8) | packet[1]
 		if (length !== rinfo.size) return
 
 		let flags = packet[0] >> 3
 		// this._sessionId = [packet[2], packet[3]]
-		this._sessionId = packet[10] << 2 | packet[3]
+		this._sessionId = packet[2] << 8 | packet[3]
 		let remotePacketId = packet[10] << 8 | packet[11]
 
 		// Send hello answer packet when receive connect flags
@@ -169,7 +169,7 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	private _sendPacket (packet: Buffer) {
-		this.log('SEND ' + packet)
+		this.log('SEND ', packet)
 		this._socket.send(packet, 0, packet.length, this._port, this._address)
 	}
 
@@ -192,11 +192,11 @@ export class AtemSocket extends EventEmitter {
 				if (sentPacket.resent <= this._maxRetries) {
 					sentPacket.lastSent = Date.now()
 					sentPacket.resent++
-					this.log('resend ' + sentPacket)
+					this.log('resend ', sentPacket)
 					this._sendPacket(sentPacket.packet)
 				} else {
 					this._inFlight.splice(this._inFlight.indexOf(sentPacket), 1)
-					console.log('canceled ' + sentPacket)
+					this.log('canceled ', sentPacket.packet)
 					// @todo: we should probably break up the connection here.
 				}
 			}
