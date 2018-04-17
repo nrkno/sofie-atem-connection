@@ -2,7 +2,7 @@ import { EventEmitter } from 'events'
 import { AtemState } from './lib/atemState'
 import { AtemSocket } from './lib/atemSocket'
 import AbstractCommand from './commands/AbstractCommand'
-import { PreviewInputCommand, ProgramInputCommand, CutCommand } from './commands'
+import { PreviewInputCommand, ProgramInputCommand, CutCommand, AutoTransitionCommand } from './commands'
 
 export enum Model {
 	TVS = 0x01,
@@ -92,6 +92,12 @@ export class Atem extends EventEmitter {
 
 	cut (me = 0) {
 		let command = new CutCommand()
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	autoTransition (me = 0) {
+		let command = new AutoTransitionCommand()
 		command.mixEffect = me
 		return this.sendCommand(command)
 	}
