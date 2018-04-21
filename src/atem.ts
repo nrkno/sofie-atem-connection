@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { AtemState } from './lib/atemState'
+import { AtemState, DVEEffect } from './lib/atemState'
 import { AtemSocket } from './lib/atemSocket'
 import AbstractCommand from './commands/AbstractCommand'
 import * as Commands from './commands'
@@ -108,6 +108,94 @@ export class Atem extends EventEmitter {
 		command.rate = rate
 		command.input = input
 		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setDVETransitionRate (rate: number, me = 1) {
+		let command = new Commands.TransitionDVECommand()
+		command.flags = 1 << 0
+		command.mixEffect = me
+		command.rate = rate
+		return this.sendCommand(command)
+	}
+	setDVETransitionLogoRate (rate: number, me = 1) {
+		let command = new Commands.TransitionDVECommand()
+		command.flags = 1 << 1
+		command.mixEffect = me
+		command.logoRate = rate
+		return this.sendCommand(command)
+	}
+	setDVETransitionStyle (style: DVEEffect, me = 1) {
+		let command = new Commands.TransitionDVECommand()
+		command.flags = 1 << 2
+		command.mixEffect = me
+		command.style = style
+		return this.sendCommand(command)
+	}
+	setDVETransitionFillSource (source: number, me = 1) {
+		let command = new Commands.TransitionDVECommand()
+		command.flags = 1 << 3
+		command.mixEffect = me
+		command.fillSource = source
+		return this.sendCommand(command)
+
+	}
+	setDVETransitionKeySource (source: number, me = 1) {
+		let command = new Commands.TransitionDVECommand()
+		command.flags = 1 << 4
+		command.mixEffect = me
+		command.keySource = source
+		return this.sendCommand(command)
+
+	}
+
+	setDVETransitionEnableKey (enable: boolean, me = 1) {
+		let command = new Commands.TransitionDVECommand()
+		command.flags = 1 << 5
+		command.mixEffect = me
+		command.enableKey = enable
+		return this.sendCommand(command)
+	}
+	setDVETransitionPreMultiplied (premultiplied: boolean, me = 1) {
+		let command = new Commands.TransitionDVECommand()
+		command.flags = 1 << 6
+		command.mixEffect = me
+		command.preMultiplied = premultiplied
+		return this.sendCommand(command)
+	}
+	setDVETransitionClip (clip: number, me = 1) {
+		let command = new Commands.TransitionDVECommand()
+		command.flags = 1 << 7
+		command.mixEffect = me
+		command.clip = clip
+		return this.sendCommand(command)
+	}
+	setDVETransitionGain (gain: number, me = 1) {
+		let command = new Commands.TransitionDVECommand()
+		command.flags = 1 << 8
+		command.mixEffect = me
+		command.gain = gain
+		return this.sendCommand(command)
+	}
+	setDVETransitionInvertKey (invertKey: boolean, me = 1) {
+		let command = new Commands.TransitionDVECommand()
+		command.flags = 1 << 9
+		command.mixEffect = me
+		command.invertKey = invertKey
+		return this.sendCommand(command)
+	}
+	setDVETransitionReverse (reverse: boolean, me = 1) {
+		let command = new Commands.TransitionDVECommand()
+		command.flags = 1 << 10
+		command.mixEffect = me
+		command.reverse = reverse
+		return this.sendCommand(command)
+	}
+	setDVETransitionFlipFlop (flipFlop: boolean, me = 1) {
+		let command = new Commands.TransitionDVECommand()
+		command.flags = 1 << 11
+		command.mixEffect = me
+		command.flipFlop = flipFlop
 		return this.sendCommand(command)
 	}
 
