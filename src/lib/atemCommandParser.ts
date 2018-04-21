@@ -6,8 +6,12 @@ export class CommandParser {
 
 	constructor () {
 		for (let cmd in Commands) {
-			let rawName = new (Commands as any)[cmd]().rawName
-			this.commands[rawName] = (Commands as any)[cmd]
+			try {
+				let rawName = new (Commands as any)[cmd]().rawName
+				this.commands[rawName] = (Commands as any)[cmd]
+			} catch (e) {
+				// wwwwhatever
+			}
 		}
 	}
 

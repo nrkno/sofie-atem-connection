@@ -77,6 +77,12 @@ export class MixEffect {
 	numberOfKeyers: number
 	transitionStyle: TransitionStyle
 	upstreamKeyNextBackground: boolean
+	transitionSettings = {
+		dip: {
+			rate: 0,
+			source: 0
+		}
+	}
 }
 
 export class AudioChannel {
