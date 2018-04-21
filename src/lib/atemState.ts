@@ -82,7 +82,10 @@ export class MixEffect {
 			rate: 0,
 			source: 0
 		},
-		DVE: {}
+		DVE: {},
+		mix: {
+			rate: 0
+		}
 	}
 }
 

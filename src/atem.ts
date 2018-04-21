@@ -199,6 +199,13 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	setMixTransitionRate (rate: number, me = 0) {
+		let command = new Commands.TransitionMixCommand()
+		command.rate = rate
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
 	private _mutateState (command: AbstractCommand) {
 		command.applyToState(this.state)
 		this.emit('stateChanged', this.state, command)
