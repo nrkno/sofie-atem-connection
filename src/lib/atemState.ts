@@ -68,9 +68,10 @@ export class AtemAudioState {
 export class MixEffect {
 	programInput: number
 	previewInput: number
+	inTransition: boolean
 	transitionPreview: boolean
 	transitionPosition: number
-	transitionFrameCount: number
+	transitionFramesLeft: number
 	fadeToBlack: boolean
 	upstreamKeyState: Array<any> = []
 	upstreamKeyNextState: Array<any> = []
