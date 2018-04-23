@@ -306,6 +306,86 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	setWipeTransitionRate (rate: number, me = 0) {
+		let command = new Commands.TransitionWipeCommand()
+		command.flags = command.maskFlags.Rate
+		command.rate = rate
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setWipeTransitionPattern (pattern: number, me = 0) {
+		let command = new Commands.TransitionWipeCommand()
+		command.flags = command.maskFlags.Pattern
+		command.pattern = pattern
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setWipeTransitionBorderWidth (borderWidth: number, me = 0) {
+		let command = new Commands.TransitionWipeCommand()
+		command.flags = command.maskFlags.BorderWidth
+		command.borderWidth = borderWidth
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setWipeTransitionBorderInput (borderInput: number, me = 0) {
+		let command = new Commands.TransitionWipeCommand()
+		command.flags = command.maskFlags.BorderInput
+		command.borderInput = borderInput
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setWipeTransitionSymmetry (symmetry: number, me = 0) {
+		let command = new Commands.TransitionWipeCommand()
+		command.flags = command.maskFlags.Symmetry
+		command.symmetry = symmetry
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setWipeTransitionBorderSoftness (borderSoftness: number, me = 0) {
+		let command = new Commands.TransitionWipeCommand()
+		command.flags = command.maskFlags.BorderSoftness
+		command.borderSoftness = borderSoftness
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setWipeTransitionXPosition (xposition: number, me = 0) {
+		let command = new Commands.TransitionWipeCommand()
+		command.flags = command.maskFlags.XPosition
+		command.xPosition = xposition
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setWipeTransitionYPosition (yposition: number, me = 0) {
+		let command = new Commands.TransitionWipeCommand()
+		command.flags = command.maskFlags.YPosition
+		command.yPosition = yposition
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setWipeTransitionReverseDirection (reverseDirection: boolean, me = 0) {
+		let command = new Commands.TransitionWipeCommand()
+		command.flags = command.maskFlags.ReverseDirection
+		command.reverseDirection = reverseDirection
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setWipeTransitionFlipFlop (flipFlop: boolean, me = 0) {
+		let command = new Commands.TransitionWipeCommand()
+		command.flags = command.maskFlags.FlipFlop
+		command.flipFlop = flipFlop
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
 	private _mutateState (command: AbstractCommand) {
 		command.applyToState(this.state)
 		this.emit('stateChanged', this.state, command)

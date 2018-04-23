@@ -114,6 +114,18 @@ export class MixEffect {
 			clipDuration: number
 			triggerPoint: number
 			mixRate: number
+		},
+		wipe: {
+			rate: number
+			pattern: number
+			borderWidth: number
+			borderInput: number
+			symmetry: number
+			borderSoftness: number
+			xPosition: number
+			yPosition: number
+			reverseDirection: boolean
+			flipFlop: boolean
 		}
 	}
 }
