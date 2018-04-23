@@ -386,7 +386,7 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	setAuxSource (source: number, bus: number) {
+	setAuxSource (source: number, bus = 0) {
 		let command = new Commands.AuxSourceCommand()
 		command.auxBus = bus
 		command.source = source

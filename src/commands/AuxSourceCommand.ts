@@ -19,7 +19,7 @@ export class AuxSourceCommand implements IAbstractCommand {
 
 	serialize () {
 		let rawCommand = 'CAuS'
-		return new Buffer([...Buffer.from(rawCommand), this.auxBus, 0x00, this.source >> 8, this.source & 0xFF])
+		return new Buffer([...Buffer.from(rawCommand), 0x01, this.auxBus, this.source >> 8, this.source & 0xFF])
 	}
 
 	getAttributes () {
