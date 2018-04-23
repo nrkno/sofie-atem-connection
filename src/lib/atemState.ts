@@ -101,6 +101,19 @@ export class MixEffect {
 			flipFlop: boolean},
 		mix: {
 			rate: number
+		},
+		stinger: {
+			source: number
+			preMultipliedKey: boolean
+
+			clip: number
+			gain: number // 0...1000
+			invert: boolean
+
+			preroll: number
+			clipDuration: number
+			triggerPoint: number
+			mixRate: number
 		}
 	}
 }

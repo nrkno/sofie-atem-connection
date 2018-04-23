@@ -234,6 +234,78 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	setStingerTransitionSource (source: number, me = 0) {
+		let command = new Commands.TransitionStingerCommand()
+		command.flags = command.maskFlags.Source
+		command.source = source
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setStingerTransitionPreMultipliedKey (premultiplied: boolean, me = 0) {
+		let command = new Commands.TransitionStingerCommand()
+		command.flags = command.maskFlags.PreMultipliedKey
+		command.preMultipliedKey = premultiplied
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setStingerTransitionClip (clip: number, me = 0) {
+		let command = new Commands.TransitionStingerCommand()
+		command.flags = command.maskFlags.Clip
+		command.clip = clip
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setStingerTransitionGain (gain: number, me = 0) {
+		let command = new Commands.TransitionStingerCommand()
+		command.flags = command.maskFlags.Gain
+		command.gain = gain
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setStingerTransitionInvert (invert: boolean, me = 0) {
+		let command = new Commands.TransitionStingerCommand()
+		command.flags = command.maskFlags.Invert
+		command.invert = invert
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setStingerTransitionPreroll (preroll: number, me = 0) {
+		let command = new Commands.TransitionStingerCommand()
+		command.flags = command.maskFlags.Preroll
+		command.preroll = preroll
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setStingerTransitionClipDuration (duration: number, me = 0) {
+		let command = new Commands.TransitionStingerCommand()
+		command.flags = command.maskFlags.ClipDuration
+		command.clipDuration = duration
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setStingerTransitionTriggerPoint (triggerPoint: number, me = 0) {
+		let command = new Commands.TransitionStingerCommand()
+		command.flags = command.maskFlags.TriggerPoint
+		command.triggerPoint = triggerPoint
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setStingerTransitionMixRate (mixRate: number, me = 0) {
+		let command = new Commands.TransitionStingerCommand()
+		command.flags = command.maskFlags.MixRate
+		command.mixRate = mixRate
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
 	private _mutateState (command: AbstractCommand) {
 		command.applyToState(this.state)
 		this.emit('stateChanged', this.state, command)
