@@ -39,8 +39,12 @@ export class AtemCapabilites {
 
 export class AtemVideoState {
 	ME: Array<MixEffect> = []
-	downstreamKeyOn: Array<boolean> = []
-	downstreamTie: Array<boolean> = []
+	downstreamKeyers: Array<{
+		onAir: boolean
+		inTransition: boolean
+		isAuto: boolean
+		remainingFrames: number
+	}> = []
 	auxilliaries: Array<number> = []
 
 	getMe (index: number) {

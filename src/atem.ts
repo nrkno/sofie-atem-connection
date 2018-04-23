@@ -102,6 +102,12 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	autoDownstreamKey (key = 0) {
+		let command = new Commands.DownstreamKeyAutoCommand()
+		command.downstreamKeyId = key
+		return this.sendCommand(command)
+	}
+
 	setDipTransitionSettings (flag: Commands.MaskFlags, rate: number, input: number, me = 0) {
 		let command = new Commands.TransitionDipCommand()
 		command.flag = flag
@@ -390,6 +396,20 @@ export class Atem extends EventEmitter {
 		let command = new Commands.AuxSourceCommand()
 		command.auxBus = bus
 		command.source = source
+		return this.sendCommand(command)
+	}
+
+	setDownstreamKeyTie (tie: boolean, key = 0) {
+		let command = new Commands.DownstreamKeyTieCommand()
+		command.downstreamKeyId = key
+		command.tie = tie
+		return this.sendCommand(command)
+	}
+
+	setDownstreamKeyOnAir (onAir: boolean, key = 0) {
+		let command = new Commands.DownstreamKeyOnAirCommand()
+		command.downstreamKeyId = key
+		command.onair = onAir
 		return this.sendCommand(command)
 	}
 
