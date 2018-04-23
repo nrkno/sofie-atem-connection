@@ -17,7 +17,6 @@ export class PreviewTransitionCommand implements IAbstractCommand {
 	}
 
 	serialize () {
-		console.log(this.mixEffect)
 		let rawCommand = 'CTPr'
 		return new Buffer([...Buffer.from(rawCommand), this.mixEffect, this.preview, 0x00, 0x00])
 	}
