@@ -20,7 +20,6 @@ export class TransitionDipCommand implements IAbstractCommand {
 	flag: MaskFlags
 
 	deserialize (rawCommand: Buffer) {
-		console.log('TDpP', rawCommand)
 		this.mixEffect = rawCommand[0]
 		this.rate = rawCommand[1]
 		this.input = rawCommand[2] << 8 | (rawCommand[3] & 0xFF)
@@ -51,7 +50,9 @@ export class TransitionDipCommand implements IAbstractCommand {
 
 	applyToState (state: AtemState) {
 		let mixEffect = state.video.getMe(this.mixEffect)
-		mixEffect.transitionSettings.dip.source = this.input
-		mixEffect.transitionSettings.dip.rate = this.rate
+		mixEffect.transitionSettings.dip = {
+			source: this.input,
+			rate: this.rate
+		}
 	}
 }

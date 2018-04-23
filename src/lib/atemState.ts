@@ -80,53 +80,56 @@ export class MixEffect {
 		nextStyle: TransitionStyle,
 		nextSelection: number
 	}
-	transitionSettings: {
-		dip: {
-			rate: number,
-			source: number
-		},
-		DVE: {
-			rate: number
-			logoRate: number
-			style: DVEEffect
-			fillSource: number
-			keySource: number
+	transitionSettings = new TransitionSettings()
+}
 
-			enableKey: boolean
-			preMultiplied: boolean
-			clip: number
-			gain: number
-			invertKey: boolean
-			reverse: boolean
-			flipFlop: boolean},
-		mix: {
-			rate: number
-		},
-		stinger: {
-			source: number
-			preMultipliedKey: boolean
+export class TransitionSettings {
+	dip: {
+		rate: number,
+		source: number
+	}
+	DVE: {
+		rate: number
+		logoRate: number
+		style: DVEEffect
+		fillSource: number
+		keySource: number
 
-			clip: number
-			gain: number // 0...1000
-			invert: boolean
+		enableKey: boolean
+		preMultiplied: boolean
+		clip: number
+		gain: number
+		invertKey: boolean
+		reverse: boolean
+		flipFlop: boolean
+	}
+	mix: {
+		rate: number
+	}
+	stinger: {
+		source: number
+		preMultipliedKey: boolean
 
-			preroll: number
-			clipDuration: number
-			triggerPoint: number
-			mixRate: number
-		},
-		wipe: {
-			rate: number
-			pattern: number
-			borderWidth: number
-			borderInput: number
-			symmetry: number
-			borderSoftness: number
-			xPosition: number
-			yPosition: number
-			reverseDirection: boolean
-			flipFlop: boolean
-		}
+		clip: number
+		gain: number // 0...1000
+		invert: boolean
+
+		preroll: number
+		clipDuration: number
+		triggerPoint: number
+		mixRate: number
+	}
+	wipe: {
+		rate: number
+		pattern: number
+		borderWidth: number
+		borderInput: number
+		symmetry: number
+		borderSoftness: number
+		xPosition: number
+		yPosition: number
+		reverseDirection: boolean
+		flipFlop: boolean
 	}
 }
 

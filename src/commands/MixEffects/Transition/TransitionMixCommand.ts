@@ -30,6 +30,6 @@ export class TransitionMixCommand implements IAbstractCommand {
 
 	applyToState (state: AtemState) {
 		let mixEffect = state.video.getMe(this.mixEffect)
-		mixEffect.transitionSettings.mix.rate = this.rate
+		mixEffect.transitionSettings.mix = { rate: this.rate }
 	}
 }
