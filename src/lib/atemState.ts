@@ -73,19 +73,34 @@ export class MixEffect {
 	transitionPosition: number
 	transitionFramesLeft: number
 	fadeToBlack: boolean
-	upstreamKeyState: Array<any> = []
-	upstreamKeyNextState: Array<any> = []
 	numberOfKeyers: number
-	transitionStyle: TransitionStyle
-	upstreamKeyNextBackground: boolean
-	transitionSettings = {
+	transitionProperties: {
+		style: TransitionStyle,
+		selection: number,
+		nextStyle: TransitionStyle,
+		nextSelection: number
+	}
+	transitionSettings: {
 		dip: {
-			rate: 0,
-			source: 0
+			rate: number,
+			source: number
 		},
-		DVE: {},
+		DVE: {
+			rate: number
+			logoRate: number
+			style: DVEEffect
+			fillSource: number
+			keySource: number
+
+			enableKey: boolean
+			preMultiplied: boolean
+			clip: number
+			gain: number
+			invertKey: boolean
+			reverse: boolean
+			flipFlop: boolean},
 		mix: {
-			rate: 0
+			rate: number
 		}
 	}
 }

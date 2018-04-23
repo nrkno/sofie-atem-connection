@@ -220,6 +220,20 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	setTransitionStyle (style: TransitionStyle, me = 0) {
+		let command = new Commands.TransitionPropertiesCommand()
+		command.style = style
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setTransitionSelection (selection: number, me = 0) {
+		let command = new Commands.TransitionPropertiesCommand()
+		command.selection = selection
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
 	private _mutateState (command: AbstractCommand) {
 		command.applyToState(this.state)
 		this.emit('stateChanged', this.state, command)
