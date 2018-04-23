@@ -413,6 +413,13 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	macroRun (index = 0) {
+		let command = new Commands.MacroActionCommand()
+		command.index = index
+		command.action = command.MacroAction.Run
+		return this.sendCommand(command)
+	}
+
 	private _mutateState (command: AbstractCommand) {
 		command.applyToState(this.state)
 		this.emit('stateChanged', this.state, command)
