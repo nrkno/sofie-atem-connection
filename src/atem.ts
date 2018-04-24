@@ -420,6 +420,38 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	mediaPlay (playing = true, player = 0) {
+		let command = new Commands.MediaPlayerStatusCommand()
+		command.mediaPlayerId = player
+		command.flag = command.MaskFlags.Playing
+		command.playing = playing
+		return this.sendCommand(command)
+	}
+
+	mediaLoop (looping = true, player = 0) {
+		let command = new Commands.MediaPlayerStatusCommand()
+		command.mediaPlayerId = player
+		command.flag = command.MaskFlags.Loop
+		command.loop = looping
+		return this.sendCommand(command)
+	}
+
+	mediaAtBeginning (atBeginning = true, player = 0) {
+		let command = new Commands.MediaPlayerStatusCommand()
+		command.mediaPlayerId = player
+		command.flag = command.MaskFlags.Beginning
+		command.atBeginning = atBeginning
+		return this.sendCommand(command)
+	}
+
+	mediaClipFrame (frame: number, player = 0) {
+		let command = new Commands.MediaPlayerStatusCommand()
+		command.mediaPlayerId = player
+		command.flag = command.MaskFlags.Frame
+		command.clipFrame = frame
+		return this.sendCommand(command)
+	}
+
 	private _mutateState (command: AbstractCommand) {
 		command.applyToState(this.state)
 		this.emit('stateChanged', this.state, command)

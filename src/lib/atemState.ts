@@ -9,6 +9,7 @@ export class AtemState {
 	}> = []
 	tallies: Array<number> = []
 	audio: AtemAudioState = new AtemAudioState()
+	media: MediaState = new MediaState()
 }
 
 export class DeviceInfo {
@@ -145,6 +146,12 @@ export class AudioChannel {
 	rawPan: number
 	leftLevel: number
 	rightLevel: number
+}
+
+export class MediaState {
+	stillPool = {}
+	clipPool = {}
+	players: Array<{ playing: boolean, loop: boolean, atBeginning: boolean, clipFrame: number }> = []
 }
 
 export enum DVEEffect {
