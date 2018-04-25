@@ -1,6 +1,5 @@
 import IAbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../lib/atemState'
-import { Util } from '../../lib/atemUtil'
 
 export class PreviewInputCommand implements IAbstractCommand {
 	resolve: () => void
@@ -14,7 +13,7 @@ export class PreviewInputCommand implements IAbstractCommand {
 
 	deserialize (rawCommand: Buffer) {
 		this.mixEffect = rawCommand[0]
-		this.source = Util.parseNumber(rawCommand.slice(2, 4))
+		this.source = rawCommand.readUInt8(2)
 	}
 
 	serialize () {

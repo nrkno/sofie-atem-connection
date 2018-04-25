@@ -1,5 +1,4 @@
 import AbstractCommand from '../AbstractCommand'
-import { Util } from '../../lib/atemUtil'
 import { AtemState } from '../../lib/atemState'
 
 export class ProductIdentifierCommand implements AbstractCommand {
@@ -12,7 +11,7 @@ export class ProductIdentifierCommand implements AbstractCommand {
 	model: number
 
 	deserialize (rawCommand: Buffer) {
-		this.deviceName = Util.parseString(rawCommand)
+		this.deviceName = rawCommand.toString('utf-8')
 		this.model = rawCommand[40]
 	}
 
