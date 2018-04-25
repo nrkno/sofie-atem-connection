@@ -1,6 +1,6 @@
 import IAbstractCommand from '../../AbstractCommand'
 import { AtemState } from '../../../lib/atemState'
-import { TransitionStyle } from '../../..'
+import { TransitionStyle } from '../../../enums'
 
 export class TransitionPropertiesCommand implements IAbstractCommand {
 	resolve: () => void

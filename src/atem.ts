@@ -1,33 +1,9 @@
 import { EventEmitter } from 'events'
-import { AtemState, DVEEffect } from './lib/atemState'
+import { AtemState } from './lib/atemState'
 import { AtemSocket } from './lib/atemSocket'
+import { TransitionStyle, DVEEffect } from './enums'
 import AbstractCommand from './commands/AbstractCommand'
 import * as Commands from './commands'
-
-export enum Model {
-	TVS = 0x01,
-	OneME = 0x02,
-	TwoME = 0x03,
-	PS4K = 0x04,
-	OneME4K = 0x05,
-	TwoME4K = 0x06,
-	TwoMEBS4K = 0x07,
-	TVSHD = 0x08
-}
-
-export enum TransitionStyle {
-	MIX = 0x00,
-	DIP = 0x01,
-	WIPE = 0x02,
-	DVE = 0x03,
-	STING = 0x04
-}
-
-export enum TallyState {
-	None = 0x00,
-	Program = 0x01,
-	Preview = 0x02
-}
 
 export interface AtemOptions {
 	localPort?: number,

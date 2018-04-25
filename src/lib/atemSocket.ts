@@ -2,22 +2,8 @@ import { createSocket, Socket } from 'dgram'
 import { EventEmitter } from 'events'
 import { Util } from './atemUtil'
 import { CommandParser } from './atemCommandParser'
+import { ConnectionState, PacketFlag } from '../enums'
 import AbstractCommand from '../commands/AbstractCommand'
-
-export enum ConnectionState {
-	None = 0x00,
-	SynSent = 0x01,
-	Established = 0x02,
-	Closed = 0x03
-}
-
-export enum PacketFlag {
-	AckRequest = 0x01,
-	Connect = 0x02,
-	Repeat = 0x04,
-	Error = 0x08,
-	AckReply = 0x10
-}
 
 export class AtemSocket extends EventEmitter {
 	private _connectionState = ConnectionState.Closed
