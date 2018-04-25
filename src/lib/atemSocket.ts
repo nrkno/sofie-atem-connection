@@ -138,8 +138,8 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	private _parseCommand (buffer: Buffer, packetId?: number) {
-		let length = buffer.readUInt8(0)
-		let name = buffer.readUInt16BE(4)
+		let length = buffer.readUInt16BE(0)
+		let name = buffer.toString('utf8', 4, 8)
 
 		// this.log('COMMAND', `${name}(${length})`, buffer.slice(0, length))
 		let cmd = this._commandParser.commandFromRawName(name)
