@@ -1,5 +1,5 @@
 import IAbstractCommand from '../../AbstractCommand'
-import { AtemState } from '../../../lib/atemState'
+import { AtemState } from '../../../state'
 import { TransitionStyle } from '../../../enums'
 
 export class TransitionPropertiesCommand implements IAbstractCommand {

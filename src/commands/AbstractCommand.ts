@@ -1,4 +1,4 @@
-import { AtemState } from '../lib/atemState'
+import { AtemState } from '../state'
 
 export interface IAbstractCommand {
 	rawName: string

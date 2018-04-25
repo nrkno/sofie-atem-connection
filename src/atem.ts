@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { AtemState } from './lib/atemState'
+import { AtemState } from './state'
 import { AtemSocket } from './lib/atemSocket'
 import { TransitionStyle, DVEEffect } from './enums'
 import AbstractCommand from './commands/AbstractCommand'

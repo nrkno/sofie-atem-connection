@@ -1,4 +1,4 @@
-import { Model, TransitionStyle, DVEEffect } from '../enums'
+import { Model, TransitionStyle, DVEEffect } from '../enums/index'
 
 export class AtemState {
 	info = new DeviceInfo()

@@ -1,5 +1,5 @@
 import IAbstractCommand from '../../AbstractCommand'
-import { AtemState } from '../../../lib/atemState'
+import { AtemState } from '../../../state'
 // import { Util } from '../../../lib/atemUtil'
 
 export enum MaskFlags {

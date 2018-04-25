@@ -1,5 +1,5 @@
 import IAbstractCommand from '../../AbstractCommand'
-import { AtemState } from '../../../lib/atemState'
+import { AtemState } from '../../../state'
 
 export class TransitionMixCommand implements IAbstractCommand {
 	resolve: () => void
