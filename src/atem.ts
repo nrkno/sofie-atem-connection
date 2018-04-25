@@ -4,6 +4,8 @@ import { AtemSocket } from './lib/atemSocket'
 import { TransitionStyle, DVEEffect } from './enums'
 import AbstractCommand from './commands/AbstractCommand'
 import * as Commands from './commands'
+import { MediaPlayer } from './state/media'
+import { DipTransitionSettings } from './state/video'
 
 export interface AtemOptions {
 	localPort?: number,
@@ -84,12 +86,19 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	setDipTransitionSettings (flag: Commands.MaskFlags, rate: number, input: number, me = 0) {
+	setDipTransitionSettings (newProps: Partial<DipTransitionSettings>, me = 0) {
 		let command = new Commands.TransitionDipCommand()
-		command.flag = flag
-		command.rate = rate
-		command.input = input
 		command.mixEffect = me
+
+		// TODO(Lange - 2018/04/25): See related TODO in updateMediaPlayer.
+		command.properties = {
+			...this.state.video.getMe(me).transitionSettings.dip,
+			...newProps
+		}
+
+		// TODO(Lange - 2018/04/25): See related TODO in updateMediaPlayer.
+		command.flag = command.calcFlags(newProps)
+
 		return this.sendCommand(command)
 	}
 
@@ -396,35 +405,26 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	mediaPlay (playing = true, player = 0) {
+	updateMediaPlayer (newProps: Partial<MediaPlayer>, player = 0) {
 		let command = new Commands.MediaPlayerStatusCommand()
 		command.mediaPlayerId = player
-		command.flag = command.MaskFlags.Playing
-		command.playing = playing
-		return this.sendCommand(command)
-	}
 
-	mediaLoop (looping = true, player = 0) {
-		let command = new Commands.MediaPlayerStatusCommand()
-		command.mediaPlayerId = player
-		command.flag = command.MaskFlags.Loop
-		command.loop = looping
-		return this.sendCommand(command)
-	}
+		/* TODO(Lange - 2018/04/25): This feels messy. We're on the right track, but need to simplify further.
+		 * Specifically, it'd be nice if this updateMediaPlayer method didn't
+		 * need to know about the shape of this.state.
+		 */
+		command.properties = {
+			...this.state.media.players[player],
+			...newProps
+		}
 
-	mediaAtBeginning (atBeginning = true, player = 0) {
-		let command = new Commands.MediaPlayerStatusCommand()
-		command.mediaPlayerId = player
-		command.flag = command.MaskFlags.Beginning
-		command.atBeginning = atBeginning
-		return this.sendCommand(command)
-	}
+		/* TODO(Lange - 2018/04/25): This also seems like it could be further simplified and automated.
+		 * It'd be neat if there was a standard spec for calculating flags from a Partial of properties,
+		 * which all commands adhered to. That way we could define calcFlags in one place, instead
+		 * of each command needing to define it individually.
+		 */
+		command.flag = command.calcFlags(newProps)
 
-	mediaClipFrame (frame: number, player = 0) {
-		let command = new Commands.MediaPlayerStatusCommand()
-		command.mediaPlayerId = player
-		command.flag = command.MaskFlags.Frame
-		command.clipFrame = frame
 		return this.sendCommand(command)
 	}
 

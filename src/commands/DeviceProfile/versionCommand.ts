@@ -1,5 +1,6 @@
 import IAbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
+import { VersionProps } from '../../state/info'
 
 export interface VersionInfo {
 	major: number
@@ -13,12 +14,13 @@ export class VersionCommand implements IAbstractCommand {
 	rawName = '_ver'
 	packetId: number
 
-	apiMajor: number
-	apiMinor: number
+	properties: VersionProps
 
 	deserialize (rawCommand: Buffer) {
-		this.apiMajor = rawCommand[1]
-		this.apiMinor = rawCommand[3]
+		this.properties = {
+			major: rawCommand[1],
+			minor: rawCommand[3]
+		}
 	}
 
 	serialize () {
@@ -27,13 +29,13 @@ export class VersionCommand implements IAbstractCommand {
 
 	getAttributes (): VersionInfo {
 		return {
-			major: this.apiMajor,
-			minor: this.apiMinor
+			...this.properties
 		}
 	}
 
 	applyToState (state: AtemState) {
-		state.info.apiVersion.major = this.apiMajor
-		state.info.apiVersion.minor = this.apiMinor
+		state.info.apiVersion = {
+			...this.properties
+		}
 	}
 }

@@ -1,46 +1,19 @@
 import { DVEEffect, TransitionStyle } from '../enums'
 
-export class AtemVideoState {
-	ME: Array<MixEffect> = []
-	downstreamKeyers: Array<{
-		onAir: boolean
-		inTransition: boolean
-		isAuto: boolean
-		remainingFrames: number
-	}> = []
-	auxilliaries: Array<number> = []
-
-	getMe (index: number) {
-		if (!this.ME[index]) {
-			this.ME[index] = new MixEffect()
-		}
-		return this.ME[index]
-	}
-}
-
-export class MixEffect {
-	programInput: number
-	previewInput: number
+export interface DownstreamKeyer {
+	onAir: boolean
 	inTransition: boolean
-	transitionPreview: boolean
-	transitionPosition: number
-	transitionFramesLeft: number
-	fadeToBlack: boolean
-	numberOfKeyers: number
-	transitionProperties: {
-		style: TransitionStyle,
-		selection: number,
-		nextStyle: TransitionStyle,
-		nextSelection: number
-	}
-	transitionSettings = new TransitionSettings()
+	isAuto: boolean
+	remainingFrames: number
 }
 
-export class TransitionSettings {
-	dip: {
-		rate: number,
-		source: number
-	}
+export interface DipTransitionSettings {
+	rate: number
+	input: number
+}
+
+export interface TransitionSettings {
+	dip: DipTransitionSettings
 	DVE: {
 		rate: number
 		logoRate: number
@@ -83,5 +56,37 @@ export class TransitionSettings {
 		yPosition: number
 		reverseDirection: boolean
 		flipFlop: boolean
+	}
+}
+
+export interface MixEffect {
+	programInput: number
+	previewInput: number
+	inTransition: boolean
+	transitionPreview: boolean
+	transitionPosition: number
+	transitionFramesLeft: number
+	fadeToBlack: boolean
+	numberOfKeyers: number
+	transitionProperties: {
+		style: TransitionStyle,
+		selection: number,
+		nextStyle: TransitionStyle,
+		nextSelection: number
+	}
+	transitionSettings: TransitionSettings
+}
+
+export class AtemVideoState {
+	ME: Array<MixEffect> = []
+	downstreamKeyers: Array<DownstreamKeyer> = []
+	auxilliaries: Array<number> = []
+
+	getMe (index: number) {
+		if (!this.ME[index]) {
+			this.ME[index] = {} as MixEffect
+		}
+
+		return this.ME[index]
 	}
 }

@@ -1,11 +1,6 @@
 import IAbstractCommand from '../../AbstractCommand'
 import { AtemState } from '../../../state'
-// import { Util } from '../../../lib/atemUtil'
-
-export enum MaskFlags {
-	Rate = 1 << 0,
-	Input = 1 << 1
-}
+import { DipTransitionSettings } from '../../../state/video'
 
 export class TransitionDipCommand implements IAbstractCommand {
 	resolve: () => void
@@ -14,15 +9,22 @@ export class TransitionDipCommand implements IAbstractCommand {
 	rawName = 'TDpP'
 	packetId: number
 
+	flag: number
+
 	mixEffect: number
-	rate: number
-	input: number
-	flag: MaskFlags
+	properties: DipTransitionSettings
+
+	MaskFlags = {
+		Rate: 1 << 0,
+		Input: 1 << 1
+	}
 
 	deserialize (rawCommand: Buffer) {
 		this.mixEffect = rawCommand[0]
-		this.rate = rawCommand[1]
-		this.input = rawCommand[2] << 8 | (rawCommand[3] & 0xFF)
+		this.properties = {
+			rate: rawCommand[1],
+			input: rawCommand[2] << 8 | (rawCommand[3] & 0xFF)
+		}
 	}
 
 	serialize () {
@@ -31,10 +33,10 @@ export class TransitionDipCommand implements IAbstractCommand {
 			...Buffer.from(rawCommand),
 			this.flag,
 			this.mixEffect,
-			this.rate,
+			this.properties.rate,
 			0x00,
-			this.input >> 8,
-			this.input & 0xFF,
+			this.properties.input >> 8,
+			this.properties.input & 0xFF,
 			0x00,
 			0x00
 		])
@@ -43,16 +45,27 @@ export class TransitionDipCommand implements IAbstractCommand {
 	getAttributes () {
 		return {
 			mixEffect: this.mixEffect,
-			rate: this.rate,
-			input: this.input
+			...this.properties
 		}
+	}
+
+	calcFlags (newProps: Partial<DipTransitionSettings>) {
+		let flags = 0
+
+		if ('rate' in newProps) {
+			flags = flags | this.MaskFlags.Rate
+		}
+		if ('input' in newProps) {
+			flags = flags | this.MaskFlags.Input
+		}
+
+		return flags
 	}
 
 	applyToState (state: AtemState) {
 		let mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionSettings.dip = {
-			source: this.input,
-			rate: this.rate
+			...this.properties
 		}
 	}
 }

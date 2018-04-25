@@ -1,5 +1,6 @@
 import IAbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
+import { DownstreamKeyer } from '../../state/video'
 
 export class DownstreamKeyStateCommand implements IAbstractCommand {
 	resolve: () => void
@@ -9,17 +10,16 @@ export class DownstreamKeyStateCommand implements IAbstractCommand {
 	packetId: number
 
 	downstreamKeyId: number
-	onAir: boolean
-	inTransition: boolean
-	isAuto: boolean
-	remainingFrames: number
+	properties: DownstreamKeyer
 
 	deserialize (rawCommand: Buffer) {
 		this.downstreamKeyId = rawCommand[0]
-		this.onAir = rawCommand[1] === 1
-		this.inTransition = rawCommand[2] === 1
-		this.isAuto = rawCommand[3] === 1
-		this.remainingFrames = rawCommand[4]
+		this.properties = {
+			onAir: rawCommand[1] === 1,
+			inTransition: rawCommand[2] === 1,
+			isAuto: rawCommand[3] === 1,
+			remainingFrames: rawCommand[4]
+		}
 	}
 
 	serialize () {
@@ -29,16 +29,13 @@ export class DownstreamKeyStateCommand implements IAbstractCommand {
 	getAttributes () {
 		return {
 			downstreamKeyId: this.downstreamKeyId,
-			onAir: this.onAir,
-			inTransition: this.inTransition,
-			isAuto: this.isAuto,
-			remainingFrames: this.remainingFrames
+			...this.properties
 		}
 	}
 
 	applyToState (state: AtemState) {
-		let object = this.getAttributes()
-		delete object.downstreamKeyId
-		state.video.downstreamKeyers[this.downstreamKeyId] = object
+		state.video.downstreamKeyers[this.downstreamKeyId] = {
+			...this.properties
+		}
 	}
 }

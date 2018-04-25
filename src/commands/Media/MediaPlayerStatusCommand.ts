@@ -1,5 +1,6 @@
 import IAbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
+import { MediaPlayer } from '../../state/media'
 
 export class MediaPlayerStatusCommand implements IAbstractCommand {
 	resolve: () => void
@@ -11,13 +12,10 @@ export class MediaPlayerStatusCommand implements IAbstractCommand {
 	flag: number
 
 	mediaPlayerId: number
-	playing: boolean
-	loop: boolean
-	atBeginning: boolean
-	clipFrame: number
+	properties: MediaPlayer
 
 	MaskFlags = {
-		Playing : 1 << 0,
+		Playing: 1 << 0,
 		Loop: 1 << 1,
 		Beginning: 1 << 2,
 		Frame: 1 << 3
@@ -25,10 +23,12 @@ export class MediaPlayerStatusCommand implements IAbstractCommand {
 
 	deserialize (rawCommand: Buffer) {
 		this.mediaPlayerId = rawCommand[0]
-		this.playing = rawCommand[1] === 1
-		this.loop = rawCommand[2] === 1
-		this.atBeginning = rawCommand[3] === 1
-		this.clipFrame = rawCommand[4] << 8 | (rawCommand[5])
+		this.properties = {
+			playing: rawCommand[1] === 1,
+			loop: rawCommand[2] === 1,
+			atBeginning: rawCommand[3] === 1,
+			clipFrame: rawCommand[4] << 8 | (rawCommand[5])
+		}
 	}
 
 	serialize () {
@@ -37,28 +37,44 @@ export class MediaPlayerStatusCommand implements IAbstractCommand {
 			...Buffer.from(rawCommand),
 			this.flag,
 			this.mediaPlayerId,
-			this.playing,
-			this.loop,
-			this.atBeginning,
+			this.properties.playing,
+			this.properties.loop,
+			this.properties.atBeginning,
 			0x00,
-			this.clipFrame >> 8,
-			this.clipFrame & 0xFF
+			this.properties.clipFrame >> 8,
+			this.properties.clipFrame & 0xFF
 		])
 	}
 
 	getAttributes () {
 		return {
 			mediaPlayerId: this.mediaPlayerId,
-			playing: this.playing,
-			loop: this.loop,
-			atBeginning: this.atBeginning,
-			clipFrame: this.clipFrame
+			...this.properties
 		}
 	}
 
+	calcFlags (newProps: Partial<MediaPlayer>) {
+		let flags = 0
+
+		if ('playing' in newProps) {
+			flags = flags | this.MaskFlags.Playing
+		}
+		if ('loop' in newProps) {
+			flags = flags | this.MaskFlags.Loop
+		}
+		if ('atBeginning' in newProps) {
+			flags = flags | this.MaskFlags.Beginning
+		}
+		if ('clipFrame' in newProps) {
+			flags = flags | this.MaskFlags.Frame
+		}
+
+		return flags
+	}
+
 	applyToState (state: AtemState) {
-		let object = this.getAttributes()
-		delete object.mediaPlayerId
-		state.media.players[this.mediaPlayerId] = object
+		state.media.players[this.mediaPlayerId] = {
+			...this.properties
+		}
 	}
 }
