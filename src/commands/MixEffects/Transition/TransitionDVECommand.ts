@@ -1,5 +1,6 @@
 import IAbstractCommand from '../../AbstractCommand'
-import { AtemState, DVEEffect } from '../../../lib/atemState'
+import { AtemState } from '../../../lib/atemState'
+import { DVEEffect } from '../../../enums'
 // import { Util } from '../../../lib/atemUtil'
 
 export class TransitionDVECommand implements IAbstractCommand {
