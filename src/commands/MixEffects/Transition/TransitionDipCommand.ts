@@ -1,22 +1,19 @@
-import IAbstractCommand from '../../AbstractCommand'
+import AbstractCommand from '../../AbstractCommand'
 import { AtemState } from '../../../state'
 import { DipTransitionSettings } from '../../../state/video'
 
-export class TransitionDipCommand implements IAbstractCommand {
-	resolve: () => void
-	reject: () => void
-
+export class TransitionDipCommand extends AbstractCommand {
 	rawName = 'TDpP'
-	packetId: number
-
-	flag: number
-
 	mixEffect: number
-	properties: DipTransitionSettings
-
 	MaskFlags = {
-		Rate: 1 << 0,
-		Input: 1 << 1
+		rate: 1 << 0,
+		input: 1 << 1
+	}
+
+	protected properties: DipTransitionSettings
+
+	updateProps (newProps: Partial<DipTransitionSettings>) {
+		this._updateProps(newProps)
 	}
 
 	deserialize (rawCommand: Buffer) {
@@ -40,26 +37,6 @@ export class TransitionDipCommand implements IAbstractCommand {
 			0x00,
 			0x00
 		])
-	}
-
-	getAttributes () {
-		return {
-			mixEffect: this.mixEffect,
-			...this.properties
-		}
-	}
-
-	calcFlags (newProps: Partial<DipTransitionSettings>) {
-		let flags = 0
-
-		if ('rate' in newProps) {
-			flags = flags | this.MaskFlags.Rate
-		}
-		if ('input' in newProps) {
-			flags = flags | this.MaskFlags.Input
-		}
-
-		return flags
 	}
 
 	applyToState (state: AtemState) {

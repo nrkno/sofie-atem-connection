@@ -1,22 +1,12 @@
-import IAbstractCommand from '../AbstractCommand'
+import AbstractCommand from '../AbstractCommand'
+import { MacroAction } from '../../enums'
 
-export class MacroActionCommand implements IAbstractCommand {
-	resolve: () => void
-	reject: () => void
-
+export class MacroActionCommand extends AbstractCommand {
 	rawName = 'MAct' // this seems unnecessary.
-	packetId: number
-
 	index: number
-	action: number // MacroAction
 
-	MacroAction = {
-		Run: 0,
-		Stop: 1,
-		StopRecord: 2,
-		InsertUserWait: 3,
-		Continue: 4,
-		Delete: 5
+	protected properties: {
+		action: MacroAction
 	}
 
 	deserialize () {
@@ -25,10 +15,10 @@ export class MacroActionCommand implements IAbstractCommand {
 
 	serialize () {
 		let rawCommand = 'MAct'
-		let buffer = new Buffer([...Buffer.from(rawCommand), 0x00, 0x00, this.action, 0x00])
-		switch (this.action) {
-			case this.MacroAction.Run :
-			case this.MacroAction.Delete :
+		let buffer = new Buffer([...Buffer.from(rawCommand), 0x00, 0x00, this.properties.action, 0x00])
+		switch (this.properties.action) {
+			case MacroAction.Run :
+			case MacroAction.Delete :
 				buffer[4] = this.index >> 8
 				buffer[5] = this.index & 0xff
 				break
@@ -36,10 +26,6 @@ export class MacroActionCommand implements IAbstractCommand {
 				break
 		}
 		return buffer
-	}
-
-	getAttributes () {
-		return {}
 	}
 
 	applyToState () {

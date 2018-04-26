@@ -1,20 +1,15 @@
-import IAbstractCommand from '../AbstractCommand'
+import AbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
 import { VersionProps } from '../../state/info'
 
-export interface VersionInfo {
-	major: number
-	minor: number
-}
-
-export class VersionCommand implements IAbstractCommand {
-	resolve: () => void
-	reject: () => void
-
+export class VersionCommand extends AbstractCommand {
 	rawName = '_ver'
-	packetId: number
 
-	properties: VersionProps
+	protected properties: VersionProps
+
+	updateProps (newProps: Partial<VersionProps>) {
+		this._updateProps(newProps)
+	}
 
 	deserialize (rawCommand: Buffer) {
 		this.properties = {
@@ -25,12 +20,6 @@ export class VersionCommand implements IAbstractCommand {
 
 	serialize () {
 		return new Buffer(0)
-	}
-
-	getAttributes (): VersionInfo {
-		return {
-			...this.properties
-		}
 	}
 
 	applyToState (state: AtemState) {

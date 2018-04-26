@@ -12,51 +12,66 @@ export interface DipTransitionSettings {
 	input: number
 }
 
+export interface DVETransitionSettings {
+	rate: number
+	logoRate: number
+	style: DVEEffect
+	fillSource: number
+	keySource: number
+
+	enableKey: boolean
+	preMultiplied: boolean
+	clip: number
+	gain: number
+	invertKey: boolean
+	reverse: boolean
+	flipFlop: boolean
+}
+
+export interface MixTransitionSettings {
+	rate: number // 0...250
+}
+
+export interface StingerTransitionSettings {
+	source: number
+	preMultipliedKey: boolean
+
+	clip: number
+	gain: number // 0...1000
+	invert: boolean
+
+	preroll: number
+	clipDuration: number
+	triggerPoint: number
+	mixRate: number
+}
+
+export interface WipeTransitionSettings {
+	rate: number
+	pattern: number
+	borderWidth: number
+	borderInput: number
+	symmetry: number
+	borderSoftness: number
+	xPosition: number
+	yPosition: number
+	reverseDirection: boolean
+	flipFlop: boolean
+}
+
+export interface TransitionProperties {
+	style: TransitionStyle,
+	selection: number,
+	readonly nextStyle: TransitionStyle,
+	readonly nextSelection: number
+}
+
 export interface TransitionSettings {
 	dip: DipTransitionSettings
-	DVE: {
-		rate: number
-		logoRate: number
-		style: DVEEffect
-		fillSource: number
-		keySource: number
-
-		enableKey: boolean
-		preMultiplied: boolean
-		clip: number
-		gain: number
-		invertKey: boolean
-		reverse: boolean
-		flipFlop: boolean
-	}
-	mix: {
-		rate: number
-	}
-	stinger: {
-		source: number
-		preMultipliedKey: boolean
-
-		clip: number
-		gain: number // 0...1000
-		invert: boolean
-
-		preroll: number
-		clipDuration: number
-		triggerPoint: number
-		mixRate: number
-	}
-	wipe: {
-		rate: number
-		pattern: number
-		borderWidth: number
-		borderInput: number
-		symmetry: number
-		borderSoftness: number
-		xPosition: number
-		yPosition: number
-		reverseDirection: boolean
-		flipFlop: boolean
-	}
+	DVE: DVETransitionSettings
+	mix: MixTransitionSettings
+	stinger: StingerTransitionSettings
+	wipe: WipeTransitionSettings
 }
 
 export interface MixEffect {
@@ -68,12 +83,7 @@ export interface MixEffect {
 	transitionFramesLeft: number
 	fadeToBlack: boolean
 	numberOfKeyers: number
-	transitionProperties: {
-		style: TransitionStyle,
-		selection: number,
-		nextStyle: TransitionStyle,
-		nextSelection: number
-	}
+	transitionProperties: TransitionProperties
 	transitionSettings: TransitionSettings
 }
 
@@ -84,7 +94,10 @@ export class AtemVideoState {
 
 	getMe (index: number) {
 		if (!this.ME[index]) {
-			this.ME[index] = {} as MixEffect
+			this.ME[index] = {
+				transitionProperties: {} as TransitionProperties,
+				transitionSettings: {} as TransitionSettings
+			} as MixEffect
 		}
 
 		return this.ME[index]

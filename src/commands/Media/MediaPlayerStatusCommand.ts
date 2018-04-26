@@ -1,27 +1,18 @@
-import IAbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
 import { MediaPlayer } from '../../state/media'
 import AbstractCommand from '../AbstractCommand'
 
-export class MediaPlayerStatusCommand extends AbstractCommand implements IAbstractCommand {
+export class MediaPlayerStatusCommand extends AbstractCommand {
 	rawName = 'RCPS'
-	packetId: number
-
-	flag: number
-
 	mediaPlayerId: number
-
 	MaskFlags = {
 		playing: 1 << 0,
 		loop: 1 << 1,
 		atBeginning: 1 << 2,
 		frame: 1 << 3
 	}
-	protected _properties: MediaPlayer
 
-	get properties () {
-		return this._properties
-	}
+	protected properties: MediaPlayer
 
 	updateProps (newProps: Partial<MediaPlayer>) {
 		this._updateProps(newProps)
@@ -29,7 +20,7 @@ export class MediaPlayerStatusCommand extends AbstractCommand implements IAbstra
 
 	deserialize (rawCommand: Buffer) {
 		this.mediaPlayerId = rawCommand[0]
-		this._properties = {
+		this.properties = {
 			playing: rawCommand[1] === 1,
 			loop: rawCommand[2] === 1,
 			atBeginning: rawCommand[3] === 1,
@@ -50,13 +41,6 @@ export class MediaPlayerStatusCommand extends AbstractCommand implements IAbstra
 			this.properties.clipFrame >> 8,
 			this.properties.clipFrame & 0xFF
 		])
-	}
-
-	getAttributes () {
-		return {
-			mediaPlayerId: this.mediaPlayerId,
-			...this.properties
-		}
 	}
 
 	applyToState (state: AtemState) {

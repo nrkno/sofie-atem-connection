@@ -1,13 +1,10 @@
-import IAbstractCommand from '../AbstractCommand'
+import AbstractCommand from '../AbstractCommand'
 
-export class CutCommand implements IAbstractCommand {
-	resolve: () => void
-	reject: () => void
-
-	rawName = 'DCut' // this seems unnecessary.
-	packetId: number
-
+export class CutCommand extends AbstractCommand {
+	rawName = 'DCut'
 	mixEffect: number
+
+	protected properties: null
 
 	deserialize (rawCommand: Buffer) {
 		this.mixEffect = rawCommand[0]
@@ -16,12 +13,6 @@ export class CutCommand implements IAbstractCommand {
 	serialize () {
 		let rawCommand = 'DCut'
 		return new Buffer([...Buffer.from(rawCommand), this.mixEffect, 0xef, 0xbf, 0x5f])
-	}
-
-	getAttributes () {
-		return {
-			mixEffect: this.mixEffect
-		}
 	}
 
 	applyToState () {

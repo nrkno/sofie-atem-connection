@@ -1,3 +1,13 @@
+export class AudioChannel {
+	on: boolean
+	afv: boolean
+	gain: number
+	rawGain: number
+	rawPan: number
+	leftLevel: number
+	rightLevel: number
+}
+
 export class AtemAudioState {
 	numberOfChannels: number
 	hasMonitor: boolean
@@ -10,14 +20,4 @@ export class AtemAudioState {
 		}
 		return this.channels[index]
 	}
-}
-
-export class AudioChannel {
-	on: boolean
-	afv: boolean
-	gain: number
-	rawGain: number
-	rawPan: number
-	leftLevel: number
-	rightLevel: number
 }

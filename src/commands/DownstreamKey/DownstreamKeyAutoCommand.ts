@@ -1,13 +1,10 @@
-import IAbstractCommand from '../AbstractCommand'
+import AbstractCommand from '../AbstractCommand'
 
-export class DownstreamKeyAutoCommand implements IAbstractCommand {
-	resolve: () => void
-	reject: () => void
-
-	rawName = 'DDsA' // this seems unnecessary.
-	packetId: number
-
+export class DownstreamKeyAutoCommand extends AbstractCommand {
+	rawName = 'DDsA'
 	downstreamKeyId: number
+
+	protected properties: null
 
 	deserialize () {
 		// nothing
@@ -15,11 +12,11 @@ export class DownstreamKeyAutoCommand implements IAbstractCommand {
 
 	serialize () {
 		let rawCommand = 'DDsA'
-		return new Buffer([...Buffer.from(rawCommand), this.downstreamKeyId, 0x00, 0x00, 0x00])
-	}
-
-	getAttributes () {
-		return {}
+		return new Buffer([
+			...Buffer.from(rawCommand),
+			this.downstreamKeyId,
+			0x00, 0x00, 0x00
+		])
 	}
 
 	applyToState () {
