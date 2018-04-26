@@ -408,23 +408,7 @@ export class Atem extends EventEmitter {
 	updateMediaPlayer (newProps: Partial<MediaPlayer>, player = 0) {
 		let command = new Commands.MediaPlayerStatusCommand()
 		command.mediaPlayerId = player
-
-		/* TODO(Lange - 2018/04/25): This feels messy. We're on the right track, but need to simplify further.
-		 * Specifically, it'd be nice if this updateMediaPlayer method didn't
-		 * need to know about the shape of this.state.
-		 */
-		command.properties = {
-			...this.state.media.players[player],
-			...newProps
-		}
-
-		/* TODO(Lange - 2018/04/25): This also seems like it could be further simplified and automated.
-		 * It'd be neat if there was a standard spec for calculating flags from a Partial of properties,
-		 * which all commands adhered to. That way we could define calcFlags in one place, instead
-		 * of each command needing to define it individually.
-		 */
-		command.flag = command.calcFlags(newProps)
-
+		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
