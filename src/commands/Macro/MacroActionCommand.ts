@@ -14,8 +14,8 @@ export class MacroActionCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'MAct'
-		let buffer = new Buffer([...Buffer.from(rawCommand), 0x00, 0x00, this.properties.action, 0x00])
+		const rawCommand = 'MAct'
+		const buffer = new Buffer([...Buffer.from(rawCommand), 0x00, 0x00, this.properties.action, 0x00])
 		switch (this.properties.action) {
 			case MacroAction.Run :
 			case MacroAction.Delete :

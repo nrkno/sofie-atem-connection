@@ -1,7 +1,7 @@
 export namespace Util {
 	export function stringToBytes (str: string): Array<number> {
-		let array = []
-		for (let val of Buffer.from(str).values()) {
+		const array = []
+		for (const val of Buffer.from(str).values()) {
 			array.push(val)
 		}
 		return array

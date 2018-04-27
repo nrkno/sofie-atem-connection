@@ -17,7 +17,7 @@ export class ProgramInputCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'CPgI'
+		const rawCommand = 'CPgI'
 		return new Buffer([
 			...Buffer.from(rawCommand),
 			this.mixEffect,
@@ -28,7 +28,7 @@ export class ProgramInputCommand extends AbstractCommand {
 	}
 
 	applyToState (state: AtemState) {
-		let mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.programInput = this.properties.source
 	}
 }

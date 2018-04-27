@@ -17,7 +17,7 @@ export class PreviewInputCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'CPvI'
+		const rawCommand = 'CPvI'
 		return new Buffer([
 			...Buffer.from(rawCommand),
 			this.mixEffect,
@@ -28,7 +28,7 @@ export class PreviewInputCommand extends AbstractCommand {
 	}
 
 	applyToState (state: AtemState) {
-		let mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.programInput = this.properties.source
 	}
 }

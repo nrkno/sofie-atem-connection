@@ -46,8 +46,8 @@ export class TransitionDVECommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'CTDv'
-		let buffer = new Buffer(24)
+		const rawCommand = 'CTDv'
+		const buffer = new Buffer(24)
 		buffer.fill(0)
 		Buffer.from(rawCommand).copy(buffer, 0)
 
@@ -73,7 +73,7 @@ export class TransitionDVECommand extends AbstractCommand {
 	}
 
 	applyToState (state: AtemState) {
-		let mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionSettings.DVE = {
 			...this.properties
 		}

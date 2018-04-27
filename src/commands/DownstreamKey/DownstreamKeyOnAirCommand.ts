@@ -13,7 +13,7 @@ export class DownstreamKeyOnAirCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'CDsL'
+		const rawCommand = 'CDsL'
 		return new Buffer([
 			...Buffer.from(rawCommand),
 			this.downstreamKeyId,

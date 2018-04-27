@@ -17,7 +17,7 @@ export class AuxSourceCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'CAuS'
+		const rawCommand = 'CAuS'
 		return new Buffer([
 			...Buffer.from(rawCommand),
 			0x01,

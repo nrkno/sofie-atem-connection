@@ -21,7 +21,7 @@ export class TransitionPositionCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'CTPs'
+		const rawCommand = 'CTPs'
 		return new Buffer([
 			...Buffer.from(rawCommand),
 			this.mixEffect,
@@ -32,7 +32,7 @@ export class TransitionPositionCommand extends AbstractCommand {
 	}
 
 	applyToState (state: AtemState) {
-		let mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionFramesLeft = this.properties.remainingFrames
 		mixEffect.transitionPosition = this.properties.handlePosition
 		mixEffect.inTransition = this.properties.inTransition
