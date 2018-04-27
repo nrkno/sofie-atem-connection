@@ -1,39 +1,30 @@
-import IAbstractCommand from '../AbstractCommand'
-import { AtemState } from '../../lib/atemState'
+import AbstractCommand from '../AbstractCommand'
+import { AtemState } from '../../state'
+import { VersionProps } from '../../state/info'
 
-export interface VersionInfo {
-	major: number
-	minor: number
-}
-
-export class VersionCommand implements IAbstractCommand {
-	resolve: () => void
-	reject: () => void
-
+export class VersionCommand extends AbstractCommand {
 	rawName = '_ver'
-	packetId: number
 
-	apiMajor: number
-	apiMinor: number
+	properties: VersionProps
+
+	updateProps (newProps: Partial<VersionProps>) {
+		this._updateProps(newProps)
+	}
 
 	deserialize (rawCommand: Buffer) {
-		this.apiMajor = rawCommand[1]
-		this.apiMinor = rawCommand[3]
+		this.properties = {
+			major: rawCommand[1],
+			minor: rawCommand[3]
+		}
 	}
 
 	serialize () {
 		return new Buffer(0)
 	}
 
-	getAttributes (): VersionInfo {
-		return {
-			major: this.apiMajor,
-			minor: this.apiMinor
-		}
-	}
-
 	applyToState (state: AtemState) {
-		state.info.apiVersion.major = this.apiMajor
-		state.info.apiVersion.minor = this.apiMinor
+		state.info.apiVersion = {
+			...this.properties
+		}
 	}
 }

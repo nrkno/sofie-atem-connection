@@ -1,34 +1,31 @@
-import IAbstractCommand from '../AbstractCommand'
-import { AtemState } from '../../lib/atemState'
+import { AtemState } from '../../state'
+import { MediaPlayer } from '../../state/media'
+import AbstractCommand from '../AbstractCommand'
 
-export class MediaPlayerStatusCommand implements IAbstractCommand {
-	resolve: () => void
-	reject: () => void
-
+export class MediaPlayerStatusCommand extends AbstractCommand {
 	rawName = 'RCPS'
-	packetId: number
-
-	flag: number
-
 	mediaPlayerId: number
-	playing: boolean
-	loop: boolean
-	atBeginning: boolean
-	clipFrame: number
-
 	MaskFlags = {
-		Playing : 1 << 0,
-		Loop: 1 << 1,
-		Beginning: 1 << 2,
-		Frame: 1 << 3
+		playing: 1 << 0,
+		loop: 1 << 1,
+		atBeginning: 1 << 2,
+		frame: 1 << 3
+	}
+
+	properties: MediaPlayer
+
+	updateProps (newProps: Partial<MediaPlayer>) {
+		this._updateProps(newProps)
 	}
 
 	deserialize (rawCommand: Buffer) {
 		this.mediaPlayerId = rawCommand[0]
-		this.playing = rawCommand[1] === 1
-		this.loop = rawCommand[2] === 1
-		this.atBeginning = rawCommand[3] === 1
-		this.clipFrame = rawCommand[4] << 8 | (rawCommand[5])
+		this.properties = {
+			playing: rawCommand[1] === 1,
+			loop: rawCommand[2] === 1,
+			atBeginning: rawCommand[3] === 1,
+			clipFrame: rawCommand[4] << 8 | (rawCommand[5])
+		}
 	}
 
 	serialize () {
@@ -37,28 +34,18 @@ export class MediaPlayerStatusCommand implements IAbstractCommand {
 			...Buffer.from(rawCommand),
 			this.flag,
 			this.mediaPlayerId,
-			this.playing,
-			this.loop,
-			this.atBeginning,
+			this.properties.playing,
+			this.properties.loop,
+			this.properties.atBeginning,
 			0x00,
-			this.clipFrame >> 8,
-			this.clipFrame & 0xFF
+			this.properties.clipFrame >> 8,
+			this.properties.clipFrame & 0xFF
 		])
 	}
 
-	getAttributes () {
-		return {
-			mediaPlayerId: this.mediaPlayerId,
-			playing: this.playing,
-			loop: this.loop,
-			atBeginning: this.atBeginning,
-			clipFrame: this.clipFrame
-		}
-	}
-
 	applyToState (state: AtemState) {
-		let object = this.getAttributes()
-		delete object.mediaPlayerId
-		state.media.players[this.mediaPlayerId] = object
+		state.media.players[this.mediaPlayerId] = {
+			...this.properties
+		}
 	}
 }

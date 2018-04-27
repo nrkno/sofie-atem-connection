@@ -1,25 +1,36 @@
-import { AtemState } from '../lib/atemState'
+import { AtemState } from '../state'
 
-export interface IAbstractCommand {
-	rawName: string
+export default abstract class AbstractCommand {
+	abstract rawName: string
 	packetId: number
+	MaskFlags?: { [key: string]: number }
+	flag: number = 0
+
 	resolve: (cmd: AbstractCommand) => void
 	reject: (cmd: AbstractCommand) => void
 
-	deserialize: (rawCommand: Buffer) => void
-	serialize: () => Buffer
-	getAttributes: () => any
-	applyToState: (state: AtemState) => void
-}
+	abstract properties: any
 
-export default class AbstractCommand implements IAbstractCommand {
-	rawName: string
-	packetId: number
-	resolve: (cmd: AbstractCommand) => void
-	reject: (cmd: AbstractCommand) => void
+	abstract deserialize (rawCommand: Buffer): void
+	abstract serialize (): Buffer
+	abstract applyToState (state: AtemState): void
 
-	deserialize: (rawCommand: Buffer) => void
-	serialize: () => Buffer
-	getAttributes: () => any
-	applyToState: (state: AtemState) => void
+	updateProps (newProps: object) {
+		this._updateProps(newProps)
+	}
+
+	protected _updateProps (newProps: Object) {
+		this.properties = {
+			...this.properties,
+			...newProps
+		}
+
+		if (this.MaskFlags) {
+			for (let key in newProps) {
+				if (key in this.MaskFlags) {
+					this.flag = this.flag | this.MaskFlags[key]
+				}
+			}
+		}
+	}
 }

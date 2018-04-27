@@ -79,3 +79,12 @@ export enum DVEEffect {
 	GraphicCCWSpin = 33,
 	GraphicLogoWipe = 34
 }
+
+export enum MacroAction {
+	Run = 0,
+	Stop = 1,
+	StopRecord = 2,
+	InsertUserWait = 3,
+	Continue = 4,
+	Delete = 5
+}
