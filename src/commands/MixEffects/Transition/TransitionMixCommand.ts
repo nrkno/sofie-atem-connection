@@ -20,7 +20,7 @@ export class TransitionMixCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'CTMx'
+		const rawCommand = 'CTMx'
 		return new Buffer([
 			...Buffer.from(rawCommand),
 			this.mixEffect,
@@ -30,7 +30,7 @@ export class TransitionMixCommand extends AbstractCommand {
 	}
 
 	applyToState (state: AtemState) {
-		let mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionSettings.mix = {
 			...this.properties
 		}

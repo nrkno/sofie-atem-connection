@@ -17,7 +17,7 @@ export class PreviewTransitionCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'CTPr'
+		const rawCommand = 'CTPr'
 		return new Buffer([
 			...Buffer.from(rawCommand),
 			this.mixEffect,
@@ -27,7 +27,7 @@ export class PreviewTransitionCommand extends AbstractCommand {
 	}
 
 	applyToState (state: AtemState) {
-		let mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionPreview = this.properties.preview
 	}
 }

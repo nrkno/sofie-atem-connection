@@ -11,7 +11,7 @@ export class AutoTransitionCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'DAut'
+		const rawCommand = 'DAut'
 		return new Buffer([...Buffer.from(rawCommand), this.mixEffect, 0x00, 0x00, 0x00])
 	}
 

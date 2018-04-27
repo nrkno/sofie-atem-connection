@@ -26,7 +26,7 @@ export default abstract class AbstractCommand {
 		}
 
 		if (this.MaskFlags) {
-			for (let key in newProps) {
+			for (const key in newProps) {
 				if (key in this.MaskFlags) {
 					this.flag = this.flag | this.MaskFlags[key]
 				}

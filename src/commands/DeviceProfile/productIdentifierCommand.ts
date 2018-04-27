@@ -17,7 +17,7 @@ export class ProductIdentifierCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawName = Buffer.from(this.properties.deviceName)
+		const rawName = Buffer.from(this.properties.deviceName)
 		// https://github.com/LibAtem/LibAtem/blob/master/LibAtem/Commands/DeviceProfile/ProductIdentifierCommand.cs#L12
 		return Buffer.from([
 			...Buffer.from(rawName),

@@ -11,7 +11,7 @@ export class DownstreamKeyAutoCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'DDsA'
+		const rawCommand = 'DDsA'
 		return new Buffer([
 			...Buffer.from(rawCommand),
 			this.downstreamKeyId,

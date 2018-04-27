@@ -25,7 +25,7 @@ export class TransitionDipCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'CTDp'
+		const rawCommand = 'CTDp'
 		return new Buffer([
 			...Buffer.from(rawCommand),
 			this.flag,
@@ -40,7 +40,7 @@ export class TransitionDipCommand extends AbstractCommand {
 	}
 
 	applyToState (state: AtemState) {
-		let mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionSettings.dip = {
 			...this.properties
 		}

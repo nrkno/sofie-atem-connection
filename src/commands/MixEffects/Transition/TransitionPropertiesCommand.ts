@@ -27,8 +27,8 @@ export class TransitionPropertiesCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'CTTp'
-		let buffer = new Buffer(8)
+		const rawCommand = 'CTTp'
+		const buffer = new Buffer(8)
 		buffer.fill(0)
 		Buffer.from(rawCommand).copy(buffer, 0)
 
@@ -42,7 +42,7 @@ export class TransitionPropertiesCommand extends AbstractCommand {
 	}
 
 	applyToState (state: AtemState) {
-		let mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionProperties = {
 			...this.properties
 		}

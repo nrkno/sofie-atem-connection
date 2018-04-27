@@ -29,7 +29,7 @@ export class MediaPlayerStatusCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'SCPS'
+		const rawCommand = 'SCPS'
 		return new Buffer([
 			...Buffer.from(rawCommand),
 			this.flag,

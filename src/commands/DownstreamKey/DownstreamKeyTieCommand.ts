@@ -13,7 +13,7 @@ export class DownstreamKeyTieCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'CDsT'
+		const rawCommand = 'CDsT'
 		return new Buffer([
 			...Buffer.from(rawCommand),
 			this.downstreamKeyId,

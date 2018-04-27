@@ -41,8 +41,8 @@ export class TransitionStingerCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'CTSt'
-		let buffer = new Buffer(24)
+		const rawCommand = 'CTSt'
+		const buffer = new Buffer(24)
 		buffer.fill(0)
 		Buffer.from(rawCommand).copy(buffer, 0)
 
@@ -65,7 +65,7 @@ export class TransitionStingerCommand extends AbstractCommand {
 	}
 
 	applyToState (state: AtemState) {
-		let mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionSettings.stinger = {
 			...this.properties
 		}

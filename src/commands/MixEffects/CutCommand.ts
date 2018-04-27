@@ -11,7 +11,7 @@ export class CutCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		let rawCommand = 'DCut'
+		const rawCommand = 'DCut'
 		return new Buffer([...Buffer.from(rawCommand), this.mixEffect, 0xef, 0xbf, 0x5f])
 	}
 
