@@ -11,7 +11,7 @@ export class ProductIdentifierCommand extends AbstractCommand {
 
 	deserialize (rawCommand: Buffer) {
 		this.properties = {
-			deviceName: rawCommand.toString('utf-8'),
+			deviceName: rawCommand.toString('ascii'),
 			model: rawCommand[40]
 		}
 	}

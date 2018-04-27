@@ -139,7 +139,7 @@ export class AtemSocket extends EventEmitter {
 
 	private _parseCommand (buffer: Buffer, packetId?: number) {
 		const length = buffer.readUInt16BE(0)
-		const name = buffer.toString('utf8', 4, 8)
+		const name = buffer.toString('ascii', 4, 8)
 
 		// this.log('COMMAND', `${name}(${length})`, buffer.slice(0, length))
 		const cmd = this._commandParser.commandFromRawName(name)
