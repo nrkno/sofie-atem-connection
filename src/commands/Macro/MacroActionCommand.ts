@@ -5,7 +5,7 @@ export class MacroActionCommand extends AbstractCommand {
 	rawName = 'MAct' // this seems unnecessary.
 	index: number
 
-	protected properties: {
+	properties: {
 		action: MacroAction
 	}
 

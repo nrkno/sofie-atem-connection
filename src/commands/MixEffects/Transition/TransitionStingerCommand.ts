@@ -17,7 +17,7 @@ export class TransitionStingerCommand extends AbstractCommand {
 		mixRate: 1 << 8
 	}
 
-	protected properties: StingerTransitionSettings
+	properties: StingerTransitionSettings
 
 	updateProps (newProps: Partial<StingerTransitionSettings>) {
 		this._updateProps(newProps)

@@ -4,7 +4,7 @@ export class DownstreamKeyTieCommand extends AbstractCommand {
 	rawName = 'CDsT'
 	downstreamKeyId: number
 
-	protected properties: {
+	properties: {
 		tie: boolean
 	}
 

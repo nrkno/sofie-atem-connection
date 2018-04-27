@@ -5,7 +5,7 @@ import { VersionProps } from '../../state/info'
 export class VersionCommand extends AbstractCommand {
 	rawName = '_ver'
 
-	protected properties: VersionProps
+	properties: VersionProps
 
 	updateProps (newProps: Partial<VersionProps>) {
 		this._updateProps(newProps)

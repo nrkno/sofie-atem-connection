@@ -4,7 +4,7 @@ import { AtemState } from '../../state'
 export class ProductIdentifierCommand extends AbstractCommand {
 	rawName = '_pin'
 
-	protected properties: {
+	properties: {
 		deviceName: string
 		model: number
 	}

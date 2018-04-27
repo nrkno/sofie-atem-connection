@@ -6,7 +6,7 @@ export class TransitionMixCommand extends AbstractCommand {
 	rawName = 'TMxP'
 	mixEffect: number
 
-	protected properties: MixTransitionSettings
+	properties: MixTransitionSettings
 
 	updateProps (newProps: Partial<MixTransitionSettings>) {
 		this._updateProps(newProps)

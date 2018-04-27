@@ -5,7 +5,7 @@ export class PreviewInputCommand extends AbstractCommand {
 	rawName = 'PrvI'
 	mixEffect: number
 
-	protected properties: {
+	properties: {
 		source: number
 	}
 

@@ -6,7 +6,7 @@ export class DownstreamKeyStateCommand extends AbstractCommand {
 	rawName = 'DskS'
 	downstreamKeyId: number
 
-	protected properties: DownstreamKeyer
+	properties: DownstreamKeyer
 
 	deserialize (rawCommand: Buffer) {
 		this.downstreamKeyId = rawCommand[0]

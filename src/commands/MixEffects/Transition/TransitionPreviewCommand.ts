@@ -5,7 +5,7 @@ export class PreviewTransitionCommand extends AbstractCommand {
 	rawName = 'TrPr' // this seems unnecessary.
 	mixEffect: number
 
-	protected properties: {
+	properties: {
 		preview: boolean
 	}
 

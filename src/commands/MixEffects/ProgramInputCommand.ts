@@ -5,7 +5,7 @@ export class ProgramInputCommand extends AbstractCommand {
 	rawName = 'PrgI'
 	mixEffect: number
 
-	protected properties: {
+	properties: {
 		source: number
 	}
 

@@ -10,7 +10,7 @@ export class TransitionDipCommand extends AbstractCommand {
 		input: 1 << 1
 	}
 
-	protected properties: DipTransitionSettings
+	properties: DipTransitionSettings
 
 	updateProps (newProps: Partial<DipTransitionSettings>) {
 		this._updateProps(newProps)

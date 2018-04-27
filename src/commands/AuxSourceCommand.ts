@@ -5,7 +5,7 @@ export class AuxSourceCommand extends AbstractCommand {
 	rawName = 'AuxS'
 	auxBus: number
 
-	protected properties: {
+	properties: {
 		source: number
 	}
 

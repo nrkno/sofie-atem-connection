@@ -4,7 +4,7 @@ export class DownstreamKeyOnAirCommand extends AbstractCommand {
 	rawName = 'CDsL'
 	downstreamKeyId: number
 
-	protected properties: {
+	properties: {
 		onAir: boolean
 	}
 

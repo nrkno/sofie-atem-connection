@@ -10,7 +10,7 @@ export class TransitionPropertiesCommand extends AbstractCommand {
 		selection: 1 << 1
 	}
 
-	protected properties: TransitionProperties
+	properties: TransitionProperties
 
 	updateProps (newProps: Partial<TransitionProperties>) {
 		this._updateProps(newProps)

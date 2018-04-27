@@ -9,7 +9,7 @@ export default abstract class AbstractCommand {
 	resolve: (cmd: AbstractCommand) => void
 	reject: (cmd: AbstractCommand) => void
 
-	protected abstract properties: any
+	abstract properties: any
 
 	abstract deserialize (rawCommand: Buffer): void
 	abstract serialize (): Buffer

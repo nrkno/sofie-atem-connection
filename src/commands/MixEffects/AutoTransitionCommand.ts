@@ -4,7 +4,7 @@ export class AutoTransitionCommand extends AbstractCommand {
 	rawName = 'DAut'
 	mixEffect: number
 
-	protected properties: null
+	properties: null
 
 	deserialize (rawCommand: Buffer) {
 		this.mixEffect = rawCommand[0]

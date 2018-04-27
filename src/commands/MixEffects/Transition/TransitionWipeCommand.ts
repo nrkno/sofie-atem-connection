@@ -18,7 +18,7 @@ export class TransitionWipeCommand extends AbstractCommand {
 		flipFlop: 1 << 9
 	}
 
-	protected properties: WipeTransitionSettings
+	properties: WipeTransitionSettings
 
 	updateProps (newProps: Partial<WipeTransitionSettings>) {
 		this._updateProps(newProps)

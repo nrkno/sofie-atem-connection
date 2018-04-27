@@ -4,7 +4,7 @@ export class DownstreamKeyAutoCommand extends AbstractCommand {
 	rawName = 'DDsA'
 	downstreamKeyId: number
 
-	protected properties: null
+	properties: null
 
 	deserialize () {
 		// nothing

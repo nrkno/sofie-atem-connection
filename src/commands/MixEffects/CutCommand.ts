@@ -4,7 +4,7 @@ export class CutCommand extends AbstractCommand {
 	rawName = 'DCut'
 	mixEffect: number
 
-	protected properties: null
+	properties: null
 
 	deserialize (rawCommand: Buffer) {
 		this.mixEffect = rawCommand[0]

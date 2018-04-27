@@ -5,7 +5,7 @@ export class TransitionPositionCommand extends AbstractCommand {
 	rawName = 'TrPs' // this seems unnecessary.
 	mixEffect: number
 
-	protected properties: {
+	properties: {
 		readonly inTransition: boolean
 		readonly remainingFrames: number // 0...250
 		handlePosition: number // 0...9999

@@ -20,7 +20,7 @@ export class TransitionDVECommand extends AbstractCommand {
 		flipFlop: 1 << 11
 	}
 
-	protected properties: DVETransitionSettings
+	properties: DVETransitionSettings
 
 	updateProps (newProps: Partial<DVETransitionSettings>) {
 		this._updateProps(newProps)

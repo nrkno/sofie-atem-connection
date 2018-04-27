@@ -12,7 +12,7 @@ export class MediaPlayerStatusCommand extends AbstractCommand {
 		frame: 1 << 3
 	}
 
-	protected properties: MediaPlayer
+	properties: MediaPlayer
 
 	updateProps (newProps: Partial<MediaPlayer>) {
 		this._updateProps(newProps)
