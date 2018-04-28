@@ -87,10 +87,24 @@ export interface MixEffect {
 	transitionSettings: TransitionSettings
 }
 
+export interface SuperSourceBox {
+	enabled: boolean
+	source: number
+	x: number
+	y: number
+	size: number
+	cropped: boolean
+	cropTop: number
+	cropBottom: number
+	cropLeft: number
+	cropRight: number
+}
+
 export class AtemVideoState {
 	ME: Array<MixEffect> = []
 	downstreamKeyers: Array<DownstreamKeyer> = []
 	auxilliaries: Array<number> = []
+	superSourceBoxes: Array<SuperSourceBox> = []
 
 	getMe (index: number) {
 		if (!this.ME[index]) {

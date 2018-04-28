@@ -10,6 +10,7 @@ import {
 	DVETransitionSettings,
 	MixTransitionSettings,
 	StingerTransitionSettings,
+	SuperSourceBox,
 	TransitionProperties,
 	WipeTransitionSettings
 } from './state/video'
@@ -180,6 +181,13 @@ export class Atem extends EventEmitter {
 	setMediaPlayerSettings (newProps: Partial<MediaPlayer>, player = 0) {
 		const command = new Commands.MediaPlayerStatusCommand()
 		command.mediaPlayerId = player
+		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+
+	setSuperSourceBoxSettings (newProps: Partial<SuperSourceBox>, box = 0) {
+		const command = new Commands.SuperSourceBoxParametersCommand()
+		command.boxId = box
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
