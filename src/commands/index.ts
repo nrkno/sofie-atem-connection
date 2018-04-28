@@ -1,5 +1,6 @@
-export * from './DownstreamKey'
 export * from './DeviceProfile'
+export * from './DownstreamKey'
+export * from './Inputs'
 export * from './Macro'
 export * from './Media'
 export * from './MixEffects'

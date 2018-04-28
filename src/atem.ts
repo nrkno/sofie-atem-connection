@@ -14,6 +14,7 @@ import {
 	TransitionProperties,
 	WipeTransitionSettings
 } from './state/video'
+import {InputChannel} from "./state/input";
 
 export interface AtemOptions {
 	localPort?: number,
@@ -188,6 +189,13 @@ export class Atem extends EventEmitter {
 	setSuperSourceBoxSettings (newProps: Partial<SuperSourceBox>, box = 0) {
 		const command = new Commands.SuperSourceBoxParametersCommand()
 		command.boxId = box
+		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+
+	setInputSettings (newProps: Partial<InputChannel>, input = 0) {
+		const command = new Commands.InputPropertiesCommand()
+		command.inputId = input
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
