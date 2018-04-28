@@ -8,7 +8,7 @@ import AbstractCommand from '../commands/AbstractCommand'
 export class AtemSocket extends EventEmitter {
 	private _connectionState = ConnectionState.Closed
 
-	private _localPacketId = 0
+	private _localPacketId = 1
 	private _maxPacketID = 1 << 15 // Atem expects 15 not 16 bits before wrapping
 	private _sessionId: number
 
