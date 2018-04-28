@@ -53,11 +53,11 @@ export class InputPropertiesCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		const buffer = Buffer.alloc(24)
-		buffer.writeUInt16BE(this.flag, 0)
+		const buffer = Buffer.alloc(32)
+		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(this.inputId, 2)
-		buffer.write(this.properties.longName, 4)
-		buffer.write(this.properties.shortName, 24)
+		buffer.write(this.properties.longName || '', 4)
+		buffer.write(this.properties.shortName || '', 24)
 		buffer.writeUInt16BE(this.properties.externalPortType, 28)
 		return Buffer.concat([Buffer.from('CInL', 'ascii'), buffer])
 	}
