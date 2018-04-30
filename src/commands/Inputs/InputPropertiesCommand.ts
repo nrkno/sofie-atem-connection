@@ -41,6 +41,7 @@ export class InputPropertiesCommand extends AbstractCommand {
 		}
 
 		this.properties = {
+			inputId: rawCommand.readUInt16BE(0),
 			longName: Util.bufToNullTerminatedString(rawCommand, 2, 20),
 			shortName: Util.bufToNullTerminatedString(rawCommand, 22, 4),
 			externalPorts: externalPorts.length > 0 ? externalPorts : null,
@@ -63,6 +64,9 @@ export class InputPropertiesCommand extends AbstractCommand {
 	}
 
 	applyToState (state: AtemState) {
+		// @TODO(Lange - 04/30/2018): We may need something to clean up inputs which
+		// don't exist anymore, which can happen when switching the connection from
+		// one model of ATEM to another.
 		state.inputs[this.inputId] = {
 			...this.properties
 		}
