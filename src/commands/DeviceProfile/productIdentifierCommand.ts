@@ -1,5 +1,6 @@
 import AbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
+import { Util } from '../../lib/atemUtil'
 
 export class ProductIdentifierCommand extends AbstractCommand {
 	rawName = '_pin'
@@ -11,7 +12,7 @@ export class ProductIdentifierCommand extends AbstractCommand {
 
 	deserialize (rawCommand: Buffer) {
 		this.properties = {
-			deviceName: rawCommand.toString('ascii'),
+			deviceName: Util.bufToNullTerminatedString(rawCommand, 0, 32),
 			model: rawCommand[40]
 		}
 	}
