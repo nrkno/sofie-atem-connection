@@ -201,8 +201,10 @@ export class Atem extends EventEmitter {
 	}
 
 	private _mutateState (command: AbstractCommand) {
-		command.applyToState(this.state)
-		this.emit('stateChanged', this.state, command)
+		if (typeof command.applyToState === 'function') {
+			command.applyToState(this.state)
+			this.emit('stateChanged', this.state, command)
+		}
 	}
 
 	private _resolveCommand (packetId: number) {
