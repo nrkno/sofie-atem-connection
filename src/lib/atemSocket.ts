@@ -70,6 +70,10 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	public _sendCommand (command: AbstractCommand) {
+		if (typeof command.serialize !== 'function') {
+			return
+		}
+
 		const payload = command.serialize()
 		this.log(payload)
 		const buffer = new Buffer(16 + payload.length)
@@ -143,7 +147,7 @@ export class AtemSocket extends EventEmitter {
 
 		// this.log('COMMAND', `${name}(${length})`, buffer.slice(0, length))
 		const cmd = this._commandParser.commandFromRawName(name)
-		if (cmd) {
+		if (cmd && typeof cmd.deserialize === 'function') {
 			cmd.deserialize(buffer.slice(0, length).slice(8))
 			cmd.packetId = packetId || -1
 			this.emit('receivedStateChange', cmd)
