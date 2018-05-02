@@ -14,7 +14,7 @@ import {
 	TransitionProperties,
 	WipeTransitionSettings
 } from './state/video'
-import {InputChannel} from "./state/input";
+import { InputChannel } from './state/input'
 
 export interface AtemOptions {
 	localPort?: number,
