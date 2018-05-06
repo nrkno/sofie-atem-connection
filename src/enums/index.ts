@@ -138,3 +138,45 @@ export enum MeAvailability {
 	Me2 = 1 << 1,
 	All = Me1 | Me2
 }
+
+export enum BorderBevel {
+	None = 0,
+	InOut = 1,
+	In = 2,
+	Out = 3
+}
+
+export enum IsAtKeyFrame {
+	None = 0,
+	A = 1 << 0,
+	B = 1 << 1,
+	RunToInfinite = 1 << 2
+}
+
+export enum Pattern {
+	LeftToRightBar = 0,
+	TopToBottomBar = 1,
+	HorizontalBarnDoor = 2,
+	VerticalBarnDoor = 3,
+	CornersInFourBox = 4,
+	RectangleIris = 5,
+	DiamondIris = 6,
+	CircleIris = 7,
+	TopLeftBox = 8,
+	TopRightBox = 9,
+	BottomRightBox = 10,
+	BottomLeftBox = 11,
+	TopCentreBox = 12,
+	RightCentreBox = 13,
+	BottomCentreBox = 14,
+	LeftCentreBox = 15,
+	TopLeftDiagonal = 16,
+	TopRightDiagonal = 17
+}
+
+export enum MixEffectKeyType {
+	Luma = 0,
+	Chroma = 1,
+	Pattern = 2,
+	DVE = 3
+}

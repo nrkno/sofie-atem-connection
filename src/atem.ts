@@ -14,6 +14,7 @@ import {
 	TransitionProperties,
 	WipeTransitionSettings
 } from './state/video'
+import * as USK from './state/video/upstreamKeyers'
 import { InputChannel } from './state/input'
 
 export interface AtemOptions {
@@ -196,6 +197,78 @@ export class Atem extends EventEmitter {
 	setInputSettings (newProps: Partial<InputChannel>, input = 0) {
 		const command = new Commands.InputPropertiesCommand()
 		command.inputId = input
+		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+
+	setUpstreamKeyerChromaSettings (newProps: Partial<USK.UpstreamKeyerChromaSettings>, me = 0, keyer = 0) {
+		const command = new Commands.MixEffectKeyChromaCommand()
+		command.mixEffect = me
+		command.upstreamKeyerId = keyer
+		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+
+	setUpstreamKeyerCutSource (cutSource: number, me = 0, keyer = 0) {
+		const command = new Commands.MixEffectKeyCutSourceSetCommand()
+		command.mixEffect = me
+		command.upstreamKeyerId = keyer
+		command.updateProps({cutSource})
+		return this.sendCommand(command)
+	}
+
+	setUpstreamKeyerFillSource (fillSource: number, me = 0, keyer = 0) {
+		const command = new Commands.MixEffectKeyFillSourceSetCommand()
+		command.mixEffect = me
+		command.upstreamKeyerId = keyer
+		command.updateProps({fillSource})
+		return this.sendCommand(command)
+	}
+
+	setUpstreamKeyerDVESettings (newProps: Partial<USK.UpstreamKeyerDVESettings>, me = 0, keyer = 0) {
+		const command = new Commands.MixEffectKeyDVECommand()
+		command.mixEffect = me
+		command.upstreamKeyerId = keyer
+		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+
+	setUpstreamKeyerLumaSettings (newProps: Partial<USK.UpstreamKeyerLumaSettings>, me = 0, keyer = 0) {
+		const command = new Commands.MixEffectKeyLumaCommand()
+		command.mixEffect = me
+		command.upstreamKeyerId = keyer
+		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+
+	setUpstreamKeyerMaskSettings (newProps: Partial<USK.UpstreamKeyerMaskSettings>, me = 0, keyer = 0) {
+		const command = new Commands.MixEffectKeyMaskSetCommand()
+		command.mixEffect = me
+		command.upstreamKeyerId = keyer
+		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+
+	setUpstreamKeyerPatternSettings (newProps: Partial<USK.UpstreamKeyerPatternSettings>, me = 0, keyer = 0) {
+		const command = new Commands.MixEffectKeyPatternCommand()
+		command.mixEffect = me
+		command.upstreamKeyerId = keyer
+		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+
+	setUpstreamKeyerOnAir (onAir: boolean, me = 0, keyer = 0) {
+		const command = new Commands.MixEffectKeyOnAirCommand()
+		command.mixEffect = me
+		command.upstreamKeyerId = keyer
+		command.updateProps({onAir})
+		return this.sendCommand(command)
+	}
+
+	setUpstreamKeyerType (newProps: Partial<USK.UpstreamKeyerTypeSettings>, me = 0, keyer = 0) {
+		const command = new Commands.MixEffectKeyTypeSetCommand()
+		command.mixEffect = me
+		command.upstreamKeyerId = keyer
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
