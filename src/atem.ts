@@ -46,6 +46,8 @@ export class Atem extends EventEmitter {
 		this.socket = new AtemSocket()
 		this.socket.on('receivedStateChange', (command: AbstractCommand) => this._mutateState(command))
 		this.socket.on('commandAcknowleged', (packetId: number) => this._resolveCommand(packetId))
+		this.socket.on('connect', () => this.emit('connected')) 
+		this.socket.on('disconnect', () => this.emit('disconnected')) 
 	}
 
 	connect (address: string, port?: number) {
