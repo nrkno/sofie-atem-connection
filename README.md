@@ -1,5 +1,3 @@
-[![CircleCI](https://circleci.com/bb/superflytv/node-boilerplate.svg?style=svg&circle-token=cab68274787655e03cdd7be318fe32670b026a97)](https://circleci.com/bb/superflytv/node-boilerplate)
-
 # ATEM-connection
 
 This is a library for connecting to Blackmagic Design ATEM devices, created by SuperFly.tv
@@ -11,76 +9,79 @@ _Note: this is a work in progress, expect many new features and also... breaking
 - Yarn
 - Jest
 - standard-version
-- circleci
 - codecov
 
 ## Installation
 
-_Coming soon_
+For usage by library consumers installation is as easy as:
+```sh
+yarn install git+https://github.com/nrkno/tv-automation-atem-connection
+```
+
+For library developers installation steps are as following:
+```sh
+git clone https://github.com/nrkno/tv-automation-atem-connection
+yarn
+yarn build
+```
+
+If you want to make a contribution, feel free to open a PR.
 
 ## Usage
 
 ```javascript
-var ATEM = require('applest-atem');
+const { Atem } = require('atem-connection')
+const myAtem = new Atem({ externalLog: console.log })
 
-var atem = new ATEM();
-atem.connect('192.168.1.220'); // Replace your ATEM switcher. address.
+myAtem.connect('192.168.168.240')
 
-atem.on('connect', function() {
-  atem.changeProgramInput(1); // ME1(0)
-  atem.changePreviewInput(2); // ME1(0)
-  atem.autoTransition(); // ME1(0)
-  atem.changeProgramInput(3, 1); // ME2(1)
-});
+myAtem.on('connected', () => {
+	myAtem.changeProgramInput(3).then((res) => {
+		console.log(res)
+		// ProgramInputCommand {
+		// 	flag: 0,
+		// 	rawName: 'PrgI',
+		// 	mixEffect: 0,
+		// 	properties: { source: 3 },
+		// 	resolve: [Function],
+		// 	reject: [Function] }
+	})
+	console.log(myAtem.state)
+})
 
-atem.on('stateChanged', function(err, state) {
+myAtem.on('stateChanged', function(err, state) {
   console.log(state); // catch the ATEM state.
 });
-console.log(atem.state); // or use this.
 ```
 
 ### Events
 
-- `connect()`
-It will be called on receive first ping packet from ATEM.
+- `connected`
+This event will be fired once we have connected with the ATEM.
 
-- `disconnect()`
-It will be called on detect that it cannot communicate to ATEM in `RECONNECT_INTERVAL` seconds.
+- `disconnected`
+Whenever the connection to the ATEM fails and does not recover within 5 seconds this is called.
 
-- `ping()`
-It will be called on receive ping packet from ATEM at an interval of one second.
-
-- `stateChanged(err, state)`
-It will be called on receive state packet from ATEM.
-
-### File Uploader Usage
-
-```javascript
-var ATEM = require('applest-atem');
-
-var atem = new ATEM();
-atem.connect('192.168.1.220');
-atem.once('stateChanged', function (err, state) { // Delay few seconds from connecting.
-  uploader = new ATEM.FileUploader(atem); // Pass the atem instance.
-  uploader.uploadFromPNGFile('/Users/Sakura/Desktop/FHD.png'); // Pass a path of valid PNG file.
-});
-```
+- `stateChanged(state)`
+Whenever a packet from the ATEM is received that changes the state, this event will be fired.
 
 ## Debug
 
-Set `debug=true` config option, you can see raw packet.
+Set `debug=true` config option in order to see raw packets. This is especially useful for library developers.
+```javascript
+const myAtem = new Atem({ debug: true, externalLog: console.log })
+```
 ```sh
-$ ATEM_DEBUG=true coffee debug.coffee
 SEND <Buffer 10 14 53 ab 00 00 00 00 00 3a 00 00 01 00 00 00 00 00 00 00>
 SEND <Buffer 80 0c 53 ab 00 00 00 00 00 03 00 00>
 SEND <Buffer 80 0c 53 ab 00 00 00 00 00 03 00 00>
 SEND <Buffer 80 0c 80 0f 00 01 00 00 00 41 00 00>
-RECV _ver(12) <Buffer 00 0c 90 60 5f 76 65 72 00 02 00 10>...
+RECV <Buffer 00 0c 90 60 5f 76 65 72 00 02 00 10>...
 ```
 
 ## Test
 
-This module run tests by jest (in the future).
+This module will run tests by jest (in the future).
 ```sh
 $ yarn unit
 ```
