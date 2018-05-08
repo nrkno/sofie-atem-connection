@@ -7,6 +7,7 @@ import AbstractCommand from '../commands/AbstractCommand'
 
 export class AtemSocket extends EventEmitter {
 	private _connectionState = ConnectionState.Closed
+	private _debug = false
 
 	private _localPacketId = 1
 	private _maxPacketID = 1 << 15 // Atem expects 15 not 16 bits before wrapping
@@ -24,10 +25,12 @@ export class AtemSocket extends EventEmitter {
 
 	private _commandParser: CommandParser = new CommandParser()
 
-	constructor (address?: string, port?: number) {
+	constructor (options: { address?: string, port?: number, debug?: boolean, log?: (args1: any, args2?: any, args3?: any) => void }) {
 		super()
-		this._address = address || this._address
-		this._port = port || this._port
+		this._address = options.address || this._address
+		this._port = options.port || this._port
+		this._debug = options.debug || false
+		this.log = options.log || this.log
 
 		this._socket = createSocket('udp4')
 		this._socket.bind(1024 + Math.floor(Math.random() * 64511))
@@ -60,9 +63,8 @@ export class AtemSocket extends EventEmitter {
 		this._connectionState = ConnectionState.SynSent
 	}
 
-	public log (args1: any, args2?: any, args3?: any): void {
-		// fallback, should be remapped by Atem class
-		console.log(args1, args2, args3)
+	public log (..._args: any[]): void {
+		// Will be re-assigned by the top-level ATEM class.
 	}
 
 	get nextPacketId (): number {
@@ -75,7 +77,7 @@ export class AtemSocket extends EventEmitter {
 		}
 
 		const payload = command.serialize()
-		this.log(payload)
+		if (this._debug) this.log('PAYLOAD', payload)
 		const buffer = new Buffer(16 + payload.length)
 		buffer.fill(0)
 
@@ -97,7 +99,7 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	private _receivePacket (packet: Buffer, rinfo: any) {
-		this.log('RECV ', packet)
+		if (this._debug) this.log('RECV ', packet)
 		this._lastReceivedAt = Date.now()
 		const length = ((packet[0] & 0x07) << 8) | packet[1]
 		if (length !== rinfo.size) return
@@ -159,7 +161,7 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	private _sendPacket (packet: Buffer) {
-		this.log('SEND ', packet)
+		if (this._debug) this.log('SEND ', packet)
 		this._socket.send(packet, 0, packet.length, this._port, this._address)
 	}
 
@@ -182,11 +184,11 @@ export class AtemSocket extends EventEmitter {
 				if (sentPacket.resent <= this._maxRetries) {
 					sentPacket.lastSent = Date.now()
 					sentPacket.resent++
-					this.log('resend ', sentPacket)
+					this.log('RESEND: ', sentPacket)
 					this._sendPacket(sentPacket.packet)
 				} else {
 					this._inFlight.splice(this._inFlight.indexOf(sentPacket), 1)
-					this.log('canceled ', sentPacket.packet)
+					this.log('TIMED OUT: ', sentPacket.packet)
 					// @todo: we should probably break up the connection here.
 				}
 			}

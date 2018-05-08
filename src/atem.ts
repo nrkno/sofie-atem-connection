@@ -17,7 +17,8 @@ import {
 import { InputChannel } from './state/input'
 
 export interface AtemOptions {
-	localPort?: number,
+	address?: string,
+	port?: number,
 	debug?: boolean,
 	externalLog?: (arg0?: any,arg1?: any,arg2?: any,arg3?: any) => void
 }
@@ -32,18 +33,25 @@ export class Atem extends EventEmitter {
 	event: EventEmitter
 	state: AtemState
 	private socket: AtemSocket
-	private _log: (arg0?: any,arg1?: any,arg2?: any,arg3?: any) => void
+	private _log: (...args: any[]) => void
 	private _sentQueue: {[packetId: string]: AbstractCommand } = {}
 
 	constructor (options?: AtemOptions) {
 		super()
 		if (options) {
 			this.DEBUG = options.debug === undefined ? false : options.debug
-			this._log = options.externalLog || function () { return }
+			this._log = options.externalLog || function (...args: any[]): void {
+				console.log(...args)
+			}
 		}
 
 		this.state = new AtemState()
-		this.socket = new AtemSocket()
+		this.socket = new AtemSocket({
+			debug: this.DEBUG,
+			log: this._log,
+			address: (options || {}).address,
+			port: (options || {}).port
+		})
 		this.socket.on('receivedStateChange', (command: AbstractCommand) => this._mutateState(command))
 		this.socket.on('commandAcknowleged', (packetId: number) => this._resolveCommand(packetId))
 		this.socket.on('connect', () => this.emit('connected'))
