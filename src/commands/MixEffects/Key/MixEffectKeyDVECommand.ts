@@ -102,7 +102,7 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 		buffer.writeUInt16BE(this.properties.borderLuma, 46)
 
 		buffer.writeUInt16BE(this.properties.lightSourceDirection, 48)
-		buffer.writeUInt16BE(this.properties.lightSourceAltitude, 50)
+		buffer.writeUInt8(this.properties.lightSourceAltitude, 50)
 
 		buffer[51] = this.properties.maskEnabled ? 1 : 0
 		buffer.writeUInt16BE(this.properties.maskTop, 52)
