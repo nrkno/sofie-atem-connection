@@ -29,12 +29,12 @@ export interface UpstreamKeyerDVEBase extends UpstreamKeyerMaskSettings {
 	positionY: number,
 	rotation: number,
 
-	outerWidth: number,
-	innerWidth: number,
-	outerSoftness: number,
-	innerSoftness: number,
-	bevelSoftness: number,
-	bevelPosition: number,
+	borderOuterWidth: number,
+	borderInnerWidth: number,
+	borderOuterSoftness: number,
+	borderInnerSoftness: number,
+	borderBevelSoftness: number,
+	borderBevelPosition: number,
 
 	borderOpacity: number,
 	borderHue: number,

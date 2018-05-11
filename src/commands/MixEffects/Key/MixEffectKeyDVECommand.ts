@@ -49,12 +49,12 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 			borderEnabled: rawCommand[24] === 1,
 			shadowEnabled: rawCommand[25] === 1,
 			borderBevel: rawCommand.readUInt8(26),
-			outerWidth: rawCommand.readUInt16BE(28),
-			innerWidth: rawCommand.readUInt16BE(30),
-			outerSoftness: rawCommand.readInt8(32),
-			innerSoftness: rawCommand.readInt8(33),
-			bevelSoftness: rawCommand.readInt8(34),
-			bevelPosition: rawCommand.readInt8(35),
+			borderOuterWidth: rawCommand.readUInt16BE(28),
+			borderInnerWidth: rawCommand.readUInt16BE(30),
+			borderOuterSoftness: rawCommand.readInt8(32),
+			borderInnerSoftness: rawCommand.readInt8(33),
+			borderBevelSoftness: rawCommand.readInt8(34),
+			borderBevelPosition: rawCommand.readInt8(35),
 
 			borderOpacity: rawCommand.readInt8(36),
 			borderHue: rawCommand.readUInt16BE(38),
@@ -88,13 +88,13 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 
 		buffer[28] = this.properties.borderEnabled ? 1 : 0
 		buffer[29] = this.properties.shadowEnabled ? 1 : 0
-		buffer.writeUInt16BE(this.properties.borderBevel, 30)
-		buffer.writeUInt16BE(this.properties.outerWidth, 32)
-		buffer.writeUInt16BE(this.properties.innerWidth, 34)
-		buffer.writeUInt8(this.properties.outerSoftness, 36)
-		buffer.writeUInt8(this.properties.innerSoftness, 37)
-		buffer.writeUInt8(this.properties.bevelSoftness, 38)
-		buffer.writeUInt8(this.properties.bevelPosition, 39)
+		buffer.writeUInt8(this.properties.borderBevel, 30)
+		buffer.writeUInt16BE(this.properties.borderOuterWidth, 32)
+		buffer.writeUInt16BE(this.properties.borderInnerWidth, 34)
+		buffer.writeUInt8(this.properties.borderOuterSoftness, 36)
+		buffer.writeUInt8(this.properties.borderInnerSoftness, 37)
+		buffer.writeUInt8(this.properties.borderBevelSoftness, 38)
+		buffer.writeUInt8(this.properties.borderBevelPosition, 39)
 		buffer.writeUInt8(this.properties.borderOpacity, 40)
 
 		buffer.writeUInt16BE(this.properties.borderHue, 42)

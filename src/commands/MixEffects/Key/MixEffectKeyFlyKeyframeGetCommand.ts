@@ -20,12 +20,12 @@ export class MixEffectKeyFlyKeyframeGetCommand extends AbstractCommand {
 			positionY: rawCommand.readInt32BE(16),
 			rotation: rawCommand.readInt32BE(20),
 
-			outerWidth: rawCommand.readUInt16BE(24),
-			innerWidth: rawCommand.readUInt16BE(26),
-			outerSoftness: rawCommand.readInt8(28),
-			innerSoftness: rawCommand.readInt8(29),
-			bevelSoftness: rawCommand.readInt8(30),
-			bevelPosition: rawCommand.readInt8(31),
+			borderOuterWidth: rawCommand.readUInt16BE(24),
+			borderInnerWidth: rawCommand.readUInt16BE(26),
+			borderOuterSoftness: rawCommand.readInt8(28),
+			borderInnerSoftness: rawCommand.readInt8(29),
+			borderBevelSoftness: rawCommand.readInt8(30),
+			borderBevelPosition: rawCommand.readInt8(31),
 
 			borderOpacity: rawCommand.readInt8(32),
 			borderHue: rawCommand.readUInt16BE(34),
