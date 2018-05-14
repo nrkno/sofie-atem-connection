@@ -103,7 +103,6 @@
     "video"
   ],
   "dependencies": {
-    "pngjs": "^3.3.2",
     "tslib": "^1.9.0"
   },
   "standard-version": {
