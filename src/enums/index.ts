@@ -194,3 +194,10 @@ export enum IPCMessageType {
 	OutboundCommand = 'outboundCommand',
 	CommandAcknowledged = 'commandAcknowledged'
 }
+
+export enum TransferMode {
+	NoOp,
+	Write,
+	Clear,
+	WriteAudio
+}
