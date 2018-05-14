@@ -1,5 +1,6 @@
 import AbstractCommand from './AbstractCommand'
 
+export * from './DataTransfer'
 export * from './DeviceProfile'
 export * from './DownstreamKey'
 export * from './Inputs'
