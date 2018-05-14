@@ -201,3 +201,9 @@ export enum TransferMode {
 	Clear,
 	WriteAudio
 }
+
+export enum StoragePool {
+	Stills,
+	Clips,
+	Sounds
+}
