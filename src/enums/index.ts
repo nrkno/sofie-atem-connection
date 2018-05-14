@@ -180,3 +180,10 @@ export enum MixEffectKeyType {
 	Pattern = 2,
 	DVE = 3
 }
+
+export enum TransferMode {
+	NoOp,
+	Write,
+	Clear,
+	WriteAudio
+}
