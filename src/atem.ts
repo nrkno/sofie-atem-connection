@@ -4,6 +4,7 @@ import { AtemSocket } from './lib/atemSocket'
 import { MacroAction } from './enums'
 import AbstractCommand from './commands/AbstractCommand'
 import * as Commands from './commands'
+import * as DataTransferCommands from './commands/DataTransfer'
 import { MediaPlayer } from './state/media'
 import {
 	DipTransitionSettings,
@@ -17,6 +18,8 @@ import {
 import * as USK from './state/video/upstreamKeyers'
 import { InputChannel } from './state/input'
 import { DownstreamKeyerGeneral, DownstreamKeyerMask } from './state/video/downstreamKeyers'
+import * as DT from './dataTransfer'
+import { Util } from './lib/atemUtil'
 
 export interface AtemOptions {
 	address?: string,
@@ -35,6 +38,7 @@ export class Atem extends EventEmitter {
 	event: EventEmitter
 	state: AtemState
 	private socket: AtemSocket
+	private dataTransferManager: DT.DataTransferManager
 	private _log: (...args: any[]) => void
 	private _sentQueue: {[packetId: string]: AbstractCommand } = {}
 
@@ -54,6 +58,9 @@ export class Atem extends EventEmitter {
 			address: (options || {}).address,
 			port: (options || {}).port
 		})
+		this.dataTransferManager = new DT.DataTransferManager(
+			(command: AbstractCommand) => this.sendCommand(command)
+		)
 		this.socket.on('receivedStateChange', (command: AbstractCommand) => this._mutateState(command))
 		this.socket.on('commandAcknowleged', (packetId: number) => this._resolveCommand(packetId))
 		this.socket.on('connect', () => this.emit('connected'))
@@ -325,10 +332,25 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	uploadMedia (props: DT.DataTransferProperties) {
+		const resolution = Util.getResolution(this.state.settings.videoMode)
+		return this.dataTransferManager.newTransfer(
+			props.type,
+			props.pool,
+			{ name: props.name, description: props.description },
+			Util.convertPNGToYUV422(resolution[0], resolution[1], props.data)
+		)
+	}
+
 	private _mutateState (command: AbstractCommand) {
 		if (typeof command.applyToState === 'function') {
 			command.applyToState(this.state)
 			this.emit('stateChanged', this.state, command)
+		}
+		for (const commandName in DataTransferCommands) {
+			if (command.constructor.name === commandName) {
+				this.dataTransferManager.processAtemCommand(command)
+			}
 		}
 	}
 
