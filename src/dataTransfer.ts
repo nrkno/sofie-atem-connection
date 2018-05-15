@@ -3,17 +3,26 @@ import AbstractCommand from './commands/AbstractCommand'
 
 const TIMEOUT = 5000
 
+export interface DataTransferProperties {
+	type: Enums.StoragePool
+	pool: number,
+	name: string
+	description: string
+	data: Buffer
+}
+
 export class DataTransferManager {
-	private transfers: Array<DataTransfer>
-	private dataTransferQueue: Array<AbstractCommand>
-	private sendCommand: (command: AbstractCommand) => void
-	private locks = [ false, false, false ]
+	transfers: Array<DataTransfer> = []
+	locks = [ false, false, false ]
+	private _dataTransferQueue: Array<AbstractCommand> = []
+	private _sendCommand: (command: AbstractCommand) => void
 	private lastTransferIndex = 0
 
-	constructor () {
+	constructor (sendCommand: (command: AbstractCommand) => void) {
+		this._sendCommand = sendCommand
 		setInterval(() => {
-			if (this.dataTransferQueue.length > 0) {
-				this.sendCommand(this.dataTransferQueue.shift()!)
+			if (this._dataTransferQueue.length > 0) {
+				this._sendCommand(this._dataTransferQueue.shift()!)
 			}
 			const now = Date.now()
 			for (const transfer of this.transfers) {
@@ -32,7 +41,7 @@ export class DataTransferManager {
 					index: command.properties.index,
 					locked: false
 				})
-				this.sendCommand(command)
+				this._sendCommand(command)
 			} else {
 				this._proceedNext()
 			}
@@ -52,20 +61,25 @@ export class DataTransferManager {
 	}
 
 	newTransfer (type: Enums.StoragePool, pool: number, description: { name: string, description: string }, data: Buffer) {
-		this.transfers.push(new DataTransfer(
+		const transfer = new DataTransfer(
 			this.lastTransferIndex++,
 			pool,
 			type,
 			description,
 			data,
-			this._queueCommand
-		))
+			(command: AbstractCommand) => this._dataTransferQueue.push(command)
+		)
+		const ps = new Promise((resolve, reject) => {
+			transfer.finish = resolve
+			transfer.fail = reject
+		})
+		this.transfers.push(transfer)
 
 		if (this.locks[type] === false) {
 			this._startNext()
 		}
 
-		return this.lastTransferIndex
+		return ps
 	}
 
 	cancelTransfer (transferId: number) {
@@ -92,15 +106,11 @@ export class DataTransferManager {
 					size: tranfer.data.length,
 					mode: tranfer.type === Enums.StoragePool.Sounds ? Enums.TransferMode.WriteAudio : Enums.TransferMode.Write
 				})
-				this.sendCommand(command)
+				this._sendCommand(command)
 				tranfer.transferring = true
 				tranfer.lastSent = Date.now()
 			}
 		}
-	}
-
-	private _queueCommand (command: AbstractCommand) {
-		this.dataTransferQueue.push(command)
 	}
 
 	private _releaseLock (type: number) {
@@ -109,7 +119,7 @@ export class DataTransferManager {
 			index: type,
 			locked: false
 		})
-		this.sendCommand(command)
+		this._sendCommand(command)
 	}
 
 	private _getLock (type: number) {
@@ -118,7 +128,7 @@ export class DataTransferManager {
 			index: type,
 			locked: true
 		})
-		this.sendCommand(command)
+		this._sendCommand(command)
 	}
 
 	private _failTransfer (transferId: number) {
@@ -191,7 +201,7 @@ export class DataTransfer {
 
 		if (!this._sentDesc) {
 			const command = new Commands.DataTransferFileDescriptionCommand()
-			command.updateProps({...this.description, hash: this._hash})
+			command.updateProps({...this.description, fileHash: this._hash})
 			this._queueCommand(command)
 		}
 
@@ -199,7 +209,7 @@ export class DataTransfer {
 			const command = new Commands.DataTransferDataCommand()
 			command.updateProps({
 				transferId: this.index,
-				data: this.data.slice(this._sent, this._sent + chunkSize)
+				body: this.data.slice(this._sent, this._sent + chunkSize)
 			})
 			this._queueCommand(command)
 			this._sent += chunkSize
