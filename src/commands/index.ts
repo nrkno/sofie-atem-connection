@@ -7,6 +7,7 @@ export * from './Inputs'
 export * from './Macro'
 export * from './Media'
 export * from './MixEffects'
+export * from './Settings'
 export * from './SuperSource'
 
 export { AbstractCommand }
