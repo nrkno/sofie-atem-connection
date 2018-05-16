@@ -2,7 +2,7 @@ import AbstractCommand from '../AbstractCommand'
 import { DownstreamKeyerGeneral } from '../../state/video/downstreamKeyers'
 
 export class DownstreamKeyGeneralCommand extends AbstractCommand {
-	rawName = ''
+	rawName = 'CDsG'
 	downstreamKeyerId: number
 	properties: DownstreamKeyerGeneral
 	MaskFlags = {

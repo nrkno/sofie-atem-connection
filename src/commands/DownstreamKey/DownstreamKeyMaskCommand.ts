@@ -2,7 +2,7 @@ import AbstractCommand from '../AbstractCommand'
 import { DownstreamKeyerMask } from '../../state/video/downstreamKeyers'
 
 export class DownstreamKeyMaskCommand extends AbstractCommand {
-	rawName = ''
+	rawName = 'CDsM'
 	downstreamKeyerId: number
 	properties: DownstreamKeyerMask
 	MaskFlags = {
