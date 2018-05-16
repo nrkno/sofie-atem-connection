@@ -143,4 +143,12 @@ export class AtemVideoState {
 
 		return this.ME[index]
 	}
+
+	getDownstreamKeyer (index: number) {
+		if (!this.downstreamKeyers[index]) {
+			this.downstreamKeyers[index] = {} as DownstreamKeyer
+		}
+
+		return this.downstreamKeyers[index]
+	}
 }

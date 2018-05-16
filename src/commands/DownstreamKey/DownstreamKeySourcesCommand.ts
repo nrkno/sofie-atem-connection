@@ -18,6 +18,6 @@ export class DownstreamKeySourcesCommand extends AbstractCommand {
 	}
 
 	applyToState (state: AtemState) {
-		state.video.downstreamKeyers[this.downstreamKeyerId].sources = this.properties
+		state.video.getDownstreamKeyer(this.downstreamKeyerId).sources = this.properties
 	}
 }
