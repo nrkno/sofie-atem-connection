@@ -1,12 +1,12 @@
 import AbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
-import { DownstreamKeyer } from '../../state/video'
+import { DownstreamKeyerBase } from '../../state/video/downstreamKeyers'
 
 export class DownstreamKeyStateCommand extends AbstractCommand {
 	rawName = 'DskS'
 	downstreamKeyId: number
 
-	properties: DownstreamKeyer
+	properties: DownstreamKeyerBase
 
 	deserialize (rawCommand: Buffer) {
 		this.downstreamKeyId = rawCommand[0]
@@ -27,7 +27,8 @@ export class DownstreamKeyStateCommand extends AbstractCommand {
 
 	applyToState (state: AtemState) {
 		state.video.downstreamKeyers[this.downstreamKeyId] = {
-			...this.properties
+			...this.properties,
+			...state.video.downstreamKeyers[this.downstreamKeyId]
 		}
 	}
 }

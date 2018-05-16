@@ -1,12 +1,6 @@
 import * as Enum from '../../enums'
 import * as USK from './upstreamKeyers'
-
-export interface DownstreamKeyer {
-	onAir: boolean
-	inTransition: boolean
-	isAuto: boolean
-	remainingFrames: number
-}
+import { DownstreamKeyer } from './downstreamKeyers'
 
 export interface DipTransitionSettings {
 	rate: number
@@ -148,5 +142,13 @@ export class AtemVideoState {
 		}
 
 		return this.ME[index]
+	}
+
+	getDownstreamKeyer (index: number) {
+		if (!this.downstreamKeyers[index]) {
+			this.downstreamKeyers[index] = {} as DownstreamKeyer
+		}
+
+		return this.downstreamKeyers[index]
 	}
 }

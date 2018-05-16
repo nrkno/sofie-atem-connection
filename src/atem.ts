@@ -16,6 +16,7 @@ import {
 } from './state/video'
 import * as USK from './state/video/upstreamKeyers'
 import { InputChannel } from './state/input'
+import { DownstreamKeyerGeneral, DownstreamKeyerMask } from './state/video/downstreamKeyers';
 
 export interface AtemOptions {
 	address?: string,
@@ -180,6 +181,41 @@ export class Atem extends EventEmitter {
 		const command = new Commands.DownstreamKeyOnAirCommand()
 		command.downstreamKeyId = key
 		command.updateProps({onAir})
+		return this.sendCommand(command)
+	}
+
+	setDownstreamKeyCutSource (input: number, key = 0) {
+		const command = new Commands.DownstreamKeyCutSourceCommand()
+		command.downstreamKeyerId = key
+		command.updateProps({ input })
+		return this.sendCommand(command)
+	}
+
+	setDownstreamKeyFillSource (input: number, key = 0) {
+		const command = new Commands.DownstreamKeyFillSourceCommand()
+		command.downstreamKeyerId = key
+		command.updateProps({ input })
+		return this.sendCommand(command)
+	}
+
+	setDownstreamKeyGeneralProperties (props: Partial<DownstreamKeyerGeneral>, key = 0) {
+		const command = new Commands.DownstreamKeyGeneralCommand()
+		command.downstreamKeyerId = key
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	setDownstreamKeyMaskSettings (props: Partial<DownstreamKeyerMask>, key = 0) {
+		const command = new Commands.DownstreamKeyMaskCommand()
+		command.downstreamKeyerId = key
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	setDownstreamKeyRate (rate: number, key = 0) {
+		const command = new Commands.DownstreamKeyRateCommand()
+		command.downstreamKeyerId = key
+		command.updateProps({ rate })
 		return this.sendCommand(command)
 	}
 
