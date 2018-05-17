@@ -139,6 +139,13 @@ export class DataTransferManager {
 				this._releaseLock(transfer.type)
 			}
 		}
+		for (const i in this._dataTransferQueue) {
+			const command = this._dataTransferQueue[i]
+			if (command.properties.transferId && command.properties.transferId === transferId) {
+				this._dataTransferQueue.splice(Number(i), 1)
+				if (command.reject) command.reject(command)
+			}
+		}
 		this._startNext()
 	}
 
