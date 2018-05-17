@@ -207,12 +207,14 @@ export class DataTransfer {
 		this.lastSent = Date.now()
 
 		if (!this._sentDesc) {
+			this._sentDesc = true
 			const command = new Commands.DataTransferFileDescriptionCommand()
-			command.updateProps({...this.description, fileHash: this._hash})
+			command.updateProps({...this.description, fileHash: this._hash, transferId: this.index})
 			this._queueCommand(command)
 		}
 
 		for (let i = 0; i < chunkCount; i++) {
+			if (this._sent > this.data.length) return
 			const command = new Commands.DataTransferDataCommand()
 			command.updateProps({
 				transferId: this.index,
