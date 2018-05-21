@@ -246,6 +246,18 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	setMediaClip (index: number, name: string, frames = 1) {
+		const command = new Commands.MediaPoolSetClipCommand()
+		command.updateProps({ index, name, frames })
+		return this.sendCommand(command)
+	}
+
+	clearMediaPoolClip (clipId: number) {
+		const command = new Commands.MediaPoolClearClipCommand()
+		command.updateProps({ index: clipId })
+		return this.sendCommand(command)
+	}
+
 	setSuperSourceBoxSettings (newProps: Partial<SuperSourceBox>, box = 0) {
 		const command = new Commands.SuperSourceBoxParametersCommand()
 		command.boxId = box
