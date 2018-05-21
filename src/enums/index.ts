@@ -204,8 +204,10 @@ export enum TransferMode {
 
 export enum StoragePool {
 	Stills,
-	Clips,
-	Sounds
+	Clip1,
+	Clip2,
+	Audio1,
+	Audio2
 }
 
 export enum VideoMode {
