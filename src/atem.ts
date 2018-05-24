@@ -351,13 +351,34 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	uploadMedia (props: DT.DataTransferProperties) {
+	uploadStill (index: number, data: Buffer, name: string, description: string) {
 		const resolution = Util.getResolution(this.state.settings.videoMode)
-		return this.dataTransferManager.newTransfer(
-			props.type,
-			props.pool,
-			{ name: props.name, description: props.description },
-			Util.convertPNGToYUV422(resolution[0], resolution[1], props.data)
+		return this.dataTransferManager.uploadStill(
+			index,
+			Util.convertPNGToYUV422(resolution[0], resolution[1], data),
+			name,
+			description
+		)
+	}
+
+	uploadClip (index: number, frames: Array<Buffer>, name: string) {
+		const resolution = Util.getResolution(this.state.settings.videoMode)
+		const data: Array<Buffer> = []
+		for (const frame of frames) {
+			data.push(Util.convertPNGToYUV422(resolution[0], resolution[1], frame))
+		}
+		return this.dataTransferManager.uploadClip(
+			index,
+			data,
+			name
+		)
+	}
+
+	uploadAudio (index: number, data: Buffer, name: string) {
+		return this.dataTransferManager.uploadAudio(
+			index,
+			data,
+			name
 		)
 	}
 
@@ -368,7 +389,7 @@ export class Atem extends EventEmitter {
 		}
 		for (const commandName in DataTransferCommands) {
 			if (command.constructor.name === commandName) {
-				this.dataTransferManager.processAtemCommand(command)
+				this.dataTransferManager.handleCommand(command)
 			}
 		}
 	}
