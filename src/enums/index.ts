@@ -221,3 +221,10 @@ export enum VideoMode {
 	P4KHDp5000,
 	N4KHDp5994
 }
+
+export enum TransferState {
+	Queued,
+	Locked,
+	Transferring,
+	Finished
+}

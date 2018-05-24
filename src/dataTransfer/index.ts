@@ -1,171 +1,148 @@
-import { Enums, Commands } from '../'
-import AbstractCommand from '../commands/AbstractCommand'
+import { Commands, Enums } from '..'
+import * as crypto from 'crypto'
 
-import { DataTransfer } from './dataTransferBase'
-import { DataTransferStill } from './dataTransferStill'
-import { DataTransferClip, DataTransferFrame } from './dataTransferClip'
-
-const TIMEOUT = 5000
-
-export interface DataTransferProperties {
-	type: Enums.StoragePool
-	pool: number,
-	name: string
-	description: string
-	data: Buffer
-}
-
-export enum TransferState {
-	Queued,
-	LockRequested,
-	Locked,
-	Transferring,
-	Finished
-}
+import DataLock from './dataLock'
+import DataTransferFrame from './dataTransferFrame'
+import DataTransferStill from './dataTransferStill'
+import DataTransferClip from './dataTransferClip'
+import DataTransferAudio from './dataTransferAudio'
 
 export class DataTransferManager {
-	transfers: Array<DataTransfer> = []
-	locks = [ false, false, false ]
-	private _dataTransferQueue: Array<AbstractCommand> = []
-	private _sendCommand: (command: AbstractCommand) => Promise<Commands.AbstractCommand>
-	private lastTransferIndex = 0
+	commandQueue: Array<Commands.AbstractCommand> = []
 
-	constructor (sendCommand: (command: AbstractCommand) => Promise<Commands.AbstractCommand>) {
-		this._sendCommand = sendCommand
+	stillsLock = new DataLock(0, this.commandQueue)
+	clip1Lock = new DataLock(1, this.commandQueue)
+	clip2Lock = new DataLock(2, this.commandQueue)
+	audio1Lock = new DataLock(2, this.commandQueue)
+	audio2Lock = new DataLock(2, this.commandQueue)
+
+	transferIndex = 0
+
+	constructor (sendCommand: (command: Commands.AbstractCommand) => Promise<Commands.AbstractCommand>) {
 		setInterval(() => {
-			if (this._dataTransferQueue.length > 0) {
-				this._sendCommand(this._dataTransferQueue.shift()!)
-			}
-			const now = Date.now()
-			for (const transfer of this.transfers) {
-				if (transfer.transferring && now - transfer.lastSent > TIMEOUT) {
-					this._failTransfer(transfer.index) // @todo: we should probably notify timeout, rather than normal fail
-				}
+			if (this.commandQueue.length > 0) {
+				sendCommand(this.commandQueue.shift()!)
 			}
 		}, 0)
 	}
 
-	processAtemCommand (command: AbstractCommand) {
-		for (let i = 0; i < 3; i++) {
-			this.transfers[i].processAtemCommand(command)
+	handleCommand (command: Commands.AbstractCommand) {
+		// try to establish the associated DataLock:
+		let lock: DataLock = this.stillsLock // assign, because we get a false "used before asssigned error"
+		if (command.constructor.name === Commands.LockObtainedCommand.name || command.constructor.name === Commands.LockStateCommand.name) {
+			switch (command.properties.index) {
+				case 0 :
+					lock = this.stillsLock
+					break
+				case 1 :
+					lock = this.clip1Lock
+					break
+				case 2 :
+					lock = this.clip2Lock
+					break
+				case 3 :
+					lock = this.audio1Lock
+					break
+				case 4 :
+					lock = this.audio2Lock
+					break
+			}
+		} else if (command.properties.storeId) {
+			lock = [ this.stillsLock, this.clip1Lock, this.clip2Lock ][command.properties.storeId]
+		} else if (command.properties.transferId !== undefined || command.properties.transferIndex !== undefined) {
+			for (const _lock of [ this.stillsLock, this.clip1Lock, this.clip2Lock ]) {
+				if (_lock.transfer && (_lock.transfer.transferId === command.properties.transferId || _lock.transfer.transferId === command.properties.transferIndex)) {
+					lock = _lock
+				}
+			}
+		} else {
+			// debugging:
+			console.log(command)
+			return
 		}
 
-		if (command.constructor.name === 'LockObtainedCommand') {
-			if (this.transfers.length === 0) {
-				const command = new Commands.LockStateCommand()
-				command.updateProps({
-					index: command.properties.index,
-					locked: false
-				})
-				this._sendCommand(command)
+		// handle actual command
+		if (command.constructor.name === Commands.LockObtainedCommand.name) {
+			lock.lockObtained()
+		}
+		if (command.constructor.name === Commands.LockStateCommand.name) {
+			if (!command.properties.locked) lock.lostLock()
+			else lock.updateLock(command.properties.locked)
+		}
+		if (lock.transfer) {
+			lock.transfer.handleCommand(command)
+			if (lock.transfer.state === Enums.TransferState.Finished) {
+				lock.transferFinished()
 			}
-		} else if (command.constructor.name === 'LockStateCommand') {
-			this.locks[command.properties.index] = command.properties.locked
 		}
 	}
 
-	uploadStill (type = Enums.StoragePool.Stills, pool: number, description: { name: string, description: string }, data: Buffer) {
-		const transfer = new DataTransferStill(
-			this.lastTransferIndex++,
-			pool,
-			type,
-			description,
-			(command: AbstractCommand) => this._dataTransferQueue.push(command),
-			(command: AbstractCommand) => this._sendCommand(command)
-		)
-		transfer.data = data
+	uploadStill (index: number, data: Buffer, name: string, description: string) {
+		const transfer = new DataTransferStill()
 		const ps = new Promise((resolve, reject) => {
 			transfer.finish = resolve
 			transfer.fail = reject
-		}).then(() => {
-			this._removeFromTransfers(transfer.index)
 		})
-		this.transfers.push(transfer)
 
-		if (this.locks[type] === false) {
-			this._startNext()
-		}
+		transfer.commandQueue = this.commandQueue
+		transfer.transferId = this.transferIndex++
+		transfer.storeId = 0
+		transfer.frameId = index
+		transfer.data = data
+		transfer.hash = crypto.createHash('md5').update(data).digest().toString()
+		transfer.description = { name, description }
+
+		this.stillsLock.enqueue(transfer)
 
 		return ps
 	}
 
-	uploadClip (type: Enums.StoragePool, description: { name: string, description: string }, data: Array<Buffer>) {
-		const transfer = new DataTransferClip(
-			this.lastTransferIndex++,
-			type,
-			description,
-			(command: AbstractCommand) => this._dataTransferQueue.push(command),
-			(command: AbstractCommand) => this._sendCommand(command)
-		)
+	uploadClip (index: number, data: Array<Buffer>, name: string) {
+		const transfer = new DataTransferClip()
+		const ps = new Promise((resolve, reject) => {
+			transfer.finish = resolve
+			transfer.fail = reject
+		})
 
-		for (const frameIndex in data) {
-			const frameTransfer = new DataTransferFrame(
-				this.lastTransferIndex++,
-				type,
-				Number(frameIndex),
-				description,
-				(command: AbstractCommand) => this._dataTransferQueue.push(command),
-				(command: AbstractCommand) => this._sendCommand(command)
-			)
-			frameTransfer.data = data[frameIndex]
+		transfer.commandQueue = this.commandQueue
+		transfer.storeId = 1 + index
+		transfer.description = { name }
+
+		for (const frameId in data) {
+			const frame = data[frameId]
+			const frameTransfer = new DataTransferFrame()
+
+			frameTransfer.commandQueue = this.commandQueue
+			frameTransfer.transferId = this.transferIndex++
+			frameTransfer.storeId = 1 + index
+			frameTransfer.frameId = Number(frameId)
+			frameTransfer.data = frame
+			// frameTransfer.hash = crypto.createHash('md5').update(frame).digest().toString()
+
 			transfer.frames.push(frameTransfer)
 		}
 
-		const ps = new Promise((resolve, reject) => {
-			transfer.finish = resolve
-			transfer.fail = reject
-		})
-		this.transfers.push(transfer)
-
-		if (this.locks[type] === false) {
-			this._startNext()
-		}
+		[ this.clip1Lock, this.clip2Lock ][index].enqueue(transfer)
 
 		return ps
 	}
 
-	cancelTransfer (transferId: number) {
-		this._failTransfer(transferId)
-	}
-
-	private _startNext () {
-		for (const transfer of this.transfers) {
-			if (transfer.transferring === false && this.locks[transfer.type] === false) {
-				transfer.start()
-				break
-			}
-		}
-	}
-
-	private _releaseLock (type: number) {
-		const command = new Commands.LockStateCommand()
-		command.updateProps({
-			index: type,
-			locked: false
+	uploadAudio (index: number, data: Buffer, name: string) {
+		const transfer = new DataTransferAudio()
+		const ps = new Promise((resolve, reject) => {
+			transfer.finish = resolve
+			transfer.fail = reject
 		})
-		this._sendCommand(command)
+
+		transfer.commandQueue = this.commandQueue
+		transfer.transferId = this.transferIndex++
+		transfer.storeId = 3 + index
+		transfer.description = { name }
+		transfer.data = data
+
+		;[ this.audio1Lock, this.audio2Lock ][index].enqueue(transfer)
+
+		return ps
 	}
 
-	private _failTransfer (transferId: number) {
-		const transfer = this._removeFromTransfers(transferId)
-		if (transfer) transfer.fail()
-		for (const i in this._dataTransferQueue) {
-			const command = this._dataTransferQueue[i]
-			if (command.properties.transferId && command.properties.transferId === transferId) {
-				this._dataTransferQueue.splice(Number(i), 1)
-				if (command.reject) command.reject(command)
-			}
-		}
-		this._startNext()
-	}
-
-	private _removeFromTransfers (transferId: number): DataTransfer | undefined {
-		for (const transfer of this.transfers) {
-			if (transfer.index === transferId) {
-				this.transfers.splice(this.transfers.indexOf(transfer), 1)
-				return transfer
-			}
-		}
-		return
-	}
 }
