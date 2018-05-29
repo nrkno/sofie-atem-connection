@@ -1,3 +1,5 @@
+import * as Enums from '../enums'
+
 export interface MediaPlayer {
 	playing: boolean
 	loop: boolean
@@ -5,8 +7,26 @@ export interface MediaPlayer {
 	clipFrame: number
 }
 
+export interface MediaPlayerSource {
+	sourceType: Enums.MediaSourceType
+	sourceIndex: number
+}
+
 export class MediaState {
-	stillPool = {}
-	clipPool = {}
-	players: Array<MediaPlayer> = []
+	stillPool: Array<StillFrame> = []
+	clipPool: Array<ClipBank> = []
+	players: Array<MediaPlayer & MediaPlayerSource> = []
+}
+
+export class StillFrame {
+	isUsed: boolean
+	hash: string
+	fileName: string
+}
+
+export class ClipBank {
+	isUsed: boolean
+	name: string
+	frameCount: number
+	frames: Array<StillFrame> = []
 }
