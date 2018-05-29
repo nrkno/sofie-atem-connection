@@ -242,3 +242,8 @@ export enum TransferState {
 	Transferring,
 	Finished
 }
+
+export enum MediaSourceType {
+	Still,
+	Clip
+}
