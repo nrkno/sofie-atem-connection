@@ -122,7 +122,6 @@ export class AtemSocket extends EventEmitter {
 		// Send ping packet, Emit 'connect' event after receive all stats
 		if (flags & PacketFlag.AckRequest && length === 12 && this._connectionState === ConnectionState.SynSent) {
 			this._connectionState = ConnectionState.Established
-			this.emit('connect')
 		}
 
 		// Send ack packet (called by answer packet in Skaarhoj)
@@ -146,6 +145,10 @@ export class AtemSocket extends EventEmitter {
 	private _parseCommand (buffer: Buffer, packetId?: number) {
 		const length = buffer.readUInt16BE(0)
 		const name = buffer.toString('ascii', 4, 8)
+
+		if (name === 'InCm') {
+			this.emit('connect')
+		}
 
 		// this.log('COMMAND', `${name}(${length})`, buffer.slice(0, length))
 		const cmd = this._commandParser.commandFromRawName(name)

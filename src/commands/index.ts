@@ -7,3 +7,4 @@ export * from './MixEffects'
 export * from './SuperSource'
 
 export * from './AuxSourceCommand'
+export * from './InitCompleteCommand'
