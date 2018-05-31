@@ -16,7 +16,7 @@ import {
 } from './state/video'
 import * as USK from './state/video/upstreamKeyers'
 import { InputChannel } from './state/input'
-import { DownstreamKeyerGeneral, DownstreamKeyerMask } from './state/video/downstreamKeyers';
+import { DownstreamKeyerGeneral, DownstreamKeyerMask } from './state/video/downstreamKeyers'
 
 export interface AtemOptions {
 	address?: string,

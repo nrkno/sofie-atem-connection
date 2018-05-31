@@ -1,11 +1,3 @@
-export interface DownstreamKeyer extends DownstreamKeyerBase {
-	sources: {
-		fillSource: number,
-		cutSource: number
-	}
-	properties: DownstreamKeyerProperties
-}
-
 export interface DownstreamKeyerBase {
 	onAir: boolean
 	inTransition: boolean
@@ -13,10 +5,12 @@ export interface DownstreamKeyerBase {
 	remainingFrames: number
 }
 
-export interface DownstreamKeyerProperties extends DownstreamKeyerGeneral {
-	tie: boolean
-	rate: number
-	mask: DownstreamKeyerMask
+export interface DownstreamKeyer extends DownstreamKeyerBase {
+	sources: {
+		fillSource: number,
+		cutSource: number
+	}
+	properties: DownstreamKeyerProperties
 }
 
 export interface DownstreamKeyerGeneral {
@@ -32,4 +26,10 @@ export interface DownstreamKeyerMask {
 	bottom: number
 	left: number
 	right: number
+}
+
+export interface DownstreamKeyerProperties extends DownstreamKeyerGeneral {
+	tie: boolean
+	rate: number
+	mask: DownstreamKeyerMask
 }
