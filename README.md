@@ -1,4 +1,5 @@
 # ATEM-connection
+[![CircleCI](https://circleci.com/gh/nrkno/tv-automation-atem-connection.svg?style=svg)](https://circleci.com/gh/nrkno/tv-automation-atem-connection)
 
 This is a library for connecting to Blackmagic Design ATEM devices, created by SuperFly.tv
 
@@ -30,7 +31,7 @@ If you want to make a contribution, feel free to open a PR.
 ## Usage
 
 ```javascript
-const { Atem } = require('atem-connection')
+const { Atem } = require('tv-automation-atem-connection')
 const myAtem = new Atem({ externalLog: console.log })
 
 myAtem.connect('192.168.168.240')

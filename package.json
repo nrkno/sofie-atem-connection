@@ -1,5 +1,5 @@
 {
-  "name": "atem-connection",
+  "name": "tv-automation-atem-connection",
   "version": "0.0.0",
   "description": "Typescript Node.js library for connecting with an ATEM switcher.",
   "main": "dist/index.js",
@@ -18,7 +18,11 @@
       "name": "Balte de Wit",
       "email": "contact@balte.nl",
       "url": "http://balte.nl"
-    }
+	},
+	{
+		"name": "Stephan Nordnes Eriksen",
+		"email": "Stephanruler@gmail.com"
+	}
   ],
   "scripts": {
     "info": "npm-scripts-info",
