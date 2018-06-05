@@ -16,7 +16,7 @@ _Note: this is a work in progress, expect many new features and also... breaking
 
 For usage by library consumers installation is as easy as:
 ```sh
-yarn install git+https://github.com/nrkno/tv-automation-atem-connection
+yarn add atem-connection
 ```
 
 For library developers installation steps are as following:
@@ -31,7 +31,7 @@ If you want to make a contribution, feel free to open a PR.
 ## Usage
 
 ```javascript
-const { Atem } = require('tv-automation-atem-connection')
+const { Atem } = require('atem-connection')
 const myAtem = new Atem({ externalLog: console.log })
 
 myAtem.connect('192.168.168.240')
