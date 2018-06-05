@@ -50,21 +50,25 @@
   "scripts-info": {
     "info": "Display information about the scripts",
     "build": "(Trash and re)build the library",
-    "lint": "Lint all typescript source files",
+    "build:main": "Builds main build command without trash.",
+	"lint": "Lint all typescript source files",
     "unit": "Build the library and run unit tests",
     "test": "Lint, build, and test the library",
     "watch": "Watch source files, rebuild library on changes, rerun relevant tests",
     "cov": "Run tests, generate the HTML coverage report, and open it in a browser",
-    "cov-open": "Open HTML coverage report in a browser",
-    "send-coverage": "CI task; Send coverage to codecov.",
+    "cov-open": "Open current test coverage",
+    "send-coverage": "send coverage to codecov",
     "docs": "Generate HTML API documentation and open it in a browser",
-    "docs:publish": "Generate HTML API documentation and push it to GitHub Pages",
+    "docs:test": "Running the docs generation for testing.",
+    "docs:html": "Generate HTML documentation",
     "docs:json": "Generate API documentation in typedoc JSON format",
+    "docs:publish": "Generate HTML API documentation and push it to GitHub Pages",
     "changelog": "Bump package.json version, update CHANGELOG.md, tag a release",
+	"release": "Clean, build, test, publish docs, and prepare release (a one-step publish process). Updates versions and creates git commits.",
     "reset": "Delete all untracked files and reset the repo to the last commit",
-    "release": "Clean, build, test, publish docs, and prepare release (a one-step publish process)",
-    "ci": "CI task; Run by circleci (or other) to verify integrity of repo",
-    "validate:dependencies": "Validate that dependencies does not have any known security issues"
+    "ci": "Test script for running by the CI (CircleCI)",
+    "validate:dependencies": "Scan dependencies for vulnerabilities and check licenses",
+    "license-validate": "Validate licenses for dependencies."
   },
   "engines": {
     "node": ">=4.5"
