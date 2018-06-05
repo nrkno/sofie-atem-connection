@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.1.0"></a>
+# 0.1.0 (2018-06-05)
+
+
+### Bug Fixes
+
+* **API:** make properties a public member of commands ([a3b69d3](https://github.com/nrkno/tv-automation-atem-connection/commit/a3b69d3))
+* **Aux command:** set default bus to 1, add a mask in the raw command ([db4f0ba](https://github.com/nrkno/tv-automation-atem-connection/commit/db4f0ba))
+* **DVE Upstream Keyer:** Correct word size ([9ba5635](https://github.com/nrkno/tv-automation-atem-connection/commit/9ba5635))
+* add correct ssh fingerprint ([6019e6e](https://github.com/nrkno/tv-automation-atem-connection/commit/6019e6e))
+* prevent garbage data from being added to productName ([5b3417a](https://github.com/nrkno/tv-automation-atem-connection/commit/5b3417a))
+* rename back to atem-connection ([e1b3e63](https://github.com/nrkno/tv-automation-atem-connection/commit/e1b3e63))
+* rename library and add contributer ([a57299e](https://github.com/nrkno/tv-automation-atem-connection/commit/a57299e))
+* **DVE Upstream Keyer:** property name should equal flag name ([d684198](https://github.com/nrkno/tv-automation-atem-connection/commit/d684198))
+* rename workflow for better readability ([7f1fbd9](https://github.com/nrkno/tv-automation-atem-connection/commit/7f1fbd9))
+* safely get the downstream keyer ([25bf0f1](https://github.com/nrkno/tv-automation-atem-connection/commit/25bf0f1))
+* **Socket:** local packetId should start at 1 ([2199e5c](https://github.com/nrkno/tv-automation-atem-connection/commit/2199e5c))
+* set rawnames ([b68ad41](https://github.com/nrkno/tv-automation-atem-connection/commit/b68ad41))
+* **InputPropertiesCommand:** include the inputId of each source in the state tree ([3fdabba](https://github.com/nrkno/tv-automation-atem-connection/commit/3fdabba))
+* **Socket:** fix parsing of packet name and length ([dc25ea7](https://github.com/nrkno/tv-automation-atem-connection/commit/dc25ea7))
+* **Utility functions:** remove unnecessary utility functions ([a7d0f78](https://github.com/nrkno/tv-automation-atem-connection/commit/a7d0f78))
+* tests ([4d3576a](https://github.com/nrkno/tv-automation-atem-connection/commit/4d3576a))
+* update config for new features ([4682a64](https://github.com/nrkno/tv-automation-atem-connection/commit/4682a64))
+* update ignores ([d79b224](https://github.com/nrkno/tv-automation-atem-connection/commit/d79b224))
+* update scripts-info ([8508f98](https://github.com/nrkno/tv-automation-atem-connection/commit/8508f98))
+* use ASCII encoding for strings, instead of utf8 ([8978d49](https://github.com/nrkno/tv-automation-atem-connection/commit/8978d49))
+
+
+### Features
+
+* **Inputs:** implement InPr (read) and CInL (write) commands ([17e1688](https://github.com/nrkno/tv-automation-atem-connection/commit/17e1688))
+* **Media Player Status:** get and set play/loop/atBeginning and frames ([664af37](https://github.com/nrkno/tv-automation-atem-connection/commit/664af37))
+* **SuperSource:** implement SSBP (read) and CSBP (write) commands ([b21e56e](https://github.com/nrkno/tv-automation-atem-connection/commit/b21e56e))
+* Downstream Keyer Settings ([b90cf3a](https://github.com/nrkno/tv-automation-atem-connection/commit/b90cf3a))
+* export commands and substates ([9be9e61](https://github.com/nrkno/tv-automation-atem-connection/commit/9be9e61))
+* Initialization Complete Command ([ba55c89](https://github.com/nrkno/tv-automation-atem-connection/commit/ba55c89))
+* top level connection status events ([1f606ed](https://github.com/nrkno/tv-automation-atem-connection/commit/1f606ed))
+* Topology Command ([0380432](https://github.com/nrkno/tv-automation-atem-connection/commit/0380432))
+* use external logging function, limit packet logs to debug mode ([b92f175](https://github.com/nrkno/tv-automation-atem-connection/commit/b92f175))
+
+
+
 <a name="0.5.1"></a>
 ## [0.5.1](https://bitbucket.org/superflytv/node-boilerplate/compare/0.5.0...0.5.1) (2018-02-25)
 
