@@ -102,7 +102,7 @@ jobs:
 
 workflows:
   version: 2
-  Test build and deploy(master):
+  Test build and deploy(master only):
     jobs:
       - Checkout Code
       - Check for vulnerabilities:
