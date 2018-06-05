@@ -1,7 +1,7 @@
-import { NodeBoilerpate } from '../index'
+import { Atem } from '../index'
 
 test('Simple test', () => {
-	let nb = new NodeBoilerpate('Some Data')
+	const nb = new Atem()
 
 	expect(nb).toBeTruthy()
 })

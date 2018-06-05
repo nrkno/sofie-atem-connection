@@ -1,16 +1,16 @@
 defaults: &defaults
   docker:
-    - image: circleci/node:8.0
-  working_directory: ~/node-boilerplate
+    - image: circleci/node:8
+  working_directory: ~/project
 
 version: 2
 jobs:
-  checkout_code:
+  Checkout Code:
     <<: *defaults
     steps:
       - checkout
       - attach_workspace:
-          at: ~/node-boilerplate
+          at: ~/project
       - restore_cache:
           keys:
             - yarn-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
@@ -23,35 +23,25 @@ jobs:
       - persist_to_workspace:
           root: .
           paths: [.]
-  check_vulnerabilities:
+  Check for vulnerabilities:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: ~/node-boilerplate
+          at: ~/project
       - run: yarn install
       - run: yarn validate:dependencies
-  test_node-8:
+  Test node-8:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: ~/node-boilerplate
+          at: ~/project
       - run: yarn install
       - run: yarn ci
-  test_node-6:
-    docker:
-      - image: circleci/node:6
-    working_directory: ~/node-boilerplate
-    steps:
-      - attach_workspace:
-          at: ~/node-boilerplate
-      - run: yarn install
-      - run: yarn ci
-
-  send-coverage:
+  Send Coverage:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: ~/node-boilerplate
+          at: ~/project
       - run: yarn install
       - run: yarn send-coverage
       - store_artifacts:
@@ -63,103 +53,91 @@ jobs:
       - store_test_results:
           path: ./coverage/clover.xml
 
-  build:
+  Build:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: ~/node-boilerplate
+          at: ~/project
       - run: yarn install
       - run: yarn build
       - persist_to_workspace:
           root: .
           paths: [.]
 
-  release:
+  Git Release:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: ~/node-boilerplate
+          at: ~/project
       - add_ssh_keys:
           fingerprints:
-            - "22:0a:33:b1:fe:7f:09:42:46:b0:aa:17:2b:cc:80:e2"
+            - "8d:f8:a8:b0:86:33:58:1c:fb:24:53:2b:03:73:9c:34"
       - run: yarn install
-      - run: git config --global user.email "stephanruler@gmail.com"
-      - run: git config --global user.name "stephan_ne"
       - run: mkdir -p ~/.ssh
       - run:
-          name: Add bitbucket to known hosts
-          command: ssh-keyscan -H bitbucket.org >> ~/.ssh/known_hosts
+          name: Keyscan Github
+          command: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+      - run: git config --global user.email "jesper@starkar.no"
+      - run: git config --global user.name "jesperstarkar"
       - run: yarn release
       - run: git push --follow-tags origin HEAD
       - persist_to_workspace:
           root: .
           paths: [.]
-
-  deployToNPM:
+  Deploy to NPM:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: ~/node-boilerplate
-      - add_ssh_keys:
-          fingerprints:
-            - "22:0a:33:b1:fe:7f:09:42:46:b0:aa:17:2b:cc:80:e2"
-      - run: 
+          at: ~/project
+      - run:
           name: Write NPM Token to ~/.npmrc
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-      # Use this when repo is properly open sourced. 
-      # - run:
-      #     name: Publish to NPM with yarn
-      #     command: NEW_VERSION=$(node -p "require('./package.json').version") && yarn publish --access=public --new-version=$NEW_VERSION
-      - deploy:
-          name: Publish to NPM with npm
-          command: npm publish --access=public
-      - persist_to_workspace:
-          root: .
-          paths: [.]
+      - run:
+          name: Publish to NPM with yarn
+          command: NEW_VERSION=$(node -p "require('./package.json').version") && yarn publish --access=public --new-version=$NEW_VERSION --network-timeout 100000
+      # I have read that some people are experiencing problems with yars publish. Change to npm publish, as below, if that happens.
+      # - deploy:
+      #     name: Publish to NPM with npm
+      #     command: npm publish --access=public
 
 workflows:
   version: 2
-  test_build_deploy:
+  Test build and deploy(master only):
     jobs:
-      - checkout_code
-      - check_vulnerabilities:
+      - Checkout Code
+      - Check for vulnerabilities:
           requires:
-            - checkout_code
-      - test_node-8:
+            - Checkout Code
+      - Test node-8:
           requires:
-            - checkout_code
-      - test_node-6:
+            - Checkout Code
+      - Send Coverage:
           requires:
-            - checkout_code
-      - send-coverage:
-          requires:
-            - check_vulnerabilities
-            - test_node-6
-            - test_node-8
+            - Check for vulnerabilities
+            - Test node-8
           filters:
             branches:
               only:
                 - master
-      - release:
+      - Git Release:
           requires:
-            - send-coverage
+            - Send Coverage
           filters:
             branches:
               only:
                 - master
-      # Open source release cycle for NPM deploy. Unocmment the below;
-      # - build:
-      #     requires:
-      #       - send-coverage
-      #       - release
-      #     filters:
-      #       branches:
-      #         only:
-      #           - master
-      # - deployToNPM:
-      #     requires:
-      #       - build
-      #     filters:
-      #       branches:
-      #         only:
-      #           - master
+      - Build:
+          requires:
+            - Send Coverage
+            - Git Release
+          filters:
+            branches:
+              only:
+                - master
+      - Deploy to NPM:
+          requires:
+            - Build
+          filters:
+            branches:
+              only:
+                - master

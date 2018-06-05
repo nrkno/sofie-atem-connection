@@ -1,4 +1,5 @@
 # ATEM-connection
+[![CircleCI](https://circleci.com/gh/nrkno/tv-automation-atem-connection.svg?style=svg)](https://circleci.com/gh/nrkno/tv-automation-atem-connection)
 
 This is a library for connecting to Blackmagic Design ATEM devices, created by SuperFly.tv
 
@@ -15,7 +16,7 @@ _Note: this is a work in progress, expect many new features and also... breaking
 
 For usage by library consumers installation is as easy as:
 ```sh
-yarn install git+https://github.com/nrkno/tv-automation-atem-connection
+yarn add atem-connection
 ```
 
 For library developers installation steps are as following:
