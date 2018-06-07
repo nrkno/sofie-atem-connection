@@ -2,14 +2,15 @@ import AbstractCommand from '../../AbstractCommand'
 import { UpstreamKeyerTypeSettings } from '../../../state/video/upstreamKeyers'
 
 export class MixEffectKeyTypeSetCommand extends AbstractCommand {
+	static MaskFlags = {
+		keyType: 1 << 0,
+		flyEnabled: 1 << 1
+	}
+
 	rawName = 'CKTp'
 	mixEffect: number
 	upstreamKeyerId: number
 	properties: UpstreamKeyerTypeSettings
-	MaskFlags = {
-		keyType: 1 << 0,
-		flyEnabled: 1 << 1
-	}
 
 	serialize () {
 		const buffer = Buffer.alloc(8)

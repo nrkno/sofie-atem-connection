@@ -3,12 +3,13 @@ import { AtemState } from '../../../state'
 import { DipTransitionSettings } from '../../../state/video'
 
 export class TransitionDipCommand extends AbstractCommand {
-	rawName = 'TDpP'
-	mixEffect: number
-	MaskFlags = {
+	static MaskFlags = {
 		rate: 1 << 0,
 		input: 1 << 1
 	}
+
+	rawName = 'TDpP'
+	mixEffect: number
 
 	properties: DipTransitionSettings
 

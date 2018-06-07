@@ -5,13 +5,14 @@ import { ExternalPorts, ExternalPortType } from '../../enums'
 import { Util } from '../../lib/atemUtil'
 
 export class InputPropertiesCommand extends AbstractCommand {
-	rawName = 'InPr'
-	inputId: number
-	MaskFlags = {
+	static MaskFlags = {
 		longName: 1 << 0,
 		shortName: 1 << 1,
 		isExternal: 1 << 2
 	}
+
+	rawName = 'InPr'
+	inputId: number
 
 	properties: InputChannel
 

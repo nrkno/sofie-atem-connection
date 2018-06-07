@@ -3,14 +3,15 @@ import { MediaPlayer } from '../../state/media'
 import AbstractCommand from '../AbstractCommand'
 
 export class MediaPlayerStatusCommand extends AbstractCommand {
-	rawName = 'RCPS'
-	mediaPlayerId: number
-	MaskFlags = {
+	static MaskFlags = {
 		playing: 1 << 0,
 		loop: 1 << 1,
 		atBeginning: 1 << 2,
 		frame: 1 << 3
 	}
+
+	rawName = 'RCPS'
+	mediaPlayerId: number
 
 	properties: MediaPlayer
 

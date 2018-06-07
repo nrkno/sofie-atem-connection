@@ -2,15 +2,16 @@ import AbstractCommand from '../AbstractCommand'
 import { DownstreamKeyerGeneral } from '../../state/video/downstreamKeyers'
 
 export class DownstreamKeyGeneralCommand extends AbstractCommand {
-	rawName = 'CDsG'
-	downstreamKeyerId: number
-	properties: DownstreamKeyerGeneral
-	MaskFlags = {
+	static MaskFlags = {
 		preMultiply: 1 << 0,
 		clip: 1 << 1,
 		gain: 1 << 2,
 		invert: 1 << 3
 	}
+
+	rawName = 'CDsG'
+	downstreamKeyerId: number
+	properties: DownstreamKeyerGeneral
 
 	serialize () {
 		const buffer = Buffer.alloc(12)

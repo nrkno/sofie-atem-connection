@@ -3,11 +3,7 @@ import { AtemState } from '../../../state'
 import { UpstreamKeyerPatternSettings } from '../../../state/video/upstreamKeyers'
 
 export class MixEffectKeyPatternCommand extends AbstractCommand {
-	rawName = 'KePt'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: UpstreamKeyerPatternSettings
-	MaskFlags = {
+	static MaskFlags = {
 		style: 1 << 0,
 		size: 1 << 1,
 		symmetry: 1 << 2,
@@ -16,6 +12,11 @@ export class MixEffectKeyPatternCommand extends AbstractCommand {
 		positionY: 1 << 5,
 		invert: 1 << 6
 	}
+
+	rawName = 'KePt'
+	mixEffect: number
+	upstreamKeyerId: number
+	properties: UpstreamKeyerPatternSettings
 
 	deserialize (rawCommand: Buffer) {
 		this.mixEffect = rawCommand[0]

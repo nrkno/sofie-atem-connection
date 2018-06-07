@@ -3,10 +3,7 @@ import { AtemState } from '../../state'
 import { SuperSourceBox } from '../../state/video'
 
 export class SuperSourceBoxParametersCommand extends AbstractCommand {
-	rawName = 'SSBP'
-	boxId: number
-	properties: SuperSourceBox
-	MaskFlags = {
+	static MaskFlags = {
 		enabled: 1 << 0,
 		source: 1 << 1,
 		x: 1 << 2,
@@ -18,6 +15,10 @@ export class SuperSourceBoxParametersCommand extends AbstractCommand {
 		cropLeft: 1 << 8,
 		cropRight: 1 << 9
 	}
+
+	rawName = 'SSBP'
+	boxId: number
+	properties: SuperSourceBox
 
 	updateProps (newProps: Partial<SuperSourceBox>) {
 		this._updateProps(newProps)
