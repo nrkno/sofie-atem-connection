@@ -1,3 +1,5 @@
+import AbstractCommand from './AbstractCommand'
+
 export * from './DeviceProfile'
 export * from './DownstreamKey'
 export * from './Inputs'
@@ -6,6 +8,6 @@ export * from './Media'
 export * from './MixEffects'
 export * from './SuperSource'
 
-export * from './AbstractCommand'
+export { AbstractCommand }
 export * from './AuxSourceCommand'
 export * from './InitCompleteCommand'
