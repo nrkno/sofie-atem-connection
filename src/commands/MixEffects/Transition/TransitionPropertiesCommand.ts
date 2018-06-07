@@ -3,12 +3,13 @@ import { AtemState } from '../../../state'
 import { TransitionProperties } from '../../../state/video'
 
 export class TransitionPropertiesCommand extends AbstractCommand {
-	rawName = 'TrSS'
-	mixEffect: number
-	MaskFlags = {
+	static MaskFlags = {
 		style: 1 << 0,
 		selection: 1 << 1
 	}
+
+	rawName = 'TrSS'
+	mixEffect: number
 
 	properties: TransitionProperties
 

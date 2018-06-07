@@ -3,9 +3,7 @@ import { AtemState } from '../../../state'
 import { WipeTransitionSettings } from '../../../state/video'
 
 export class TransitionWipeCommand extends AbstractCommand {
-	rawName = 'TWpP'
-	mixEffect: number
-	MaskFlags = {
+	static MaskFlags = {
 		rate: 1 << 0,
 		pattern: 1 << 1,
 		borderWidth: 1 << 2,
@@ -17,6 +15,9 @@ export class TransitionWipeCommand extends AbstractCommand {
 		reverseDirection: 1 << 8,
 		flipFlop: 1 << 9
 	}
+
+	rawName = 'TWpP'
+	mixEffect: number
 
 	properties: WipeTransitionSettings
 

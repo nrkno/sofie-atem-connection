@@ -3,9 +3,7 @@ import { AtemState } from '../../../state'
 import { DVETransitionSettings } from '../../../state/video'
 
 export class TransitionDVECommand extends AbstractCommand {
-	rawName = 'TDvP'
-	mixEffect: number
-	MaskFlags = {
+	static MaskFlags = {
 		rate: 1 << 0,
 		logoRate: 1 << 1,
 		style: 1 << 2,
@@ -19,6 +17,9 @@ export class TransitionDVECommand extends AbstractCommand {
 		reverse: 1 << 10,
 		flipFlop: 1 << 11
 	}
+
+	rawName = 'TDvP'
+	mixEffect: number
 
 	properties: DVETransitionSettings
 

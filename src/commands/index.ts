@@ -6,5 +6,6 @@ export * from './Media'
 export * from './MixEffects'
 export * from './SuperSource'
 
+export * from './AbstractCommand'
 export * from './AuxSourceCommand'
 export * from './InitCompleteCommand'

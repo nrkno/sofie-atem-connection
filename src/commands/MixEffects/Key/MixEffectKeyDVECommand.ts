@@ -3,11 +3,7 @@ import { AtemState } from '../../../state'
 import { UpstreamKeyerDVESettings } from '../../../state/video/upstreamKeyers'
 
 export class MixEffectKeyDVECommand extends AbstractCommand {
-	rawName = 'KeDV'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: UpstreamKeyerDVESettings
-	MaskFlags = {
+	static MaskFlags = {
 		sizeX: 1 << 0,
 		sizeY: 1 << 1,
 		positionX: 1 << 2,
@@ -35,6 +31,11 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 		maskRight: 1 << 24,
 		rate: 1 << 25
 	}
+
+	rawName = 'KeDV'
+	mixEffect: number
+	upstreamKeyerId: number
+	properties: UpstreamKeyerDVESettings
 
 	deserialize (rawCommand: Buffer) {
 		this.mixEffect = rawCommand[0]

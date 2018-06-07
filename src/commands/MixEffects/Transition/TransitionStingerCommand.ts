@@ -3,9 +3,7 @@ import { AtemState } from '../../../state'
 import { StingerTransitionSettings } from '../../../state/video'
 
 export class TransitionStingerCommand extends AbstractCommand {
-	rawName = 'TStP'
-	mixEffect: number
-	MaskFlags = {
+	static MaskFlags = {
 		source: 1 << 0,
 		preMultipliedKey: 1 << 1,
 		clip: 1 << 2,
@@ -16,6 +14,9 @@ export class TransitionStingerCommand extends AbstractCommand {
 		triggerPoint: 1 << 7,
 		mixRate: 1 << 8
 	}
+
+	rawName = 'TStP'
+	mixEffect: number
 
 	properties: StingerTransitionSettings
 
