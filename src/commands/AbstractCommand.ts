@@ -1,9 +1,9 @@
 import { AtemState } from '../state'
 
 export default abstract class AbstractCommand {
+	static MaskFlags?: { [key: string]: number }
 	abstract rawName: string
 	packetId: number
-	MaskFlags?: { [key: string]: number }
 	flag: number = 0
 
 	resolve: (cmd: AbstractCommand) => void
@@ -24,11 +24,12 @@ export default abstract class AbstractCommand {
 			...this.properties,
 			...newProps
 		}
+		const maskFlags = (this.constructor as any).MaskFlags as { [key: string]: number }
 
-		if (this.MaskFlags) {
+		if (maskFlags) {
 			for (const key in newProps) {
-				if (key in this.MaskFlags) {
-					this.flag = this.flag | this.MaskFlags[key]
+				if (key in maskFlags) {
+					this.flag = this.flag | maskFlags[key]
 				}
 			}
 		}
