@@ -77,8 +77,8 @@ jobs:
       - run:
           name: Keyscan Github
           command: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-      - run: git config --global user.email "jesper@starkar.no"
-      - run: git config --global user.name "jesperstarkar"
+      - run: git config --global user.email "info@superfly.tv"
+      - run: git config --global user.name "superflytvab"
       - run: yarn release
       - run: git push --follow-tags origin HEAD
       - persist_to_workspace:
