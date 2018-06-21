@@ -16,7 +16,7 @@ export interface AtemCapabilites {
 	readonly maxHyperdecks: number
 	readonly DVEs: number
 	readonly stingers: number
-	readonly superSources: number
+	readonly hasSuperSources: boolean
 }
 
 export class DeviceInfo {
@@ -24,4 +24,5 @@ export class DeviceInfo {
 	capabilities: AtemCapabilites
 	model: Model
 	productIdentifier: string
+	superSourceBoxes: number
 }
