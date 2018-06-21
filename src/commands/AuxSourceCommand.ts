@@ -12,7 +12,7 @@ export class AuxSourceCommand extends AbstractCommand {
 	deserialize (rawCommand: Buffer) {
 		this.auxBus = rawCommand[0]
 		this.properties = {
-			source: rawCommand.readUInt8(2)
+			source: rawCommand.readUInt16BE(2)
 		}
 	}
 
