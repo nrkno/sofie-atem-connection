@@ -12,7 +12,7 @@ export class PreviewInputCommand extends AbstractCommand {
 	deserialize (rawCommand: Buffer) {
 		this.mixEffect = rawCommand[0]
 		this.properties = {
-			source: rawCommand.readUInt8(2)
+			source: rawCommand.readUInt16BE(2)
 		}
 	}
 

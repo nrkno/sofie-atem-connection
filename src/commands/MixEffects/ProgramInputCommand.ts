@@ -10,9 +10,10 @@ export class ProgramInputCommand extends AbstractCommand {
 	}
 
 	deserialize (rawCommand: Buffer) {
+		console.log('PrgI', rawCommand)
 		this.mixEffect = rawCommand[0]
 		this.properties = {
-			source: rawCommand.readUInt8(2)
+			source: rawCommand.readUInt16BE(2)
 		}
 	}
 
