@@ -19,7 +19,7 @@ export class TopologyCommand extends AbstractCommand {
 			maxHyperdecks: rawCommand[7],
 			DVEs: rawCommand[8],
 			stingers: rawCommand[9],
-			superSources: rawCommand[10]
+			hasSuperSources: rawCommand[10] === 1
 		}
 	}
 

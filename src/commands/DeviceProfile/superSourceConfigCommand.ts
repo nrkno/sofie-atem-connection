@@ -1,0 +1,23 @@
+import AbstractCommand from '../AbstractCommand'
+import { AtemState } from '../../state'
+
+export class SuperSourceConfigCommand extends AbstractCommand {
+	rawName = '_SSC'
+
+	properties: {
+		superSourceBoxes: number
+	}
+
+	deserialize (rawCommand: Buffer) {
+		this.properties = {
+			superSourceBoxes: rawCommand[0]
+		}
+	}
+
+	applyToState (state: AtemState) {
+		state.info = {
+			...state.info,
+			...this.properties
+		}
+	}
+}
