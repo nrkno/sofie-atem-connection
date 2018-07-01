@@ -5,9 +5,8 @@ export class InitCompleteCommand extends AbstractCommand {
 	downstreamKeyId: number
 	properties: null
 
-	deserialize (rawCommand: Buffer) {
-		console.log(rawCommand)
-		console.log('Initialized :D')
+	deserialize () {
+		//
 	}
 
 	applyToState () {
