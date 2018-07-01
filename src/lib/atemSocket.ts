@@ -71,7 +71,7 @@ export class AtemSocket extends EventEmitter {
 
 	public disconnect () {
 		return new Promise((resolve) => {
-			if (this._connectionState !== ConnectionState.Established) {
+			if (this._connectionState === ConnectionState.Established) {
 				this._socket.close(() => {
 					clearInterval(this._retransmitTimer as NodeJS.Timer)
 					clearInterval(this._reconnectTimer as NodeJS.Timer)
