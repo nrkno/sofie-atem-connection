@@ -8,6 +8,8 @@ import AbstractCommand from '../commands/AbstractCommand'
 export class AtemSocket extends EventEmitter {
 	private _connectionState = ConnectionState.Closed
 	private _debug = false
+	private _reconnectTimer: NodeJS.Timer | undefined
+	private _retransmitTimer: NodeJS.Timer | undefined
 
 	private _localPacketId = 1
 	private _maxPacketID = 1 << 15 // Atem expects 15 not 16 bits before wrapping
@@ -32,26 +34,30 @@ export class AtemSocket extends EventEmitter {
 		this._debug = options.debug || false
 		this.log = options.log || this.log
 
-		this._socket = createSocket('udp4')
-		this._socket.bind(1024 + Math.floor(Math.random() * 64511))
-		this._socket.on('message', (packet, rinfo) => this._receivePacket(packet, rinfo))
-
-		setInterval(() => {
-			if (this._lastReceivedAt + this._reconnectInterval > Date.now()) return
-			if (this._connectionState === ConnectionState.Established) {
-				this._connectionState = ConnectionState.Closed
-				this.emit('disconnect', null, null)
-			}
-			this._localPacketId = 1
-			this._sessionId = 0
-			this.log('reconnect')
-			this.connect(this._address, this._port)
-		}, this._reconnectInterval)
-
-		setInterval(() => this._checkForRetransmit(), 50)
+		this._createSocket()
 	}
 
 	public connect (address?: string, port?: number) {
+		if (!this._reconnectTimer) {
+			this._reconnectTimer = setInterval(() => {
+				if (this._lastReceivedAt + this._reconnectInterval > Date.now()) return
+				if (this._connectionState === ConnectionState.Established) {
+					this._connectionState = ConnectionState.Closed
+					this.emit('disconnect', null, null)
+				}
+				this._localPacketId = 1
+				this._sessionId = 0
+				this.log('reconnect')
+				if (this._address && this._port) {
+					this._sendPacket(Util.COMMAND_CONNECT_HELLO)
+					this._connectionState = ConnectionState.SynSent
+				}
+			}, this._reconnectInterval)
+		}
+		if (!this._retransmitTimer) {
+			this._retransmitTimer = setInterval(() => this._checkForRetransmit(), 50)
+		}
+
 		if (address) {
 			this._address = address
 		}
@@ -61,6 +67,27 @@ export class AtemSocket extends EventEmitter {
 
 		this._sendPacket(Util.COMMAND_CONNECT_HELLO)
 		this._connectionState = ConnectionState.SynSent
+	}
+
+	public disconnect () {
+		return new Promise((resolve) => {
+			if (this._connectionState !== ConnectionState.Established) {
+				this._socket.close(() => {
+					clearInterval(this._retransmitTimer as NodeJS.Timer)
+					clearInterval(this._reconnectTimer as NodeJS.Timer)
+					this._retransmitTimer = undefined
+					this._reconnectTimer = undefined
+
+					this._connectionState = ConnectionState.Closed
+					this._createSocket()
+					this.emit('disconnect')
+
+					resolve()
+				})
+			} else {
+				resolve()
+			}
+		})
 	}
 
 	public log (..._args: any[]): void {
@@ -96,6 +123,12 @@ export class AtemSocket extends EventEmitter {
 		this._inFlight.push({ packetId: this._localPacketId, lastSent: Date.now(), packet: buffer, resent: 0 })
 		this._localPacketId++
 		if (this._maxPacketID < this._localPacketId) this._localPacketId = 0
+	}
+
+	private _createSocket () {
+		this._socket = createSocket('udp4')
+		this._socket.bind(1024 + Math.floor(Math.random() * 64511))
+		this._socket.on('message', (packet, rinfo) => this._receivePacket(packet, rinfo))
 	}
 
 	private _receivePacket (packet: Buffer, rinfo: any) {

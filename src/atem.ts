@@ -64,6 +64,12 @@ export class Atem extends EventEmitter {
 		this.socket.connect(address, port)
 	}
 
+	disconnect (): Promise<void> {
+		return new Promise((resolve, reject) => {
+			this.socket.disconnect().then(() => resolve()).catch(reject)
+		})
+	}
+
 	sendCommand (command: AbstractCommand): Promise<any> {
 		const nextPacketId = this.socket.nextPacketId
 		const promise = new Promise((resolve, reject) => {
