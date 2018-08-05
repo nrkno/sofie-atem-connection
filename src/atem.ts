@@ -348,7 +348,7 @@ export class Atem extends EventEmitter {
 		const resolution = Util.getResolution(this.state.settings.videoMode)
 		return this.dataTransferManager.uploadStill(
 			index,
-			Util.convertPNGToYUV422(resolution[0], resolution[1], data),
+			Util.convertRGBAToYUV422(resolution[0], resolution[1], data),
 			name,
 			description
 		)
@@ -358,7 +358,7 @@ export class Atem extends EventEmitter {
 		const resolution = Util.getResolution(this.state.settings.videoMode)
 		const data: Array<Buffer> = []
 		for (const frame of frames) {
-			data.push(Util.convertPNGToYUV422(resolution[0], resolution[1], frame))
+			data.push(Util.convertRGBAToYUV422(resolution[0], resolution[1], frame))
 		}
 		return this.dataTransferManager.uploadClip(
 			index,
