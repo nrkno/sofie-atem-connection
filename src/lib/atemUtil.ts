@@ -96,7 +96,7 @@ export namespace Util {
 	 * @todo: BALTE - 2018-5-24:
 	 * Create util functions that handle proper colour spaces in UHD.
 	 */
-	export function convertPNGToYUV422 (width: number, height: number, data: Buffer) {
+	export function convertRGBAToYUV422 (width: number, height: number, data: Buffer) {
 		// BT.709 or BT.601
 		const KR = height >= 720 ? 0.2126 : 0.299
 		const KB = height >= 720 ? 0.0722 : 0.114
