@@ -1,5 +1,6 @@
 import AbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
+import { Util } from '../..'
 
 export class PreviewInputCommand extends AbstractCommand {
 	rawName = 'PrvI'
@@ -10,7 +11,7 @@ export class PreviewInputCommand extends AbstractCommand {
 	}
 
 	deserialize (rawCommand: Buffer) {
-		this.mixEffect = rawCommand[0]
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		this.properties = {
 			source: rawCommand.readUInt16BE(2)
 		}

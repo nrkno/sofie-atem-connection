@@ -1,6 +1,7 @@
 import AbstractCommand from '../../AbstractCommand'
 import { AtemState } from '../../../state'
 import { UpstreamKeyerDVESettings } from '../../../state/video/upstreamKeyers'
+import { Util, Enums } from '../../..'
 
 export class MixEffectKeyDVECommand extends AbstractCommand {
 	static MaskFlags = {
@@ -38,40 +39,40 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 	properties: UpstreamKeyerDVESettings
 
 	deserialize (rawCommand: Buffer) {
-		this.mixEffect = rawCommand[0]
-		this.upstreamKeyerId = rawCommand[1]
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		this.upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
 		this.properties = {
-			sizeX: rawCommand.readUInt32BE(4),
-			sizeY: rawCommand.readUInt32BE(8),
-			positionX: rawCommand.readInt32BE(12),
-			positionY: rawCommand.readInt32BE(16),
-			rotation: rawCommand.readInt32BE(20),
+			sizeX: Util.parseNumberBetween(rawCommand.readUInt32BE(4), 0, 99990),
+			sizeY: Util.parseNumberBetween(rawCommand.readUInt32BE(8), 0, 99990),
+			positionX: Util.parseNumberBetween(rawCommand.readInt32BE(12), -1000 * 1000, 1000 * 1000),
+			positionY: Util.parseNumberBetween(rawCommand.readInt32BE(16), -1000 * 1000, 1000 * 1000),
+			rotation: Util.parseNumberBetween(rawCommand.readInt32BE(20), -332230, 332230),
 
 			borderEnabled: rawCommand[24] === 1,
 			shadowEnabled: rawCommand[25] === 1,
-			borderBevel: rawCommand.readUInt8(26),
-			borderOuterWidth: rawCommand.readUInt16BE(28),
-			borderInnerWidth: rawCommand.readUInt16BE(30),
-			borderOuterSoftness: rawCommand.readInt8(32),
-			borderInnerSoftness: rawCommand.readInt8(33),
-			borderBevelSoftness: rawCommand.readInt8(34),
-			borderBevelPosition: rawCommand.readInt8(35),
+			borderBevel: Util.parseEnum<Enums.BorderBevel>(rawCommand.readUInt8(26), Enums.BorderBevel),
+			borderOuterWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(28), 0, 1600),
+			borderInnerWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(30), 0, 1600),
+			borderOuterSoftness: Util.parseNumberBetween(rawCommand.readInt8(32), 0, 100),
+			borderInnerSoftness: Util.parseNumberBetween(rawCommand.readInt8(33), 0, 100),
+			borderBevelSoftness: Util.parseNumberBetween(rawCommand.readInt8(34), 0, 100),
+			borderBevelPosition: Util.parseNumberBetween(rawCommand.readInt8(35), 0, 100),
 
-			borderOpacity: rawCommand.readInt8(36),
-			borderHue: rawCommand.readUInt16BE(38),
-			borderSaturation: rawCommand.readUInt16BE(40),
-			borderLuma: rawCommand.readUInt16BE(42),
+			borderOpacity: Util.parseNumberBetween(rawCommand.readInt8(36), 0, 100),
+			borderHue: Util.parseNumberBetween(rawCommand.readUInt16BE(38), 0, 1000),
+			borderSaturation: Util.parseNumberBetween(rawCommand.readUInt16BE(40), 0, 1000),
+			borderLuma: Util.parseNumberBetween(rawCommand.readUInt16BE(42), 0, 1000),
 
-			lightSourceDirection: rawCommand.readUInt16BE(44),
-			lightSourceAltitude: rawCommand.readUInt8(46),
+			lightSourceDirection: Util.parseNumberBetween(rawCommand.readUInt16BE(44), 0, 3599),
+			lightSourceAltitude: Util.parseNumberBetween(rawCommand.readUInt8(46), 0, 100),
 
 			maskEnabled: rawCommand[47] === 1,
-			maskTop: rawCommand.readUInt16BE(48),
-			maskBottom: rawCommand.readUInt16BE(50),
-			maskLeft: rawCommand.readUInt16BE(52),
-			maskRight: rawCommand.readUInt16BE(54),
+			maskTop: Util.parseNumberBetween(rawCommand.readUInt16BE(48), 0, 38000),
+			maskBottom: Util.parseNumberBetween(rawCommand.readUInt16BE(50), 0, 38000),
+			maskLeft: Util.parseNumberBetween(rawCommand.readUInt16BE(52), 0, 52000),
+			maskRight: Util.parseNumberBetween(rawCommand.readUInt16BE(54), 0, 52000),
 
-			rate: rawCommand.readInt8(56)
+			rate: Util.parseNumberBetween(rawCommand.readInt8(56), 0, 250)
 		}
 	}
 

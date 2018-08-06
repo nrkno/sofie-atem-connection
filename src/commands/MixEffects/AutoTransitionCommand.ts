@@ -1,4 +1,5 @@
 import AbstractCommand from '../AbstractCommand'
+import { Util } from '../..'
 
 export class AutoTransitionCommand extends AbstractCommand {
 	rawName = 'DAut'
@@ -7,7 +8,7 @@ export class AutoTransitionCommand extends AbstractCommand {
 	properties: null
 
 	deserialize (rawCommand: Buffer) {
-		this.mixEffect = rawCommand[0]
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 	}
 
 	serialize () {

@@ -1,6 +1,7 @@
 import AbstractCommand from '../../AbstractCommand'
 import { AtemState } from '../../../state'
 import { StingerTransitionSettings } from '../../../state/video'
+import { Util } from '../../..'
 
 export class TransitionStingerCommand extends AbstractCommand {
 	static MaskFlags = {
@@ -25,13 +26,13 @@ export class TransitionStingerCommand extends AbstractCommand {
 	}
 
 	deserialize (rawCommand: Buffer) {
-		this.mixEffect = rawCommand[0]
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		this.properties = {
 			source: rawCommand[1],
 			preMultipliedKey: rawCommand[2] === 1,
 
-			clip: rawCommand[4] << 8 | rawCommand[5],
-			gain: rawCommand[6] << 8 | rawCommand[7],
+			clip: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 1000),
+			gain: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 1000),
 			invert: rawCommand[8] === 1,
 
 			preroll: rawCommand[10] << 8 | rawCommand[11],

@@ -1,6 +1,7 @@
 import AbstractCommand from '../../AbstractCommand'
 import { AtemState } from '../../../state'
 import { TransitionProperties } from '../../../state/video'
+import { Util, Enums } from '../../..'
 
 export class TransitionPropertiesCommand extends AbstractCommand {
 	static MaskFlags = {
@@ -18,11 +19,11 @@ export class TransitionPropertiesCommand extends AbstractCommand {
 	}
 
 	deserialize (rawCommand: Buffer) {
-		this.mixEffect = rawCommand[0]
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		this.properties = {
-			style: rawCommand[1],
+			style: Util.parseEnum<Enums.TransitionStyle>(rawCommand[1], Enums.TransitionStyle),// rawCommand[1],
 			selection: rawCommand[2],
-			nextStyle: rawCommand[3],
+			nextStyle: Util.parseEnum<Enums.TransitionStyle>(rawCommand[3], Enums.TransitionStyle),
 			nextSelection: rawCommand[4]
 		}
 	}

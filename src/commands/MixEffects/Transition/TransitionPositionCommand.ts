@@ -1,5 +1,6 @@
 import AbstractCommand from '../../AbstractCommand'
 import { AtemState } from '../../../state'
+import { Util } from '../../..'
 
 export class TransitionPositionCommand extends AbstractCommand {
 	rawName = 'TrPs' // this seems unnecessary.
@@ -12,11 +13,11 @@ export class TransitionPositionCommand extends AbstractCommand {
 	}
 
 	deserialize (rawCommand: Buffer) {
-		this.mixEffect = rawCommand[0]
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		this.properties = {
 			inTransition: rawCommand[1] === 1,
-			remainingFrames: rawCommand[2],
-			handlePosition: rawCommand[4] << 8 | rawCommand[4]
+			remainingFrames: Util.parseNumberBetween(rawCommand[2], 0, 250),
+			handlePosition: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 9999)
 		}
 	}
 

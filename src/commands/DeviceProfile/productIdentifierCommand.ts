@@ -1,6 +1,7 @@
 import AbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
 import { Util } from '../../lib/atemUtil'
+import { Enums } from '../..'
 
 export class ProductIdentifierCommand extends AbstractCommand {
 	rawName = '_pin'
@@ -13,7 +14,7 @@ export class ProductIdentifierCommand extends AbstractCommand {
 	deserialize (rawCommand: Buffer) {
 		this.properties = {
 			deviceName: Util.bufToNullTerminatedString(rawCommand, 0, 32),
-			model: rawCommand[40]
+			model: Util.parseEnum<Enums.Model>(rawCommand[40], Enums.Model)
 		}
 	}
 

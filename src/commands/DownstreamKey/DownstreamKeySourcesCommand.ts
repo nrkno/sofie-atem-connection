@@ -1,5 +1,6 @@
 import AbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
+import { Util } from '../..'
 
 export class DownstreamKeySourcesCommand extends AbstractCommand {
 	rawName = 'DskB'
@@ -10,7 +11,7 @@ export class DownstreamKeySourcesCommand extends AbstractCommand {
 	}
 
 	deserialize (rawCommand: Buffer) {
-		this.downstreamKeyerId = rawCommand[0]
+		this.downstreamKeyerId = Util.parseNumberBetween(rawCommand[0], 0, 3),
 		this.properties = {
 			fillSource: rawCommand.readInt16BE(2),
 			cutSource: rawCommand.readInt16BE(4)

@@ -13,6 +13,17 @@ export namespace Util {
 		return slice.toString('ascii', 0, nullIndex < 0 ? slice.length : nullIndex)
 	}
 
+	export function parseNumberBetween (num: number, min: number, max: number): number {
+		if (num > max) throw Error('Number too big')
+		else if (num < min) throw Error('Number too small')
+		return num
+	}
+
+	export function parseEnum<G> (value: G, type: any): G {
+		if (!type[value]) throw Error('Value is not a valid option in enum')
+		return value
+	}
+
 	export const COMMAND_CONNECT_HELLO = Buffer.from([
 		0x10, 0x14, 0x53, 0xAB,
 		0x00, 0x00, 0x00, 0x00,

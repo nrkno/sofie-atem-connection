@@ -1,6 +1,7 @@
 import AbstractCommand from '../../AbstractCommand'
 import { AtemState } from '../../../state'
 import { UpstreamKeyerChromaSettings } from '../../../state/video/upstreamKeyers'
+import { Util } from '../../..'
 
 export class MixEffectKeyChromaCommand extends AbstractCommand {
 	static MaskFlags = {
@@ -17,13 +18,13 @@ export class MixEffectKeyChromaCommand extends AbstractCommand {
 	properties: UpstreamKeyerChromaSettings
 
 	deserialize (rawCommand: Buffer) {
-		this.mixEffect = rawCommand[0]
-		this.upstreamKeyerId = rawCommand[1]
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		this.upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
 		this.properties = {
-			hue: rawCommand.readUInt16BE(2),
-			gain: rawCommand.readUInt16BE(4),
-			ySuppress: rawCommand.readUInt16BE(6),
-			lift: rawCommand.readUInt16BE(8),
+			hue: Util.parseNumberBetween(rawCommand.readUInt16BE(2), 0, 3599),
+			gain: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 1000),
+			ySuppress: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 1000),
+			lift: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 1000),
 			narrow: rawCommand[10] === 1
 		}
 	}

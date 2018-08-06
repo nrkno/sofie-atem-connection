@@ -1,6 +1,7 @@
 import AbstractCommand from '../../AbstractCommand'
 import { AtemState } from '../../../state'
 import { UpstreamKeyerPatternSettings } from '../../../state/video/upstreamKeyers'
+import { Util, Enums } from '../../..'
 
 export class MixEffectKeyPatternCommand extends AbstractCommand {
 	static MaskFlags = {
@@ -19,15 +20,15 @@ export class MixEffectKeyPatternCommand extends AbstractCommand {
 	properties: UpstreamKeyerPatternSettings
 
 	deserialize (rawCommand: Buffer) {
-		this.mixEffect = rawCommand[0]
-		this.upstreamKeyerId = rawCommand[1]
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		this.upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
 		this.properties = {
-			style: rawCommand[2],
-			size: rawCommand.readUInt16BE(4),
-			symmetry: rawCommand.readUInt16BE(6),
-			softness: rawCommand.readUInt16BE(8),
-			positionX: rawCommand.readUInt16BE(10),
-			positionY: rawCommand.readUInt16BE(12),
+			style: Util.parseEnum<Enums.Pattern>(rawCommand[2], Enums.Pattern),
+			size: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 10000),
+			symmetry: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 10000),
+			softness: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 10000),
+			positionX: Util.parseNumberBetween(rawCommand.readUInt16BE(10), 0, 10000),
+			positionY: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 10000),
 			invert: rawCommand[14] === 1
 		}
 	}
