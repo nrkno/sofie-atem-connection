@@ -7,6 +7,8 @@ import DataTransferStill from './dataTransferStill'
 import DataTransferClip from './dataTransferClip'
 import DataTransferAudio from './dataTransferAudio'
 
+const MAX_PACKETS_TO_SEND_PER_TICK = 10
+
 export class DataTransferManager {
 	commandQueue: Array<Commands.AbstractCommand> = []
 
@@ -20,9 +22,14 @@ export class DataTransferManager {
 
 	constructor (sendCommand: (command: Commands.AbstractCommand) => Promise<Commands.AbstractCommand>) {
 		setInterval(() => {
-			if (this.commandQueue.length > 0) {
-				sendCommand(this.commandQueue.shift()!)
+			if (this.commandQueue.length <= 0) {
+				return
 			}
+
+			const commandsToSend = this.commandQueue.splice(0, MAX_PACKETS_TO_SEND_PER_TICK)
+			commandsToSend.forEach(command => {
+				sendCommand(command)
+			})
 		}, 0)
 	}
 
