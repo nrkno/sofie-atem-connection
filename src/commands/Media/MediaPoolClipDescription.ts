@@ -1,7 +1,7 @@
 import { AtemState } from '../../state'
 import { ClipBank } from '../../state/media'
 import AbstractCommand from '../AbstractCommand'
-import { Util } from '../..'
+import { Util } from '../../lib/atemUtil'
 
 export class MediaPoolClipDescriptionCommand extends AbstractCommand {
 	rawName = 'MPCS'
