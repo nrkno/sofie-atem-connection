@@ -14,8 +14,8 @@ export namespace Util {
 	}
 
 	export function parseNumberBetween (num: number, min: number, max: number): number {
-		if (num > max) throw Error('Number too big')
-		else if (num < min) throw Error('Number too small')
+		if (num > max) throw Error(`Number too big: ${num} > ${max}`)
+		else if (num < min) throw Error(`Number too small: ${num} < ${min}`)
 		return num
 	}
 
