@@ -1,6 +1,6 @@
 import AbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
-import { Enums } from '../..';
+import { Enums } from '../..'
 
 export class VideoModeCommand extends AbstractCommand {
 	rawName = 'VidM'
