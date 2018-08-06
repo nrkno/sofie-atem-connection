@@ -40,7 +40,9 @@ export default class DataTransferFrame extends DataTransfer {
 			}
 			this.queueCommand(command.properties.chunkCount, command.properties.chunkSize)
 		} else if (command.constructor.name === Commands.DataTransferCompleteCommand.name) {
-			this.state = Enums.TransferState.Finished
+			if (this.state === Enums.TransferState.Transferring) {
+				this.state = Enums.TransferState.Finished
+			}
 		}
 	}
 
