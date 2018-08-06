@@ -21,9 +21,7 @@ export class MediaPoolClipDescriptionCommand extends AbstractCommand {
 
 	applyToState (state: AtemState) {
 		const newProps = { ...this.properties }
-
-		// @todo: check if the undefined check makes sense, maybe check for frameCount instead?
-		if (typeof state.media.clipPool[this.mediaPool - 1] !== 'undefined') {
+		if (state.media.clipPool[this.mediaPool - 1]) {
 			newProps.frames = state.media.clipPool[this.mediaPool - 1].frames
 		}
 		state.media.clipPool[this.mediaPool - 1] = newProps

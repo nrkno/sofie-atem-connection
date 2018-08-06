@@ -1,6 +1,6 @@
 import AbstractCommand from '../../AbstractCommand'
 import { AtemState } from '../../../state'
-import { MixTransitionSettings} from '../../../state/video'
+import { MixTransitionSettings } from '../../../state/video'
 import { Util } from '../../..'
 
 export class TransitionMixCommand extends AbstractCommand {

@@ -10,7 +10,7 @@ export class DataTransferDataCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		if (typeof this.properties.size === 'undefined') this.properties.size = this.properties.body.length
+		this.properties.size = this.properties.body.length
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt16BE(this.properties.transferId, 0)
 		buffer.writeUInt16BE(this.properties.size, 2)

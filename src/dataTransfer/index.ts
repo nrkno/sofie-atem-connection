@@ -28,7 +28,7 @@ export class DataTransferManager {
 
 			const commandsToSend = this.commandQueue.splice(0, MAX_PACKETS_TO_SEND_PER_TICK)
 			commandsToSend.forEach(command => {
-				sendCommand(command)
+				sendCommand(command).catch(() => { /* discard error */ })
 			})
 		}, 0)
 	}
