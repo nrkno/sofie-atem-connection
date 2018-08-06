@@ -68,4 +68,13 @@ export default class DataLock {
 			this.commandQueue.push(command)
 		}
 	}
+
+	transferErrored (code: number) {
+		if (this.transfer) {
+			// @todo: dequeue any old commands
+			this.transfer.fail(code)
+		}
+		this.transfer = undefined
+		this.dequeueAndRun()
+	}
 }

@@ -9,7 +9,7 @@ export default abstract class DataTransfer {
 	commandQueue: Array<Commands.AbstractCommand>
 
 	finish: (transfer: DataTransfer) => void
-	fail: () => void
+	fail: (errorCode?: number) => void
 	abstract start (): void
 
 	abstract handleCommand (command: Commands.AbstractCommand): void
