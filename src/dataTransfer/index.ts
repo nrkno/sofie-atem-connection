@@ -69,6 +69,9 @@ export class DataTransferManager {
 			if (!command.properties.locked) lock.lostLock()
 			else lock.updateLock(command.properties.locked)
 		}
+		if (command.constructor.name === Commands.DataTransferErrorCommand.name) {
+			lock.transferErrored(command.properties.errorCode)
+		}
 		if (lock.transfer) {
 			lock.transfer.handleCommand(command)
 			if (lock.transfer.state === Enums.TransferState.Finished) {
