@@ -12,7 +12,7 @@ export class AtemSocket extends EventEmitter {
 	private _retransmitTimer: NodeJS.Timer | undefined
 
 	private _localPacketId = 1
-	private _maxPacketID = 1 << 15 // Atem expects 15 not 16 bits before wrapping
+	private _maxPacketID = (1 << 15) - 1 // Atem expects 15 not 16 bits before wrapping
 	private _sessionId: number
 
 	private _address: string
