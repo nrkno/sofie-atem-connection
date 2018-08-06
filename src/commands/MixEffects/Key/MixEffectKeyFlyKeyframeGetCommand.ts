@@ -13,7 +13,7 @@ export class MixEffectKeyFlyKeyframeGetCommand extends AbstractCommand {
 		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		this.upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
 		this.properties = {
-			keyFrameId: Util.parseNumberBetween(rawCommand[2], 0, 1),
+			keyFrameId: Util.parseNumberBetween(rawCommand[2], 1, 2),
 
 			sizeX: Util.parseNumberBetween(rawCommand.readUInt32BE(4), 0, 99990),
 			sizeY: Util.parseNumberBetween(rawCommand.readUInt32BE(8), 0, 99990),
