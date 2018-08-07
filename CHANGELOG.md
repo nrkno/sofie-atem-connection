@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.2.3"></a>
+## [0.2.3](https://github.com/nrkno/tv-automation-atem-connection/compare/0.2.2...0.2.3) (2018-08-07)
+
+
+### Bug Fixes
+
+* **atemSocket:** fix _maxPacketID being off-by-one ([e116c35](https://github.com/nrkno/tv-automation-atem-connection/commit/e116c35))
+
+
+
 <a name="0.2.2"></a>
 ## [0.2.2](https://github.com/nrkno/tv-automation-atem-connection/compare/0.2.1...0.2.2) (2018-08-06)
 
