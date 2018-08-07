@@ -9,7 +9,8 @@ export class AtemSocket extends EventEmitter {
 	private _localPacketId = 1
 	private _address: string
 	private _port: number = 9910
-	private _socketProcess: ChildProcess
+	private _shouldConnect = false
+	private _socketProcess: ChildProcess | null
 	private _commandParser: CommandParser = new CommandParser()
 
 	constructor (options: { address?: string, port?: number, debug?: boolean, log?: (args1: any, args2?: any, args3?: any) => void }) {
@@ -23,6 +24,8 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	public connect (address?: string, port?: number) {
+		this._shouldConnect = true
+
 		if (address) {
 			this._address = address
 		}
@@ -30,18 +33,35 @@ export class AtemSocket extends EventEmitter {
 			this._port = port
 		}
 
-		return this._socketProcess.send({
-			cmd: 'connect',
-			payload: {
-				address,
-				port
+		return new Promise((resolve, reject) => {
+			if (!this._socketProcess) {
+				return resolve()
 			}
+
+			this._socketProcess.send({
+				cmd: 'connect',
+				payload: {
+					address: this._address,
+					port: this._port
+				}
+			}, (error: Error) => {
+				if (error) {
+					reject(error)
+				} else {
+					resolve()
+				}
+			})
 		})
 	}
 
 	public disconnect () {
+		this._shouldConnect = false
+
 		return new Promise((resolve, reject) => {
-			// @ts-ignore
+			if (!this._socketProcess) {
+				return resolve()
+			}
+
 			this._socketProcess.send({
 				cmd: 'disconnect'
 			}, (error: Error) => {
@@ -69,15 +89,43 @@ export class AtemSocket extends EventEmitter {
 
 		const payload = command.serialize()
 		if (this._debug) this.log('PAYLOAD', payload)
-		return this._socketProcess.send({
-			cmd: 'sendCommand',
-			payload
-		})
+
+		if (this._socketProcess) {
+			this._socketProcess.send({
+				cmd: 'sendCommand',
+				payload
+			})
+		}
 	}
 
 	private _createSocketProcess () {
+		if (this._socketProcess) {
+			this._socketProcess.removeAllListeners()
+			this._socketProcess.kill()
+			this._socketProcess = null
+		}
+
 		this._socketProcess = fork(path.resolve('dist/lib/atemSocketChild.js'), [], {silent: true})
 		this._socketProcess.on('message', this._receiveMessage.bind(this))
+		this._socketProcess.on('error', error => {
+			this.emit('error', error)
+			this.log('socket process error:', error)
+		})
+		this._socketProcess.on('exit', (code, signal) => {
+			this.emit('error', new Error(`The socket process unexpectedly closed (code: "${code}", signal: "${signal}")`))
+			this.log('socket process exit:', code, signal)
+			process.nextTick(() => {
+				this._createSocketProcess()
+			})
+		})
+
+		if (this._shouldConnect) {
+			this.connect().catch(error => {
+				const errorMsg = 'Failed to reconnect after respawning socket process'
+				this.emit('error', error)
+				this.log(errorMsg + ':', error && error.message)
+			})
+		}
 	}
 
 	private _receiveMessage (message: any) {
