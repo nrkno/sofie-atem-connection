@@ -1,6 +1,7 @@
 import AbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
 import { SuperSourceBox } from '../../state/video'
+import { Util } from '../..'
 
 export class SuperSourceBoxParametersCommand extends AbstractCommand {
 	static MaskFlags = {
@@ -29,14 +30,14 @@ export class SuperSourceBoxParametersCommand extends AbstractCommand {
 		this.properties = {
 			enabled: rawCommand[1] === 1,
 			source: rawCommand.readUInt16BE(2),
-			x: rawCommand.readInt16BE(4),
-			y: rawCommand.readInt16BE(6),
-			size: rawCommand.readUInt16BE(8),
+			x: Util.parseNumberBetween(rawCommand.readInt16BE(4), -4800, 4800),
+			y: Util.parseNumberBetween(rawCommand.readInt16BE(6), -3400, 3400),
+			size: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 70, 1000),
 			cropped: rawCommand[10] === 1,
-			cropTop: rawCommand.readUInt16BE(12),
-			cropBottom: rawCommand.readUInt16BE(14),
-			cropLeft: rawCommand.readUInt16BE(16),
-			cropRight: rawCommand.readUInt16BE(18)
+			cropTop: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 18000),
+			cropBottom: Util.parseNumberBetween(rawCommand.readUInt16BE(14), 0, 18000),
+			cropLeft: Util.parseNumberBetween(rawCommand.readUInt16BE(16), 0, 32000),
+			cropRight: Util.parseNumberBetween(rawCommand.readUInt16BE(18), 0, 3200)
 		}
 	}
 

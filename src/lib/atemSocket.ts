@@ -186,9 +186,13 @@ export class AtemSocket extends EventEmitter {
 		// this.log('COMMAND', `${name}(${length})`, buffer.slice(0, length))
 		const cmd = this._commandParser.commandFromRawName(name)
 		if (cmd && typeof cmd.deserialize === 'function') {
-			cmd.deserialize(buffer.slice(0, length).slice(8))
-			cmd.packetId = packetId || -1
-			this.emit('receivedStateChange', cmd)
+			try {
+				cmd.deserialize(buffer.slice(0, length).slice(8))
+				cmd.packetId = packetId || -1
+				this.emit('receivedStateChange', cmd)
+			} catch (e) {
+				this.emit('error', e)
+			}
 		}
 
 		if (buffer.length > length) {

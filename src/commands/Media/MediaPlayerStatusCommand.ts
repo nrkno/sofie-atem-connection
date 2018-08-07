@@ -1,6 +1,7 @@
 import { AtemState } from '../../state'
 import { MediaPlayer } from '../../state/media'
 import AbstractCommand from '../AbstractCommand'
+import { Util } from '../../lib/atemUtil'
 
 export class MediaPlayerStatusCommand extends AbstractCommand {
 	static MaskFlags = {
@@ -20,7 +21,7 @@ export class MediaPlayerStatusCommand extends AbstractCommand {
 	}
 
 	deserialize (rawCommand: Buffer) {
-		this.mediaPlayerId = rawCommand[0]
+		this.mediaPlayerId = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		this.properties = {
 			playing: rawCommand[1] === 1,
 			loop: rawCommand[2] === 1,

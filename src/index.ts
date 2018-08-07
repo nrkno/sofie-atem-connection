@@ -3,9 +3,11 @@ export * from './state'
 
 import * as Enums from './enums'
 import * as Commands from './commands'
+import { Util } from './lib/atemUtil'
 export {
 	Enums,
-	Commands
+	Commands,
+	Util
 }
 
 import * as VideoState from './state/video'

@@ -1,6 +1,7 @@
 import AbstractCommand from '../../AbstractCommand'
 import { AtemState } from '../../../state'
 import { WipeTransitionSettings } from '../../../state/video'
+import { Util, Enums } from '../../..'
 
 export class TransitionWipeCommand extends AbstractCommand {
 	static MaskFlags = {
@@ -26,16 +27,16 @@ export class TransitionWipeCommand extends AbstractCommand {
 	}
 
 	deserialize (rawCommand: Buffer) {
-		this.mixEffect = rawCommand[0]
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		this.properties = {
-			rate: rawCommand[1],
-			pattern: rawCommand[2],
-			borderWidth: rawCommand[4] << 8 | rawCommand[5],
-			borderInput: rawCommand[6] << 8 | rawCommand[7],
-			symmetry: rawCommand[8] << 8 | rawCommand[9],
-			borderSoftness: rawCommand[10] << 8 | rawCommand[11],
-			xPosition: rawCommand[12] << 8 | rawCommand[13],
-			yPosition: rawCommand[14] << 8 | rawCommand[15],
+			rate: Util.parseNumberBetween(rawCommand[1], 1, 250),
+			pattern: Util.parseEnum<Enums.Pattern>(rawCommand[2], Enums.Pattern),
+			borderWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 10000),
+			borderInput: rawCommand.readUInt16BE(6),
+			symmetry: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 10000),
+			borderSoftness: Util.parseNumberBetween(rawCommand.readUInt16BE(10), 0, 10000),
+			xPosition: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 10000),
+			yPosition: Util.parseNumberBetween(rawCommand.readUInt16BE(14), 0, 10000),
 			reverseDirection: rawCommand[16] === 1,
 			flipFlop: rawCommand[17] === 1
 		}

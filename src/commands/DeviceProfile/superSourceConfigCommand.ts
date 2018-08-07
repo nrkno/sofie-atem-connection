@@ -1,5 +1,6 @@
 import AbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
+import { Util } from '../..'
 
 export class SuperSourceConfigCommand extends AbstractCommand {
 	rawName = '_SSC'
@@ -10,7 +11,7 @@ export class SuperSourceConfigCommand extends AbstractCommand {
 
 	deserialize (rawCommand: Buffer) {
 		this.properties = {
-			superSourceBoxes: rawCommand[0]
+			superSourceBoxes: Util.parseNumberBetween(rawCommand[0], 0, 3)
 		}
 	}
 

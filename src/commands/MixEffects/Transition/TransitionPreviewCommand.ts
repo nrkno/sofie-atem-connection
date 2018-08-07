@@ -1,5 +1,6 @@
 import AbstractCommand from '../../AbstractCommand'
 import { AtemState } from '../../../state'
+import { Util } from '../../..'
 
 export class PreviewTransitionCommand extends AbstractCommand {
 	rawName = 'TrPr' // this seems unnecessary.
@@ -10,7 +11,7 @@ export class PreviewTransitionCommand extends AbstractCommand {
 	}
 
 	deserialize (rawCommand: Buffer) {
-		this.mixEffect = rawCommand[0]
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		this.properties = {
 			preview: rawCommand[1] === 1
 		}

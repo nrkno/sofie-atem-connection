@@ -1,6 +1,7 @@
 import AbstractCommand from '../../AbstractCommand'
 import { AtemState } from '../../../state'
 import { MixTransitionSettings} from '../../../state/video'
+import { Util } from '../../..'
 
 export class TransitionMixCommand extends AbstractCommand {
 	rawName = 'TMxP'
@@ -13,9 +14,9 @@ export class TransitionMixCommand extends AbstractCommand {
 	}
 
 	deserialize (rawCommand: Buffer) {
-		this.mixEffect = rawCommand[0]
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		this.properties = {
-			rate: rawCommand[1]
+			rate: Util.parseNumberBetween(rawCommand[1], 1, 250)
 		}
 	}
 

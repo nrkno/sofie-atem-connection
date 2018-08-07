@@ -80,7 +80,7 @@ export interface IMixEffect {
 	numberOfKeyers: number
 	transitionProperties: TransitionProperties
 	transitionSettings: TransitionSettings,
-	upstreamKeyers: Array<USK.UpstreamKeyer>
+	upstreamKeyers: { [index: number]: USK.UpstreamKeyer }
 }
 
 export class MixEffect implements IMixEffect {
@@ -95,7 +95,7 @@ export class MixEffect implements IMixEffect {
 	numberOfKeyers: number
 	transitionProperties: TransitionProperties = {} as TransitionProperties
 	transitionSettings: TransitionSettings = {} as TransitionSettings
-	upstreamKeyers: Array<USK.UpstreamKeyer> = []
+	upstreamKeyers: { [index: number]: USK.UpstreamKeyer } = []
 
 	constructor (index: number) {
 		this.index = index
@@ -108,7 +108,7 @@ export class MixEffect implements IMixEffect {
 				chromaSettings: {} as USK.UpstreamKeyerChromaSettings,
 				lumaSettings: {} as USK.UpstreamKeyerLumaSettings,
 				patternSettings: {} as USK.UpstreamKeyerPatternSettings,
-				flyKeyframes: [] as Array<USK.UpstreamKeyerFlyKeyframe>,
+				flyKeyframes: [] as { [index: number]: USK.UpstreamKeyerFlyKeyframe },
 				flyProperties: {} as USK.UpstreamKeyerFlySettings
 			} as USK.UpstreamKeyer
 		}
@@ -131,10 +131,10 @@ export interface SuperSourceBox {
 }
 
 export class AtemVideoState {
-	ME: Array<MixEffect> = []
-	downstreamKeyers: Array<DownstreamKeyer> = []
-	auxilliaries: Array<number> = []
-	superSourceBoxes: Array<SuperSourceBox> = []
+	ME: { [index: string]: MixEffect } = {}
+	downstreamKeyers: { [index: string]: DownstreamKeyer } = {}
+	auxilliaries: { [index: string]: number } = {}
+	superSourceBoxes: { [index: string]: SuperSourceBox } = {}
 
 	getMe (index: number) {
 		if (!this.ME[index]) {
