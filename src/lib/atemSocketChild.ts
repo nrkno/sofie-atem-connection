@@ -1,5 +1,6 @@
 import { createSocket, Socket } from 'dgram'
 import { EventEmitter } from 'events'
+import { format } from 'util'
 import { Util } from './atemUtil'
 import { ConnectionState, PacketFlag } from '../enums'
 
@@ -85,7 +86,12 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	public log (...args: any[]): void {
-		console.log(...args)
+		// @ts-ignore
+		const payload = format(...args)
+		return (process as any).send({
+			cmd: 'log',
+			payload
+		})
 	}
 
 	get nextPacketId (): number {

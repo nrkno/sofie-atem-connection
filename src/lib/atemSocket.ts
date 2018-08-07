@@ -76,7 +76,7 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	private _createSocketProcess () {
-		this._socketProcess = fork(path.resolve('dist/lib/atemSocketChild.js'))
+		this._socketProcess = fork(path.resolve('dist/lib/atemSocketChild.js'), [], {silent: true})
 		this._socketProcess.on('message', this._receiveMessage.bind(this))
 	}
 
@@ -91,6 +91,9 @@ export class AtemSocket extends EventEmitter {
 
 		const payload = message.payload
 		switch (message.cmd) {
+			case 'log':
+				this.log(message.payload)
+				break
 			case 'commandPacket':
 				this._parseCommand(Buffer.from(payload.packet.data), payload.remotePacketId)
 				break
