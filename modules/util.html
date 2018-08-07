@@ -918,6 +918,12 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-function tsd-parent-kind-module">
 			<a href="util.html#buftonullterminatedstring" class="tsd-kind-icon">buf<wbr>ToNull<wbr>Terminated<wbr>String</a>
 		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-module tsd-has-type-parameter">
+			<a href="util.html#parseenum" class="tsd-kind-icon">parse<wbr>Enum</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-module">
+			<a href="util.html#parsenumberbetween" class="tsd-kind-icon">parse<wbr>Number<wbr>Between</a>
+		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-module">
 			<a href="util.html#stringtobytes" class="tsd-kind-icon">string<wbr>ToBytes</a>
 		</li>
@@ -940,6 +946,8 @@ img { max-width: 100%; }
 						<h3>Functions</h3>
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-function tsd-parent-kind-module"><a href="util.html#buftonullterminatedstring" class="tsd-kind-icon">buf<wbr>ToNull<wbr>Terminated<wbr>String</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-module tsd-has-type-parameter"><a href="util.html#parseenum" class="tsd-kind-icon">parse<wbr>Enum</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-module"><a href="util.html#parsenumberbetween" class="tsd-kind-icon">parse<wbr>Number<wbr>Between</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-module"><a href="util.html#stringtobytes" class="tsd-kind-icon">string<wbr>ToBytes</a></li>
 						</ul>
 					</section>
@@ -954,7 +962,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">COMMAND_<wbr>CONNECT_<wbr>HELLO<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol"> =&nbsp;Buffer.from([0x10, 0x14, 0x53, 0xAB,0x00, 0x00, 0x00, 0x00,0x00, 0x3A, 0x00, 0x00,0x01, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00])</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/3657599/src/lib/atemUtil.ts#L16">lib/atemUtil.ts:16</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b23124d/src/lib/atemUtil.ts#L27">lib/atemUtil.ts:27</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -964,7 +972,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">COMMAND_<wbr>CONNECT_<wbr>HELLO_<wbr>ANSWER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol"> =&nbsp;Buffer.from([0x80, 0x0C, 0x53, 0xAB,0x00, 0x00, 0x00, 0x00,0x00, 0x03, 0x00, 0x00])</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/3657599/src/lib/atemUtil.ts#L24">lib/atemUtil.ts:24</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b23124d/src/lib/atemUtil.ts#L35">lib/atemUtil.ts:35</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -981,7 +989,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/3657599/src/lib/atemUtil.ts#L10">lib/atemUtil.ts:10</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b23124d/src/lib/atemUtil.ts#L10">lib/atemUtil.ts:10</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1000,6 +1008,67 @@ img { max-width: 100%; }
 					</li>
 				</ul>
 			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-has-type-parameter">
+				<a name="parseenum" class="tsd-anchor"></a>
+				<h3>parse<wbr>Enum</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-has-type-parameter">
+					<li class="tsd-signature tsd-kind-icon">parse<wbr>Enum&lt;G&gt;<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">G</span>, type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">G</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b23124d/src/lib/atemUtil.ts#L22">lib/atemUtil.ts:22</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-type-parameters-title">Type parameters</h4>
+						<ul class="tsd-type-parameters">
+							<li>
+								<h4>G</h4>
+							</li>
+						</ul>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>value: <span class="tsd-signature-type">G</span></h5>
+							</li>
+							<li>
+								<h5>type: <span class="tsd-signature-type">any</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">G</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+				<a name="parsenumberbetween" class="tsd-anchor"></a>
+				<h3>parse<wbr>Number<wbr>Between</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+					<li class="tsd-signature tsd-kind-icon">parse<wbr>Number<wbr>Between<span class="tsd-signature-symbol">(</span>num<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, min<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b23124d/src/lib/atemUtil.ts#L16">lib/atemUtil.ts:16</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>num: <span class="tsd-signature-type">number</span></h5>
+							</li>
+							<li>
+								<h5>min: <span class="tsd-signature-type">number</span></h5>
+							</li>
+							<li>
+								<h5>max: <span class="tsd-signature-type">number</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
 				<a name="stringtobytes" class="tsd-anchor"></a>
 				<h3>string<wbr>ToBytes</h3>
@@ -1010,7 +1079,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/3657599/src/lib/atemUtil.ts#L2">lib/atemUtil.ts:2</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b23124d/src/lib/atemUtil.ts#L2">lib/atemUtil.ts:2</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
