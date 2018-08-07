@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.2.3...0.3.0) (2018-08-07)
+
+
+### Bug Fixes
+
+* emit error upon failing value sanity check ([e11b3fa](https://github.com/nrkno/tv-automation-atem-connection/commit/e11b3fa))
+* export util ([004ef9a](https://github.com/nrkno/tv-automation-atem-connection/commit/004ef9a))
+* flyKeyFrameId is 1 or 2 ([b0ced83](https://github.com/nrkno/tv-automation-atem-connection/commit/b0ced83))
+* use an object when appriopriate ([7d13bd3](https://github.com/nrkno/tv-automation-atem-connection/commit/7d13bd3))
+* **atemSocket:** fix _maxPacketID being off-by-one ([28c1400](https://github.com/nrkno/tv-automation-atem-connection/commit/28c1400))
+
+
+### Features
+
+* value sanity checks ([9d2b021](https://github.com/nrkno/tv-automation-atem-connection/commit/9d2b021))
+
+
+
 <a name="0.2.3"></a>
 ## [0.2.3](https://github.com/nrkno/tv-automation-atem-connection/compare/0.2.2...0.2.3) (2018-08-07)
 
