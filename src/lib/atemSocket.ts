@@ -21,6 +21,12 @@ export class AtemSocket extends EventEmitter {
 		this.log = options.log || this.log
 
 		this._createSocketProcess()
+
+		process.on('exit', () => {
+			if (this._socketProcess) {
+				this._socketProcess.removeAllListeners()
+			}
+		})
 	}
 
 	public connect (address?: string, port?: number) {
