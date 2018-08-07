@@ -63,7 +63,7 @@ export class Atem extends EventEmitter {
 	}
 
 	connect (address: string, port?: number) {
-		this.socket.connect(address, port)
+		return this.socket.connect(address, port)
 	}
 
 	disconnect (): Promise<void> {
