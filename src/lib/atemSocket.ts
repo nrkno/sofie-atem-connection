@@ -118,9 +118,9 @@ export class AtemSocket extends EventEmitter {
 			this.log('socket process error:', error)
 		})
 		this._socketProcess.on('exit', (code, signal) => {
-			this.emit('error', new Error(`The socket process unexpectedly closed (code: "${code}", signal: "${signal}")`))
-			this.log('socket process exit:', code, signal)
 			process.nextTick(() => {
+				this.emit('error', new Error(`The socket process unexpectedly closed (code: "${code}", signal: "${signal}")`))
+				this.log('socket process exit:', code, signal)
 				this._createSocketProcess()
 			})
 		})
