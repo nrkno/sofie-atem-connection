@@ -3,6 +3,7 @@ import { EventEmitter } from 'events'
 import * as path from 'path'
 import { CommandParser } from './atemCommandParser'
 import AbstractCommand from '../commands/AbstractCommand'
+import { Util } from './atemUtil'
 
 export class AtemSocket extends EventEmitter {
 	private _debug = false
@@ -39,44 +40,20 @@ export class AtemSocket extends EventEmitter {
 			this._port = port
 		}
 
-		return new Promise((resolve, reject) => {
-			if (!this._socketProcess) {
-				return resolve()
+		return Util.subprocessSendPromise(this._socketProcess, {
+			cmd: 'connect',
+			payload: {
+				address: this._address,
+				port: this._port
 			}
-
-			this._socketProcess.send({
-				cmd: 'connect',
-				payload: {
-					address: this._address,
-					port: this._port
-				}
-			}, (error: Error) => {
-				if (error) {
-					reject(error)
-				} else {
-					resolve()
-				}
-			})
 		})
 	}
 
 	public disconnect () {
 		this._shouldConnect = false
 
-		return new Promise((resolve, reject) => {
-			if (!this._socketProcess) {
-				return resolve()
-			}
-
-			this._socketProcess.send({
-				cmd: 'disconnect'
-			}, (error: Error) => {
-				if (error) {
-					reject(error)
-				} else {
-					resolve()
-				}
-			})
+		return Util.subprocessSendPromise(this._socketProcess, {
+			cmd: 'disconnect'
 		})
 	}
 
