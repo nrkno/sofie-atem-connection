@@ -86,8 +86,7 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	public log (...args: any[]): void {
-		// @ts-ignore
-		const payload = format(...args)
+		const payload = format.apply(format, args)
 		return (process as any).send({
 			cmd: 'log',
 			payload
