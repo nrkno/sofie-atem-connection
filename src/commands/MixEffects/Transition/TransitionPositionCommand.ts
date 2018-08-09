@@ -9,7 +9,7 @@ export class TransitionPositionCommand extends AbstractCommand {
 	properties: {
 		readonly inTransition: boolean
 		readonly remainingFrames: number // 0...250
-		handlePosition: number // 0...9999
+		handlePosition: number // 0...10000
 	}
 
 	deserialize (rawCommand: Buffer) {
@@ -17,7 +17,7 @@ export class TransitionPositionCommand extends AbstractCommand {
 		this.properties = {
 			inTransition: rawCommand[1] === 1,
 			remainingFrames: Util.parseNumberBetween(rawCommand[2], 0, 250),
-			handlePosition: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 9999)
+			handlePosition: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 10000)
 		}
 	}
 
