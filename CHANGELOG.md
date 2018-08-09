@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.3.1"></a>
+## [0.3.1](https://github.com/nrkno/tv-automation-atem-connection/compare/0.3.0...0.3.1) (2018-08-09)
+
+
+### Bug Fixes
+
+* reported transition position may be 10 000 ([c301808](https://github.com/nrkno/tv-automation-atem-connection/commit/c301808))
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.2.3...0.3.0) (2018-08-07)
 
