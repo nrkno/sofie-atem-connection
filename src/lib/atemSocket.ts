@@ -3,11 +3,12 @@ import { EventEmitter } from 'events'
 import * as path from 'path'
 import { CommandParser } from './atemCommandParser'
 import AbstractCommand from '../commands/AbstractCommand'
-import { Util } from './atemUtil'
+import { IPCMessageType } from '../enums'
+import * as pRetry from 'p-retry'
 
 export class AtemSocket extends EventEmitter {
 	private _debug = false
-	private _localPacketId = 1
+	private _localPacketId = 0
 	private _address: string
 	private _port: number = 9910
 	private _shouldConnect = false
@@ -23,6 +24,9 @@ export class AtemSocket extends EventEmitter {
 
 		this._createSocketProcess()
 
+		// When the parent process begins exiting, remove the listeners on our child process.
+		// We do this to avoid throwing an error when the child process exits
+		// as a natural part of the parent process exiting.
 		process.on('exit', () => {
 			if (this._socketProcess) {
 				this._socketProcess.removeAllListeners()
@@ -40,8 +44,8 @@ export class AtemSocket extends EventEmitter {
 			this._port = port
 		}
 
-		return Util.subprocessSendPromise(this._socketProcess, {
-			cmd: 'connect',
+		return this._sendSubprocessMessage({
+			cmd: IPCMessageType.Connect,
 			payload: {
 				address: this._address,
 				port: this._port
@@ -52,8 +56,8 @@ export class AtemSocket extends EventEmitter {
 	public disconnect () {
 		this._shouldConnect = false
 
-		return Util.subprocessSendPromise(this._socketProcess, {
-			cmd: 'disconnect'
+		return this._sendSubprocessMessage({
+			cmd: IPCMessageType.Disconnect
 		})
 	}
 
@@ -62,23 +66,25 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	get nextPacketId (): number {
-		return this._localPacketId
+		return ++this._localPacketId
 	}
 
-	public _sendCommand (command: AbstractCommand) {
+	public _sendCommand (command: AbstractCommand, trackingId: number) {
 		if (typeof command.serialize !== 'function') {
-			return
+			// TODO: should this reject instead of resolve?
+			return Promise.resolve()
 		}
 
 		const payload = command.serialize()
 		if (this._debug) this.log('PAYLOAD', payload)
 
-		if (this._socketProcess) {
-			this._socketProcess.send({
-				cmd: 'sendCommand',
-				payload
-			})
-		}
+		return this._sendSubprocessMessage({
+			cmd: IPCMessageType.OutboundCommand,
+			payload: {
+				data: payload,
+				trackingId
+			}
+		})
 	}
 
 	private _createSocketProcess () {
@@ -89,7 +95,7 @@ export class AtemSocket extends EventEmitter {
 		}
 
 		this._socketProcess = fork(path.resolve(__dirname, 'atemSocketChild.js'), [], {silent: true})
-		this._socketProcess.on('message', this._receiveMessage.bind(this))
+		this._socketProcess.on('message', this._receiveSubprocessMessage.bind(this))
 		this._socketProcess.on('error', error => {
 			this.emit('error', error)
 			this.log('socket process error:', error)
@@ -111,7 +117,46 @@ export class AtemSocket extends EventEmitter {
 		}
 	}
 
-	private _receiveMessage (message: any) {
+	private async _sendSubprocessMessage (message: {cmd: IPCMessageType; payload?: any, _messageId?: number}) {
+		await pRetry(() => {
+			return new Promise((resolve, reject) => {
+				if (!this._socketProcess) {
+					return reject(new Error('There is no socket process'))
+				}
+
+				let handled = false
+
+				// From https://nodejs.org/api/child_process.html#child_process_subprocess_send_message_sendhandle_options_callback:
+				// "subprocess.send() will return false if the channel has closed or when the backlog of
+				// unsent messages exceeds a threshold that makes it unwise to send more.
+				// Otherwise, the method returns true."
+				const sendResult = this._socketProcess.send(message, (error: Error) => {
+					if (error && !handled) {
+						handled = true
+						reject(error)
+					}
+				})
+
+				if (handled) {
+					return
+				}
+
+				handled = true
+				if (sendResult) {
+					resolve()
+				} else {
+					reject(new Error('Failed to send message to socket process'))
+				}
+			})
+		}, {
+			onFailedAttempt: error => {
+				this.log(`Failed to send message to socket process (attempt ${error.attemptNumber}/${error.attemptNumber + error.attemptsLeft}).`)
+			},
+			retries: 5
+		})
+	}
+
+	private _receiveSubprocessMessage (message: any) {
 		if (typeof message !== 'object') {
 			return
 		}
@@ -122,10 +167,13 @@ export class AtemSocket extends EventEmitter {
 
 		const payload = message.payload
 		switch (message.cmd) {
-			case 'log':
+			case IPCMessageType.Log:
 				this.log(message.payload)
 				break
-			case 'commandPacket':
+			case IPCMessageType.CommandAcknowledged:
+				this.emit(IPCMessageType.CommandAcknowledged, message.payload)
+				break
+			case IPCMessageType.InboundCommand:
 				this._parseCommand(Buffer.from(payload.packet.data), payload.remotePacketId)
 				break
 		}

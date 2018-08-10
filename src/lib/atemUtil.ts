@@ -1,5 +1,3 @@
-import { ChildProcess } from 'child_process'
-
 export namespace Util {
 	export function stringToBytes (str: string): Array<number> {
 		const array = []
@@ -24,22 +22,6 @@ export namespace Util {
 	export function parseEnum<G> (value: G, type: any): G {
 		if (!type[value]) throw Error('Value is not a valid option in enum')
 		return value
-	}
-
-	export function subprocessSendPromise (subprocess: ChildProcess | null, message: any) {
-		return new Promise((resolve, reject) => {
-			if (!subprocess) {
-				return resolve()
-			}
-
-			subprocess.send(message, (error: Error) => {
-				if (error) {
-					reject(error)
-				} else {
-					resolve()
-				}
-			})
-		})
 	}
 
 	export const COMMAND_CONNECT_HELLO = Buffer.from([

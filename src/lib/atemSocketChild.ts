@@ -2,7 +2,7 @@ import { createSocket, Socket } from 'dgram'
 import { EventEmitter } from 'events'
 import { format } from 'util'
 import { Util } from './atemUtil'
-import { ConnectionState, PacketFlag } from '../enums'
+import { ConnectionState, IPCMessageType, PacketFlag } from '../enums'
 
 export class AtemSocket extends EventEmitter {
 	private _connectionState = ConnectionState.Closed
@@ -22,7 +22,7 @@ export class AtemSocket extends EventEmitter {
 	private _inFlightTimeout = 200
 	private _maxRetries = 5
 	private _lastReceivedAt: number = Date.now()
-	private _inFlight: Array<{packetId: number, lastSent: number, packet: Buffer, resent: number}> = []
+	private _inFlight: Array<{packetId: number, trackingId: number, lastSent: number, packet: Buffer, resent: number}> = []
 
 	constructor (options: { address?: string, port?: number } = {}) {
 		super()
@@ -87,8 +87,8 @@ export class AtemSocket extends EventEmitter {
 
 	public log (...args: any[]): void {
 		const payload = format.apply(format, args)
-		return (process as any).send({
-			cmd: 'log',
+		return sendParentMessage({
+			cmd: IPCMessageType.Log,
 			payload
 		})
 	}
@@ -97,7 +97,7 @@ export class AtemSocket extends EventEmitter {
 		return this._localPacketId
 	}
 
-	public _sendCommand (serializedCommand: Buffer) {
+	public _sendCommand (serializedCommand: Buffer, trackingId: number) {
 		const payload = serializedCommand
 		if (this._debug) this.log('PAYLOAD', payload)
 		const buffer = new Buffer(16 + payload.length)
@@ -115,7 +115,12 @@ export class AtemSocket extends EventEmitter {
 		payload.copy(buffer, 16)
 		this._sendPacket(buffer)
 
-		this._inFlight.push({ packetId: this._localPacketId, lastSent: Date.now(), packet: buffer, resent: 0 })
+		this._inFlight.push({
+			packetId: this._localPacketId,
+			trackingId,
+			lastSent: Date.now(),
+			packet: buffer,
+			resent: 0 })
 		this._localPacketId++
 		if (this._maxPacketID < this._localPacketId) this._localPacketId = 0
 	}
@@ -144,8 +149,8 @@ export class AtemSocket extends EventEmitter {
 
 		// Parse commands, Emit 'stateChanged' event after parse
 		if (flags & PacketFlag.AckRequest && length > 12) {
-			(process as any).send({
-				cmd: 'commandPacket',
+			sendParentMessage({
+				cmd: IPCMessageType.InboundCommand,
 				payload: {
 					packet: packet.slice(12),
 					remotePacketId
@@ -169,7 +174,13 @@ export class AtemSocket extends EventEmitter {
 			const ackPacketId = packet[4] << 8 | packet[5]
 			for (const i in this._inFlight) {
 				if (ackPacketId >= this._inFlight[i].packetId) {
-					this.emit('commandAcknowleged', this._inFlight[i].packetId)
+					sendParentMessage({
+						cmd: IPCMessageType.CommandAcknowledged,
+						payload: {
+							commandId: this._inFlight[i].packetId,
+							trackingId: this._inFlight[i].trackingId
+						}
+					})
 					delete this._inFlight[i]
 				}
 			}
@@ -212,6 +223,15 @@ export class AtemSocket extends EventEmitter {
 	}
 }
 
+function sendParentMessage (message: {cmd: IPCMessageType; payload?: any}) {
+	if (typeof process.send !== 'function') {
+		return
+	}
+
+	// TODO: it's possible for these to get dropped if the receiving thread is blocked for long enough.
+	process.send(message)
+}
+
 const singleton = new AtemSocket()
 process.on('message', message => {
 	if (typeof message !== 'object') {
@@ -224,14 +244,14 @@ process.on('message', message => {
 
 	const payload = message.payload
 	switch (message.cmd) {
-		case 'connect':
+		case IPCMessageType.Connect:
 			singleton.connect(payload.address, payload.port)
 			break
-		case 'disconnect':
+		case IPCMessageType.Disconnect:
 			singleton.disconnect().catch(() => { /* discard error */ })
 			break
-		case 'sendCommand':
-			singleton._sendCommand(Buffer.from(payload.data))
+		case IPCMessageType.OutboundCommand:
+			singleton._sendCommand(Buffer.from(payload.data.data), payload.trackingId)
 			break
 	}
 })
