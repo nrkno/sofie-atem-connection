@@ -29,12 +29,12 @@ export namespace Util {
 		return value
 	}
 
-	export async function sendIPCMessage (
+	export function sendIPCMessage (
 		scope: AtemSocket | AtemSocketChild,
 		processProperty: string,
 		message: {cmd: IPCMessageType; payload?: any, _messageId?: number}
 	) {
-		await pRetry(() => {
+		return pRetry(() => {
 			return new Promise((resolve, reject) => {
 				// This ensures that we will always grab the currently in-use process, if it has been re-made.
 				const destProcess = (scope as any)[processProperty]
