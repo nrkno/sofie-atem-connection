@@ -20,6 +20,10 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@sindresorhus/df/-/df-1.0.1.tgz#c69b66f52f6fcdd287c807df210305dbaf78500d"
 
+"@types/exit-hook@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/exit-hook/-/exit-hook-1.1.0.tgz#de9d0fdb8a333ef70109920b0f908db41ffe425d"
+
 "@types/fs-extra@^4.0.0":
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-4.0.5.tgz#8aa6033c0e87c653b09a6711686916864b48ec9e"
@@ -1375,6 +1379,10 @@ execa@^0.5.0:
     p-finally "^1.0.0"
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
+
+exit-hook@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/exit-hook/-/exit-hook-2.0.0.tgz#b89f6f69b7d080efc2807c66a85957722637db92"
 
 exit@^0.1.2:
   version "0.1.2"

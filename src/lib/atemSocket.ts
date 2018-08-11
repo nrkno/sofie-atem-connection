@@ -5,6 +5,7 @@ import { CommandParser } from './atemCommandParser'
 import AbstractCommand from '../commands/AbstractCommand'
 import { IPCMessageType } from '../enums'
 import * as pRetry from 'p-retry'
+import exitHook = require('exit-hook')
 
 export class AtemSocket extends EventEmitter {
 	private _debug = false
@@ -27,7 +28,7 @@ export class AtemSocket extends EventEmitter {
 		// When the parent process begins exiting, remove the listeners on our child process.
 		// We do this to avoid throwing an error when the child process exits
 		// as a natural part of the parent process exiting.
-		process.on('exit', () => {
+		exitHook(() => {
 			if (this._socketProcess) {
 				this._socketProcess.removeAllListeners()
 			}
