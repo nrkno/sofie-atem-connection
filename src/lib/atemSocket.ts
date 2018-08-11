@@ -132,21 +132,23 @@ export class AtemSocket extends EventEmitter {
 				// unsent messages exceeds a threshold that makes it unwise to send more.
 				// Otherwise, the method returns true."
 				const sendResult = this._socketProcess.send(message, (error: Error) => {
-					if (error && !handled) {
+					if (handled) {
+						return
+					}
+
+					if (error) {
 						handled = true
 						reject(error)
+					} else {
+						resolve()
 					}
+
+					handled = true
 				})
 
-				if (handled) {
-					return
-				}
-
-				handled = true
-				if (sendResult) {
-					resolve()
-				} else {
+				if (!sendResult && !handled) {
 					reject(new Error('Failed to send message to socket process'))
+					handled = true
 				}
 			})
 		}, {
