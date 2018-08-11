@@ -64,14 +64,14 @@ export namespace Util {
 				})
 
 				if (!sendResult && !handled) {
-					reject(new Error('Failed to send message to socket process'))
+					reject(new Error('Failed to send IPC message'))
 					handled = true
 				}
 			})
 		}, {
 			onFailedAttempt: error => {
 				if (scope.log) {
-					scope.log(`Failed to send message to socket process (attempt ${error.attemptNumber}/${error.attemptNumber + error.attemptsLeft}).`)
+					scope.log(`Failed to send IPC message (attempt ${error.attemptNumber}/${error.attemptNumber + error.attemptsLeft}).`)
 				}
 			},
 			retries: 5
