@@ -4,8 +4,8 @@ import * as path from 'path'
 import { CommandParser } from './atemCommandParser'
 import AbstractCommand from '../commands/AbstractCommand'
 import { IPCMessageType } from '../enums'
-import * as pRetry from 'p-retry'
 import exitHook = require('exit-hook')
+import { Util } from './atemUtil'
 
 export class AtemSocket extends EventEmitter {
 	private _debug = false
@@ -119,44 +119,11 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	private async _sendSubprocessMessage (message: {cmd: IPCMessageType; payload?: any, _messageId?: number}) {
-		await pRetry(() => {
-			return new Promise((resolve, reject) => {
-				if (!this._socketProcess) {
-					return reject(new Error('There is no socket process'))
-				}
+		if (!this._socketProcess) {
+			throw new Error('Socket process process does not exist')
+		}
 
-				let handled = false
-
-				// From https://nodejs.org/api/child_process.html#child_process_subprocess_send_message_sendhandle_options_callback:
-				// "subprocess.send() will return false if the channel has closed or when the backlog of
-				// unsent messages exceeds a threshold that makes it unwise to send more.
-				// Otherwise, the method returns true."
-				const sendResult = this._socketProcess.send(message, (error: Error) => {
-					if (handled) {
-						return
-					}
-
-					if (error) {
-						handled = true
-						reject(error)
-					} else {
-						resolve()
-					}
-
-					handled = true
-				})
-
-				if (!sendResult && !handled) {
-					reject(new Error('Failed to send message to socket process'))
-					handled = true
-				}
-			})
-		}, {
-			onFailedAttempt: error => {
-				this.log(`Failed to send message to socket process (attempt ${error.attemptNumber}/${error.attemptNumber + error.attemptsLeft}).`)
-			},
-			retries: 5
-		})
+		return Util.sendIPCMessage(this._socketProcess, message, this.log)
 	}
 
 	private _receiveSubprocessMessage (message: any) {

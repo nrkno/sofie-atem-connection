@@ -87,10 +87,10 @@ export class AtemSocket extends EventEmitter {
 
 	public log (...args: any[]): void {
 		const payload = format.apply(format, args)
-		return sendParentMessage({
+		this._sendParentMessage({
 			cmd: IPCMessageType.Log,
 			payload
-		})
+		}).catch(() => { /* Discard errors. */ })
 	}
 
 	get nextPacketId (): number {
@@ -149,13 +149,13 @@ export class AtemSocket extends EventEmitter {
 
 		// Parse commands, Emit 'stateChanged' event after parse
 		if (flags & PacketFlag.AckRequest && length > 12) {
-			sendParentMessage({
+			this._sendParentMessage({
 				cmd: IPCMessageType.InboundCommand,
 				payload: {
 					packet: packet.slice(12),
 					remotePacketId
 				}
-			})
+			}).catch(() => { /* Discard errors. */ })
 		}
 
 		// Send ping packet, Emit 'connect' event after receive all stats
@@ -174,13 +174,13 @@ export class AtemSocket extends EventEmitter {
 			const ackPacketId = packet[4] << 8 | packet[5]
 			for (const i in this._inFlight) {
 				if (ackPacketId >= this._inFlight[i].packetId) {
-					sendParentMessage({
+					this._sendParentMessage({
 						cmd: IPCMessageType.CommandAcknowledged,
 						payload: {
 							commandId: this._inFlight[i].packetId,
 							trackingId: this._inFlight[i].trackingId
 						}
-					})
+					}).catch(() => { /* Discard errors. */ })
 					delete this._inFlight[i]
 				}
 			}
@@ -221,15 +221,10 @@ export class AtemSocket extends EventEmitter {
 			}
 		}
 	}
-}
 
-function sendParentMessage (message: {cmd: IPCMessageType; payload?: any}) {
-	if (typeof process.send !== 'function') {
-		return
+	private _sendParentMessage (message: {cmd: IPCMessageType; payload?: any}) {
+		return Util.sendIPCMessage(process, message, this.log)
 	}
-
-	// TODO: it's possible for these to get dropped if the receiving thread is blocked for long enough.
-	process.send(message)
 }
 
 const singleton = new AtemSocket()
