@@ -4,7 +4,7 @@ import { format } from 'util'
 import { Util } from './atemUtil'
 import { ConnectionState, IPCMessageType, PacketFlag } from '../enums'
 
-export class AtemSocket extends EventEmitter {
+export class AtemSocketChild extends EventEmitter {
 	private _connectionState = ConnectionState.Closed
 	private _debug = false
 	private _reconnectTimer: NodeJS.Timer | undefined
@@ -23,6 +23,7 @@ export class AtemSocket extends EventEmitter {
 	private _maxRetries = 5
 	private _lastReceivedAt: number = Date.now()
 	private _inFlight: Array<{packetId: number, trackingId: number, lastSent: number, packet: Buffer, resent: number}> = []
+	private _parentProcess = process
 
 	constructor (options: { address?: string, port?: number } = {}) {
 		super()
@@ -223,11 +224,15 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	private _sendParentMessage (message: {cmd: IPCMessageType; payload?: any}) {
-		return Util.sendIPCMessage(process, message, this.log)
+		if (!this._parentProcess) {
+			throw new Error('Parent process process does not exist')
+		}
+
+		return Util.sendIPCMessage(this, '_parentProcess', message)
 	}
 }
 
-const singleton = new AtemSocket()
+const singleton = new AtemSocketChild()
 process.on('message', message => {
 	if (typeof message !== 'object') {
 		return

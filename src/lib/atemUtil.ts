@@ -1,5 +1,6 @@
-import { ChildProcess } from 'child_process'
 import { IPCMessageType } from '../enums'
+import { AtemSocketChild } from './atemSocketChild'
+import { AtemSocket } from './atemSocket'
 import * as pRetry from 'p-retry'
 
 export namespace Util {
@@ -29,12 +30,14 @@ export namespace Util {
 	}
 
 	export async function sendIPCMessage (
-		destProcess: NodeJS.Process | ChildProcess,
-		message: {cmd: IPCMessageType; payload?: any, _messageId?: number},
-		log?: (..._args: any[]) => void
+		scope: AtemSocket | AtemSocketChild,
+		processProperty: string,
+		message: {cmd: IPCMessageType; payload?: any, _messageId?: number}
 	) {
 		await pRetry(() => {
 			return new Promise((resolve, reject) => {
+				// This ensures that we will always grab the currently in-use process, if it has been re-made.
+				const destProcess = (scope as any)[processProperty]
 				if (!destProcess || typeof destProcess.send !== 'function') {
 					return reject(new Error('Destination process has gone away'))
 				}
@@ -67,8 +70,8 @@ export namespace Util {
 			})
 		}, {
 			onFailedAttempt: error => {
-				if (log) {
-					log(`Failed to send message to socket process (attempt ${error.attemptNumber}/${error.attemptNumber + error.attemptsLeft}).`)
+				if (scope.log) {
+					scope.log(`Failed to send message to socket process (attempt ${error.attemptNumber}/${error.attemptNumber + error.attemptsLeft}).`)
 				}
 			},
 			retries: 5

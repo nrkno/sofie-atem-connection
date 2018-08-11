@@ -123,7 +123,7 @@ export class AtemSocket extends EventEmitter {
 			throw new Error('Socket process process does not exist')
 		}
 
-		return Util.sendIPCMessage(this._socketProcess, message, this.log)
+		return Util.sendIPCMessage(this, '_socketProcess', message)
 	}
 
 	private _receiveSubprocessMessage (message: any) {
