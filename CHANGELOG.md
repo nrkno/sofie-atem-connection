@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.3.2...0.4.0) (2018-08-15)
+
+
+### Bug Fixes
+
+* symmetry is a percentage ([3dd03a9](https://github.com/nrkno/tv-automation-atem-connection/commit/3dd03a9))
+
+
+### Features
+
+* Super Source Properties ([031df18](https://github.com/nrkno/tv-automation-atem-connection/commit/031df18))
+
+
+
 <a name="0.3.2"></a>
 ## [0.3.2](https://github.com/nrkno/tv-automation-atem-connection/compare/0.3.1...0.3.2) (2018-08-14)
 
