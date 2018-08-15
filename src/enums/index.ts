@@ -180,3 +180,8 @@ export enum MixEffectKeyType {
 	Pattern = 2,
 	DVE = 3
 }
+
+export enum SuperSourceArtOption {
+	Background,
+	Foreground
+}
