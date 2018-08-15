@@ -130,11 +130,36 @@ export interface SuperSourceBox {
 	cropRight: number
 }
 
+export interface SuperSourceProperties {
+	artFillSource: number
+	artCutSource: number
+	artOption: Enum.SuperSourceArtOption
+	artPreMultiplied: boolean
+	artClip: number
+	artGain: number
+	artInvertKey: boolean
+
+	borderEnabled: boolean
+	borderBevel: Enum.BorderBevel
+	borderOuterWidth: number
+	borderInnerWidth: number
+	borderOuterSoftness: number
+	borderInnerSoftness: number
+	borderBevelSoftness: number
+	borderBevelPosition: number
+	borderHue: number
+	borderSaturation: number
+	borderLuma: number
+	borderLightSourceDirection: number
+	borderLightSourceAltitude: number
+}
+
 export class AtemVideoState {
 	ME: { [index: string]: MixEffect } = {}
 	downstreamKeyers: { [index: string]: DownstreamKeyer } = {}
 	auxilliaries: { [index: string]: number } = {}
 	superSourceBoxes: { [index: string]: SuperSourceBox } = {}
+	superSourceProperties: SuperSourceProperties
 
 	getMe (index: number) {
 		if (!this.ME[index]) {

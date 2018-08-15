@@ -56,7 +56,7 @@ export class TransitionWipeCommand extends AbstractCommand {
 
 		buffer.writeUInt16BE(this.properties.borderWidth, 10)
 		buffer.writeUInt16BE(this.properties.borderInput, 12)
-		buffer.writeUInt16BE(this.properties.symmetry ? 1 : 0, 14)
+		buffer.writeUInt16BE(this.properties.symmetry, 14)
 
 		buffer.writeUInt16BE(this.properties.borderSoftness, 16)
 		buffer.writeUInt16BE(this.properties.xPosition, 18)

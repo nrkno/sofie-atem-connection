@@ -12,7 +12,8 @@ import {
 	StingerTransitionSettings,
 	SuperSourceBox,
 	TransitionProperties,
-	WipeTransitionSettings
+	WipeTransitionSettings,
+	SuperSourceProperties
 } from './state/video'
 import * as USK from './state/video/upstreamKeyers'
 import { InputChannel } from './state/input'
@@ -243,6 +244,12 @@ export class Atem extends EventEmitter {
 	setSuperSourceBoxSettings (newProps: Partial<SuperSourceBox>, box = 0) {
 		const command = new Commands.SuperSourceBoxParametersCommand()
 		command.boxId = box
+		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+
+	setSuperSourceProperties (newProps: Partial<SuperSourceProperties>) {
+		const command = new Commands.SuperSourcePropertiesCommand()
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
