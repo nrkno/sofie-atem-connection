@@ -16,7 +16,7 @@ export class MediaPoolFrameDescriptionCommand extends AbstractCommand {
 		this.properties = {
 			isUsed: rawCommand[4] === 1,
 			hash: Util.bufToNullTerminatedString(rawCommand, 5, 16),
-			fileName: Util.bufToNullTerminatedString(rawCommand, 22, 20)
+			fileName: Util.bufToNullTerminatedString(rawCommand, 24, rawCommand[23])
 		}
 	}
 
