@@ -20,6 +20,7 @@ import { InputChannel } from './state/input'
 import { DownstreamKeyerGeneral, DownstreamKeyerMask } from './state/video/downstreamKeyers'
 import * as DT from './dataTransfer'
 import { Util } from './lib/atemUtil'
+import * as Enums from './enums'
 
 export interface AtemOptions {
 	address?: string,
@@ -241,6 +242,13 @@ export class Atem extends EventEmitter {
 
 	setMediaPlayerSettings (newProps: Partial<MediaPlayer>, player = 0) {
 		const command = new Commands.MediaPlayerStatusCommand()
+		command.mediaPlayerId = player
+		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+
+	setMediaPlayerSource (newProps: Partial<{ sourceType: Enums.MediaSourceType, stillIndex: number, clipIndex: number }>, player = 0) {
+		const command = new Commands.MediaPlayerSourceCommand()
 		command.mediaPlayerId = player
 		command.updateProps(newProps)
 		return this.sendCommand(command)
