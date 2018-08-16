@@ -3,25 +3,27 @@ import { AtemState } from '../../state'
 
 export class MacroRunStatusCommand extends AbstractCommand {
 	rawName = 'MRPr'
-	index: number
 
 	properties: {
 		isRunning: boolean
 		isWaiting: boolean
 		loop: boolean
+		macroIndex: number
 	}
 
 	deserialize (rawCommand: Buffer) {
-		this.index = rawCommand.readUInt16BE(2)
 		this.properties = {
 			isRunning: Boolean(rawCommand[0] & 1 << 0),
 			isWaiting: Boolean(rawCommand[0] & 1 << 1),
-			loop: Boolean(rawCommand[1] & 1 << 0)
+			loop: Boolean(rawCommand[1] & 1 << 0),
+			macroIndex: rawCommand.readUInt16BE(2)
 		}
 	}
 
 	applyToState (state: AtemState) {
-		const macro = state.getMacro(this.index)
-		Object.assign(macro, this.properties)
+		state.macroPlayer = {
+			...state.macroPlayer,
+			...this.properties
+		}
 	}
 }
