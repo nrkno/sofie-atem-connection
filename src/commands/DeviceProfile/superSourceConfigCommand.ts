@@ -11,7 +11,7 @@ export class SuperSourceConfigCommand extends AbstractCommand {
 
 	deserialize (rawCommand: Buffer) {
 		this.properties = {
-			superSourceBoxes: Util.parseNumberBetween(rawCommand[0], 0, 3)
+			superSourceBoxes: Util.parseNumberBetween(rawCommand[0], 0, 4)
 		}
 	}
 
