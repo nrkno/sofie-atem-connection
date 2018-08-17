@@ -4,15 +4,16 @@ import AbstractCommand from '../AbstractCommand'
 import { Enums } from '../..'
 
 export class MediaPlayerSourceCommand extends AbstractCommand {
-	rawName = 'MPCE'
-	mediaPlayerId: number
-
-	properties: MediaPlayerSource
 	static MaskFlags = {
 		sourceType: 1 << 0,
 		stillIndex: 1 << 1,
 		clipIndex: 1 << 2
 	}
+
+	rawName = 'MPCE'
+	mediaPlayerId: number
+
+	properties: MediaPlayerSource
 
 	updateProps (newProps: Partial<{ sourceType: Enums.MediaSourceType, stillIndex: number, clipIndex: number }>) {
 		this._updateProps(newProps)
