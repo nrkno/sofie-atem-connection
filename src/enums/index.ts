@@ -244,6 +244,6 @@ export enum TransferState {
 }
 
 export enum MediaSourceType {
-	Still,
+	Still = 1,
 	Clip
 }
