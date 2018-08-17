@@ -9,7 +9,8 @@ export interface MediaPlayer {
 
 export interface MediaPlayerSource {
 	sourceType: Enums.MediaSourceType
-	sourceIndex: number
+	clipIndex: number
+	stillIndex: number
 }
 
 export class MediaState {
