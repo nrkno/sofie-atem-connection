@@ -8,12 +8,7 @@ export class MediaPlayerSourceCommand extends AbstractCommand {
 	mediaPlayerId: number
 
 	properties: MediaPlayerSource
-	newProperties: {
-		sourceType: Enums.MediaSourceType,
-		stillIndex: number,
-		clipIndex: number
-	}
-	MaskFlags = {
+	static MaskFlags = {
 		sourceType: 1 << 0,
 		stillIndex: 1 << 1,
 		clipIndex: 1 << 2
@@ -27,7 +22,8 @@ export class MediaPlayerSourceCommand extends AbstractCommand {
 		this.mediaPlayerId = rawCommand[0]
 		this.properties = {
 			sourceType: rawCommand[1],
-			sourceIndex: rawCommand[3]
+			stillIndex: rawCommand[2],
+			clipIndex: rawCommand[3]
 		}
 	}
 
@@ -37,9 +33,9 @@ export class MediaPlayerSourceCommand extends AbstractCommand {
 			...Buffer.from(rawCommand),
 			this.flag,
 			this.mediaPlayerId,
-			this.newProperties.sourceType,
-			this.newProperties.clipIndex,
-			this.newProperties.stillIndex,
+			this.properties.sourceType,
+			this.properties.stillIndex,
+			this.properties.clipIndex,
 			0x00,
 			0x00,
 			0x00
