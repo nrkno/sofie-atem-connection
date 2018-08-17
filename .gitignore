@@ -1,7 +1,7 @@
 node_modules
 dist
 test
-src/**.js
+src/**/*.js
 
 /coverage
 /docs

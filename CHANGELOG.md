@@ -2,6 +2,161 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.3.2...0.4.0) (2018-08-15)
+
+
+### Bug Fixes
+
+* symmetry is a percentage ([3dd03a9](https://github.com/nrkno/tv-automation-atem-connection/commit/3dd03a9))
+
+
+### Features
+
+* Super Source Properties ([031df18](https://github.com/nrkno/tv-automation-atem-connection/commit/031df18))
+
+
+
+<a name="0.3.2"></a>
+## [0.3.2](https://github.com/nrkno/tv-automation-atem-connection/compare/0.3.1...0.3.2) (2018-08-14)
+
+
+### Bug Fixes
+
+* symmetry is a percentage ([93e751d](https://github.com/nrkno/tv-automation-atem-connection/commit/93e751d))
+
+
+
+<a name="0.3.1"></a>
+## [0.3.1](https://github.com/nrkno/tv-automation-atem-connection/compare/0.3.0...0.3.1) (2018-08-09)
+
+
+### Bug Fixes
+
+* reported transition position may be 10 000 ([c301808](https://github.com/nrkno/tv-automation-atem-connection/commit/c301808))
+
+
+
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.2.3...0.3.0) (2018-08-07)
+
+
+### Bug Fixes
+
+* emit error upon failing value sanity check ([e11b3fa](https://github.com/nrkno/tv-automation-atem-connection/commit/e11b3fa))
+* export util ([004ef9a](https://github.com/nrkno/tv-automation-atem-connection/commit/004ef9a))
+* flyKeyFrameId is 1 or 2 ([b0ced83](https://github.com/nrkno/tv-automation-atem-connection/commit/b0ced83))
+* use an object when appriopriate ([7d13bd3](https://github.com/nrkno/tv-automation-atem-connection/commit/7d13bd3))
+* **atemSocket:** fix _maxPacketID being off-by-one ([28c1400](https://github.com/nrkno/tv-automation-atem-connection/commit/28c1400))
+
+
+### Features
+
+* value sanity checks ([9d2b021](https://github.com/nrkno/tv-automation-atem-connection/commit/9d2b021))
+
+
+
+<a name="0.2.3"></a>
+## [0.2.3](https://github.com/nrkno/tv-automation-atem-connection/compare/0.2.2...0.2.3) (2018-08-07)
+
+
+### Bug Fixes
+
+* **atemSocket:** fix _maxPacketID being off-by-one ([e116c35](https://github.com/nrkno/tv-automation-atem-connection/commit/e116c35))
+
+
+
+<a name="0.2.2"></a>
+## [0.2.2](https://github.com/nrkno/tv-automation-atem-connection/compare/0.2.1...0.2.2) (2018-08-06)
+
+
+
+<a name="0.2.1"></a>
+## [0.2.1](https://github.com/nrkno/tv-automation-atem-connection/compare/0.2.0...0.2.1) (2018-07-01)
+
+
+### Bug Fixes
+
+* typo ([41a29ff](https://github.com/nrkno/tv-automation-atem-connection/commit/41a29ff))
+
+
+
+<a name="0.2.0"></a>
+# [0.2.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.1.7...0.2.0) (2018-07-01)
+
+
+### Features
+
+* disconnect method ([54dfa15](https://github.com/nrkno/tv-automation-atem-connection/commit/54dfa15))
+
+
+
+<a name="0.1.7"></a>
+## [0.1.7](https://github.com/nrkno/tv-automation-atem-connection/compare/0.1.6...0.1.7) (2018-06-21)
+
+
+### Bug Fixes
+
+* deserialization of preview,program and aux source ([3c0027e](https://github.com/nrkno/tv-automation-atem-connection/commit/3c0027e))
+
+
+
+<a name="0.1.6"></a>
+## [0.1.6](https://github.com/nrkno/tv-automation-atem-connection/compare/0.1.5...0.1.6) (2018-06-21)
+
+
+### Bug Fixes
+
+* supersource info commands ([2e13938](https://github.com/nrkno/tv-automation-atem-connection/commit/2e13938))
+
+
+
+<a name="0.1.5"></a>
+## [0.1.5](https://github.com/nrkno/tv-automation-atem-connection/compare/0.1.4...0.1.5) (2018-06-15)
+
+
+
+<a name="0.1.4"></a>
+## [0.1.4](https://github.com/nrkno/tv-automation-atem-connection/compare/0.1.3...0.1.4) (2018-06-15)
+
+
+### Bug Fixes
+
+* preview command sets the right property in the state ([103fabd](https://github.com/nrkno/tv-automation-atem-connection/commit/103fabd))
+
+
+
+<a name="0.1.3"></a>
+## [0.1.3](https://github.com/nrkno/tv-automation-atem-connection/compare/0.1.2...0.1.3) (2018-06-09)
+
+
+### Bug Fixes
+
+* AbstractCommand works with static MaskFlags ([360f266](https://github.com/nrkno/tv-automation-atem-connection/commit/360f266))
+
+
+
+<a name="0.1.2"></a>
+## [0.1.2](https://github.com/nrkno/tv-automation-atem-connection/compare/0.1.1...0.1.2) (2018-06-07)
+
+
+### Bug Fixes
+
+* export abstract command ([5c82037](https://github.com/nrkno/tv-automation-atem-connection/commit/5c82037))
+
+
+
+<a name="0.1.1"></a>
+## [0.1.1](https://github.com/nrkno/tv-automation-atem-connection/compare/0.1.0...0.1.1) (2018-06-07)
+
+
+### Bug Fixes
+
+* export Abstract Command ([88a12b6](https://github.com/nrkno/tv-automation-atem-connection/commit/88a12b6))
+* MaskFlags are a static property ([ddafc4f](https://github.com/nrkno/tv-automation-atem-connection/commit/ddafc4f))
+
+
+
 <a name="0.1.0"></a>
 # 0.1.0 (2018-06-05)
 
