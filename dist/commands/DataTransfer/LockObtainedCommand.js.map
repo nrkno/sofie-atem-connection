@@ -1,0 +1,1 @@
+{"version":3,"file":"LockObtainedCommand.js","sourceRoot":"","sources":["../../../src/commands/DataTransfer/LockObtainedCommand.ts"],"names":[],"mappings":";;AAAA,wDAAgD;AAEhD,yBAAiC,SAAQ,yBAAe;IAAxD;;QACC,YAAO,GAAG,MAAM,CAAA;IAWjB,CAAC;IALA,WAAW,CAAE,UAAkB;QAC9B,IAAI,CAAC,UAAU,GAAG;YACjB,KAAK,EAAE,UAAU,CAAC,YAAY,CAAC,CAAC,CAAC;SACjC,CAAA;IACF,CAAC;CACD;AAZD,kDAYC"}
