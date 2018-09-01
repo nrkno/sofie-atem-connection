@@ -23,19 +23,11 @@ export class AtemSocketChild extends EventEmitter {
 	private _maxRetries = 5
 	private _lastReceivedAt: number = Date.now()
 	private _inFlight: Array<{packetId: number, trackingId: number, lastSent: number, packet: Buffer, resent: number}> = []
-	private _parentProcess = process
 
 	constructor (options: { address?: string, port?: number } = {}) {
 		super()
 		this._address = options.address || this._address
 		this._port = options.port || this._port
-
-		this.on('disconnect', () => {
-			this._sendParentMessage({
-				cmd: IPCMessageType.Disconnect
-			})
-		})
-
 		this._createSocket()
 	}
 
@@ -45,7 +37,7 @@ export class AtemSocketChild extends EventEmitter {
 				if (this._lastReceivedAt + this._reconnectInterval > Date.now()) return
 				if (this._connectionState === ConnectionState.Established) {
 					this._connectionState = ConnectionState.Closed
-					this.emit('disconnect', null, null)
+					this.emit(IPCMessageType.Disconnect, null, null)
 				}
 				this._localPacketId = 1
 				this._sessionId = 0
@@ -82,7 +74,7 @@ export class AtemSocketChild extends EventEmitter {
 
 					this._connectionState = ConnectionState.Closed
 					this._createSocket()
-					this.emit('disconnect')
+					this.emit(IPCMessageType.Disconnect)
 
 					resolve()
 				})
@@ -94,10 +86,7 @@ export class AtemSocketChild extends EventEmitter {
 
 	public log (...args: any[]): void {
 		const payload = format.apply(format, args)
-		this._sendParentMessage({
-			cmd: IPCMessageType.Log,
-			payload
-		}).catch(() => { /* Discard errors. */ })
+		this.emit('log', payload)
 	}
 
 	get nextPacketId (): number {
@@ -156,13 +145,7 @@ export class AtemSocketChild extends EventEmitter {
 
 		// Parse commands, Emit 'stateChanged' event after parse
 		if (flags & PacketFlag.AckRequest && length > 12) {
-			this._sendParentMessage({
-				cmd: IPCMessageType.InboundCommand,
-				payload: {
-					packet: packet.slice(12),
-					remotePacketId
-				}
-			}).catch(() => { /* Discard errors. */ })
+			this.emit(IPCMessageType.InboundCommand, packet.slice(12), remotePacketId)
 		}
 
 		// Send ping packet, Emit 'connect' event after receive all stats
@@ -181,13 +164,7 @@ export class AtemSocketChild extends EventEmitter {
 			const ackPacketId = packet[4] << 8 | packet[5]
 			for (const i in this._inFlight) {
 				if (ackPacketId >= this._inFlight[i].packetId) {
-					this._sendParentMessage({
-						cmd: IPCMessageType.CommandAcknowledged,
-						payload: {
-							commandId: this._inFlight[i].packetId,
-							trackingId: this._inFlight[i].trackingId
-						}
-					}).catch(() => { /* Discard errors. */ })
+					this.emit(IPCMessageType.CommandAcknowledged, this._inFlight[i].packetId, this._inFlight[i].trackingId)
 					delete this._inFlight[i]
 				}
 			}
@@ -228,36 +205,4 @@ export class AtemSocketChild extends EventEmitter {
 			}
 		}
 	}
-
-	private _sendParentMessage (message: {cmd: IPCMessageType; payload?: any}) {
-		if (!this._parentProcess) {
-			throw new Error('Parent process process does not exist')
-		}
-
-		return Util.sendIPCMessage(this, '_parentProcess', message)
-	}
 }
-
-const singleton = new AtemSocketChild()
-process.on('message', message => {
-	if (typeof message !== 'object') {
-		return
-	}
-
-	if (typeof message.cmd !== 'string' || message.cmd.length <= 0) {
-		return
-	}
-
-	const payload = message.payload
-	switch (message.cmd) {
-		case IPCMessageType.Connect:
-			singleton.connect(payload.address, payload.port)
-			break
-		case IPCMessageType.Disconnect:
-			singleton.disconnect().catch(() => { /* discard error */ })
-			break
-		case IPCMessageType.OutboundCommand:
-			singleton._sendCommand(Buffer.from(payload.data.data), payload.trackingId)
-			break
-	}
-})

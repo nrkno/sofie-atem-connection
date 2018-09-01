@@ -1,6 +1,4 @@
 import { IPCMessageType } from '../enums'
-import { AtemSocketChild } from './atemSocketChild'
-import { AtemSocket } from './atemSocket'
 import * as pRetry from 'p-retry'
 
 export namespace Util {
@@ -30,14 +28,15 @@ export namespace Util {
 	}
 
 	export function sendIPCMessage (
-		scope: AtemSocket | AtemSocketChild,
+		scope: any,
 		processProperty: string,
-		message: {cmd: IPCMessageType; payload?: any, _messageId?: number}
+		message: {cmd: IPCMessageType; payload?: any, _messageId?: number},
+		log: Function
 	) {
 		return pRetry(() => {
 			return new Promise((resolve, reject) => {
 				// This ensures that we will always grab the currently in-use process, if it has been re-made.
-				const destProcess = (scope as any)[processProperty]
+				const destProcess = scope[processProperty]
 				if (!destProcess || typeof destProcess.send !== 'function') {
 					return reject(new Error('Destination process has gone away'))
 				}
@@ -70,8 +69,8 @@ export namespace Util {
 			})
 		}, {
 			onFailedAttempt: error => {
-				if (scope.log) {
-					scope.log(`Failed to send IPC message (attempt ${error.attemptNumber}/${error.attemptNumber + error.attemptsLeft}).`)
+				if (log) {
+					log(`Failed to send IPC message (attempt ${error.attemptNumber}/${error.attemptNumber + error.attemptsLeft}).`)
 				}
 			},
 			retries: 5

@@ -95,7 +95,7 @@ export class AtemSocket extends EventEmitter {
 			this._socketProcess = null
 		}
 
-		this._socketProcess = fork(path.resolve(__dirname, 'atemSocketChild.js'), [], {silent: true})
+		this._socketProcess = fork(path.resolve(__dirname, '../socket-child.js'), [], {silent: true})
 		this._socketProcess.on('message', this._receiveSubprocessMessage.bind(this))
 		this._socketProcess.on('error', error => {
 			this.emit('error', error)
@@ -123,7 +123,7 @@ export class AtemSocket extends EventEmitter {
 			throw new Error('Socket process process does not exist')
 		}
 
-		return Util.sendIPCMessage(this, '_socketProcess', message)
+		return Util.sendIPCMessage(this, '_socketProcess', message, this.log)
 	}
 
 	private _receiveSubprocessMessage (message: any) {
