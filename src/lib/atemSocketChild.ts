@@ -86,7 +86,7 @@ export class AtemSocketChild extends EventEmitter {
 
 	public log (...args: any[]): void {
 		const payload = format.apply(format, args)
-		this.emit('log', payload)
+		this.emit(IPCMessageType.Log, payload)
 	}
 
 	get nextPacketId (): number {

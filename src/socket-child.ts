@@ -32,7 +32,7 @@ singleton.on(IPCMessageType.Disconnect, () => {
 	})
 })
 
-singleton.on('log', (message: string) => {
+singleton.on(IPCMessageType.Log, (message: string) => {
 	sendParentMessage({
 		cmd: IPCMessageType.Log,
 		payload: message
