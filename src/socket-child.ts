@@ -29,14 +29,14 @@ process.on('message', message => {
 singleton.on(IPCMessageType.Disconnect, () => {
 	sendParentMessage({
 		cmd: IPCMessageType.Disconnect
-	}).catch(() => { /* Discard errors. */ })
+	})
 })
 
 singleton.on('log', (message: string) => {
 	sendParentMessage({
 		cmd: IPCMessageType.Log,
 		payload: message
-	}).catch(() => { /* Discard errors. */ })
+	})
 })
 
 singleton.on(IPCMessageType.InboundCommand, (packet: Buffer, remotePacketId: number) => {
@@ -46,7 +46,7 @@ singleton.on(IPCMessageType.InboundCommand, (packet: Buffer, remotePacketId: num
 			packet,
 			remotePacketId
 		}
-	}).catch(() => { /* Discard errors. */ })
+	})
 })
 
 singleton.on(IPCMessageType.CommandAcknowledged, (commandId: number, trackingId: number) => {
@@ -56,9 +56,9 @@ singleton.on(IPCMessageType.CommandAcknowledged, (commandId: number, trackingId:
 			commandId,
 			trackingId
 		}
-	}).catch(() => { /* Discard errors. */ })
+	})
 })
 
 function sendParentMessage (message: {cmd: IPCMessageType; payload?: any}) {
-	return Util.sendIPCMessage(global, 'process', message, singleton.log)
+	Util.sendIPCMessage(global, 'process', message, singleton.log).catch(() => { /* Discard errors. */ })
 }
