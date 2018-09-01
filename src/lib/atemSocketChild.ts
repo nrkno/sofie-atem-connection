@@ -30,6 +30,12 @@ export class AtemSocketChild extends EventEmitter {
 		this._address = options.address || this._address
 		this._port = options.port || this._port
 
+		this.on('disconnect', () => {
+			this._sendParentMessage({
+				cmd: IPCMessageType.Disconnect
+			})
+		})
+
 		this._createSocket()
 	}
 

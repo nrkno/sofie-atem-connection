@@ -146,6 +146,9 @@ export class AtemSocket extends EventEmitter {
 			case IPCMessageType.InboundCommand:
 				this._parseCommand(Buffer.from(payload.packet.data), payload.remotePacketId)
 				break
+			case IPCMessageType.Disconnect:
+				this.emit(IPCMessageType.Disconnect)
+				break
 		}
 	}
 
