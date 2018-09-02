@@ -67,6 +67,9 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	get nextPacketId (): number {
+		if (this._localPacketId >= Number.MAX_SAFE_INTEGER) {
+			this._localPacketId = 0
+		}
 		return ++this._localPacketId
 	}
 
