@@ -1,4 +1,4 @@
-# ATEM-connection
+# Sofie: The Modern TV News Studio Automation System (ATEM connection library)
 [![CircleCI](https://circleci.com/gh/nrkno/tv-automation-atem-connection.svg?style=svg)](https://circleci.com/gh/nrkno/tv-automation-atem-connection)
 
 This is a library for connecting to Blackmagic Design ATEM devices, created by SuperFly.tv
