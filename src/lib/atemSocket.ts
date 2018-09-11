@@ -1,30 +1,19 @@
-import { createSocket, Socket } from 'dgram'
+import { ChildProcess, fork } from 'child_process'
 import { EventEmitter } from 'events'
-import { Util } from './atemUtil'
+import * as path from 'path'
 import { CommandParser } from './atemCommandParser'
-import { ConnectionState, PacketFlag } from '../enums'
 import AbstractCommand from '../commands/AbstractCommand'
+import { IPCMessageType } from '../enums'
+import exitHook = require('exit-hook')
+import { Util } from './atemUtil'
 
 export class AtemSocket extends EventEmitter {
-	private _connectionState = ConnectionState.Closed
 	private _debug = false
-	private _reconnectTimer: NodeJS.Timer | undefined
-	private _retransmitTimer: NodeJS.Timer | undefined
-
-	private _localPacketId = 1
-	private _maxPacketID = (1 << 15) - 1 // Atem expects 15 not 16 bits before wrapping
-	private _sessionId: number
-
+	private _localPacketId = 0
 	private _address: string
 	private _port: number = 9910
-	private _socket: Socket
-	private _reconnectInterval = 5000
-
-	private _inFlightTimeout = 200
-	private _maxRetries = 5
-	private _lastReceivedAt: number = Date.now()
-	private _inFlight: Array<{packetId: number, lastSent: number, packet: Buffer, resent: number}> = []
-
+	private _shouldConnect = false
+	private _socketProcess: ChildProcess | null
 	private _commandParser: CommandParser = new CommandParser()
 
 	constructor (options: { address?: string, port?: number, debug?: boolean, log?: (args1: any, args2?: any, args3?: any) => void }) {
@@ -34,29 +23,20 @@ export class AtemSocket extends EventEmitter {
 		this._debug = options.debug || false
 		this.log = options.log || this.log
 
-		this._createSocket()
+		this._createSocketProcess()
+
+		// When the parent process begins exiting, remove the listeners on our child process.
+		// We do this to avoid throwing an error when the child process exits
+		// as a natural part of the parent process exiting.
+		exitHook(() => {
+			if (this._socketProcess) {
+				this._socketProcess.removeAllListeners()
+			}
+		})
 	}
 
 	public connect (address?: string, port?: number) {
-		if (!this._reconnectTimer) {
-			this._reconnectTimer = setInterval(() => {
-				if (this._lastReceivedAt + this._reconnectInterval > Date.now()) return
-				if (this._connectionState === ConnectionState.Established) {
-					this._connectionState = ConnectionState.Closed
-					this.emit('disconnect', null, null)
-				}
-				this._localPacketId = 1
-				this._sessionId = 0
-				this.log('reconnect')
-				if (this._address && this._port) {
-					this._sendPacket(Util.COMMAND_CONNECT_HELLO)
-					this._connectionState = ConnectionState.SynSent
-				}
-			}, this._reconnectInterval)
-		}
-		if (!this._retransmitTimer) {
-			this._retransmitTimer = setInterval(() => this._checkForRetransmit(), 50)
-		}
+		this._shouldConnect = true
 
 		if (address) {
 			this._address = address
@@ -65,28 +45,20 @@ export class AtemSocket extends EventEmitter {
 			this._port = port
 		}
 
-		this._sendPacket(Util.COMMAND_CONNECT_HELLO)
-		this._connectionState = ConnectionState.SynSent
+		return this._sendSubprocessMessage({
+			cmd: IPCMessageType.Connect,
+			payload: {
+				address: this._address,
+				port: this._port
+			}
+		})
 	}
 
 	public disconnect () {
-		return new Promise((resolve) => {
-			if (this._connectionState === ConnectionState.Established) {
-				this._socket.close(() => {
-					clearInterval(this._retransmitTimer as NodeJS.Timer)
-					clearInterval(this._reconnectTimer as NodeJS.Timer)
-					this._retransmitTimer = undefined
-					this._reconnectTimer = undefined
+		this._shouldConnect = false
 
-					this._connectionState = ConnectionState.Closed
-					this._createSocket()
-					this.emit('disconnect')
-
-					resolve()
-				})
-			} else {
-				resolve()
-			}
+		return this._sendSubprocessMessage({
+			cmd: IPCMessageType.Disconnect
 		})
 	}
 
@@ -95,84 +67,91 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	get nextPacketId (): number {
-		return this._localPacketId
+		if (this._localPacketId >= Number.MAX_SAFE_INTEGER) {
+			this._localPacketId = 0
+		}
+		return ++this._localPacketId
 	}
 
-	public _sendCommand (command: AbstractCommand) {
+	public _sendCommand (command: AbstractCommand, trackingId: number) {
 		if (typeof command.serialize !== 'function') {
-			return
+			// TODO: should this reject instead of resolve?
+			return Promise.resolve()
 		}
 
 		const payload = command.serialize()
 		if (this._debug) this.log('PAYLOAD', payload)
-		const buffer = new Buffer(16 + payload.length)
-		buffer.fill(0)
 
-		buffer[0] = (16 + payload.length) / 256 | 0x08
-		buffer[1] = (16 + payload.length) % 256
-		buffer[2] = this._sessionId >> 8
-		buffer[3] = this._sessionId & 0xff
-		buffer[10] = this._localPacketId / 256
-		buffer[11] = this._localPacketId % 256
-		buffer[12] = (4 + payload.length) / 256
-		buffer[13] = (4 + payload.length) % 256
-
-		payload.copy(buffer, 16)
-		this._sendPacket(buffer)
-
-		this._inFlight.push({ packetId: this._localPacketId, lastSent: Date.now(), packet: buffer, resent: 0 })
-		this._localPacketId++
-		if (this._maxPacketID < this._localPacketId) this._localPacketId = 0
-	}
-
-	private _createSocket () {
-		this._socket = createSocket('udp4')
-		this._socket.bind(1024 + Math.floor(Math.random() * 64511))
-		this._socket.on('message', (packet, rinfo) => this._receivePacket(packet, rinfo))
-		this._socket.on('close', () => this.emit('disconnect'))
-	}
-
-	private _receivePacket (packet: Buffer, rinfo: any) {
-		if (this._debug) this.log('RECV ', packet)
-		this._lastReceivedAt = Date.now()
-		const length = ((packet[0] & 0x07) << 8) | packet[1]
-		if (length !== rinfo.size) return
-
-		const flags = packet[0] >> 3
-		// this._sessionId = [packet[2], packet[3]]
-		this._sessionId = packet[2] << 8 | packet[3]
-		const remotePacketId = packet[10] << 8 | packet[11]
-
-		// Send hello answer packet when receive connect flags
-		if (flags & PacketFlag.Connect && !(flags & PacketFlag.Repeat)) {
-			this._sendPacket(Util.COMMAND_CONNECT_HELLO_ANSWER)
-		}
-
-		// Parse commands, Emit 'stateChanged' event after parse
-		if (flags & PacketFlag.AckRequest && length > 12) {
-			this._parseCommand(packet.slice(12), remotePacketId)
-		}
-
-		// Send ping packet, Emit 'connect' event after receive all stats
-		if (flags & PacketFlag.AckRequest && length === 12 && this._connectionState === ConnectionState.SynSent) {
-			this._connectionState = ConnectionState.Established
-		}
-
-		// Send ack packet (called by answer packet in Skaarhoj)
-		if (flags & PacketFlag.AckRequest && this._connectionState === ConnectionState.Established) {
-			this._sendAck(remotePacketId)
-			this.emit('ping')
-		}
-
-		// Device ack'ed our command
-		if (flags & PacketFlag.AckReply && this._connectionState === ConnectionState.Established) {
-			const ackPacketId = packet[4] << 8 | packet[5]
-			for (const i in this._inFlight) {
-				if (ackPacketId >= this._inFlight[i].packetId) {
-					this.emit('commandAcknowleged', this._inFlight[i].packetId)
-					delete this._inFlight[i]
-				}
+		return this._sendSubprocessMessage({
+			cmd: IPCMessageType.OutboundCommand,
+			payload: {
+				data: payload,
+				trackingId
 			}
+		})
+	}
+
+	private _createSocketProcess () {
+		if (this._socketProcess) {
+			this._socketProcess.removeAllListeners()
+			this._socketProcess.kill()
+			this._socketProcess = null
+		}
+
+		this._socketProcess = fork(path.resolve(__dirname, '../socket-child.js'), [], {silent: true})
+		this._socketProcess.on('message', this._receiveSubprocessMessage.bind(this))
+		this._socketProcess.on('error', error => {
+			this.emit('error', error)
+			this.log('socket process error:', error)
+		})
+		this._socketProcess.on('exit', (code, signal) => {
+			process.nextTick(() => {
+				this.emit('error', new Error(`The socket process unexpectedly closed (code: "${code}", signal: "${signal}")`))
+				this.log('socket process exit:', code, signal)
+				this._createSocketProcess()
+			})
+		})
+
+		if (this._shouldConnect) {
+			this.connect().catch(error => {
+				const errorMsg = 'Failed to reconnect after respawning socket process'
+				this.emit('error', error)
+				this.log(errorMsg + ':', error && error.message)
+			})
+		}
+	}
+
+	private async _sendSubprocessMessage (message: {cmd: IPCMessageType; payload?: any, _messageId?: number}) {
+		if (!this._socketProcess) {
+			throw new Error('Socket process process does not exist')
+		}
+
+		return Util.sendIPCMessage(this, '_socketProcess', message, this.log)
+	}
+
+	private _receiveSubprocessMessage (message: any) {
+		if (typeof message !== 'object') {
+			return
+		}
+
+		if (typeof message.cmd !== 'string' || message.cmd.length <= 0) {
+			return
+		}
+
+		const payload = message.payload
+		switch (message.cmd) {
+			case IPCMessageType.Log:
+				this.log(message.payload)
+				break
+			case IPCMessageType.CommandAcknowledged:
+				this.emit(IPCMessageType.CommandAcknowledged, message.payload)
+				break
+			case IPCMessageType.InboundCommand:
+				this._parseCommand(Buffer.from(payload.packet.data), payload.remotePacketId)
+				break
+			case IPCMessageType.Disconnect:
+				this.emit(IPCMessageType.Disconnect)
+				break
 		}
 	}
 
@@ -200,40 +179,4 @@ export class AtemSocket extends EventEmitter {
 			this._parseCommand(buffer.slice(length), packetId)
 		}
 	}
-
-	private _sendPacket (packet: Buffer) {
-		if (this._debug) this.log('SEND ', packet)
-		this._socket.send(packet, 0, packet.length, this._port, this._address)
-	}
-
-	private _sendAck (packetId: number) {
-		const buffer = new Buffer(12)
-		buffer.fill(0)
-		buffer[0] = 0x80
-		buffer[1] = 0x0C
-		buffer[2] = this._sessionId >> 8
-		buffer[3] = this._sessionId & 0xFF
-		buffer[4] = packetId >> 8
-		buffer[5] = packetId & 0xFF
-		buffer[9] = 0x41
-		this._sendPacket(buffer)
-	}
-
-	private _checkForRetransmit () {
-		for (const sentPacket of this._inFlight) {
-			if (sentPacket && sentPacket.lastSent + this._inFlightTimeout < Date.now()) {
-				if (sentPacket.resent <= this._maxRetries) {
-					sentPacket.lastSent = Date.now()
-					sentPacket.resent++
-					this.log('RESEND: ', sentPacket)
-					this._sendPacket(sentPacket.packet)
-				} else {
-					this._inFlight.splice(this._inFlight.indexOf(sentPacket), 1)
-					this.log('TIMED OUT: ', sentPacket.packet)
-					// @todo: we should probably break up the connection here.
-				}
-			}
-		}
-	}
-
 }

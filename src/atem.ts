@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events'
 import { AtemState } from './state'
 import { AtemSocket } from './lib/atemSocket'
-import { MacroAction } from './enums'
+import { IPCMessageType, MacroAction } from './enums'
 import AbstractCommand from './commands/AbstractCommand'
 import * as Commands from './commands'
 import { MediaPlayer } from './state/media'
@@ -56,14 +56,14 @@ export class Atem extends EventEmitter {
 			port: (options || {}).port
 		})
 		this.socket.on('receivedStateChange', (command: AbstractCommand) => this._mutateState(command))
-		this.socket.on('commandAcknowleged', (packetId: number) => this._resolveCommand(packetId))
+		this.socket.on(IPCMessageType.CommandAcknowledged, ({trackingId}: {trackingId: number}) => this._resolveCommand(trackingId))
 		this.socket.on('error', (e) => this.emit('error', e))
 		this.socket.on('connect', () => this.emit('connected'))
 		this.socket.on('disconnect', () => this.emit('disconnected'))
 	}
 
 	connect (address: string, port?: number) {
-		this.socket.connect(address, port)
+		return this.socket.connect(address, port)
 	}
 
 	disconnect (): Promise<void> {
@@ -74,13 +74,12 @@ export class Atem extends EventEmitter {
 
 	sendCommand (command: AbstractCommand): Promise<any> {
 		const nextPacketId = this.socket.nextPacketId
-		const promise = new Promise((resolve, reject) => {
+		this._sentQueue[nextPacketId] = command
+		return new Promise((resolve, reject) => {
 			command.resolve = resolve
 			command.reject = reject
+			this.socket._sendCommand(command, nextPacketId).catch(reject)
 		})
-		this._sentQueue[nextPacketId] = command
-		this.socket._sendCommand(command)
-		return promise
 	}
 
 	changeProgramInput (input: number, me = 0) {
@@ -340,10 +339,10 @@ export class Atem extends EventEmitter {
 		}
 	}
 
-	private _resolveCommand (packetId: number) {
-		if (this._sentQueue[packetId]) {
-			this._sentQueue[packetId].resolve(this._sentQueue[packetId])
-			delete this._sentQueue[packetId]
+	private _resolveCommand (trackingId: number) {
+		if (this._sentQueue[trackingId]) {
+			this._sentQueue[trackingId].resolve(this._sentQueue[trackingId])
+			delete this._sentQueue[trackingId]
 		}
 	}
 }
