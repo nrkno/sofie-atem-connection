@@ -9,13 +9,7 @@ import { Util } from './atemUtil'
 
 export class AtemSocket extends EventEmitter {
 	private _debug = false
-	private _reconnectTimer: NodeJS.Timer | undefined
-	private _retransmitTimer: NodeJS.Timer | undefined
-
 	private _localPacketId = 0
-	private _maxPacketID = (1 << 15) - 1 // Atem expects 15 not 16 bits before wrapping
-	private _sessionId: number
-
 	private _address: string
 	private _port: number = 9910
 	private _shouldConnect = false
