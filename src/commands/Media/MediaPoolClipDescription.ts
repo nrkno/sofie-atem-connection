@@ -21,9 +21,9 @@ export class MediaPoolClipDescriptionCommand extends AbstractCommand {
 
 	applyToState (state: AtemState) {
 		const newProps = { ...this.properties }
-		if (state.media.clipPool[this.mediaPool - 1]) {
-			newProps.frames = state.media.clipPool[this.mediaPool - 1].frames
+		if (state.media.clipPool[this.mediaPool]) {
+			newProps.frames = state.media.clipPool[this.mediaPool].frames
 		}
-		state.media.clipPool[this.mediaPool - 1] = newProps
+		state.media.clipPool[this.mediaPool] = newProps
 	}
 }

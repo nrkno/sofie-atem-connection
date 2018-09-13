@@ -1,6 +1,7 @@
 import { Commands, Enums } from '..'
 
 import DataTransfer from './dataTransfer'
+import DataTransferClip from './dataTransferClip'
 
 export default class DataLock {
 	storeId: number
@@ -30,6 +31,12 @@ export default class DataLock {
 				locked: true
 			})
 			this.commandQueue.push(command)
+		}
+	}
+
+	retryTransfer () {
+		if (this.transfer && this.transfer instanceof DataTransferClip) {
+			this.transfer.frames[this.transfer.curFrame].start()
 		}
 	}
 
@@ -69,12 +76,10 @@ export default class DataLock {
 		}
 	}
 
-	transferErrored (code: number) {
+	transferErrored (_code: number) {
 		if (this.transfer) {
 			// @todo: dequeue any old commands
-			this.transfer.fail(code)
+			this.retryTransfer()
 		}
-		this.transfer = undefined
-		this.dequeueAndRun()
 	}
 }

@@ -35,7 +35,7 @@ export class DataTransferManager {
 
 	handleCommand (command: Commands.AbstractCommand) {
 		// try to establish the associated DataLock:
-		let lock: DataLock = this.stillsLock // assign, because we get a false "used before asssigned error"
+		let lock: DataLock = this.stillsLock // assign, because we get a false "used before assigned error"
 		if (command.constructor.name === Commands.LockObtainedCommand.name || command.constructor.name === Commands.LockStateCommand.name) {
 			switch (command.properties.index) {
 				case 0 :
@@ -116,6 +116,7 @@ export class DataTransferManager {
 
 		transfer.commandQueue = this.commandQueue
 		transfer.storeId = 1 + index
+		transfer.clipIndex = index
 		transfer.description = { name }
 
 		for (const frameId in data) {
