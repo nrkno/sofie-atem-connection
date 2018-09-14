@@ -1,6 +1,7 @@
 import { IPCMessageType } from '../enums'
 import * as pRetry from 'p-retry'
 import { Enums } from '..'
+import WaveFile = require('wavefile')
 
 export namespace Util {
 	export function stringToBytes (str: string): Array<number> {
@@ -170,5 +171,21 @@ export namespace Util {
 		]
 
 		return enumToResolution[videoMode]
+	}
+
+	export function convertWAVToRaw (inputBuffer: Buffer) {
+		const wav = new (WaveFile as any)()
+		wav.fromBuffer(inputBuffer, true)
+		wav.toBitDepth('24', true)
+
+		const buffer = Buffer.from(wav.data.samples)
+		const buffer2 = new Buffer(buffer.length)
+		for (let i = 0; i < buffer.length; i += 3) {
+			// 24bit samples, change endian
+			buffer2[i] = buffer[i + 2]
+			buffer2[i + 1] = buffer[i + 1]
+			buffer2[i + 2] = buffer[i]
+		}
+		return buffer2
 	}
 }

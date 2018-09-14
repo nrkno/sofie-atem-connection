@@ -36,7 +36,7 @@ export default class DataLock {
 
 	retryTransfer () {
 		if (this.transfer && this.transfer instanceof DataTransferClip) {
-			this.transfer.frames[this.transfer.curFrame].start()
+
 		}
 	}
 
@@ -76,10 +76,18 @@ export default class DataLock {
 		}
 	}
 
-	transferErrored (_code: number) {
+	transferErrored (code: number) {
 		if (this.transfer) {
-			// @todo: dequeue any old commands
-			this.retryTransfer()
+			if (this.transfer instanceof DataTransferClip && code === 1) {
+				// Retry the last frame.
+				this.transfer.frames[this.transfer.curFrame].start()
+			} else {
+				// Abort the transfer.
+				// @todo: dequeue any old commands
+				this.transfer.fail(code)
+				this.transfer = undefined
+				this.dequeueAndRun()
+			}
 		}
 	}
 }
