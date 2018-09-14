@@ -75,8 +75,7 @@ export class AtemSocket extends EventEmitter {
 
 	public _sendCommand (command: AbstractCommand, trackingId: number) {
 		if (typeof command.serialize !== 'function') {
-			// TODO: should this reject instead of resolve?
-			return Promise.resolve()
+			return Promise.reject(new Error('Command is not serializable'))
 		}
 
 		const payload = command.serialize()

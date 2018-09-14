@@ -391,7 +391,7 @@ export class Atem extends EventEmitter {
 	uploadAudio (index: number, data: Buffer, name: string) {
 		return this.dataTransferManager.uploadAudio(
 			index,
-			data,
+			Util.convertWAVToRaw(data),
 			name
 		)
 	}
