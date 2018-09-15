@@ -1,6 +1,7 @@
 import { IPCMessageType } from '../enums'
 import * as pRetry from 'p-retry'
 import { Enums } from '..'
+// @ts-ignore
 import WaveFile = require('wavefile')
 
 export namespace Util {
@@ -173,10 +174,16 @@ export namespace Util {
 		return enumToResolution[videoMode]
 	}
 
-	export function convertWAVToRaw (inputBuffer: Buffer) {
-		const wav = new (WaveFile as any)()
-		wav.fromBuffer(inputBuffer, true)
-		wav.toBitDepth('24', true)
+	export async function convertWAVToRaw (inputBuffer: Buffer) {
+		const wav = new (WaveFile as any)(inputBuffer)
+
+		if (wav.fmt.bitsPerSample !== 24) {
+			throw new Error(`Invalid wav bit bits per sample: ${wav.fmt.bitsPerSample}`)
+		}
+
+		if (wav.fmt.numChannels !== 2) {
+			throw new Error(`Invalid number of wav channels: ${wav.fmt.numChannel}`)
+		}
 
 		const buffer = Buffer.from(wav.data.samples)
 		const buffer2 = new Buffer(buffer.length)
@@ -186,6 +193,7 @@ export namespace Util {
 			buffer2[i + 1] = buffer[i + 1]
 			buffer2[i + 2] = buffer[i]
 		}
+
 		return buffer2
 	}
 }
