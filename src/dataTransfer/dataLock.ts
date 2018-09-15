@@ -18,25 +18,29 @@ export default class DataLock {
 
 	enqueue (transfer: DataTransfer) {
 		this.queue.push(transfer)
-		this.dequeueAndRun()
+		if (!this.transfer) {
+			this.dequeueAndRun()
+		}
 	}
 
 	dequeueAndRun () {
 		if (this.transfer === undefined && this.queue.length > 0) {
 			this.transfer = this.queue.shift()
-			// obtain lock
-			const command = new Commands.LockStateCommand()
-			command.updateProps({
-				index: this.storeId,
-				locked: true
-			})
-			this.commandQueue.push(command)
-		}
-	}
 
-	retryTransfer () {
-		if (this.transfer && this.transfer instanceof DataTransferClip) {
+			if (this.state === 1) {
+				this.lockObtained()
+			} else {
+				// obtain lock
+				const command = new Commands.LockStateCommand()
+				command.updateProps({
+					index: this.storeId,
+					locked: true
+				})
 
+				this.commandQueue.push(command)
+			}
+		} else if (this.transfer) {
+			this.transfer.fail(new Error('Tried to run next transfer, but one was still in-progress'))
 		}
 	}
 
@@ -53,7 +57,7 @@ export default class DataLock {
 			this.transfer.finish(this.transfer)
 		} else if (this.transfer) {
 			// @todo: dequeue any old commands
-			this.transfer.fail()
+			this.transfer.fail(new Error('Lost lock mid-transfer'))
 		}
 		this.transfer = undefined
 		this.dequeueAndRun()
@@ -64,6 +68,7 @@ export default class DataLock {
 	}
 
 	transferFinished () {
+		this.transfer = undefined
 		if (this.queue.length > 0) {
 			this.dequeueAndRun()
 		} else { // unlock
@@ -84,10 +89,13 @@ export default class DataLock {
 			} else {
 				// Abort the transfer.
 				// @todo: dequeue any old commands
-				this.transfer.fail(code)
+				this.transfer.fail(new Error(`Code ${code}`))
 				this.transfer = undefined
 				this.dequeueAndRun()
 			}
+		} else {
+			this.transfer = undefined
+			this.dequeueAndRun()
 		}
 	}
 }
