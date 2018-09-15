@@ -93,7 +93,7 @@ export class DataTransferManager {
 		transfer.storeId = 0
 		transfer.frameId = index
 		transfer.data = data
-		transfer.hash = crypto.createHash('md5').update(data).digest().toString()
+		transfer.hash = crypto.createHash('md5').update(data).digest('hex').toString()
 		transfer.description = { name, description }
 
 		this.stillsLock.enqueue(transfer)
@@ -122,7 +122,7 @@ export class DataTransferManager {
 			frameTransfer.storeId = 1 + index
 			frameTransfer.frameId = Number(frameId)
 			frameTransfer.data = frame
-			// frameTransfer.hash = crypto.createHash('md5').update(frame).digest().toString()
+			// frameTransfer.hash = crypto.createHash('md5').update(frame).digest('hex').toString()
 
 			transfer.frames.push(frameTransfer)
 		}
@@ -144,7 +144,7 @@ export class DataTransferManager {
 		transfer.storeId = 1 + index
 		transfer.description = { name }
 		transfer.data = data
-		transfer.hash = crypto.createHash('md5').update(data).digest().toString()
+		transfer.hash = crypto.createHash('md5').update(data).digest('hex').toString()
 
 		;[ this.clip1Lock, this.clip2Lock ][index].enqueue(transfer)
 
