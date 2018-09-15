@@ -83,9 +83,14 @@ export default class DataLock {
 
 	transferErrored (code: number) {
 		if (this.transfer) {
-			if (this.transfer instanceof DataTransferClip && code === 1) {
-				// Retry the last frame.
-				this.transfer.frames[this.transfer.curFrame].start()
+			if (code === 1) {
+				if (this.transfer instanceof DataTransferClip) {
+					// Retry the last frame.
+					this.transfer.frames[this.transfer.curFrame].start()
+				} else {
+					// Retry the entire transfer.
+					this.transfer.start()
+				}
 			} else {
 				// Abort the transfer.
 				// @todo: dequeue any old commands
