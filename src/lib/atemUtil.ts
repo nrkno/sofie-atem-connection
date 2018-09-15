@@ -174,7 +174,7 @@ export namespace Util {
 		return enumToResolution[videoMode]
 	}
 
-	export async function convertWAVToRaw (inputBuffer: Buffer) {
+	export function convertWAVToRaw (inputBuffer: Buffer) {
 		const wav = new (WaveFile as any)(inputBuffer)
 
 		if (wav.fmt.bitsPerSample !== 24) {
