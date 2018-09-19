@@ -1,9 +1,8 @@
 # Sofie: The Modern TV News Studio Automation System (ATEM Connection library)
 [![CircleCI](https://circleci.com/gh/nrkno/tv-automation-atem-connection.svg?style=svg)](https://circleci.com/gh/nrkno/tv-automation-atem-connection)
 
-This is a library for connecting to BlackmagicDesign ATEM devices, created by SuperFly.tv
+This is a library for connecting to Blackmagic Design ATEM vision mixer devices. It is used in the [state-based TV news automation system **Sofie**](https://github.com/nrkno/Sofie-TV-automation/).
 
-_Note: this is a work in progress, expect many new features and also... breaking changes_
 
 ## Technology highlights
 - Typescript
