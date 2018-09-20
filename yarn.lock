@@ -20,6 +20,10 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@sindresorhus/df/-/df-1.0.1.tgz#c69b66f52f6fcdd287c807df210305dbaf78500d"
 
+"@types/exit-hook@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/exit-hook/-/exit-hook-1.1.0.tgz#de9d0fdb8a333ef70109920b0f908db41ffe425d"
+
 "@types/fs-extra@^4.0.0":
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-4.0.5.tgz#8aa6033c0e87c653b09a6711686916864b48ec9e"
@@ -53,6 +57,16 @@
 "@types/node@*", "@types/node@^8.0.4":
   version "8.0.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.4.tgz#d0ca03fa4a3d7ab66c1f4e78a0fd06e30e46a7a9"
+
+"@types/p-retry@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/p-retry/-/p-retry-2.0.0.tgz#8d5e3ef380dde8a0b46d254a68861c7ec6ca2d80"
+  dependencies:
+    "@types/retry" "*"
+
+"@types/retry@*":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@types/retry/-/retry-0.10.2.tgz#bd1740c4ad51966609b058803ee6874577848b37"
 
 "@types/shelljs@^0.7.0":
   version "0.7.2"
@@ -1365,6 +1379,10 @@ execa@^0.5.0:
     p-finally "^1.0.0"
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
+
+exit-hook@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/exit-hook/-/exit-hook-2.0.0.tgz#b89f6f69b7d080efc2807c66a85957722637db92"
 
 exit@^0.1.2:
   version "0.1.2"
@@ -3303,6 +3321,12 @@ p-locate@^2.0.0:
   dependencies:
     p-limit "^1.1.0"
 
+p-retry@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/p-retry/-/p-retry-2.0.0.tgz#b97f1f4d6d81a3c065b2b40107b811e995c1bfba"
+  dependencies:
+    retry "^0.12.0"
+
 package-json@^2.0.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/package-json/-/package-json-2.4.0.tgz#0d15bd67d1cbbddbb2ca222ff2edb86bcb31a8bb"
@@ -3809,6 +3833,10 @@ restore-cursor@^2.0.0:
   dependencies:
     onetime "^2.0.0"
     signal-exit "^3.0.2"
+
+retry@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/retry/-/retry-0.12.0.tgz#1b42a6266a21f07421d1b0b54b7dc167b01c013b"
 
 right-align@^0.1.1:
   version "0.1.3"

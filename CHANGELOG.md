@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.1"></a>
+## [0.5.1](https://github.com/nrkno/tv-automation-atem-connection/compare/0.5.0...0.5.1) (2018-09-04)
+
+
+
+<a name="0.5.0"></a>
+# [0.5.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.4.0...0.5.0) (2018-08-17)
+
+
+### Bug Fixes
+
+* macro state is not an array, it's one "macro player" ([76c8b7b](https://github.com/nrkno/tv-automation-atem-connection/commit/76c8b7b))
+* typo in super source boxes capabilities command ([f123694](https://github.com/nrkno/tv-automation-atem-connection/commit/f123694))
+
+
+### Features
+
+* implement MacroRunStatus command (MRPr) ([98f5650](https://github.com/nrkno/tv-automation-atem-connection/commit/98f5650))
+
+
+
 <a name="0.4.0"></a>
 # [0.4.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.3.2...0.4.0) (2018-08-15)
 

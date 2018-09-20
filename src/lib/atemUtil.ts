@@ -1,3 +1,6 @@
+import { IPCMessageType } from '../enums'
+import * as pRetry from 'p-retry'
+
 export namespace Util {
 	export function stringToBytes (str: string): Array<number> {
 		const array = []
@@ -22,6 +25,56 @@ export namespace Util {
 	export function parseEnum<G> (value: G, type: any): G {
 		if (!type[value]) throw Error('Value is not a valid option in enum')
 		return value
+	}
+
+	export function sendIPCMessage (
+		scope: any,
+		processProperty: string,
+		message: {cmd: IPCMessageType; payload?: any, _messageId?: number},
+		log: Function
+	) {
+		return pRetry(() => {
+			return new Promise((resolve, reject) => {
+				// This ensures that we will always grab the currently in-use process, if it has been re-made.
+				const destProcess = scope[processProperty]
+				if (!destProcess || typeof destProcess.send !== 'function') {
+					return reject(new Error('Destination process has gone away'))
+				}
+
+				let handled = false
+
+				// From https://nodejs.org/api/child_process.html#child_process_subprocess_send_message_sendhandle_options_callback:
+				// "subprocess.send() will return false if the channel has closed or when the backlog of
+				// unsent messages exceeds a threshold that makes it unwise to send more.
+				// Otherwise, the method returns true."
+				const sendResult = destProcess.send(message, (error: Error) => {
+					if (handled) {
+						return
+					}
+
+					if (error) {
+						handled = true
+						reject(error)
+					} else {
+						resolve()
+					}
+
+					handled = true
+				})
+
+				if (!sendResult && !handled) {
+					reject(new Error('Failed to send IPC message'))
+					handled = true
+				}
+			})
+		}, {
+			onFailedAttempt: error => {
+				if (log) {
+					log(`Failed to send IPC message (attempt ${error.attemptNumber}/${error.attemptNumber + error.attemptsLeft}).`)
+				}
+			},
+			retries: 5
+		})
 	}
 
 	export const COMMAND_CONNECT_HELLO = Buffer.from([
