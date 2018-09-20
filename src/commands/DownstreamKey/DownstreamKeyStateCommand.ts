@@ -28,8 +28,8 @@ export class DownstreamKeyStateCommand extends AbstractCommand {
 
 	applyToState (state: AtemState) {
 		state.video.downstreamKeyers[this.downstreamKeyId] = {
-			...this.properties,
-			...state.video.downstreamKeyers[this.downstreamKeyId]
+			...state.video.downstreamKeyers[this.downstreamKeyId],
+			...this.properties
 		}
 	}
 }
