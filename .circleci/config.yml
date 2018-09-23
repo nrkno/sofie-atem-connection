@@ -108,27 +108,27 @@ workflows:
       - Check for vulnerabilities:
           requires:
             - Checkout Code
-      - Test node-8:
-          requires:
-            - Checkout Code
-      - Send Coverage:
-          requires:
-            - Check for vulnerabilities
-            - Test node-8
-          filters:
-            branches:
-              only:
-                - master
+      # - Test node-8:
+      #     requires:
+      #       - Checkout Code
+      # - Send Coverage:
+      #     requires:
+      #       - Check for vulnerabilities
+      #       - Test node-8
+      #     filters:
+      #       branches:
+      #         only:
+      #           - master
       - Git Release:
-          requires:
-            - Send Coverage
+          # requires:
+          #   - Send Coverage
           filters:
             branches:
               only:
                 - master
       - Build:
           requires:
-            - Send Coverage
+            # - Send Coverage
             - Git Release
           filters:
             branches:
