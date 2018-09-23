@@ -120,8 +120,9 @@ workflows:
       #         only:
       #           - master
       - Git Release:
-          # requires:
+          requires:
           #   - Send Coverage
+            - Checkout Code
           filters:
             branches:
               only:
