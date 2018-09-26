@@ -68,7 +68,6 @@ export default class DataLock {
 	}
 
 	transferFinished () {
-		this.transfer = undefined
 		if (this.queue.length > 0) {
 			this.dequeueAndRun()
 		} else { // unlock
