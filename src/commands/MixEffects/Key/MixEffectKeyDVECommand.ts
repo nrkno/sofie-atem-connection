@@ -59,7 +59,7 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 			borderBevelPosition: Util.parseNumberBetween(rawCommand.readInt8(35), 0, 100),
 
 			borderOpacity: Util.parseNumberBetween(rawCommand.readInt8(36), 0, 100),
-			borderHue: Util.parseNumberBetween(rawCommand.readUInt16BE(38), 0, 1000),
+			borderHue: Util.parseNumberBetween(rawCommand.readUInt16BE(38), 0, 3600),
 			borderSaturation: Util.parseNumberBetween(rawCommand.readUInt16BE(40), 0, 1000),
 			borderLuma: Util.parseNumberBetween(rawCommand.readUInt16BE(42), 0, 1000),
 
