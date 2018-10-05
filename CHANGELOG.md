@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.2"></a>
+## [0.5.2](https://github.com/nrkno/tv-automation-atem-connection/compare/0.5.1...0.5.2) (2018-09-23)
+
+
+### Bug Fixes
+
+* **socket:** prevent connection from dying when the main thread is blocked ([#19](https://github.com/nrkno/tv-automation-atem-connection/issues/19)) ([6814713](https://github.com/nrkno/tv-automation-atem-connection/commit/6814713))
+* dsk state not being updated ([bcdea2b](https://github.com/nrkno/tv-automation-atem-connection/commit/bcdea2b))
+
+
+
 <a name="0.5.1"></a>
 ## [0.5.1](https://github.com/nrkno/tv-automation-atem-connection/compare/0.5.0...0.5.1) (2018-09-04)
 
