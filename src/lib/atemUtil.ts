@@ -45,12 +45,16 @@ export namespace Util {
 				}
 
 				let handled = false
+				const timeout = setTimeout(() => {
+					reject(new Error('Failed to send IPC message'))
+				}, 1500)
 
 				// From https://nodejs.org/api/child_process.html#child_process_subprocess_send_message_sendhandle_options_callback:
 				// "subprocess.send() will return false if the channel has closed or when the backlog of
 				// unsent messages exceeds a threshold that makes it unwise to send more.
 				// Otherwise, the method returns true."
-				const sendResult = destProcess.send(message, (error: Error) => {
+				destProcess.send(message, (error: Error) => {
+					clearTimeout(timeout)
 					if (handled) {
 						return
 					}
@@ -65,15 +69,15 @@ export namespace Util {
 					handled = true
 				})
 
-				if (!sendResult && !handled) {
-					reject(new Error('Failed to send IPC message'))
-					handled = true
-				}
+				// if (!sendResult && !handled) {
+				// 	reject(new Error('Failed to send IPC message'))
+				// 	handled = true
+				// }
 			})
 		}, {
 			onFailedAttempt: error => {
 				if (log) {
-					log(`Failed to send IPC message (attempt ${error.attemptNumber}/${error.attemptNumber + error.attemptsLeft}).`)
+					log(`Failed to send IPC message: ${error.message} (attempt ${error.attemptNumber}/${error.attemptNumber + error.attemptsLeft}).`)
 				}
 			},
 			retries: 5
