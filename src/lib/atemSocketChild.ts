@@ -163,7 +163,7 @@ export class AtemSocketChild extends EventEmitter {
 		if (flags & PacketFlag.AckReply && this._connectionState === ConnectionState.Established) {
 			const ackPacketId = packet[4] << 8 | packet[5]
 			for (const i in this._inFlight) {
-				if (ackPacketId >= this._inFlight[i].packetId) {
+				if (ackPacketId >= this._inFlight[i].packetId || this._localPacketId < this._inFlight[i].packetId) {
 					this.emit(IPCMessageType.CommandAcknowledged, this._inFlight[i].packetId, this._inFlight[i].trackingId)
 					delete this._inFlight[i]
 				}
@@ -192,9 +192,16 @@ export class AtemSocketChild extends EventEmitter {
 	private _checkForRetransmit () {
 		for (const sentPacket of this._inFlight) {
 			if (sentPacket && sentPacket.lastSent + this._inFlightTimeout < Date.now()) {
-				if (sentPacket.resent <= this._maxRetries) {
+				if (sentPacket.resent <= this._maxRetries && sentPacket.packetId < this.nextPacketId) {
 					sentPacket.lastSent = Date.now()
 					sentPacket.resent++
+					// get a new local packet id
+					sentPacket.packetId = this._localPacketId
+					sentPacket.packet[10] = this._localPacketId / 256
+					sentPacket.packet[11] = this._localPacketId % 256
+					this._localPacketId++
+					if (this._maxPacketID < this._localPacketId) this._localPacketId = 0
+
 					this.log('RESEND: ', sentPacket)
 					this._sendPacket(sentPacket.packet)
 				} else {
