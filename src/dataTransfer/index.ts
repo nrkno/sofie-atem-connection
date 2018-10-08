@@ -35,7 +35,7 @@ export class DataTransferManager {
 		const allLocks = [ this.stillsLock, this.clip1Lock, this.clip2Lock ]
 
 		// try to establish the associated DataLock:
-		let lock: DataLock = this.stillsLock // assign, because we get a false "used before assigned error"
+		let lock: DataLock | undefined
 		if (command.constructor.name === Commands.LockObtainedCommand.name || command.constructor.name === Commands.LockStateCommand.name) {
 			switch (command.properties.index) {
 				case 0 :
@@ -61,6 +61,7 @@ export class DataTransferManager {
 			console.log('UNKNOWN COMMAND:', command)
 			return
 		}
+		if (!lock) return
 
 		// handle actual command
 		if (command.constructor.name === Commands.LockObtainedCommand.name) {
