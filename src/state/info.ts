@@ -19,16 +19,11 @@ export interface AtemCapabilites {
 	readonly hasSuperSources: boolean
 }
 
-export interface PowerStatus {
-	readonly pin1: boolean
-	readonly pin2: boolean
-}
-
 export class DeviceInfo {
 	apiVersion: VersionProps
 	capabilities: AtemCapabilites
 	model: Model
 	productIdentifier: string
 	superSourceBoxes: number
-	power: PowerStatus
+	power: boolean[]
 }
