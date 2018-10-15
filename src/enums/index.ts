@@ -192,7 +192,8 @@ export enum IPCMessageType {
 	Disconnect = 'disconnect',
 	InboundCommand = 'inboundCommand',
 	OutboundCommand = 'outboundCommand',
-	CommandAcknowledged = 'commandAcknowledged'
+	CommandAcknowledged = 'commandAcknowledged',
+	CommandTimeout = 'commandTimeout'
 }
 
 export enum TransferMode {

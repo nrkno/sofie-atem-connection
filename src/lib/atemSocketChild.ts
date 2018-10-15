@@ -205,6 +205,7 @@ export class AtemSocketChild extends EventEmitter {
 					this.log('RESEND: ', sentPacket)
 					this._sendPacket(sentPacket.packet)
 				} else {
+					this.emit(IPCMessageType.CommandTimeout, sentPacket.packetId, sentPacket.trackingId)
 					this._inFlight.splice(this._inFlight.indexOf(sentPacket), 1)
 					this.log('TIMED OUT: ', sentPacket.packet)
 					// @todo: we should probably break up the connection here.
