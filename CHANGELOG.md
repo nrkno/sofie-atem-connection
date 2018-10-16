@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.0"></a>
+# [0.6.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.5.2...0.6.0) (2018-10-16)
+
+
+### Bug Fixes
+
+* **DVE upstream key:** borderHueWidth is 3600 ([4b2db48](https://github.com/nrkno/tv-automation-atem-connection/commit/4b2db48))
+
+
+### Features
+
+* parse psu status ([16f677f](https://github.com/nrkno/tv-automation-atem-connection/commit/16f677f))
+* Use device ModelId to determine how many psu to track in state ([f0631d1](https://github.com/nrkno/tv-automation-atem-connection/commit/f0631d1))
+
+
+
 <a name="0.5.2"></a>
 ## [0.5.2](https://github.com/nrkno/tv-automation-atem-connection/compare/0.5.1...0.5.2) (2018-09-23)
 
