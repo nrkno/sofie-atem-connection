@@ -25,4 +25,5 @@ export class DeviceInfo {
 	model: Model
 	productIdentifier: string
 	superSourceBoxes: number
+	power: boolean[]
 }

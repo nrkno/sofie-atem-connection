@@ -32,5 +32,17 @@ export class ProductIdentifierCommand extends AbstractCommand {
 	applyToState (state: AtemState) {
 		state.info.productIdentifier = this.properties.deviceName
 		state.info.model = this.properties.model
+
+		// Model specific features that aren't specified by the protocol
+		switch (state.info.model) {
+			case Enums.Model.TwoME:
+			case Enums.Model.TwoME4K:
+			case Enums.Model.TwoMEBS4K:
+				state.info.power = [false, false]
+				break
+			default:
+				state.info.power = [false]
+				break
+		}
 	}
 }
