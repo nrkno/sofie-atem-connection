@@ -202,14 +202,20 @@ export class AtemSocketChild extends EventEmitter {
 	}
 
 	private _checkForRetransmit () {
+		let retransmitFromPacketId: number | undefined
 		for (const sentPacket of this._inFlight) {
-			if (sentPacket && sentPacket.lastSent + this._inFlightTimeout < Date.now()) {
+			if (retransmitFromPacketId && sentPacket.packetId > retransmitFromPacketId) {
+				sentPacket.lastSent = Date.now()
+				sentPacket.resent++
+				this._sendPacket(sentPacket.packet)
+			} else if (sentPacket && sentPacket.lastSent + this._inFlightTimeout < Date.now()) {
 				if (sentPacket.resent <= this._maxRetries && sentPacket.packetId < this.nextPacketId) {
 					sentPacket.lastSent = Date.now()
 					sentPacket.resent++
 
 					this.log('RESEND: ', sentPacket)
 					this._sendPacket(sentPacket.packet)
+					retransmitFromPacketId = sentPacket.packetId
 				} else {
 					this.emit(IPCMessageType.CommandTimeout, sentPacket.packetId, sentPacket.trackingId)
 					this._inFlight.splice(this._inFlight.indexOf(sentPacket), 1)
