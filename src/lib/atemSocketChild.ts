@@ -19,10 +19,10 @@ export class AtemSocketChild extends EventEmitter {
 	private _socket: Socket
 	private _reconnectInterval = 5000
 
-	private _inFlightTimeout = 30
+	private _inFlightTimeout = 100
 	private _maxRetries = 5
 	private _lastReceivedAt: number = Date.now()
-	private _lastReceivedPacketId: number
+	// private _lastReceivedPacketId: number
 	private _inFlight: Array<{packetId: number, trackingId: number, lastSent: number, packet: Buffer, resent: number}> = []
 	private _ackTimer: NodeJS.Timer | null
 
