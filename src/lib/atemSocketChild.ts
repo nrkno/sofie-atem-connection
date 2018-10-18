@@ -19,10 +19,12 @@ export class AtemSocketChild extends EventEmitter {
 	private _socket: Socket
 	private _reconnectInterval = 5000
 
-	private _inFlightTimeout = 200
+	private _inFlightTimeout = 30
 	private _maxRetries = 5
 	private _lastReceivedAt: number = Date.now()
+	private _lastReceivedPacketId: number
 	private _inFlight: Array<{packetId: number, trackingId: number, lastSent: number, packet: Buffer, resent: number}> = []
+	private _ackTimer: NodeJS.Timer | null
 
 	constructor (options: { address?: string, port?: number } = {}) {
 		super()
@@ -155,7 +157,7 @@ export class AtemSocketChild extends EventEmitter {
 
 		// Send ack packet (called by answer packet in Skaarhoj)
 		if (flags & PacketFlag.AckRequest && this._connectionState === ConnectionState.Established) {
-			this._sendAck(remotePacketId)
+			if (!this._attemptAck(remotePacketId)) return
 			this.emit('ping')
 		}
 
@@ -174,6 +176,16 @@ export class AtemSocketChild extends EventEmitter {
 	private _sendPacket (packet: Buffer) {
 		if (this._debug) this.log('SEND ', packet)
 		this._socket.send(packet, 0, packet.length, this._port, this._address)
+	}
+
+	private _attemptAck (packetId: number) {
+		if (packetId !== (this._lastReceivedPacketId + 1) % this._maxPacketID) return false
+		this._lastReceivedPacketId = packetId
+		if (!this._ackTimer) this._ackTimer = setTimeout(() => {
+			this._ackTimer = null
+			this._sendAck(this._lastReceivedPacketId)
+		}, 16)
+		return true
 	}
 
 	private _sendAck (packetId: number) {
