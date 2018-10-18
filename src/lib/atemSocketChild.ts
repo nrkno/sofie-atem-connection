@@ -195,12 +195,6 @@ export class AtemSocketChild extends EventEmitter {
 				if (sentPacket.resent <= this._maxRetries && sentPacket.packetId < this.nextPacketId) {
 					sentPacket.lastSent = Date.now()
 					sentPacket.resent++
-					// get a new local packet id
-					sentPacket.packetId = this._localPacketId
-					sentPacket.packet[10] = this._localPacketId / 256
-					sentPacket.packet[11] = this._localPacketId % 256
-					this._localPacketId++
-					if (this._maxPacketID < this._localPacketId) this._localPacketId = 0
 
 					this.log('RESEND: ', sentPacket)
 					this._sendPacket(sentPacket.packet)
