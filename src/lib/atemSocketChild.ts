@@ -22,6 +22,7 @@ export class AtemSocketChild extends EventEmitter {
 	private _inFlightTimeout = 100
 	private _maxRetries = 5
 	private _lastReceivedAt: number = Date.now()
+	private _lastReceivedPacketId = 0
 	private _inFlight: Array<{packetId: number, trackingId: number, lastSent: number, packet: Buffer, resent: number}> = []
 
 	constructor (options: { address?: string, port?: number } = {}) {
@@ -144,8 +145,17 @@ export class AtemSocketChild extends EventEmitter {
 		}
 
 		// Parse commands, Emit 'stateChanged' event after parse
-		if (flags & PacketFlag.AckRequest && length > 12) {
-			this.emit(IPCMessageType.InboundCommand, packet.slice(12), remotePacketId)
+		if (flags & PacketFlag.AckRequest) {
+			if (this._connectionState === ConnectionState.Established) {
+				if (remotePacketId === (this._lastReceivedPacketId + 1) % this._maxPacketID) {
+					this._sendAck(remotePacketId)
+				} else {
+					return
+				}
+			}
+			if (length > 12) {
+				this.emit(IPCMessageType.InboundCommand, packet.slice(12), remotePacketId)
+			}
 		}
 
 		// Send ping packet, Emit 'connect' event after receive all stats
