@@ -57,6 +57,7 @@ export class Atem extends EventEmitter {
 		})
 		this.socket.on('receivedStateChange', (command: AbstractCommand) => this._mutateState(command))
 		this.socket.on(IPCMessageType.CommandAcknowledged, ({trackingId}: {trackingId: number}) => this._resolveCommand(trackingId))
+		this.socket.on(IPCMessageType.CommandTimeout, ({trackingId}: {trackingId: number}) => this._rejectCommand(trackingId))
 		this.socket.on('error', (e) => this.emit('error', e))
 		this.socket.on('connect', () => this.emit('connected'))
 		this.socket.on('disconnect', () => this.emit('disconnected'))
@@ -342,6 +343,13 @@ export class Atem extends EventEmitter {
 	private _resolveCommand (trackingId: number) {
 		if (this._sentQueue[trackingId]) {
 			this._sentQueue[trackingId].resolve(this._sentQueue[trackingId])
+			delete this._sentQueue[trackingId]
+		}
+	}
+
+	private _rejectCommand (trackingId: number) {
+		if (this._sentQueue[trackingId]) {
+			this._sentQueue[trackingId].reject(this._sentQueue[trackingId])
 			delete this._sentQueue[trackingId]
 		}
 	}

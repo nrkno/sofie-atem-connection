@@ -59,6 +59,16 @@ singleton.on(IPCMessageType.CommandAcknowledged, (commandId: number, trackingId:
 	})
 })
 
+singleton.on(IPCMessageType.CommandTimeout, (commandId: number, trackingId: number) => {
+	sendParentMessage({
+		cmd: IPCMessageType.CommandTimeout,
+		payload: {
+			commandId,
+			trackingId
+		}
+	})
+})
+
 function sendParentMessage (message: {cmd: IPCMessageType; payload?: any}) {
 	Util.sendIPCMessage(global, 'process', message, singleton.log).catch(() => { /* Discard errors. */ })
 }
