@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.1"></a>
+## [0.6.1](https://github.com/nrkno/tv-automation-atem-connection/compare/0.6.0...0.6.1) (2018-10-23)
+
+
+### Bug Fixes
+
+* behaviour around packetId wrapping ([9c8e3a8](https://github.com/nrkno/tv-automation-atem-connection/commit/9c8e3a8))
+* do not ack discontinuous packet sequences ([91f36bf](https://github.com/nrkno/tv-automation-atem-connection/commit/91f36bf))
+* do not ack discontinuous packet sequences ([1bde19d](https://github.com/nrkno/tv-automation-atem-connection/commit/1bde19d))
+* more aggressive resend strategy ([d1fd66c](https://github.com/nrkno/tv-automation-atem-connection/commit/d1fd66c))
+* optimize inFlightTimeout ([0812a63](https://github.com/nrkno/tv-automation-atem-connection/commit/0812a63))
+* reject timed out commands ([a8cfa68](https://github.com/nrkno/tv-automation-atem-connection/commit/a8cfa68))
+
+
+
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.5.2...0.6.0) (2018-10-16)
 
