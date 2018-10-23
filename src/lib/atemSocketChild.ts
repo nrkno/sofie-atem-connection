@@ -173,7 +173,7 @@ export class AtemSocketChild extends EventEmitter {
 		if (flags & PacketFlag.AckReply && this._connectionState === ConnectionState.Established) {
 			const ackPacketId = packet[4] << 8 | packet[5]
 			for (const i in this._inFlight) {
-				if (ackPacketId >= this._inFlight[i].packetId) {
+				if (ackPacketId >= this._inFlight[i].packetId || this._localPacketId < this._inFlight[i].packetId) {
 					this.emit(IPCMessageType.CommandAcknowledged, this._inFlight[i].packetId, this._inFlight[i].trackingId)
 					delete this._inFlight[i]
 				}
@@ -210,6 +210,7 @@ export class AtemSocketChild extends EventEmitter {
 				if (sentPacket.resent <= this._maxRetries && sentPacket.packetId < this.nextPacketId) {
 					sentPacket.lastSent = Date.now()
 					sentPacket.resent++
+
 					this.log('RESEND: ', sentPacket)
 					this._sendPacket(sentPacket.packet)
 					retransmitFromPacketId = sentPacket.packetId
