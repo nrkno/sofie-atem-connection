@@ -4,6 +4,7 @@ import { AtemSocket } from './lib/atemSocket'
 import { IPCMessageType, MacroAction } from './enums'
 import AbstractCommand from './commands/AbstractCommand'
 import * as Commands from './commands'
+import * as DataTransferCommands from './commands/DataTransfer'
 import { MediaPlayer } from './state/media'
 import {
 	DipTransitionSettings,
@@ -18,6 +19,9 @@ import {
 import * as USK from './state/video/upstreamKeyers'
 import { InputChannel } from './state/input'
 import { DownstreamKeyerGeneral, DownstreamKeyerMask } from './state/video/downstreamKeyers'
+import * as DT from './dataTransfer'
+import { Util } from './lib/atemUtil'
+import * as Enums from './enums'
 
 export interface AtemOptions {
 	address?: string,
@@ -36,6 +40,7 @@ export class Atem extends EventEmitter {
 	event: EventEmitter
 	state: AtemState
 	private socket: AtemSocket
+	private dataTransferManager: DT.DataTransferManager
 	private _log: (...args: any[]) => void
 	private _sentQueue: {[packetId: string]: AbstractCommand } = {}
 
@@ -55,6 +60,9 @@ export class Atem extends EventEmitter {
 			address: (options || {}).address,
 			port: (options || {}).port
 		})
+		this.dataTransferManager = new DT.DataTransferManager(
+			(command: AbstractCommand) => this.sendCommand(command)
+		)
 		this.socket.on('receivedStateChange', (command: AbstractCommand) => this._mutateState(command))
 		this.socket.on(IPCMessageType.CommandAcknowledged, ({trackingId}: {trackingId: number}) => this._resolveCommand(trackingId))
 		this.socket.on(IPCMessageType.CommandTimeout, ({trackingId}: {trackingId: number}) => this._rejectCommand(trackingId))
@@ -241,6 +249,31 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	setMediaPlayerSource (newProps: Partial<{ sourceType: Enums.MediaSourceType, stillIndex: number, clipIndex: number }>, player = 0) {
+		const command = new Commands.MediaPlayerSourceCommand()
+		command.mediaPlayerId = player
+		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+
+	setMediaClip (index: number, name: string, frames = 1) {
+		const command = new Commands.MediaPoolSetClipCommand()
+		command.updateProps({ index, name, frames })
+		return this.sendCommand(command)
+	}
+
+	clearMediaPoolClip (clipId: number) {
+		const command = new Commands.MediaPoolClearClipCommand()
+		command.updateProps({ index: clipId })
+		return this.sendCommand(command)
+	}
+
+	clearMediaPoolStill (stillId: number) {
+		const command = new Commands.MediaPoolClearStillCommand()
+		command.updateProps({ index: stillId })
+		return this.sendCommand(command)
+	}
+
 	setSuperSourceBoxSettings (newProps: Partial<SuperSourceBox>, box = 0) {
 		const command = new Commands.SuperSourceBoxParametersCommand()
 		command.boxId = box
@@ -333,10 +366,46 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	uploadStill (index: number, data: Buffer, name: string, description: string) {
+		const resolution = Util.getResolution(this.state.settings.videoMode)
+		return this.dataTransferManager.uploadStill(
+			index,
+			Util.convertRGBAToYUV422(resolution[0], resolution[1], data),
+			name,
+			description
+		)
+	}
+
+	uploadClip (index: number, frames: Array<Buffer>, name: string) {
+		const resolution = Util.getResolution(this.state.settings.videoMode)
+		const data: Array<Buffer> = []
+		for (const frame of frames) {
+			data.push(Util.convertRGBAToYUV422(resolution[0], resolution[1], frame))
+		}
+		return this.dataTransferManager.uploadClip(
+			index,
+			data,
+			name
+		)
+	}
+
+	uploadAudio (index: number, data: Buffer, name: string) {
+		return this.dataTransferManager.uploadAudio(
+			index,
+			Util.convertWAVToRaw(data),
+			name
+		)
+	}
+
 	private _mutateState (command: AbstractCommand) {
 		if (typeof command.applyToState === 'function') {
 			command.applyToState(this.state)
 			this.emit('stateChanged', this.state, command)
+		}
+		for (const commandName in DataTransferCommands) {
+			if (command.constructor.name === commandName) {
+				this.dataTransferManager.handleCommand(command)
+			}
 		}
 	}
 
