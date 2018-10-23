@@ -195,3 +195,56 @@ export enum IPCMessageType {
 	CommandAcknowledged = 'commandAcknowledged',
 	CommandTimeout = 'commandTimeout'
 }
+
+export enum TransferMode {
+	NoOp,
+	Write,
+	Clear,
+	WriteAudio = 256
+}
+
+export enum StoragePool {
+	Stills,
+	Clip1,
+	Clip2,
+	Audio1,
+	Audio2
+}
+
+export enum VideoMode {
+	N525i5994NTSC,
+	P625i50PAL,
+	N525i5994169,
+	P625i50169,
+
+	P720p50,
+	N720p5994,
+	P1080i50,
+	N1080i5994,
+	N1080p2398,
+	N1080p24,
+	P1080p25,
+	N1080p2997,
+	P1080p50,
+	N1080p5994,
+
+	N4KHDp2398,
+	N4KHDp24,
+	P4KHDp25,
+	N4KHDp2997,
+
+	P4KHDp5000,
+	N4KHDp5994
+}
+
+export enum TransferState {
+	Queued,
+	Locked,
+	Transferring,
+	Finished
+}
+
+export enum MediaSourceType {
+	Still = 1,
+	Clip
+}

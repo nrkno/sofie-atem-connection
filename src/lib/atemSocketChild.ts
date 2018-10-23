@@ -24,6 +24,7 @@ export class AtemSocketChild extends EventEmitter {
 	private _lastReceivedAt: number = Date.now()
 	private _lastReceivedPacketId = 0
 	private _inFlight: Array<{packetId: number, trackingId: number, lastSent: number, packet: Buffer, resent: number}> = []
+	// private _ackTimer: NodeJS.Timer | null
 
 	constructor (options: { address?: string, port?: number } = {}) {
 		super()
@@ -149,6 +150,7 @@ export class AtemSocketChild extends EventEmitter {
 			if (this._connectionState === ConnectionState.Established) {
 				if (remotePacketId === (this._lastReceivedPacketId + 1) % this._maxPacketID) {
 					this._sendAck(remotePacketId)
+					this._lastReceivedPacketId = remotePacketId
 				} else {
 					return
 				}
@@ -161,12 +163,8 @@ export class AtemSocketChild extends EventEmitter {
 		// Send ping packet, Emit 'connect' event after receive all stats
 		if (flags & PacketFlag.AckRequest && length === 12 && this._connectionState === ConnectionState.SynSent) {
 			this._connectionState = ConnectionState.Established
-		}
-
-		// Send ack packet (called by answer packet in Skaarhoj)
-		if (flags & PacketFlag.AckRequest && this._connectionState === ConnectionState.Established) {
 			this._sendAck(remotePacketId)
-			this.emit('ping')
+			this._lastReceivedPacketId = remotePacketId
 		}
 
 		// Device ack'ed our command
@@ -175,7 +173,7 @@ export class AtemSocketChild extends EventEmitter {
 			for (const i in this._inFlight) {
 				if (ackPacketId >= this._inFlight[i].packetId || this._localPacketId < this._inFlight[i].packetId) {
 					this.emit(IPCMessageType.CommandAcknowledged, this._inFlight[i].packetId, this._inFlight[i].trackingId)
-					delete this._inFlight[i]
+					this._inFlight.splice(Number(i), 1)
 				}
 			}
 		}
@@ -185,6 +183,22 @@ export class AtemSocketChild extends EventEmitter {
 		if (this._debug) this.log('SEND ', packet)
 		this._socket.send(packet, 0, packet.length, this._port, this._address)
 	}
+
+	// private _attemptAck (packetId: number) {
+	// 	if (this._lastReceivedPacketId && packetId !== (this._lastReceivedPacketId + 1) % this._maxPacketID) return false
+	// 	this._lastReceivedPacketId = packetId
+	// 	this._receivedWithoutAck++
+	// 	if (this._receivedWithoutAck === 16) {
+	// 		this._receivedWithoutAck = 0
+	// 		this._ackTimer = null
+	// 		this._sendAck(this._lastReceivedPacketId)
+	// 	} else if (!this._ackTimer) this._ackTimer = setTimeout(() => {
+	// 		this._receivedWithoutAck = 0
+	// 		this._ackTimer = null
+	// 		this._sendAck(this._lastReceivedPacketId)
+	// 	}, 0)
+	// 	return true
+	// }
 
 	private _sendAck (packetId: number) {
 		const buffer = new Buffer(12)

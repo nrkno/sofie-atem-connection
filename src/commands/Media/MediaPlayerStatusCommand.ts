@@ -47,6 +47,7 @@ export class MediaPlayerStatusCommand extends AbstractCommand {
 
 	applyToState (state: AtemState) {
 		state.media.players[this.mediaPlayerId] = {
+			...state.media.players[this.mediaPlayerId],
 			...this.properties
 		}
 	}
