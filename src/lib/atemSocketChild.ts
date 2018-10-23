@@ -19,9 +19,10 @@ export class AtemSocketChild extends EventEmitter {
 	private _socket: Socket
 	private _reconnectInterval = 5000
 
-	private _inFlightTimeout = 200
+	private _inFlightTimeout = 100
 	private _maxRetries = 5
 	private _lastReceivedAt: number = Date.now()
+	private _lastReceivedPacketId = 0
 	private _inFlight: Array<{packetId: number, trackingId: number, lastSent: number, packet: Buffer, resent: number}> = []
 
 	constructor (options: { address?: string, port?: number } = {}) {
@@ -144,8 +145,17 @@ export class AtemSocketChild extends EventEmitter {
 		}
 
 		// Parse commands, Emit 'stateChanged' event after parse
-		if (flags & PacketFlag.AckRequest && length > 12) {
-			this.emit(IPCMessageType.InboundCommand, packet.slice(12), remotePacketId)
+		if (flags & PacketFlag.AckRequest) {
+			if (this._connectionState === ConnectionState.Established) {
+				if (remotePacketId === (this._lastReceivedPacketId + 1) % this._maxPacketID) {
+					this._sendAck(remotePacketId)
+				} else {
+					return
+				}
+			}
+			if (length > 12) {
+				this.emit(IPCMessageType.InboundCommand, packet.slice(12), remotePacketId)
+			}
 		}
 
 		// Send ping packet, Emit 'connect' event after receive all stats
@@ -163,7 +173,7 @@ export class AtemSocketChild extends EventEmitter {
 		if (flags & PacketFlag.AckReply && this._connectionState === ConnectionState.Established) {
 			const ackPacketId = packet[4] << 8 | packet[5]
 			for (const i in this._inFlight) {
-				if (ackPacketId >= this._inFlight[i].packetId) {
+				if (ackPacketId >= this._inFlight[i].packetId || this._localPacketId < this._inFlight[i].packetId) {
 					this.emit(IPCMessageType.CommandAcknowledged, this._inFlight[i].packetId, this._inFlight[i].trackingId)
 					delete this._inFlight[i]
 				}
@@ -190,14 +200,22 @@ export class AtemSocketChild extends EventEmitter {
 	}
 
 	private _checkForRetransmit () {
+		let retransmitFromPacketId: number | undefined
 		for (const sentPacket of this._inFlight) {
-			if (sentPacket && sentPacket.lastSent + this._inFlightTimeout < Date.now()) {
-				if (sentPacket.resent <= this._maxRetries) {
+			if (retransmitFromPacketId && sentPacket.packetId > retransmitFromPacketId) {
+				sentPacket.lastSent = Date.now()
+				sentPacket.resent++
+				this._sendPacket(sentPacket.packet)
+			} else if (sentPacket && sentPacket.lastSent + this._inFlightTimeout < Date.now()) {
+				if (sentPacket.resent <= this._maxRetries && sentPacket.packetId < this.nextPacketId) {
 					sentPacket.lastSent = Date.now()
 					sentPacket.resent++
+
 					this.log('RESEND: ', sentPacket)
 					this._sendPacket(sentPacket.packet)
+					retransmitFromPacketId = sentPacket.packetId
 				} else {
+					this.emit(IPCMessageType.CommandTimeout, sentPacket.packetId, sentPacket.trackingId)
 					this._inFlight.splice(this._inFlight.indexOf(sentPacket), 1)
 					this.log('TIMED OUT: ', sentPacket.packet)
 					// @todo: we should probably break up the connection here.

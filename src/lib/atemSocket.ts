@@ -98,7 +98,11 @@ export class AtemSocket extends EventEmitter {
 			this._socketProcess = null
 		}
 
-		this._socketProcess = fork(path.resolve(__dirname, '../socket-child.js'), [], {silent: true})
+		this._socketProcess = fork(path.resolve(__dirname, '../socket-child.js'), [], {
+			silent: !this._debug,
+			stdio: this._debug ? [0, 1, 2, 'ipc'] : undefined
+		})
+		this._socketProcess.on('stdout', out => console.log(out))
 		this._socketProcess.on('message', this._receiveSubprocessMessage.bind(this))
 		this._socketProcess.on('error', error => {
 			this.emit('error', error)
@@ -145,6 +149,9 @@ export class AtemSocket extends EventEmitter {
 				break
 			case IPCMessageType.CommandAcknowledged:
 				this.emit(IPCMessageType.CommandAcknowledged, message.payload)
+				break
+			case IPCMessageType.CommandTimeout:
+				this.emit(IPCMessageType.CommandTimeout, message.payload)
 				break
 			case IPCMessageType.InboundCommand:
 				this._parseCommand(Buffer.from(payload.packet.data), payload.remotePacketId)
