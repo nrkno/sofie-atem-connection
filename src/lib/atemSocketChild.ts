@@ -150,6 +150,7 @@ export class AtemSocketChild extends EventEmitter {
 			if (this._connectionState === ConnectionState.Established) {
 				if (remotePacketId === (this._lastReceivedPacketId + 1) % this._maxPacketID) {
 					this._sendAck(remotePacketId)
+					this._lastReceivedPacketId = remotePacketId
 				} else {
 					return
 				}
@@ -162,13 +163,8 @@ export class AtemSocketChild extends EventEmitter {
 		// Send ping packet, Emit 'connect' event after receive all stats
 		if (flags & PacketFlag.AckRequest && length === 12 && this._connectionState === ConnectionState.SynSent) {
 			this._connectionState = ConnectionState.Established
-		}
-
-		// Send ack packet (called by answer packet in Skaarhoj)
-		if (flags & PacketFlag.AckRequest && this._connectionState === ConnectionState.Established) {
-			// if (!this._attemptAck(remotePacketId)) console.log(`got ${remotePacketId} expected ${(this._lastReceivedPacketId + 1) % this._maxPacketID}`)
 			this._sendAck(remotePacketId)
-			this.emit('ping')
+			this._lastReceivedPacketId = remotePacketId
 		}
 
 		// Device ack'ed our command
