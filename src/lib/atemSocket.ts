@@ -31,6 +31,7 @@ export class AtemSocket extends EventEmitter {
 		exitHook(() => {
 			if (this._socketProcess) {
 				this._socketProcess.removeAllListeners()
+				this._socketProcess.kill()
 			}
 		})
 	}
