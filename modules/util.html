@@ -918,6 +918,15 @@ img { max-width: 100%; }
 		<li class=" tsd-kind-function tsd-parent-kind-module">
 			<a href="util.html#buftonullterminatedstring" class="tsd-kind-icon">buf<wbr>ToNull<wbr>Terminated<wbr>String</a>
 		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-module">
+			<a href="util.html#convertrgbatoyuv422" class="tsd-kind-icon">convertRGBAToYUV422</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-module">
+			<a href="util.html#convertwavtoraw" class="tsd-kind-icon">convertWAVTo<wbr>Raw</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-module">
+			<a href="util.html#getresolution" class="tsd-kind-icon">get<wbr>Resolution</a>
+		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-module tsd-has-type-parameter">
 			<a href="util.html#parseenum" class="tsd-kind-icon">parse<wbr>Enum</a>
 		</li>
@@ -949,6 +958,9 @@ img { max-width: 100%; }
 						<h3>Functions</h3>
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-function tsd-parent-kind-module"><a href="util.html#buftonullterminatedstring" class="tsd-kind-icon">buf<wbr>ToNull<wbr>Terminated<wbr>String</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-module"><a href="util.html#convertrgbatoyuv422" class="tsd-kind-icon">convertRGBAToYUV422</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-module"><a href="util.html#convertwavtoraw" class="tsd-kind-icon">convertWAVTo<wbr>Raw</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-module"><a href="util.html#getresolution" class="tsd-kind-icon">get<wbr>Resolution</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-module tsd-has-type-parameter"><a href="util.html#parseenum" class="tsd-kind-icon">parse<wbr>Enum</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-module"><a href="util.html#parsenumberbetween" class="tsd-kind-icon">parse<wbr>Number<wbr>Between</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-module"><a href="util.html#sendipcmessage" class="tsd-kind-icon">sendIPCMessage</a></li>
@@ -966,7 +978,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">COMMAND_<wbr>CONNECT_<wbr>HELLO<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol"> =&nbsp;Buffer.from([0x10, 0x14, 0x53, 0xAB,0x00, 0x00, 0x00, 0x00,0x00, 0x3A, 0x00, 0x00,0x01, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00])</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/343ec4f/src/lib/atemUtil.ts#L80">lib/atemUtil.ts:80</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/ca08a34/src/lib/atemUtil.ts#L87">lib/atemUtil.ts:87</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -976,7 +988,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">COMMAND_<wbr>CONNECT_<wbr>HELLO_<wbr>ANSWER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol"> =&nbsp;Buffer.from([0x80, 0x0C, 0x53, 0xAB,0x00, 0x00, 0x00, 0x00,0x00, 0x03, 0x00, 0x00])</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/343ec4f/src/lib/atemUtil.ts#L88">lib/atemUtil.ts:88</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/ca08a34/src/lib/atemUtil.ts#L95">lib/atemUtil.ts:95</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -993,7 +1005,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/343ec4f/src/lib/atemUtil.ts#L13">lib/atemUtil.ts:13</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/ca08a34/src/lib/atemUtil.ts#L16">lib/atemUtil.ts:16</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1012,6 +1024,89 @@ img { max-width: 100%; }
 					</li>
 				</ul>
 			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+				<a name="convertrgbatoyuv422" class="tsd-anchor"></a>
+				<h3>convertRGBAToYUV422</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+					<li class="tsd-signature tsd-kind-icon">convertRGBAToYUV422<span class="tsd-signature-symbol">(</span>width<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/ca08a34/src/lib/atemUtil.ts#L105">lib/atemUtil.ts:105</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<dl class="tsd-comment-tags">
+								<dt>todo:</dt>
+								<dd><p>BALTE - 2018-5-24:
+									Create util functions that handle proper colour spaces in UHD.</p>
+								</dd>
+							</dl>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>width: <span class="tsd-signature-type">number</span></h5>
+							</li>
+							<li>
+								<h5>height: <span class="tsd-signature-type">number</span></h5>
+							</li>
+							<li>
+								<h5>data: <span class="tsd-signature-type">Buffer</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Buffer</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+				<a name="convertwavtoraw" class="tsd-anchor"></a>
+				<h3>convertWAVTo<wbr>Raw</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+					<li class="tsd-signature tsd-kind-icon">convertWAVTo<wbr>Raw<span class="tsd-signature-symbol">(</span>inputBuffer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/ca08a34/src/lib/atemUtil.ts#L181">lib/atemUtil.ts:181</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>inputBuffer: <span class="tsd-signature-type">Buffer</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Buffer</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+				<a name="getresolution" class="tsd-anchor"></a>
+				<h3>get<wbr>Resolution</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Resolution<span class="tsd-signature-symbol">(</span>videoMode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">VideoMode.N525i5994NTSC</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P625i50PAL</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N525i5994169</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P625i50169</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P720p50</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N720p5994</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P1080i50</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N1080i5994</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N1080p2398</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N1080p24</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P1080p25</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N1080p2997</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P1080p50</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N1080p5994</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N4KHDp2398</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N4KHDp24</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P4KHDp25</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N4KHDp2997</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P4KHDp5000</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N4KHDp5994</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/ca08a34/src/lib/atemUtil.ts#L163">lib/atemUtil.ts:163</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>videoMode: <span class="tsd-signature-type">VideoMode.N525i5994NTSC</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P625i50PAL</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N525i5994169</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P625i50169</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P720p50</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N720p5994</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P1080i50</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N1080i5994</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N1080p2398</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N1080p24</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P1080p25</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N1080p2997</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P1080p50</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N1080p5994</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N4KHDp2398</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N4KHDp24</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P4KHDp25</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N4KHDp2997</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.P4KHDp5000</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VideoMode.N4KHDp5994</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-has-type-parameter">
 				<a name="parseenum" class="tsd-anchor"></a>
 				<h3>parse<wbr>Enum</h3>
@@ -1022,7 +1117,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/343ec4f/src/lib/atemUtil.ts#L25">lib/atemUtil.ts:25</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/ca08a34/src/lib/atemUtil.ts#L28">lib/atemUtil.ts:28</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1054,7 +1149,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/343ec4f/src/lib/atemUtil.ts#L19">lib/atemUtil.ts:19</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/ca08a34/src/lib/atemUtil.ts#L22">lib/atemUtil.ts:22</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1083,7 +1178,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/343ec4f/src/lib/atemUtil.ts#L30">lib/atemUtil.ts:30</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/ca08a34/src/lib/atemUtil.ts#L33">lib/atemUtil.ts:33</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1126,7 +1221,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/343ec4f/src/lib/atemUtil.ts#L5">lib/atemUtil.ts:5</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/ca08a34/src/lib/atemUtil.ts#L8">lib/atemUtil.ts:8</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
