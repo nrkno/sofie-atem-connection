@@ -2,7 +2,7 @@ import AbstractCommand from '../AbstractCommand'
 
 export class DownstreamKeyAutoCommand extends AbstractCommand {
 	rawName = 'DDsA'
-	downstreamKeyId: number
+	downstreamKeyerId: number
 
 	properties: null
 
@@ -14,7 +14,7 @@ export class DownstreamKeyAutoCommand extends AbstractCommand {
 		const rawCommand = 'DDsA'
 		return new Buffer([
 			...Buffer.from(rawCommand),
-			this.downstreamKeyId,
+			this.downstreamKeyerId,
 			0x00, 0x00, 0x00
 		])
 	}

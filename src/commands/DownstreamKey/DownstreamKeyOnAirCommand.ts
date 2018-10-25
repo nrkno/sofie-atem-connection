@@ -2,7 +2,7 @@ import AbstractCommand from '../AbstractCommand'
 
 export class DownstreamKeyOnAirCommand extends AbstractCommand {
 	rawName = 'CDsL'
-	downstreamKeyId: number
+	downstreamKeyerId: number
 
 	properties: {
 		onAir: boolean
@@ -16,7 +16,7 @@ export class DownstreamKeyOnAirCommand extends AbstractCommand {
 		const rawCommand = 'CDsL'
 		return new Buffer([
 			...Buffer.from(rawCommand),
-			this.downstreamKeyId,
+			this.downstreamKeyerId,
 			this.properties.onAir,
 			0x00, 0x00
 		])
