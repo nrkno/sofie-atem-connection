@@ -9,7 +9,6 @@ export class AtemSocketChild extends EventEmitter {
 	private _connectionState = ConnectionState.Closed
 	private _debug = false
 	private _reconnectTimer: NodeJS.Timer | undefined
-	// private _retransmitTimer: NodeJS.Timer | undefined
 	private _retransmitTimer = new NanoTimer()
 
 	private _localPacketId = 1
@@ -21,7 +20,6 @@ export class AtemSocketChild extends EventEmitter {
 	private _socket: Socket
 	private _reconnectInterval = 5000
 
-	// private _inFlightTimeout = 100
 	private _inFlightTimeout = 30
 	private _maxRetries = 5
 	private _lastReceivedAt: number = Date.now()
@@ -30,6 +28,7 @@ export class AtemSocketChild extends EventEmitter {
 	private _ackTimer = new NanoTimer()
 	private _hasTimeout = false
 	private _receivedWithoutAck = 0
+	private _lastAcked = 0
 
 	constructor (options: { address?: string, port?: number } = {}) {
 		super()
@@ -55,10 +54,7 @@ export class AtemSocketChild extends EventEmitter {
 				}
 			}, this._reconnectInterval)
 		}
-		if (!this._retransmitTimer) {
-			// this._retransmitTimer = setInterval(() => this._checkForRetransmit(), 50)
-			this._retransmitTimer.setInterval(() => this._checkForRetransmit(), '', 10)
-		}
+		this._retransmitTimer.setInterval(() => this._checkForRetransmit(), [], '10ms')
 
 		if (address) {
 			this._address = address
@@ -75,9 +71,8 @@ export class AtemSocketChild extends EventEmitter {
 		return new Promise((resolve) => {
 			if (this._connectionState === ConnectionState.Established) {
 				this._socket.close(() => {
-					clearInterval(this._retransmitTimer as NodeJS.Timer)
+					this._retransmitTimer.clearInterval()
 					clearInterval(this._reconnectTimer as NodeJS.Timer)
-					this._retransmitTimer = undefined
 					this._reconnectTimer = undefined
 
 					this._connectionState = ConnectionState.Closed
@@ -176,6 +171,7 @@ export class AtemSocketChild extends EventEmitter {
 		// Device ack'ed our command
 		if (flags & PacketFlag.AckReply && this._connectionState === ConnectionState.Established) {
 			const ackPacketId = packet[4] << 8 | packet[5]
+			this._lastAcked = ackPacketId
 			for (const i in this._inFlight) {
 				if (ackPacketId >= this._inFlight[i].packetId || this._localPacketId < this._inFlight[i].packetId) {
 					this.emit(IPCMessageType.CommandAcknowledged, this._inFlight[i].packetId, this._inFlight[i].trackingId)
@@ -204,7 +200,7 @@ export class AtemSocketChild extends EventEmitter {
 				this._receivedWithoutAck = 0
 				this._hasTimeout = false
 				this._sendAck(this._lastReceivedPacketId)
-			}, '', '5ms')
+			}, [], '5ms')
 		}
 	}
 
@@ -224,6 +220,11 @@ export class AtemSocketChild extends EventEmitter {
 	private _checkForRetransmit () {
 		let retransmitFromPacketId: number | undefined
 		for (const sentPacket of this._inFlight) {
+			if (sentPacket.packetId <= this._lastAcked || sentPacket.packetId > this._localPacketId) {
+				this.emit(IPCMessageType.CommandAcknowledged, sentPacket.packetId, sentPacket.trackingId)
+				this._inFlight.splice(this._inFlight.indexOf(sentPacket), 1)
+				continue
+			}
 			if (retransmitFromPacketId && sentPacket.packetId > retransmitFromPacketId) {
 				sentPacket.lastSent = Date.now()
 				sentPacket.resent++
