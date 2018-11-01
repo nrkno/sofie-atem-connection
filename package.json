@@ -106,6 +106,7 @@
   ],
   "dependencies": {
     "exit-hook": "^2.0.0",
+    "nanotimer": "^0.3.15",
     "p-queue": "^2.4.2",
     "p-retry": "^2.0.0",
     "tslib": "^1.9.0",
