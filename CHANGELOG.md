@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.0"></a>
+# [0.8.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.7.0...0.8.0) (2018-11-02)
+
+
+### Bug Fixes
+
+* improve reliability of resending ([ccaa051](https://github.com/nrkno/tv-automation-atem-connection/commit/ccaa051))
+
+
+### Features
+
+* Rename downstreamKeyId to downstreamKeyerId to make them all consistent and be consistent with upstream keyer ([58f61ee](https://github.com/nrkno/tv-automation-atem-connection/commit/58f61ee))
+* use a nanotimer in socket child for ack'ing ([84482ca](https://github.com/nrkno/tv-automation-atem-connection/commit/84482ca))
+
+
+
 <a name="0.7.0"></a>
 # [0.7.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.6.1...0.7.0) (2018-10-24)
 
