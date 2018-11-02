@@ -2,7 +2,7 @@ import AbstractCommand from '../AbstractCommand'
 
 export class DownstreamKeyTieCommand extends AbstractCommand {
 	rawName = 'CDsT'
-	downstreamKeyId: number
+	downstreamKeyerId: number
 
 	properties: {
 		tie: boolean
@@ -16,7 +16,7 @@ export class DownstreamKeyTieCommand extends AbstractCommand {
 		const rawCommand = 'CDsT'
 		return new Buffer([
 			...Buffer.from(rawCommand),
-			this.downstreamKeyId,
+			this.downstreamKeyerId,
 			this.properties.tie,
 			0x00, 0x00
 		])

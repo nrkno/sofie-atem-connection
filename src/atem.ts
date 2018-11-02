@@ -119,7 +119,7 @@ export class Atem extends EventEmitter {
 
 	autoDownstreamKey (key = 0) {
 		const command = new Commands.DownstreamKeyAutoCommand()
-		command.downstreamKeyId = key
+		command.downstreamKeyerId = key
 		return this.sendCommand(command)
 	}
 
@@ -188,14 +188,14 @@ export class Atem extends EventEmitter {
 
 	setDownstreamKeyTie (tie: boolean, key = 0) {
 		const command = new Commands.DownstreamKeyTieCommand()
-		command.downstreamKeyId = key
+		command.downstreamKeyerId = key
 		command.updateProps({tie})
 		return this.sendCommand(command)
 	}
 
 	setDownstreamKeyOnAir (onAir: boolean, key = 0) {
 		const command = new Commands.DownstreamKeyOnAirCommand()
-		command.downstreamKeyId = key
+		command.downstreamKeyerId = key
 		command.updateProps({onAir})
 		return this.sendCommand(command)
 	}
