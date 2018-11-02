@@ -54,6 +54,10 @@ myAtem.on('stateChanged', function(err, state) {
 });
 ```
 
+### Documentation
+
+You can find the generated type docs [here](https://nrkno.github.io/tv-automation-atem-connection/).
+
 ### Events
 
 - `connected`
