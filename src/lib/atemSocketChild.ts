@@ -124,10 +124,18 @@ export class AtemSocketChild extends EventEmitter {
 		if (this._maxPacketID < this._localPacketId) this._localPacketId = 0
 	}
 
-	private _createSocket () {
+	private _createSocket (): Promise<void> {
 		this._socket = createSocket('udp4')
-		this._socket.bind(1024 + Math.floor(Math.random() * 64511))
 		this._socket.on('message', (packet, rinfo) => this._receivePacket(packet, rinfo))
+		return new Promise((resolve) => {
+			this._socket.on('listening', () => resolve())
+			this._socket.on('error', e => {
+				if (e.name === 'EADDRINUSE') {
+					this._socket.bind(1024 + Math.floor(Math.random() * 64511))
+				}
+			})
+			this._socket.bind(1024 + Math.floor(Math.random() * 64511))
+		})
 	}
 
 	private _receivePacket (packet: Buffer, rinfo: any) {
