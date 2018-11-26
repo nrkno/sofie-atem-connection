@@ -55,7 +55,7 @@ export class AtemSocketChild extends EventEmitter {
 			}, this._reconnectInterval)
 		}
 		// Check for retransmits every 10 milliseconds
-		this._retransmitTimer = setInterval(() => this._checkForRetransmit(), 10);
+		this._retransmitTimer = setInterval(() => this._checkForRetransmit(), 10)
 
 		if (address) {
 			this._address = address
