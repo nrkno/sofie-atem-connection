@@ -127,7 +127,7 @@ export class AtemSocketChild extends EventEmitter {
 
 	private _createSocket () {
 		this._socket = createSocket('udp4')
-		this._socket.bind(1024 + Math.floor(Math.random() * 64511))
+		this._socket.bind()
 		this._socket.on('message', (packet, rinfo) => this._receivePacket(packet, rinfo))
 	}
 
