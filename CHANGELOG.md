@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.1"></a>
+## [0.8.1](https://github.com/nrkno/tv-automation-atem-connection/compare/0.8.0...0.8.1) (2018-11-26)
+
+
+### Bug Fixes
+
+* **perf:** remove nanotimer for intervals as it uses 100% cpu ([d7bc543](https://github.com/nrkno/tv-automation-atem-connection/commit/d7bc543))
+* let node bind to a random port for our udp socket ([b7be165](https://github.com/nrkno/tv-automation-atem-connection/commit/b7be165))
+* timers are cleaned when calling disconnect, even when not connected ([d3040d1](https://github.com/nrkno/tv-automation-atem-connection/commit/d3040d1))
+
+
+
 <a name="0.8.0"></a>
 # [0.8.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.7.0...0.8.0) (2018-11-02)
 
