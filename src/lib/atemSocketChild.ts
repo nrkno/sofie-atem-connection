@@ -9,7 +9,7 @@ export class AtemSocketChild extends EventEmitter {
 	private _connectionState = ConnectionState.Closed
 	private _debug = false
 	private _reconnectTimer: NodeJS.Timer | undefined
-	private _retransmitTimer = new NanoTimer()
+	private _retransmitTimer: NodeJS.Timer
 
 	private _localPacketId = 1
 	private _maxPacketID = (1 << 15) - 1 // Atem expects 15 not 16 bits before wrapping
@@ -54,7 +54,8 @@ export class AtemSocketChild extends EventEmitter {
 				}
 			}, this._reconnectInterval)
 		}
-		this._retransmitTimer.setInterval(() => this._checkForRetransmit(), [], '10ms')
+		// Check for retransmits every 10 milliseconds
+		this._retransmitTimer = setInterval(() => this._checkForRetransmit(), 10);
 
 		if (address) {
 			this._address = address
@@ -71,19 +72,19 @@ export class AtemSocketChild extends EventEmitter {
 		return new Promise((resolve) => {
 			if (this._connectionState === ConnectionState.Established) {
 				this._socket.close(() => {
-					this._retransmitTimer.clearInterval()
-					clearInterval(this._reconnectTimer as NodeJS.Timer)
-					this._reconnectTimer = undefined
-
-					this._connectionState = ConnectionState.Closed
-					this._createSocket()
-					this.emit(IPCMessageType.Disconnect)
-
 					resolve()
 				})
 			} else {
 				resolve()
 			}
+		}).then(() => {
+			clearInterval(this._retransmitTimer)
+			clearInterval(this._reconnectTimer as NodeJS.Timer)
+			this._reconnectTimer = undefined
+
+			this._connectionState = ConnectionState.Closed
+			this._createSocket()
+			this.emit(IPCMessageType.Disconnect)
 		})
 	}
 
@@ -126,7 +127,7 @@ export class AtemSocketChild extends EventEmitter {
 
 	private _createSocket () {
 		this._socket = createSocket('udp4')
-		this._socket.bind(1024 + Math.floor(Math.random() * 64511))
+		this._socket.bind()
 		this._socket.on('message', (packet, rinfo) => this._receivePacket(packet, rinfo))
 	}
 
@@ -196,11 +197,12 @@ export class AtemSocketChild extends EventEmitter {
 			this._sendAck(this._lastReceivedPacketId)
 		} else if (!this._hasTimeout) {
 			this._hasTimeout = true
+			// timeout for 5 ms (syntax for nanotimer says m)
 			this._ackTimer.setTimeout(() => {
 				this._receivedWithoutAck = 0
 				this._hasTimeout = false
 				this._sendAck(this._lastReceivedPacketId)
-			}, [], '5ms')
+			}, [], '5m')
 		}
 	}
 
