@@ -72,19 +72,19 @@ export class AtemSocketChild extends EventEmitter {
 		return new Promise((resolve) => {
 			if (this._connectionState === ConnectionState.Established) {
 				this._socket.close(() => {
-					clearInterval(this._retransmitTimer)
-					clearInterval(this._reconnectTimer as NodeJS.Timer)
-					this._reconnectTimer = undefined
-
-					this._connectionState = ConnectionState.Closed
-					this._createSocket()
-					this.emit(IPCMessageType.Disconnect)
-
 					resolve()
 				})
 			} else {
 				resolve()
 			}
+		}).then(() => {
+			clearInterval(this._retransmitTimer)
+			clearInterval(this._reconnectTimer as NodeJS.Timer)
+			this._reconnectTimer = undefined
+
+			this._connectionState = ConnectionState.Closed
+			this._createSocket()
+			this.emit(IPCMessageType.Disconnect)
 		})
 	}
 
