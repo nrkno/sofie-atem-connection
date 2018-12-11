@@ -26,6 +26,20 @@ process.on('message', message => {
 	}
 })
 
+process.on('uncaughtException', error => {
+	console.error('uncaughtException:', error)
+	setTimeout(() => {
+		process.exit(1)
+	}, 10)
+})
+
+process.on('unhandledRejection', reason => {
+	console.error('unhandledRejection:', reason)
+	setTimeout(() => {
+		process.exit(1)
+	}, 10)
+})
+
 singleton.on(IPCMessageType.Disconnect, () => {
 	sendParentMessage({
 		cmd: IPCMessageType.Disconnect
