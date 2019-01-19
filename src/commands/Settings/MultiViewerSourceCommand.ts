@@ -14,8 +14,7 @@ export class MultiViewerSourceCommand extends AbstractCommand {
 	}
 
 	deserialize (rawCommand: Buffer) {
-		// Storing MV1 as 0-9 and MV2 as 100-109 (just in case future MVs do >10 windows)
-		this.index = rawCommand.readUInt8(0) * 100 + rawCommand.readUInt8(1)
+		this.index = rawCommand.readUInt8(1)
 		this.multiViewerId = rawCommand.readUInt8(0)
 
 		this.properties = {
@@ -36,9 +35,12 @@ export class MultiViewerSourceCommand extends AbstractCommand {
 	}
 
 	applyToState (state: AtemState) {
-		state.settings.multiViewerSource[this.index] = {
-			...state.settings.multiViewerSource[this.index],
-			...this.properties
+		const obj: { [key: string]: MultiViewerSourceState } = {}
+		obj[this.index] = this.properties
+
+		state.settings.multiViewers[this.multiViewerId] = {
+			...state.settings.multiViewers[this.multiViewerId],
+			...obj
 		}
 	}
 }

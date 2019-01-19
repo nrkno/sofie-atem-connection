@@ -3,7 +3,11 @@ export interface MultiViewerSourceState {
 	windowIndex: number
 }
 
+export class MultViewerWindowState {
+	[windowIndex: string]: MultiViewerSourceState
+}
+
 export class SettingsState {
-	multiViewerSource: Array<MultiViewerSourceState> = []
+	multiViewers: { [viewerIndex: string]: MultiViewerSourceState } = {}
 	videoMode: number
 }
