@@ -6,6 +6,7 @@ import AbstractCommand from './commands/AbstractCommand'
 import * as Commands from './commands'
 import * as DataTransferCommands from './commands/DataTransfer'
 import { MediaPlayer } from './state/media'
+import { MultiViewerSourceState } from './state/settings'
 import {
 	DipTransitionSettings,
 	DVETransitionSettings,
@@ -235,10 +236,52 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	macroContinue () {
+		const command = new Commands.MacroActionCommand()
+		command.index = 0
+		command.updateProps({action: MacroAction.Continue})
+		return this.sendCommand(command)
+	}
+
+	macroDelete (index = 0) {
+		const command = new Commands.MacroActionCommand()
+		command.index = index
+		command.updateProps({action: MacroAction.Delete})
+		return this.sendCommand(command)
+	}
+
+	macroInsertUserWait () {
+		const command = new Commands.MacroActionCommand()
+		command.index = 0
+		command.updateProps({action: MacroAction.InsertUserWait})
+		return this.sendCommand(command)
+	}
+
 	macroRun (index = 0) {
 		const command = new Commands.MacroActionCommand()
 		command.index = index
 		command.updateProps({action: MacroAction.Run})
+		return this.sendCommand(command)
+	}
+
+	macroStop () {
+		const command = new Commands.MacroActionCommand()
+		command.index = 0
+		command.updateProps({action: MacroAction.Stop})
+		return this.sendCommand(command)
+	}
+
+	macroStopRecord () {
+		const command = new Commands.MacroActionCommand()
+		command.index = 0
+		command.updateProps({action: MacroAction.StopRecord})
+		return this.sendCommand(command)
+	}
+
+	setMultiViewerSource (newProps: Partial<MultiViewerSourceState>, mv = 0) {
+		const command = new Commands.MultiViewerSourceCommand()
+		command.multiViewerId = mv
+		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
