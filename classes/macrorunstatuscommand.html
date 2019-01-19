@@ -915,6 +915,9 @@ img { max-width: 100%; }
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a href="macrorunstatuscommand.html#flag" class="tsd-kind-icon">flag</a>
 				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="macrorunstatuscommand.html#macroindexid" class="tsd-kind-icon">macro<wbr>IndexID</a>
+				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a href="macrorunstatuscommand.html#packetid" class="tsd-kind-icon">packet<wbr>Id</a>
 				</li>
@@ -975,6 +978,7 @@ img { max-width: 100%; }
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="macrorunstatuscommand.html#flag" class="tsd-kind-icon">flag</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="macrorunstatuscommand.html#macroindexid" class="tsd-kind-icon">macro<wbr>IndexID</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="macrorunstatuscommand.html#packetid" class="tsd-kind-icon">packet<wbr>Id</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite"><a href="macrorunstatuscommand.html#properties" class="tsd-kind-icon">properties</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite"><a href="macrorunstatuscommand.html#rawname" class="tsd-kind-icon">raw<wbr>Name</a></li>
@@ -1005,7 +1009,17 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="abstractcommand.html">AbstractCommand</a>.<a href="abstractcommand.html#flag">flag</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b62b794/src/commands/AbstractCommand.ts#L7">commands/AbstractCommand.ts:7</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b2333dd/src/commands/AbstractCommand.ts#L7">commands/AbstractCommand.ts:7</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="macroindexid" class="tsd-anchor"></a>
+				<h3>macro<wbr>IndexID</h3>
+				<div class="tsd-signature tsd-kind-icon">macro<wbr>IndexID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b2333dd/src/commands/Macro/MacroRunStatusCommand.ts#L8">commands/Macro/MacroRunStatusCommand.ts:8</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1016,37 +1030,20 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="abstractcommand.html">AbstractCommand</a>.<a href="abstractcommand.html#packetid">packetId</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b62b794/src/commands/AbstractCommand.ts#L6">commands/AbstractCommand.ts:6</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b2333dd/src/commands/AbstractCommand.ts#L6">commands/AbstractCommand.ts:6</a></li>
 					</ul>
 				</aside>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
 				<a name="properties" class="tsd-anchor"></a>
 				<h3>properties</h3>
-				<div class="tsd-signature tsd-kind-icon">properties<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+				<div class="tsd-signature tsd-kind-icon">properties<span class="tsd-signature-symbol">:</span> <a href="../interfaces/macroplayerstate.html" class="tsd-signature-type">MacroPlayerState</a></div>
 				<aside class="tsd-sources">
 					<p>Overrides <a href="abstractcommand.html">AbstractCommand</a>.<a href="abstractcommand.html#properties">properties</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b62b794/src/commands/Macro/MacroRunStatusCommand.ts#L7">commands/Macro/MacroRunStatusCommand.ts:7</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b2333dd/src/commands/Macro/MacroRunStatusCommand.ts#L9">commands/Macro/MacroRunStatusCommand.ts:9</a></li>
 					</ul>
 				</aside>
-				<div class="tsd-type-declaration">
-					<h4>Type declaration</h4>
-					<ul class="tsd-parameters">
-						<li class="tsd-parameter">
-							<h5>is<wbr>Running<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-						</li>
-						<li class="tsd-parameter">
-							<h5>is<wbr>Waiting<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-						</li>
-						<li class="tsd-parameter">
-							<h5>loop<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
-						</li>
-						<li class="tsd-parameter">
-							<h5>macro<wbr>Index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
-						</li>
-					</ul>
-				</div>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
 				<a name="rawname" class="tsd-anchor"></a>
@@ -1055,7 +1052,7 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Overrides <a href="abstractcommand.html">AbstractCommand</a>.<a href="abstractcommand.html#rawname">rawName</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b62b794/src/commands/Macro/MacroRunStatusCommand.ts#L5">commands/Macro/MacroRunStatusCommand.ts:5</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b2333dd/src/commands/Macro/MacroRunStatusCommand.ts#L6">commands/Macro/MacroRunStatusCommand.ts:6</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1066,7 +1063,7 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="abstractcommand.html">AbstractCommand</a>.<a href="abstractcommand.html#reject">reject</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b62b794/src/commands/AbstractCommand.ts#L10">commands/AbstractCommand.ts:10</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b2333dd/src/commands/AbstractCommand.ts#L10">commands/AbstractCommand.ts:10</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -1098,7 +1095,7 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="abstractcommand.html">AbstractCommand</a>.<a href="abstractcommand.html#resolve">resolve</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b62b794/src/commands/AbstractCommand.ts#L9">commands/AbstractCommand.ts:9</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b2333dd/src/commands/AbstractCommand.ts#L9">commands/AbstractCommand.ts:9</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -1130,7 +1127,7 @@ img { max-width: 100%; }
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="abstractcommand.html">AbstractCommand</a>.<a href="abstractcommand.html#maskflags">MaskFlags</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b62b794/src/commands/AbstractCommand.ts#L4">commands/AbstractCommand.ts:4</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b2333dd/src/commands/AbstractCommand.ts#L4">commands/AbstractCommand.ts:4</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1148,7 +1145,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="abstractcommand.html">AbstractCommand</a>.<a href="abstractcommand.html#_updateprops">_updateProps</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b62b794/src/commands/AbstractCommand.ts#L22">commands/AbstractCommand.ts:22</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b2333dd/src/commands/AbstractCommand.ts#L22">commands/AbstractCommand.ts:22</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1172,7 +1169,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Overrides <a href="abstractcommand.html">AbstractCommand</a>.<a href="abstractcommand.html#applytostate">applyToState</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b62b794/src/commands/Macro/MacroRunStatusCommand.ts#L23">commands/Macro/MacroRunStatusCommand.ts:23</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b2333dd/src/commands/Macro/MacroRunStatusCommand.ts#L22">commands/Macro/MacroRunStatusCommand.ts:22</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1196,7 +1193,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Overrides <a href="abstractcommand.html">AbstractCommand</a>.<a href="abstractcommand.html#deserialize">deserialize</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b62b794/src/commands/Macro/MacroRunStatusCommand.ts#L14">commands/Macro/MacroRunStatusCommand.ts:14</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b2333dd/src/commands/Macro/MacroRunStatusCommand.ts#L11">commands/Macro/MacroRunStatusCommand.ts:11</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1220,7 +1217,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="abstractcommand.html">AbstractCommand</a>.<a href="abstractcommand.html#serialize">serialize</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b62b794/src/commands/AbstractCommand.ts#L15">commands/AbstractCommand.ts:15</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b2333dd/src/commands/AbstractCommand.ts#L15">commands/AbstractCommand.ts:15</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Buffer</span></h4>
@@ -1238,7 +1235,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Inherited from <a href="abstractcommand.html">AbstractCommand</a>.<a href="abstractcommand.html#updateprops">updateProps</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b62b794/src/commands/AbstractCommand.ts#L18">commands/AbstractCommand.ts:18</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b2333dd/src/commands/AbstractCommand.ts#L18">commands/AbstractCommand.ts:18</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
