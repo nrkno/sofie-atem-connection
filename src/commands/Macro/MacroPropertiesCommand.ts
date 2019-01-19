@@ -10,9 +10,9 @@ export class MacroPropertiesCommand extends AbstractCommand {
 	properties: MacroPropertiesState
 
 	deserialize (rawCommand: Buffer) {
-		this.macroIndexID = rawCommand.readUInt16BE(0);
-		var descLen = rawCommand.readUInt16BE(4);
-		var nameLen = rawCommand.readUInt16BE(6);
+		this.macroIndexID = rawCommand.readUInt16BE(0)
+		const descLen = rawCommand.readUInt16BE(4)
+		const nameLen = rawCommand.readUInt16BE(6)
 
 		this.properties = {
 			description: '',
@@ -22,11 +22,11 @@ export class MacroPropertiesCommand extends AbstractCommand {
 		}
 
 		if ( descLen > 0 ) {
-			this.properties.description = Util.bufToNullTerminatedString(rawCommand, (8 + nameLen), descLen);
+			this.properties.description = Util.bufToNullTerminatedString(rawCommand, (8 + nameLen), descLen)
 		}
 
 		if ( nameLen > 0 ) {
-			this.properties.name = Util.bufToNullTerminatedString(rawCommand, 8, nameLen);
+			this.properties.name = Util.bufToNullTerminatedString(rawCommand, 8, nameLen)
 		}
 	}
 

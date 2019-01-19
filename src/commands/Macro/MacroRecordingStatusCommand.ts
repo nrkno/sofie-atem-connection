@@ -9,7 +9,7 @@ export class MacroRecordingStatusCommand extends AbstractCommand {
 	properties: MacroRecorderState
 
 	deserialize (rawCommand: Buffer) {
-		this.macroIndexID = rawCommand.readUInt16BE(2);
+		this.macroIndexID = rawCommand.readUInt16BE(2)
 
 		this.properties = {
 			isRecording: Boolean(rawCommand[0] & 1 << 0),

@@ -9,7 +9,7 @@ export class MacroRunStatusCommand extends AbstractCommand {
 	properties: MacroPlayerState
 
 	deserialize (rawCommand: Buffer) {
-		this.macroIndexID = rawCommand.readUInt16BE(2);
+		this.macroIndexID = rawCommand.readUInt16BE(2)
 
 		this.properties = {
 			isRunning: Boolean(rawCommand[0] & 1 << 0),
