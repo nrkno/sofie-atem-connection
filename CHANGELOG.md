@@ -2,6 +2,117 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.2"></a>
+## [0.8.2](https://github.com/nrkno/tv-automation-atem-connection/compare/0.8.1...0.8.2) (2019-01-19)
+
+
+### Bug Fixes
+
+* one object per multiviewer in the state ([5f53526](https://github.com/nrkno/tv-automation-atem-connection/commit/5f53526))
+
+
+
+<a name="0.8.1"></a>
+## [0.8.1](https://github.com/nrkno/tv-automation-atem-connection/compare/0.8.0...0.8.1) (2018-11-26)
+
+
+### Bug Fixes
+
+* **perf:** remove nanotimer for intervals as it uses 100% cpu ([d7bc543](https://github.com/nrkno/tv-automation-atem-connection/commit/d7bc543))
+* let node bind to a random port for our udp socket ([b7be165](https://github.com/nrkno/tv-automation-atem-connection/commit/b7be165))
+* timers are cleaned when calling disconnect, even when not connected ([d3040d1](https://github.com/nrkno/tv-automation-atem-connection/commit/d3040d1))
+
+
+
+<a name="0.8.0"></a>
+# [0.8.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.7.0...0.8.0) (2018-11-02)
+
+
+### Bug Fixes
+
+* improve reliability of resending ([ccaa051](https://github.com/nrkno/tv-automation-atem-connection/commit/ccaa051))
+
+
+### Features
+
+* Rename downstreamKeyId to downstreamKeyerId to make them all consistent and be consistent with upstream keyer ([58f61ee](https://github.com/nrkno/tv-automation-atem-connection/commit/58f61ee))
+* use a nanotimer in socket child for ack'ing ([84482ca](https://github.com/nrkno/tv-automation-atem-connection/commit/84482ca))
+
+
+
+<a name="0.7.0"></a>
+# [0.7.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.6.1...0.7.0) (2018-10-24)
+
+
+### Bug Fixes
+
+* **atemSocket:** fix _maxPacketID being off-by-one ([ee70083](https://github.com/nrkno/tv-automation-atem-connection/commit/ee70083))
+* **atemSocket:** fix _maxPacketID being off-by-one ([4efecdd](https://github.com/nrkno/tv-automation-atem-connection/commit/4efecdd))
+* file description cmd does not always need name / descr. ([8837dd0](https://github.com/nrkno/tv-automation-atem-connection/commit/8837dd0))
+* **Data Command:** size property ([df16109](https://github.com/nrkno/tv-automation-atem-connection/commit/df16109))
+* **Data Command:** size property ([35a846d](https://github.com/nrkno/tv-automation-atem-connection/commit/35a846d))
+* ack'ing after init ([8197ab5](https://github.com/nrkno/tv-automation-atem-connection/commit/8197ab5))
+* behaviour around packetId wrapping ([d8e4626](https://github.com/nrkno/tv-automation-atem-connection/commit/d8e4626))
+* child process timeout ([8196d8e](https://github.com/nrkno/tv-automation-atem-connection/commit/8196d8e))
+* colour space ([bb19e9e](https://github.com/nrkno/tv-automation-atem-connection/commit/bb19e9e))
+* colour space ([8f295d3](https://github.com/nrkno/tv-automation-atem-connection/commit/8f295d3))
+* convencience method for setting clip in MP ([a8feeef](https://github.com/nrkno/tv-automation-atem-connection/commit/a8feeef))
+* convencience method for setting clip in MP ([b5455a3](https://github.com/nrkno/tv-automation-atem-connection/commit/b5455a3))
+* do not ack discontinuous packet sequences ([bfb679f](https://github.com/nrkno/tv-automation-atem-connection/commit/bfb679f))
+* file description cmd does not always need name / descr. ([683d83b](https://github.com/nrkno/tv-automation-atem-connection/commit/683d83b))
+* frame description file name ([bc1224b](https://github.com/nrkno/tv-automation-atem-connection/commit/bc1224b))
+* frame description file name ([1c7290d](https://github.com/nrkno/tv-automation-atem-connection/commit/1c7290d))
+* **Data Transfer:** stop condition, send description only once ([bca847f](https://github.com/nrkno/tv-automation-atem-connection/commit/bca847f))
+* lint ([666cff5](https://github.com/nrkno/tv-automation-atem-connection/commit/666cff5))
+* lint ([61ba6f8](https://github.com/nrkno/tv-automation-atem-connection/commit/61ba6f8))
+* Media Player Source Command ([3103ca6](https://github.com/nrkno/tv-automation-atem-connection/commit/3103ca6))
+* Media Player Source Command ([5c1ebb1](https://github.com/nrkno/tv-automation-atem-connection/commit/5c1ebb1))
+* messages without correct transferid will be ignored ([301c545](https://github.com/nrkno/tv-automation-atem-connection/commit/301c545))
+* more aggressive resend strategy ([8900ded](https://github.com/nrkno/tv-automation-atem-connection/commit/8900ded))
+* optimize inFlightTimeout ([32b3c44](https://github.com/nrkno/tv-automation-atem-connection/commit/32b3c44))
+* reject timed out commands ([fd3d045](https://github.com/nrkno/tv-automation-atem-connection/commit/fd3d045))
+* revert new packetId on resend ([2fe6368](https://github.com/nrkno/tv-automation-atem-connection/commit/2fe6368))
+* socket process exits when parent process does ([#30](https://github.com/nrkno/tv-automation-atem-connection/issues/30)) ([4754cc7](https://github.com/nrkno/tv-automation-atem-connection/commit/4754cc7))
+* **Data Transfer:** remove old commands after failing ([09ee4b4](https://github.com/nrkno/tv-automation-atem-connection/commit/09ee4b4))
+* **Data Transfer:** remove old commands after failing ([dfa1cfc](https://github.com/nrkno/tv-automation-atem-connection/commit/dfa1cfc))
+* **Data Transfer:** stop condition, send description only once ([627c9f2](https://github.com/nrkno/tv-automation-atem-connection/commit/627c9f2))
+* **dataTransfer:** ignore unexpected DataTransferCompleteCommands ([1f97a4a](https://github.com/nrkno/tv-automation-atem-connection/commit/1f97a4a))
+* **dataTransfer:** ignore unexpected DataTransferCompleteCommands ([517253d](https://github.com/nrkno/tv-automation-atem-connection/commit/517253d))
+* **dataTrasnfer:** fail when a DataTransferErrorCommand is received ([ba17501](https://github.com/nrkno/tv-automation-atem-connection/commit/ba17501))
+* **dataTrasnfer:** fail when a DataTransferErrorCommand is received ([441ef68](https://github.com/nrkno/tv-automation-atem-connection/commit/441ef68))
+* **Media:** fix Util imports ([55a1f28](https://github.com/nrkno/tv-automation-atem-connection/commit/55a1f28))
+* **Media:** fix Util imports ([7f0577a](https://github.com/nrkno/tv-automation-atem-connection/commit/7f0577a))
+
+
+### Features
+
+* clear media pool ([310308b](https://github.com/nrkno/tv-automation-atem-connection/commit/310308b))
+* clear media pool ([9f64e58](https://github.com/nrkno/tv-automation-atem-connection/commit/9f64e58))
+* **DataTransfer:** add errorCode property to DataTransferErrorCommand ([7e302e1](https://github.com/nrkno/tv-automation-atem-connection/commit/7e302e1))
+* Data Commands ([d1bf2ba](https://github.com/nrkno/tv-automation-atem-connection/commit/d1bf2ba))
+* Data Commands ([2e14efb](https://github.com/nrkno/tv-automation-atem-connection/commit/2e14efb))
+* **DataTransfer:** add errorCode property to DataTransferErrorCommand ([d8b2d5f](https://github.com/nrkno/tv-automation-atem-connection/commit/d8b2d5f))
+* **Media:** Media Pool Description Commands ([fbae9b1](https://github.com/nrkno/tv-automation-atem-connection/commit/fbae9b1))
+* **Media:** Media Pool Description Commands ([5050fe8](https://github.com/nrkno/tv-automation-atem-connection/commit/5050fe8))
+* **Media Pool:** clear / set commands ([40fce0c](https://github.com/nrkno/tv-automation-atem-connection/commit/40fce0c))
+* **Media Pool:** clear / set commands ([a2ecc82](https://github.com/nrkno/tv-automation-atem-connection/commit/a2ecc82))
+* Media Upload API, File Transfer Manager ([c240477](https://github.com/nrkno/tv-automation-atem-connection/commit/c240477))
+* Media Upload API, File Transfer Manager ([c5e4684](https://github.com/nrkno/tv-automation-atem-connection/commit/c5e4684))
+* TransferManager ([a9336c9](https://github.com/nrkno/tv-automation-atem-connection/commit/a9336c9))
+* TransferManager ([a2588a7](https://github.com/nrkno/tv-automation-atem-connection/commit/a2588a7))
+* TransferManager ([e3e69a1](https://github.com/nrkno/tv-automation-atem-connection/commit/e3e69a1))
+* TransferManager ([ee3ed26](https://github.com/nrkno/tv-automation-atem-connection/commit/ee3ed26))
+* Video Mode command ([b9980e3](https://github.com/nrkno/tv-automation-atem-connection/commit/b9980e3))
+* Video Mode command ([c87c0b8](https://github.com/nrkno/tv-automation-atem-connection/commit/c87c0b8))
+
+
+### Performance Improvements
+
+* **dataTransfer:** increase transfer throughput ([db8e4c4](https://github.com/nrkno/tv-automation-atem-connection/commit/db8e4c4))
+* **dataTransfer:** increase transfer throughput ([d96b38d](https://github.com/nrkno/tv-automation-atem-connection/commit/d96b38d))
+
+
+
 <a name="0.6.1"></a>
 ## [0.6.1](https://github.com/nrkno/tv-automation-atem-connection/compare/0.6.0...0.6.1) (2018-10-23)
 
