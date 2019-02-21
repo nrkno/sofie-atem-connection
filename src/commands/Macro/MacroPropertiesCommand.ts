@@ -21,11 +21,11 @@ export class MacroPropertiesCommand extends AbstractCommand {
 			name: ''
 		}
 
-		if ( descLen > 0 ) {
+		if (descLen > 0) {
 			this.properties.description = Util.bufToNullTerminatedString(rawCommand, (8 + nameLen), descLen)
 		}
 
-		if ( nameLen > 0 ) {
+		if (nameLen > 0) {
 			this.properties.name = Util.bufToNullTerminatedString(rawCommand, 8, nameLen)
 		}
 	}
