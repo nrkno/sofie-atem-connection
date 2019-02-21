@@ -41,7 +41,7 @@
     "docs:json": "typedoc --mode file --json docs/typedoc.json src/index.ts",
     "docs:publish": "yarn docs:html && gh-pages -d docs",
     "changelog": "standard-version",
-    "release": "yarn reset && yarn test && yarn docs:publish && yarn changelog",
+    "release": "yarn reset && yarn docs:publish && yarn changelog",
     "reset": "git clean -dfx && git reset --hard && yarn",
     "ci": "yarn test && yarn docs:test",
     "validate:dependencies": "yarn audit && yarn license-validate",
