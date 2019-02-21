@@ -1,7 +1,6 @@
 import { EventEmitter } from 'events'
 import { AtemState } from './state'
 import { AtemSocket } from './lib/atemSocket'
-import { IPCMessageType, MacroAction } from './enums'
 import AbstractCommand from './commands/AbstractCommand'
 import * as Commands from './commands'
 import * as DataTransferCommands from './commands/DataTransfer'
@@ -23,7 +22,7 @@ import { DownstreamKeyerGeneral, DownstreamKeyerMask } from './state/video/downs
 import * as DT from './dataTransfer'
 import { Util } from './lib/atemUtil'
 import * as Enums from './enums'
-import { AudioChannel } from './state/audio';
+import { AudioChannel } from './state/audio'
 
 export interface AtemOptions {
 	address?: string,
@@ -66,8 +65,8 @@ export class Atem extends EventEmitter {
 			(command: AbstractCommand) => this.sendCommand(command)
 		)
 		this.socket.on('receivedStateChange', (command: AbstractCommand) => this._mutateState(command))
-		this.socket.on(IPCMessageType.CommandAcknowledged, ({trackingId}: {trackingId: number}) => this._resolveCommand(trackingId))
-		this.socket.on(IPCMessageType.CommandTimeout, ({trackingId}: {trackingId: number}) => this._rejectCommand(trackingId))
+		this.socket.on(ms.IPCMessageType.CommandAcknowledged, ({ trackingId }: {trackingId: number}) => this._resolveCommand(trackingId))
+		this.socket.on(ms.IPCMessageType.CommandTimeout, ({ trackingId }: {trackingId: number}) => this._rejectCommand(trackingId))
 		this.socket.on('error', (e) => this.emit('error', e))
 		this.socket.on('connect', () => this.emit('connected'))
 		this.socket.on('disconnect', () => this.emit('disconnected'))
@@ -96,14 +95,14 @@ export class Atem extends EventEmitter {
 	changeProgramInput (input: number, me = 0) {
 		const command = new Commands.ProgramInputCommand()
 		command.mixEffect = me
-		command.updateProps({source: input})
+		command.updateProps({ source: input })
 		return this.sendCommand(command)
 	}
 
 	changePreviewInput (input: number, me = 0) {
 		const command = new Commands.PreviewInputCommand()
 		command.mixEffect = me
-		command.updateProps({source: input})
+		command.updateProps({ source: input })
 		return this.sendCommand(command)
 	}
 
@@ -149,14 +148,14 @@ export class Atem extends EventEmitter {
 	setTransitionPosition (position: number, me = 0) {
 		const command = new Commands.TransitionPositionCommand()
 		command.mixEffect = me
-		command.updateProps({handlePosition: position})
+		command.updateProps({ handlePosition: position })
 		return this.sendCommand(command)
 	}
 
 	previewTransition (on: boolean, me = 0) {
 		const command = new Commands.PreviewTransitionCommand()
 		command.mixEffect = me
-		command.updateProps({preview: on})
+		command.updateProps({ preview: on })
 		return this.sendCommand(command)
 	}
 
@@ -184,21 +183,21 @@ export class Atem extends EventEmitter {
 	setAuxSource (source: number, bus = 0) {
 		const command = new Commands.AuxSourceCommand()
 		command.auxBus = bus
-		command.updateProps({source})
+		command.updateProps({ source })
 		return this.sendCommand(command)
 	}
 
 	setDownstreamKeyTie (tie: boolean, key = 0) {
 		const command = new Commands.DownstreamKeyTieCommand()
 		command.downstreamKeyerId = key
-		command.updateProps({tie})
+		command.updateProps({ tie })
 		return this.sendCommand(command)
 	}
 
 	setDownstreamKeyOnAir (onAir: boolean, key = 0) {
 		const command = new Commands.DownstreamKeyOnAirCommand()
 		command.downstreamKeyerId = key
-		command.updateProps({onAir})
+		command.updateProps({ onAir })
 		return this.sendCommand(command)
 	}
 
@@ -240,42 +239,42 @@ export class Atem extends EventEmitter {
 	macroContinue () {
 		const command = new Commands.MacroActionCommand()
 		command.index = 0
-		command.updateProps({action: MacroAction.Continue})
+		command.updateProps({ action: Enums.MacroAction.Continue })
 		return this.sendCommand(command)
 	}
 
 	macroDelete (index = 0) {
 		const command = new Commands.MacroActionCommand()
 		command.index = index
-		command.updateProps({action: MacroAction.Delete})
+		command.updateProps({ action: Enums.MacroAction.Delete })
 		return this.sendCommand(command)
 	}
 
 	macroInsertUserWait () {
 		const command = new Commands.MacroActionCommand()
 		command.index = 0
-		command.updateProps({action: MacroAction.InsertUserWait})
+		command.updateProps({ action: Enums.MacroAction.InsertUserWait })
 		return this.sendCommand(command)
 	}
 
 	macroRun (index = 0) {
 		const command = new Commands.MacroActionCommand()
 		command.index = index
-		command.updateProps({action: MacroAction.Run})
+		command.updateProps({ action: Enums.MacroAction.Run })
 		return this.sendCommand(command)
 	}
 
 	macroStop () {
 		const command = new Commands.MacroActionCommand()
 		command.index = 0
-		command.updateProps({action: MacroAction.Stop})
+		command.updateProps({ action: Enums.MacroAction.Stop })
 		return this.sendCommand(command)
 	}
 
 	macroStopRecord () {
 		const command = new Commands.MacroActionCommand()
 		command.index = 0
-		command.updateProps({action: MacroAction.StopRecord})
+		command.updateProps({ action: Enums.MacroAction.StopRecord })
 		return this.sendCommand(command)
 	}
 
@@ -350,7 +349,7 @@ export class Atem extends EventEmitter {
 		const command = new Commands.MixEffectKeyCutSourceSetCommand()
 		command.mixEffect = me
 		command.upstreamKeyerId = keyer
-		command.updateProps({cutSource})
+		command.updateProps({ cutSource })
 		return this.sendCommand(command)
 	}
 
@@ -358,7 +357,7 @@ export class Atem extends EventEmitter {
 		const command = new Commands.MixEffectKeyFillSourceSetCommand()
 		command.mixEffect = me
 		command.upstreamKeyerId = keyer
-		command.updateProps({fillSource})
+		command.updateProps({ fillSource })
 		return this.sendCommand(command)
 	}
 
@@ -398,7 +397,7 @@ export class Atem extends EventEmitter {
 		const command = new Commands.MixEffectKeyOnAirCommand()
 		command.mixEffect = me
 		command.upstreamKeyerId = keyer
-		command.updateProps({onAir})
+		command.updateProps({ onAir })
 		return this.sendCommand(command)
 	}
 

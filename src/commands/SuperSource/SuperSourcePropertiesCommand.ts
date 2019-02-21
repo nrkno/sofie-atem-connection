@@ -1,8 +1,7 @@
 import AbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
 import { SuperSourceProperties } from '../../state/video'
-import { Util } from '../..'
-import { Enums as Enum } from '../..'
+import { Util, Enums } from '../..'
 
 export class SuperSourcePropertiesCommand extends AbstractCommand {
 	static MaskFlags = {
@@ -42,14 +41,14 @@ export class SuperSourcePropertiesCommand extends AbstractCommand {
 		this.properties = {
 			artFillSource: rawCommand.readUInt16BE(0),
 			artCutSource: rawCommand.readUInt16BE(2),
-			artOption: Util.parseEnum<Enum.SuperSourceArtOption>(rawCommand.readUInt8(4), Enum.SuperSourceArtOption),
+			artOption: Util.parseEnum<Enums.SuperSourceArtOption>(rawCommand.readUInt8(4), Enums.SuperSourceArtOption),
 			artPreMultiplied: rawCommand[5] === 1,
 			artClip: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 1000),
 			artGain: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 1000),
 			artInvertKey: rawCommand[10] === 1,
 
 			borderEnabled: rawCommand[11] === 1,
-			borderBevel: Util.parseEnum<Enum.BorderBevel>(rawCommand.readUInt8(12), Enum.BorderBevel),
+			borderBevel: Util.parseEnum<Enums.BorderBevel>(rawCommand.readUInt8(12), Enums.BorderBevel),
 			borderOuterWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(14), 0, 1600),
 			borderInnerWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(16), 0, 1600),
 			borderOuterSoftness: Util.parseNumberBetween(rawCommand.readUInt8(18), 0, 100),

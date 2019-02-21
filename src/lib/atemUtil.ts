@@ -206,6 +206,6 @@ export namespace Util {
 	}
 
 	export function DecibelToUint (input: number) {
-		return parseInt(Math.pow(10, input / 20) * 128 + '')
+		return parseInt(Math.pow(10, input / 20) * 128 + '', 10)
 	}
 }

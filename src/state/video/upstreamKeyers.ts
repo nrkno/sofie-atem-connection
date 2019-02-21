@@ -1,5 +1,4 @@
 import * as Enum from '../../enums'
-import { MixEffectKeyType } from '../../enums'
 
 export interface UpstreamKeyerBase {
 	readonly upstreamKeyerId: number,
@@ -89,7 +88,7 @@ export interface UpstreamKeyerFlySettings {
 }
 
 export interface UpstreamKeyerTypeSettings {
-	keyType: MixEffectKeyType,
+	keyType: Enum.MixEffectKeyType,
 	flyEnabled: boolean
 }
 

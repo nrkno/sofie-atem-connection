@@ -7,7 +7,7 @@ export class AudioMixerInputCommand extends AbstractCommand {
 	static MaskFlags = {
 		mixOption: 1 << 0,
 		gain: 1 << 1,
-		balance: 1 << 2,
+		balance: 1 << 2
 	}
 	rawName = 'AMIP'
 	mixEffect: number
