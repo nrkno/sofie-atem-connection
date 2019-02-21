@@ -23,6 +23,7 @@ import { DownstreamKeyerGeneral, DownstreamKeyerMask } from './state/video/downs
 import * as DT from './dataTransfer'
 import { Util } from './lib/atemUtil'
 import * as Enums from './enums'
+import { AudioChannel } from './state/audio';
 
 export interface AtemOptions {
 	address?: string,
@@ -438,6 +439,27 @@ export class Atem extends EventEmitter {
 			Util.convertWAVToRaw(data),
 			name
 		)
+	}
+
+	setAudioChannelMixOption (index: number, mixOption: Enums.AudioMixOption) {
+		const command = new Commands.AudioMixerInputCommand()
+		command.index = index
+		command.updateProps({ mixOption })
+		return this.sendCommand(command)
+	}
+
+	setAudioChannelGain (index: number, gain: number) {
+		const command = new Commands.AudioMixerInputCommand()
+		command.index = index
+		command.updateProps({ gain })
+		return this.sendCommand(command)
+	}
+
+	setAudioChannelProps (index: number, props: Partial<AudioChannel>) {
+		const command = new Commands.AudioMixerInputCommand()
+		command.index = index
+		command.updateProps(props)
+		return this.sendCommand(command)
 	}
 
 	private _mutateState (command: AbstractCommand) {
