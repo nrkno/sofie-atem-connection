@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [0.9.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.8.2...0.9.0) (2019-02-21)
+
+
+### Bug Fixes
+
+* AudioMixerInputCommand ([69608c7](https://github.com/nrkno/tv-automation-atem-connection/commit/69608c7))
+
+
+### Features
+
+* audio channels ([1b3bd32](https://github.com/nrkno/tv-automation-atem-connection/commit/1b3bd32))
+* top level methods for audio channels ([6c390d3](https://github.com/nrkno/tv-automation-atem-connection/commit/6c390d3))
+
+
+
 <a name="0.8.2"></a>
 ## [0.8.2](https://github.com/nrkno/tv-automation-atem-connection/compare/0.8.1...0.8.2) (2019-01-19)
 
