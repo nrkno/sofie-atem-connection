@@ -200,4 +200,12 @@ export namespace Util {
 
 		return buffer2
 	}
+
+	export function UIntToDecibel (input: number) {
+		return Math.log10(input / 128) * 20
+	}
+
+	export function DecibelToUint (input: number) {
+		return parseInt(Math.pow(10, input / 20) * 128 + '')
+	}
 }

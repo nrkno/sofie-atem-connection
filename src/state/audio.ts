@@ -1,11 +1,11 @@
+import { AudioSourceType, ExternalPortType, AudioMixOption } from '../enums'
+
 export class AudioChannel {
-	on: boolean
-	afv: boolean
+	sourceType: AudioSourceType
+	portType: ExternalPortType
+	mixOption: AudioMixOption
 	gain: number
-	rawGain: number
-	rawPan: number
-	leftLevel: number
-	rightLevel: number
+	balance: number
 }
 
 export class AtemAudioState {
@@ -14,7 +14,7 @@ export class AtemAudioState {
 	channels: Array<AudioChannel> = []
 	master: AudioChannel = new AudioChannel()
 
-	getMe (index: number) {
+	getChannel (index: number) {
 		if (!this.channels[index]) {
 			this.channels[index] = new AudioChannel()
 		}
