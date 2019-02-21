@@ -5,9 +5,9 @@ import { AudioChannel } from '../../state/audio'
 
 export class AudioMixerInputCommand extends AbstractCommand {
 	static MaskFlags = {
-		MixOption: 1 << 0,
-		Gain: 1 << 1,
-		Balance: 1 << 2,
+		mixOption: 1 << 0,
+		gain: 1 << 1,
+		balance: 1 << 2,
 	}
 	rawName = 'AMIP'
 	mixEffect: number
@@ -21,7 +21,7 @@ export class AudioMixerInputCommand extends AbstractCommand {
 			sourceType: rawCommand.readInt8(2),
 			portType: rawCommand.readInt8(7),
 			mixOption: rawCommand.readInt8(8),
-			gain: Util.UIntToDecibel(rawCommand.readUInt8(10)),
+			gain: Util.UIntToDecibel(rawCommand.readUInt16BE(10)),
 			balance: rawCommand.readInt16BE(12)
 		}
 	}
