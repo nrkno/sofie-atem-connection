@@ -105,7 +105,11 @@ export enum ExternalPortType {
 	HDMI = 2,
 	Composite = 3,
 	Component = 4,
-	SVideo = 5
+	SVideo = 5,
+	XLR = 32,
+	AESEBU = 64,
+	RCA = 128,
+	TSJack // @todo: check value
 }
 
 export enum InternalPortType {
@@ -254,4 +258,16 @@ export enum MultiViewerLayout {
 	Bottom = 1,
 	Left = 2,
 	Right = 3
+}
+
+export enum AudioMixOption {
+	Off,
+	On,
+	AudioFollowVideo
+}
+
+export enum AudioSourceType {
+	ExternalVideo,
+	MediaPlayer,
+	ExternalAudio
 }
