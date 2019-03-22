@@ -37,7 +37,7 @@ export class SuperSourceBoxParametersCommand extends AbstractCommand {
 			cropTop: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 18000),
 			cropBottom: Util.parseNumberBetween(rawCommand.readUInt16BE(14), 0, 18000),
 			cropLeft: Util.parseNumberBetween(rawCommand.readUInt16BE(16), 0, 32000),
-			cropRight: Util.parseNumberBetween(rawCommand.readUInt16BE(18), 0, 3200)
+			cropRight: Util.parseNumberBetween(rawCommand.readUInt16BE(18), 0, 32000)
 		}
 	}
 
