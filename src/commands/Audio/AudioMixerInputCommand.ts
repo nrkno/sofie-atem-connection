@@ -31,7 +31,7 @@ export class AudioMixerInputCommand extends AbstractCommand {
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(this.index, 2)
 		buffer.writeUInt8(this.properties.mixOption || 0, 4)
-		buffer.writeUInt8(Util.DecibelToUint(this.properties.gain || 0), 8)
+		buffer.writeUInt16BE(Util.DecibelToUint(this.properties.gain || 0), 8)
 		buffer.writeInt16BE(this.properties.balance || 0, 8)
 		return Buffer.concat([
 			Buffer.from('CAMI', 'ascii'),
