@@ -202,10 +202,19 @@ export namespace Util {
 	}
 
 	export function UIntToDecibel (input: number) {
-		return Math.log10(input / 128) * 20
+		// 0 = -inf, 32768 = 0, 65381 = +6db
+		return Math.round((Math.log10(input / 32768) * 20) * 100) / 100
 	}
 
 	export function DecibelToUint (input: number) {
-		return parseInt(Math.pow(10, input / 20) * 128 + '', 10)
+		return parseInt(Math.pow(10, input / 20) * 32768 + '', 10)
+	}
+
+	export function IntToBalance (input: number): number {
+		// -100000 = -50, 0x0000 = 0, 0x2710 = +50
+		return Math.round((input / 200) * 10) /10
+	}
+	export function BalanceToInt (input: number): number {
+		return Math.round(input * 200)
 	}
 }

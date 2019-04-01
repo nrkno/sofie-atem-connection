@@ -22,7 +22,7 @@ export class AudioMixerInputCommand extends AbstractCommand {
 			portType: rawCommand.readInt8(7),
 			mixOption: rawCommand.readInt8(8),
 			gain: Util.UIntToDecibel(rawCommand.readUInt16BE(10)),
-			balance: rawCommand.readInt16BE(12)
+			balance: Util.IntToBalance(rawCommand.readInt16BE(12))
 		}
 	}
 
@@ -31,8 +31,9 @@ export class AudioMixerInputCommand extends AbstractCommand {
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(this.index, 2)
 		buffer.writeUInt8(this.properties.mixOption || 0, 4)
-		buffer.writeUInt8(Util.DecibelToUint(this.properties.gain || 0), 8)
-		buffer.writeInt16BE(this.properties.balance || 0, 8)
+		buffer.writeUInt16BE(Util.DecibelToUint(this.properties.gain || 0), 6)
+		buffer.writeInt16BE(Util.BalanceToInt(this.properties.balance || 0), 8)
+
 		return Buffer.concat([
 			Buffer.from('CAMI', 'ascii'),
 			buffer
