@@ -22,7 +22,7 @@ import { DownstreamKeyerGeneral, DownstreamKeyerMask } from './state/video/downs
 import * as DT from './dataTransfer'
 import { Util } from './lib/atemUtil'
 import * as Enums from './enums'
-import { AudioChannel } from './state/audio'
+import { AudioChannel, AudioMasterChannel } from './state/audio'
 
 export interface AtemOptions {
 	address?: string,
@@ -457,6 +457,25 @@ export class Atem extends EventEmitter {
 	setAudioMixerInputBalance (index: number, balance: number) {
 		const command = new Commands.AudioMixerInputCommand()
 		command.index = index
+		command.updateProps({ balance })
+		return this.sendCommand(command)
+	}
+
+	setAudioMixerInputProps (index: number, props: Partial<AudioChannel>) {
+		const command = new Commands.AudioMixerInputCommand()
+		command.index = index
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	setAudioMixerMasterGain (gain: number) {
+		const command = new Commands.AudioMixerMasterCommand()
+		command.updateProps({ gain })
+		return this.sendCommand(command)
+	}
+
+	setAudioMixerMasterProps (props: Partial<AudioMasterChannel>) {
+		const command = new Commands.AudioMixerMasterCommand()
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
