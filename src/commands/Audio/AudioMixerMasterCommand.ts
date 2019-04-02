@@ -23,7 +23,7 @@ export class AudioMixerMasterCommand extends AbstractCommand {
 
 	serialize () {
 		const buffer = Buffer.alloc(8)
-		buffer.writeUInt8(1, 0)
+		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(Util.DecibelToUInt16BE(this.properties.gain || 0), 2)
 		buffer.writeInt16BE(Util.BalanceToInt(this.properties.balance || 0), 4)
 		buffer.writeUInt8(this.properties.followFadeToBlack ? 0x01 : 0x00 , 6) // Note: I never got this one to work
