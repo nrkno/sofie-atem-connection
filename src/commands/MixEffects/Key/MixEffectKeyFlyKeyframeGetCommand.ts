@@ -29,7 +29,7 @@ export class MixEffectKeyFlyKeyframeGetCommand extends AbstractCommand {
 			borderBevelPosition: Util.parseNumberBetween(rawCommand.readInt8(31), 0, 100),
 
 			borderOpacity: Util.parseNumberBetween(rawCommand.readInt8(32), 0, 100),
-			borderHue: Util.parseNumberBetween(rawCommand.readUInt16BE(34), 0, 1000),
+			borderHue: Util.parseNumberBetween(rawCommand.readUInt16BE(34), 0, 3599),
 			borderSaturation: Util.parseNumberBetween(rawCommand.readUInt16BE(36), 0, 1000),
 			borderLuma: Util.parseNumberBetween(rawCommand.readUInt16BE(38), 0, 1000),
 
