@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+# [0.10.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.9.0...0.10.0) (2019-04-02)
+
+
+### Bug Fixes
+
+* fix error spam that occurs when the child process attempts to log certain data ([7c9e31c](https://github.com/nrkno/tv-automation-atem-connection/commit/7c9e31c))
+* fixed parsing of audioMixer input ([3430cb7](https://github.com/nrkno/tv-automation-atem-connection/commit/3430cb7))
+* kill the child process with an error code with an uncaughtException or unhandledRejection occurs ([e5323c9](https://github.com/nrkno/tv-automation-atem-connection/commit/e5323c9))
+* rename setAudioChannelXX methods to setAudioMixerInputXXX to harmonize with other audio commands ([77fe521](https://github.com/nrkno/tv-automation-atem-connection/commit/77fe521))
+* set enum values explicitly ([bd50491](https://github.com/nrkno/tv-automation-atem-connection/commit/bd50491))
+* upgrade dependencies to pass audit ([98d16a8](https://github.com/nrkno/tv-automation-atem-connection/commit/98d16a8))
+* upgrade typescript to latest ([b68afbf](https://github.com/nrkno/tv-automation-atem-connection/commit/b68afbf))
+* **AudioMixerMasterCommand:** set flag properly ([78fa0b5](https://github.com/nrkno/tv-automation-atem-connection/commit/78fa0b5))
+
+
+### Features
+
+* add support for MasterChannel ([722d744](https://github.com/nrkno/tv-automation-atem-connection/commit/722d744))
+
+
+
 # [0.9.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.8.2...0.9.0) (2019-02-21)
 
 
