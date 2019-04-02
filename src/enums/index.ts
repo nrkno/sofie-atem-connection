@@ -261,9 +261,9 @@ export enum MultiViewerLayout {
 }
 
 export enum AudioMixOption {
-	Off,
-	On,
-	AudioFollowVideo
+	Off = 0,
+	On = 1,
+	AudioFollowVideo = 2
 }
 
 export enum AudioSourceType {
