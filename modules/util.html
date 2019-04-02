@@ -916,10 +916,16 @@ img { max-width: 100%; }
 			<a href="util.html#command_connect_hello_answer" class="tsd-kind-icon">COMMAND_<wbr>CONNECT_<wbr>HELLO_<wbr>ANSWER</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external">
-			<a href="util.html#decibeltouint" class="tsd-kind-icon">Decibel<wbr>ToUint</a>
+			<a href="util.html#balancetoint" class="tsd-kind-icon">Balance<wbr>ToInt</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external">
-			<a href="util.html#uinttodecibel" class="tsd-kind-icon">UInt<wbr>ToDecibel</a>
+			<a href="util.html#decibeltouint16be" class="tsd-kind-icon">Decibel<wbr>ToUInt16BE</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external">
+			<a href="util.html#inttobalance" class="tsd-kind-icon">Int<wbr>ToBalance</a>
+		</li>
+		<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external">
+			<a href="util.html#uint16betodecibel" class="tsd-kind-icon">UInt16BETo<wbr>Decibel</a>
 		</li>
 		<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external">
 			<a href="util.html#buftonullterminatedstring" class="tsd-kind-icon">buf<wbr>ToNull<wbr>Terminated<wbr>String</a>
@@ -963,8 +969,10 @@ img { max-width: 100%; }
 					<section class="tsd-index-section tsd-is-external">
 						<h3>Functions</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="util.html#decibeltouint" class="tsd-kind-icon">Decibel<wbr>ToUint</a></li>
-							<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="util.html#uinttodecibel" class="tsd-kind-icon">UInt<wbr>ToDecibel</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="util.html#balancetoint" class="tsd-kind-icon">Balance<wbr>ToInt</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="util.html#decibeltouint16be" class="tsd-kind-icon">Decibel<wbr>ToUInt16BE</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="util.html#inttobalance" class="tsd-kind-icon">Int<wbr>ToBalance</a></li>
+							<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="util.html#uint16betodecibel" class="tsd-kind-icon">UInt16BETo<wbr>Decibel</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="util.html#buftonullterminatedstring" class="tsd-kind-icon">buf<wbr>ToNull<wbr>Terminated<wbr>String</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="util.html#convertrgbatoyuv422" class="tsd-kind-icon">convertRGBAToYUV422</a></li>
 							<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="util.html#convertwavtoraw" class="tsd-kind-icon">convertWAVTo<wbr>Raw</a></li>
@@ -986,7 +994,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">COMMAND_<wbr>CONNECT_<wbr>HELLO<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol"> =&nbsp;Buffer.from([0x10, 0x14, 0x53, 0xAB,0x00, 0x00, 0x00, 0x00,0x00, 0x3A, 0x00, 0x00,0x01, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00])</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/5ee0723/src/lib/atemUtil.ts#L87">lib/atemUtil.ts:87</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/6a9bbe1/src/lib/atemUtil.ts#L87">lib/atemUtil.ts:87</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -996,7 +1004,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">COMMAND_<wbr>CONNECT_<wbr>HELLO_<wbr>ANSWER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol"> =&nbsp;Buffer.from([0x80, 0x0C, 0x53, 0xAB,0x00, 0x00, 0x00, 0x00,0x00, 0x03, 0x00, 0x00])</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/5ee0723/src/lib/atemUtil.ts#L95">lib/atemUtil.ts:95</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/6a9bbe1/src/lib/atemUtil.ts#L95">lib/atemUtil.ts:95</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1004,16 +1012,16 @@ img { max-width: 100%; }
 		<section class="tsd-panel-group tsd-member-group tsd-is-external">
 			<h2>Functions</h2>
 			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-external">
-				<a name="decibeltouint" class="tsd-anchor"></a>
-				<h3>Decibel<wbr>ToUint</h3>
+				<a name="balancetoint" class="tsd-anchor"></a>
+				<h3>Balance<wbr>ToInt</h3>
 				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-external">
-					<li class="tsd-signature tsd-kind-icon">Decibel<wbr>ToUint<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					<li class="tsd-signature tsd-kind-icon">Balance<wbr>ToInt<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/5ee0723/src/lib/atemUtil.ts#L208">lib/atemUtil.ts:208</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/6a9bbe1/src/lib/atemUtil.ts#L217">lib/atemUtil.ts:217</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1027,16 +1035,62 @@ img { max-width: 100%; }
 				</ul>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-external">
-				<a name="uinttodecibel" class="tsd-anchor"></a>
-				<h3>UInt<wbr>ToDecibel</h3>
+				<a name="decibeltouint16be" class="tsd-anchor"></a>
+				<h3>Decibel<wbr>ToUInt16BE</h3>
 				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-external">
-					<li class="tsd-signature tsd-kind-icon">UInt<wbr>ToDecibel<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					<li class="tsd-signature tsd-kind-icon">Decibel<wbr>ToUInt16BE<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/5ee0723/src/lib/atemUtil.ts#L204">lib/atemUtil.ts:204</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/6a9bbe1/src/lib/atemUtil.ts#L209">lib/atemUtil.ts:209</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>input: <span class="tsd-signature-type">number</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-external">
+				<a name="inttobalance" class="tsd-anchor"></a>
+				<h3>Int<wbr>ToBalance</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-external">
+					<li class="tsd-signature tsd-kind-icon">Int<wbr>ToBalance<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/6a9bbe1/src/lib/atemUtil.ts#L213">lib/atemUtil.ts:213</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>input: <span class="tsd-signature-type">number</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-external">
+				<a name="uint16betodecibel" class="tsd-anchor"></a>
+				<h3>UInt16BETo<wbr>Decibel</h3>
+				<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-external">
+					<li class="tsd-signature tsd-kind-icon">UInt16BETo<wbr>Decibel<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/6a9bbe1/src/lib/atemUtil.ts#L204">lib/atemUtil.ts:204</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1059,7 +1113,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/5ee0723/src/lib/atemUtil.ts#L16">lib/atemUtil.ts:16</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/6a9bbe1/src/lib/atemUtil.ts#L16">lib/atemUtil.ts:16</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1088,7 +1142,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/5ee0723/src/lib/atemUtil.ts#L105">lib/atemUtil.ts:105</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/6a9bbe1/src/lib/atemUtil.ts#L105">lib/atemUtil.ts:105</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1125,7 +1179,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/5ee0723/src/lib/atemUtil.ts#L181">lib/atemUtil.ts:181</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/6a9bbe1/src/lib/atemUtil.ts#L181">lib/atemUtil.ts:181</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1148,7 +1202,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/5ee0723/src/lib/atemUtil.ts#L163">lib/atemUtil.ts:163</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/6a9bbe1/src/lib/atemUtil.ts#L163">lib/atemUtil.ts:163</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1171,7 +1225,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/5ee0723/src/lib/atemUtil.ts#L28">lib/atemUtil.ts:28</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/6a9bbe1/src/lib/atemUtil.ts#L28">lib/atemUtil.ts:28</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1203,7 +1257,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/5ee0723/src/lib/atemUtil.ts#L22">lib/atemUtil.ts:22</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/6a9bbe1/src/lib/atemUtil.ts#L22">lib/atemUtil.ts:22</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1232,7 +1286,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/5ee0723/src/lib/atemUtil.ts#L33">lib/atemUtil.ts:33</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/6a9bbe1/src/lib/atemUtil.ts#L33">lib/atemUtil.ts:33</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1275,7 +1329,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/5ee0723/src/lib/atemUtil.ts#L8">lib/atemUtil.ts:8</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/6a9bbe1/src/lib/atemUtil.ts#L8">lib/atemUtil.ts:8</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
