@@ -1,3 +1,4 @@
+export * from './FadeToBlack'
 export * from './Key'
 export * from './Transition'
 

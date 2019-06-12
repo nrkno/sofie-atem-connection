@@ -76,7 +76,7 @@ export interface IMixEffect {
 	transitionPreview: boolean
 	transitionPosition: number
 	transitionFramesLeft: number
-	fadeToBlack: boolean
+	fadeToBlack: FadeToBlackProperties
 	numberOfKeyers: number
 	transitionProperties: TransitionProperties
 	transitionSettings: TransitionSettings,
@@ -91,7 +91,7 @@ export class MixEffect implements IMixEffect {
 	transitionPreview: boolean
 	transitionPosition: number
 	transitionFramesLeft: number
-	fadeToBlack: boolean
+	fadeToBlack: FadeToBlackProperties
 	numberOfKeyers: number
 	transitionProperties: TransitionProperties = {} as TransitionProperties
 	transitionSettings: TransitionSettings = {} as TransitionSettings
@@ -152,6 +152,13 @@ export interface SuperSourceProperties {
 	borderLuma: number
 	borderLightSourceDirection: number
 	borderLightSourceAltitude: number
+}
+
+export interface FadeToBlackProperties {
+	isFullyBlack: boolean
+	rate: number
+	inTransition: boolean
+	remainingFrames: number
 }
 
 export class AtemVideoState {

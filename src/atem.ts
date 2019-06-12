@@ -118,6 +118,12 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	fadeToBlack (me = 0) {
+		const command = new Commands.FadeToBlackAutoCommand()
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
 	autoDownstreamKey (key = 0) {
 		const command = new Commands.DownstreamKeyAutoCommand()
 		command.downstreamKeyerId = key
