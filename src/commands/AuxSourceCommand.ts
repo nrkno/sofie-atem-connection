@@ -3,6 +3,7 @@ import { AtemState } from '../state'
 
 export class AuxSourceCommand extends AbstractCommand {
 	rawName = 'AuxS'
+	rawCommand = 'CAuS'
 	auxBus: number
 
 	properties: {
@@ -17,9 +18,9 @@ export class AuxSourceCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		const rawCommand = 'CAuS'
+		// const rawCommand = 'CAuS'
 		return new Buffer([
-			...Buffer.from(rawCommand),
+			...Buffer.from(this.rawCommand),
 			0x01,
 			this.auxBus,
 			this.properties.source >> 8,

@@ -3,6 +3,7 @@ import { AtemState } from '../state'
 export default abstract class AbstractCommand {
 	static MaskFlags?: { [key: string]: number }
 	abstract rawName: string
+	// abstract rawCommand: string
 	packetId: number
 	flag: number = 0
 
