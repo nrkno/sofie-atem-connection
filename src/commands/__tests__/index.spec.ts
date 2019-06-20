@@ -94,6 +94,14 @@ const commandConverters: CommandTestConverterSet = {
 			'gain': (v: number) => ({ val: Math.round(v * 100) / 100 })
 		}
 	},
+	'AMMO': {
+		idAliases: {},
+		propertyAliases: {
+			'programOutFollowFadeToBlack': (val: any) => ({ val, name: 'followFadeToBlack' }),
+			'balance': (v: number) => ({ val: Math.round(v * 10) / 10 }),
+			'gain': (v: number) => ({ val: Math.round(v * 100) / 100 })
+		}
+	},
 	'_top': {
 		idAliases: {},
 		propertyAliases: {
@@ -258,6 +266,14 @@ const commandConverters: CommandTestConverterSet = {
 			'borderWidth': (v: number) => ({ val: Math.round(v * 100) })
 		}
 	},
+	'TrPs': {
+		idAliases: {
+			'mixEffect': 'index'
+		},
+		propertyAliases: {
+			'handlePosition': (v: number) => ({ val: Math.round(v * 10000) })
+		}
+	},
 	'MRPr': {
 		idAliases: {},
 		propertyAliases: {
@@ -287,6 +303,32 @@ const commandConverters: CommandTestConverterSet = {
 			'mediaPlayerId': 'index'
 		},
 		propertyAliases: {}
+	},
+	'MPCS': {
+		idAliases: {
+			'mediaPool': 'index'
+		},
+		propertyAliases: {},
+		customMutate: (obj: any) => {
+			obj.frames = []
+			return obj
+		}
+	},
+	'MPfe': {
+		idAliases: {
+			'mediaPool': 'bank',
+			'frameIndex': 'index'
+		},
+		propertyAliases: {
+			'filename': (val: any) => ({ val, name: 'fileName' }),
+			// 'hash': (v: string) => ({ val: Buffer.from(v, 'base64').toString('ascii') })
+		}
+	},
+	'MPrp': {
+		idAliases: {},
+		propertyAliases: {
+			'index': (val: any) => ({ val, name: 'macroIndex' })
+		}
 	},
 	'PrgI': {
 		idAliases: {
@@ -347,12 +389,7 @@ describe('Commands v7.2', () => {
 				// Temporarily ignore the failures
 				case 'AMIP':
 				case '_top':
-
-				//
 				case 'AMMO':
-				case 'MPrp':
-				case 'MPfe':
-				case 'MPCS':
 				case 'KKFP':
 				case 'TrPs':
 					return

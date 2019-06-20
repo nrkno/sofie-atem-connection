@@ -13,6 +13,10 @@ export namespace Util {
 		return array
 	}
 
+	export function bufToBase64String (buffer: Buffer, start: number, length: number): string {
+		return buffer.toString('base64', start, start + length)
+	}
+
 	export function bufToNullTerminatedString (buffer: Buffer, start: number, length: number): string {
 		const slice = buffer.slice(start, start + length)
 		const nullIndex = slice.indexOf('\0')
