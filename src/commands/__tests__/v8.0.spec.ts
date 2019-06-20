@@ -1,5 +1,5 @@
 import { CommandParser } from '../../lib/atemCommandParser'
-import { TestCase, runTestForCommand, CommandTestConverterSet } from './util'
+import { TestCase, runTestForCommand, CommandTestConverterSet, CommandFactory } from './util'
 
 const DataV8 = require('./data-v8.0.json') as TestCase[]
 
@@ -107,6 +107,7 @@ const commandConverters: CommandTestConverterSet = {
 
 describe('Commands v8.0', () => {
 	const commandParser = new CommandParser()
+	const commandFactory = new CommandFactory()
 
 	// TODO - track which commands havent had a serialize/deserialize called and cause a failure on that, or is lack of test percentage good enough?
 	// TODO - some commands appear to not have very random data. Will some not work because of their c# implementation?
@@ -121,7 +122,7 @@ describe('Commands v8.0', () => {
 					return
 			}
 
-			runTestForCommand(commandParser, commandConverters, testCase)
+			runTestForCommand(commandParser, commandFactory, commandConverters, testCase)
 		})
 	}
 })
