@@ -77,7 +77,7 @@ export namespace Util {
 		}, {
 			onFailedAttempt: error => {
 				if (log) {
-					log(`Failed to send IPC message: ${error.message} (attempt ${error.attemptNumber}/${error.attemptNumber + error.attemptsLeft}).`)
+					log(`Failed to send IPC message: ${error.message} (attempt ${error.attemptNumber}/${error.attemptNumber + error.retriesLeft}).`)
 				}
 			},
 			retries: 5
