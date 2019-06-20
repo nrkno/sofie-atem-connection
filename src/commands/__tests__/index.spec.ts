@@ -1,11 +1,17 @@
 import { CommandParser } from '../../lib/atemCommandParser'
 
-const DataV8 = require('./data-v8.0.json') as TestCase[]
+const DataV8 = require('./data-v7.2.json') as TestCase[]
 
 export interface TestCase {
 	name: string
 	bytes: string
 	command: { [key: string]: any }
+}
+
+export interface CommandTestConverter {
+	idAliases: { [key: string]: string }
+	propertyAliases: { [key: string]: (v: any) => { name?: string, val: any } }
+	customMutate?: (v: any) => any
 }
 
 const idAliases: { [key: string]: string } = {
@@ -44,7 +50,14 @@ const propertyAliases: { [key: string]: string } = { // TODO - should these be d
 	'filename': 'fileName',
 	'DskP.preMultipliedKey': 'preMultiply',
 	'inverse': 'invert',
-	'borderShadowEnabled': 'shadowEnabled'
+	'borderShadowEnabled': 'shadowEnabled',
+	'inputSource': 'source',
+	'artFillInput': 'artFillSource',
+	'artKeyInput': 'artCutSource',
+	'borderSoftnessIn': 'borderInnerSoftness',
+	'borderSoftnessOut': 'borderOuterSoftness',
+	'borderWidthIn': 'borderInnerWidth',
+	'borderWidthOut': 'borderOuterWidth'
 }
 const propertyConversion: { [key: string]: (v: any) => any } = { // TODO - should these be done in the generator instead?
 	'balance': (v: number) => Math.round(v * 10) / 10,
@@ -70,27 +83,116 @@ const propertyConversion: { [key: string]: (v: any) => any } = { // TODO - shoul
 	'KeLm.gain': (v: number) => Math.round(v * 10),
 	'handlePosition': (v: number) => Math.round(v * 10000),
 	'hash': (v: string) => Buffer.from(v, 'base64').toString('ascii'),
-	'DskP.clip': (v: number) => Math.round(v * 10),
-	'DskP.gain': (v: number) => Math.round(v * 10),
 	'size': (v: number) => Math.round(v * 100),
 	'softness': (v: number) => Math.round(v * 100),
-	'borderHue': (v: number) => Math.round(v * 10),
-	'borderInnerWidth': (v: number) => Math.round(v * 100),
-	'borderLuma': (v: number) => Math.round(v * 10),
-	'borderOuterWidth': (v: number) => Math.round(v * 100),
-	'borderSaturation': (v: number) => Math.round(v * 10),
+	// 'borderHue': (v: number) => Math.round(v * 10),
+	// 'borderInnerWidth': (v: number) => Math.round(v * 100),
+	// 'borderLuma': (v: number) => Math.round(v * 10),
+	// 'borderOuterWidth': (v: number) => Math.round(v * 100),
+	// 'borderSaturation': (v: number) => Math.round(v * 10),
 	'lightSourceDirection': (v: number) => Math.round(v * 10),
 	'KeDV.positionX': (v: number) => Math.round(v * 1000),
 	'KeDV.positionY': (v: number) => Math.round(v * 1000),
 	'KeDV.sizeX': (v: number) => Math.round(v * 1000),
 	'KeDV.sizeY': (v: number) => Math.round(v * 1000),
 	'KeDV.rotation': (v: number) => Math.round(v * 10),
+	'cropBottom': (v: number) => Math.round(v * 1000),
+	'cropTop': (v: number) => Math.round(v * 1000),
+	'cropLeft': (v: number) => Math.round(v * 1000),
+	'cropRight': (v: number) => Math.round(v * 1000)
+	// 'SSrc.borderInnerWidth': (v: number) => Math.round(v * 100),
+	// 'SSrc.borderOuterWidth': (v: number) => Math.round(v * 200),
 }
 
-describe('Auto v8', () => {
-	const commandParser = new CommandParser()
+const propAliases2: CommandTestConverter['propertyAliases'] = {}
 
-	// TODO - this wants to work on v7.2 for now, with a small set of data for v8
+for (const id of Object.keys(propertyAliases)) {
+	propAliases2[id] = (v: any) => ({ val: v, name: propertyAliases[id] })
+}
+for (const id of Object.keys(propertyConversion)) {
+	const conv = propertyConversion[id]
+	const alias = propAliases2[id]
+	if (alias) {
+		const newId = alias(null).name
+		propAliases2[id] = (v: any) => ({ val: conv(v), name: newId })
+	} else {
+		propAliases2[id] = (v: any) => ({ val: conv(v) })
+	}
+}
+
+const defaultConverter: CommandTestConverter = {
+	// TODO - replace this with the specific converters
+	idAliases,
+	propertyAliases: propAliases2
+}
+
+const commandConverters: { [key: string]: CommandTestConverter } = {
+	'SSBP': {
+		idAliases: {
+			'boxId': 'index'
+		},
+		propertyAliases: {
+			'cropBottom': (v: number) => ({ val: Math.round(v * 1000) }),
+			'cropTop': (v: number) => ({ val: Math.round(v * 1000) }),
+			'cropLeft': (v: number) => ({ val: Math.round(v * 1000) }),
+			'cropRight': (v: number) => ({ val: Math.round(v * 1000) }),
+			'size': (v: number) => ({ val: Math.round(v * 1000) }),
+			'positionX': (v: number) => ({ val: Math.round(v * 100), name: 'x' }),
+			'positionY': (v: number) => ({ val: Math.round(v * 100), name: 'y' }),
+			'inputSource': (v: number) => ({ val: v, name: 'source' })
+		}
+	},
+	'SSrc': {
+		idAliases: {},
+		propertyAliases: {
+			'artClip': (v: number) => ({ val: Math.round(v * 10) }),
+			'artGain': (v: number) => ({ val: Math.round(v * 10) }),
+			'borderLightSourceAltitude': (v: number) => ({ val: Math.round(v) }),
+			'borderLightSourceDirection': (v: number) => ({ val: Math.round(v * 10) }),
+			'borderHue': (v: number) => ({ val: Math.round(v * 10) }),
+			'borderWidthIn': (v: number) => ({ val: Math.round(v * 100), name: 'borderInnerWidth' }),
+			'borderLuma': (v: number) => ({ val: Math.round(v * 10) }),
+			'borderWidthOut': (v: number) => ({ val: Math.round(v * 100), name: 'borderOuterWidth' }),
+			'borderSaturation': (v: number) => ({ val: Math.round(v * 10) }),
+			'borderSoftnessIn': (v: number) => ({ val: v, name: 'borderInnerSoftness' }),
+			'borderSoftnessOut': (v: number) => ({ val: v, name: 'borderOuterSoftness' }),
+			'artFillInput': (v: number) => ({ val: v, name: 'artFillSource' }),
+			'artKeyInput': (v: number) => ({ val: v, name: 'artCutSource' })
+		}
+	},
+	'DskP': {
+		idAliases: {
+			'downstreamKeyerId': 'index'
+		},
+		propertyAliases: {
+			'clip': (v: number) => ({ val: Math.round(v * 10) }),
+			'gain': (v: number) => ({ val: Math.round(v * 10) }),
+			'preMultipliedKey': (v: number) => ({ val: v, name: 'preMultiply' }),
+			'maskLeft': (v: number) => ({ val: Math.round(v * 1000) }),
+			'maskRight': (v: number) => ({ val: Math.round(v * 1000) }),
+			'maskTop': (v: number) => ({ val: Math.round(v * 1000) }),
+			'maskBottom': (v: number) => ({ val: Math.round(v * 1000) })
+		},
+		customMutate: (obj: any) => {
+			obj['mask'] = {
+				enabled: obj['maskEnabled'],
+				top: obj['maskTop'],
+				bottom: obj['maskBottom'],
+				left: obj['maskLeft'],
+				right: obj['maskRight']
+			}
+			delete obj['maskEnabled']
+			delete obj['maskTop']
+			delete obj['maskBottom']
+			delete obj['maskLeft']
+			delete obj['maskRight']
+			return obj
+		}
+	}
+}
+
+describe('Commands v7.2', () => {
+	const commandParser = new CommandParser()
 
 	// TODO - track which commands havent had a serialize/deserialize called and cause a failure on that, or is lack of test percentage good enough?
 	// TODO - some commands appear to not have very random data. Will some not work because of their c# implementation?
@@ -113,28 +215,33 @@ describe('Auto v8', () => {
 				delete (cmd as any).rawCommand
 				// console.log('ok', cmd)
 
+				const converter = commandConverters[name] || defaultConverter
+
 				for (const key in cmd) {
-					const newName = idAliases[key]
+					const newName = converter.idAliases[key]
 					if (cmd.hasOwnProperty(key) && newName) {
 						if (!cmd.properties) cmd.properties = {}
 						cmd.properties[newName] = (cmd as any)[key]
 					}
 				}
 
-				const lowerCommand: { [key: string]: any } = {}
+				let lowerCommand: { [key: string]: any } = {}
 				for (const key in testCase.command) {
 					const newKey = key[0].toLowerCase() + key.substring(1)
-					const newKey2 = propertyAliases[`${name}.${newKey}`] || propertyAliases[newKey] || newKey
+					const propConv = converter.propertyAliases[`${name}.${newKey}`] || converter.propertyAliases[newKey]
+					const newProp = propConv ? propConv(testCase.command[key]) : { val: testCase.command[key] }
 
-					const converter = propertyConversion[`${name}.${newKey}`] || propertyConversion[newKey]
-					const newValue = converter ? converter(testCase.command[key]) : testCase.command[key]
-					lowerCommand[newKey2] = newValue
+					lowerCommand[newProp.name || newKey] = newProp.val
 				}
 
-				delete lowerCommand['test1']
-				delete lowerCommand['test2']
-				delete lowerCommand['test3']
-				delete lowerCommand['unknown']
+				// delete lowerCommand['test1']
+				// delete lowerCommand['test2']
+				// delete lowerCommand['test3']
+				// delete lowerCommand['unknown']
+
+				if (converter.customMutate) {
+					lowerCommand = converter.customMutate(lowerCommand)
+				}
 
 				expect(cmd.properties).toEqual(lowerCommand)
 			} else {
@@ -143,7 +250,7 @@ describe('Auto v8', () => {
 
 				// Otherwise ignore, as its not supported
 				// TODO - should they be ignored in here, or filtered in the generator project?
-				expect(false).toBeTruthy()
+				// expect(false).toBeTruthy()
 			}
 		})
 	}
