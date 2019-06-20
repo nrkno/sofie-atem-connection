@@ -320,8 +320,7 @@ const commandConverters: CommandTestConverterSet = {
 			'frameIndex': 'index'
 		},
 		propertyAliases: {
-			'filename': (val: any) => ({ val, name: 'fileName' }),
-			// 'hash': (v: string) => ({ val: Buffer.from(v, 'base64').toString('ascii') })
+			'filename': (val: any) => ({ val, name: 'fileName' })
 		}
 	},
 	'MPrp': {
