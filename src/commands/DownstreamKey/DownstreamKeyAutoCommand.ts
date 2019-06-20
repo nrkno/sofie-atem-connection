@@ -6,9 +6,9 @@ export class DownstreamKeyAutoCommand extends AbstractCommand {
 
 	properties: null
 
-	deserialize () {
-		// nothing
-	}
+	// deserialize () {
+	// 	// nothing
+	// }
 
 	serialize () {
 		const rawCommand = 'DDsA'

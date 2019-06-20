@@ -1,6 +1,6 @@
 import { CommandParser } from '../../lib/atemCommandParser'
 
-export type CommandTestConverterSet = { [key: string]: CommandTestConverter } 
+export type CommandTestConverterSet = { [key: string]: CommandTestConverter }
 export interface CommandTestConverter {
 	idAliases: { [key: string]: string }
 	propertyAliases: { [key: string]: (v: any) => { name?: string, val: any } }
@@ -27,7 +27,7 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 		delete (cmd as any).rawCommand
 		// console.log('ok', cmd)
 
-		const converter = commandConverters[name] || commandConverters['__DEFAULT__']
+		const converter = commandConverters[name]
 
 		if (converter) {
 			for (const key in cmd) {

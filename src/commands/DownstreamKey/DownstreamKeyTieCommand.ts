@@ -8,9 +8,9 @@ export class DownstreamKeyTieCommand extends AbstractCommand {
 		tie: boolean
 	}
 
-	deserialize () {
-		// nothing
-	}
+	// deserialize () {
+	// 	// nothing
+	// }
 
 	serialize () {
 		const rawCommand = 'CDsT'

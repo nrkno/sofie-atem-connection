@@ -72,7 +72,7 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 			maskLeft: Util.parseNumberBetween(rawCommand.readUInt16BE(52), 0, 52000),
 			maskRight: Util.parseNumberBetween(rawCommand.readUInt16BE(54), 0, 52000),
 
-			rate: Util.parseNumberBetween(rawCommand.readInt8(56), 0, 250)
+			rate: Util.parseNumberBetween(rawCommand.readUInt8(56), 0, 250)
 		}
 	}
 
