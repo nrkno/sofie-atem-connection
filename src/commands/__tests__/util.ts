@@ -41,7 +41,6 @@ export class CommandFactory {
 	}
 }
 
-
 export function runTestForCommand (commandParser: CommandParser, commandFactory: CommandFactory, commandConverters: CommandTestConverterSet, testCase: TestCase, allowUnknown?: boolean) {
 	const buffer = Buffer.from(testCase.bytes.replace(/-/g, ''), 'hex')
 	const length = buffer.readUInt16BE(0)
