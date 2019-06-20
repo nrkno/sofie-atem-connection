@@ -16,10 +16,12 @@ export class DataTransferManager {
 	readonly clip1Lock = new DataLock(1, this.commandQueue)
 	readonly clip2Lock = new DataLock(2, this.commandQueue)
 
+	readonly interval: NodeJS.Timer
+
 	transferIndex = 0
 
 	constructor (sendCommand: (command: Commands.AbstractCommand) => Promise<Commands.AbstractCommand>) {
-		setInterval(() => {
+		this.interval = setInterval(() => {
 			if (this.commandQueue.length <= 0) {
 				return
 			}
@@ -29,6 +31,10 @@ export class DataTransferManager {
 				sendCommand(command).catch(() => { /* discard error */ })
 			})
 		}, 0)
+	}
+
+	stop () {
+		clearInterval(this.interval)
 	}
 
 	handleCommand (command: Commands.AbstractCommand) {

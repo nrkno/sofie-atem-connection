@@ -23,6 +23,7 @@ import * as DT from './dataTransfer'
 import { Util } from './lib/atemUtil'
 import * as Enums from './enums'
 import { AudioChannel, AudioMasterChannel } from './state/audio'
+import exitHook = require('exit-hook')
 
 export interface AtemOptions {
 	address?: string,
@@ -64,6 +65,16 @@ export class Atem extends EventEmitter {
 		this.dataTransferManager = new DT.DataTransferManager(
 			(command: AbstractCommand) => this.sendCommand(command)
 		)
+
+		// When the parent process begins exiting, remove the listeners on our child process.
+		// We do this to avoid throwing an error when the child process exits
+		// as a natural part of the parent process exiting.
+		exitHook(() => {
+			if (this.dataTransferManager) {
+				this.dataTransferManager.stop()
+			}
+		})
+
 		this.socket.on('receivedStateChange', (command: AbstractCommand) => this._mutateState(command))
 		this.socket.on(Enums.IPCMessageType.CommandAcknowledged, ({ trackingId }: {trackingId: number}) => this._resolveCommand(trackingId))
 		this.socket.on(Enums.IPCMessageType.CommandTimeout, ({ trackingId }: {trackingId: number}) => this._rejectCommand(trackingId))
