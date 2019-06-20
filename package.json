@@ -108,6 +108,9 @@
     "tslib": "^1.9.0",
     "wavefile": "^8.4.4"
   },
+  "resolutions": {
+    "typedoc/**/marked": "^0.6.2"
+  },
   "standard-version": {
     "message": "chore(release): %s [skip ci]",
     "tagPrefix": ""
