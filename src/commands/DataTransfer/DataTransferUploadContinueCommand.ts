@@ -18,12 +18,12 @@ export class DataTransferUploadContinueCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		const buffer = Buffer.alloc(16)
+		const buffer = Buffer.alloc(12)
 		buffer.writeUInt16BE(this.properties.transferId, 0)
 		buffer[2] = 26 // https://github.com/LibAtem/LibAtem/blob/master/LibAtem/Commands/DataTransfer/DataTransferUploadContinueCommand.cs#L13
 		buffer.writeUInt16BE(this.properties.chunkSize, 6)
 		buffer.writeUInt16BE(this.properties.chunkCount, 8)
-		buffer[10] = 0x8b00
+		buffer.writeUInt16BE(0x8b00, 10)
 
 		return Buffer.concat([Buffer.from('FTCD', 'ascii'), buffer])
 	}

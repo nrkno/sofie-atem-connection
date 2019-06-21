@@ -12,6 +12,28 @@ export class MixEffectKeyChromaCommand extends AbstractCommand {
 		narrow: 1 << 4
 	}
 
+	rawName = 'CKCk'
+	mixEffect: number
+	upstreamKeyerId: number
+	properties: UpstreamKeyerChromaSettings
+
+	serialize () {
+		const buffer = Buffer.alloc(16)
+		buffer.writeUInt8(this.flag, 0)
+		buffer.writeUInt8(this.mixEffect, 1)
+		buffer.writeUInt8(this.upstreamKeyerId, 2)
+
+		buffer.writeUInt16BE(this.properties.hue, 4)
+		buffer.writeUInt16BE(this.properties.gain, 6)
+		buffer.writeUInt16BE(this.properties.ySuppress, 8)
+		buffer.writeUInt16BE(this.properties.lift, 10)
+		buffer[12] = this.properties.narrow ? 1 : 0
+
+		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
+	}
+}
+
+export class MixEffectKeyChromaUpdateCommand extends AbstractCommand {
 	rawName = 'KeCk'
 	mixEffect: number
 	upstreamKeyerId: number
@@ -27,21 +49,6 @@ export class MixEffectKeyChromaCommand extends AbstractCommand {
 			lift: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 1000),
 			narrow: rawCommand[10] === 1
 		}
-	}
-
-	serialize () {
-		const buffer = Buffer.alloc(16)
-		buffer.writeUInt8(this.flag, 0)
-		buffer.writeUInt8(this.mixEffect, 1)
-		buffer.writeUInt8(this.upstreamKeyerId, 2)
-
-		buffer.writeUInt16BE(this.properties.hue, 4)
-		buffer.writeUInt16BE(this.properties.gain, 6)
-		buffer.writeUInt16BE(this.properties.ySuppress, 8)
-		buffer.writeUInt16BE(this.properties.lift, 10)
-		buffer[12] = this.properties.narrow ? 1 : 0
-
-		return Buffer.concat([Buffer.from('CKCk', 'ascii'), buffer])
 	}
 
 	applyToState (state: AtemState) {

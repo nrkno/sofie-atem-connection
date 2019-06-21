@@ -17,7 +17,7 @@ export class TransitionWipeCommand extends AbstractCommand {
 		flipFlop: 1 << 9
 	}
 
-	rawName = 'TWpP'
+	rawName = 'CTWp'
 	mixEffect: number
 
 	properties: WipeTransitionSettings
@@ -26,27 +26,9 @@ export class TransitionWipeCommand extends AbstractCommand {
 		this._updateProps(newProps)
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
-			rate: Util.parseNumberBetween(rawCommand[1], 1, 250),
-			pattern: Util.parseEnum<Enums.Pattern>(rawCommand[2], Enums.Pattern),
-			borderWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 10000),
-			borderInput: rawCommand.readUInt16BE(6),
-			symmetry: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 10000),
-			borderSoftness: Util.parseNumberBetween(rawCommand.readUInt16BE(10), 0, 10000),
-			xPosition: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 10000),
-			yPosition: Util.parseNumberBetween(rawCommand.readUInt16BE(14), 0, 10000),
-			reverseDirection: rawCommand[16] === 1,
-			flipFlop: rawCommand[17] === 1
-		}
-	}
-
 	serialize () {
-		const rawCommand = 'CTWp'
-		const buffer = new Buffer(24)
-		buffer.fill(0)
-		Buffer.from(rawCommand).copy(buffer, 0)
+		const buffer = Buffer.alloc(24, 0)
+		Buffer.from(this.rawName).copy(buffer, 0)
 
 		buffer.writeUInt16BE(this.flag, 4)
 
@@ -65,6 +47,29 @@ export class TransitionWipeCommand extends AbstractCommand {
 		buffer.writeUInt8(this.properties.flipFlop ? 1 : 0, 23)
 
 		return buffer
+	}
+}
+
+export class TransitionWipeUpdateCommand extends AbstractCommand {
+	rawName = 'TWpP'
+	mixEffect: number
+
+	properties: WipeTransitionSettings
+
+	deserialize (rawCommand: Buffer) {
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		this.properties = {
+			rate: Util.parseNumberBetween(rawCommand[1], 1, 250),
+			pattern: Util.parseEnum<Enums.Pattern>(rawCommand[2], Enums.Pattern),
+			borderWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 10000),
+			borderInput: rawCommand.readUInt16BE(6),
+			symmetry: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 10000),
+			borderSoftness: Util.parseNumberBetween(rawCommand.readUInt16BE(10), 0, 10000),
+			xPosition: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 10000),
+			yPosition: Util.parseNumberBetween(rawCommand.readUInt16BE(14), 0, 10000),
+			reverseDirection: rawCommand[16] === 1,
+			flipFlop: rawCommand[17] === 1
+		}
 	}
 
 	applyToState (state: AtemState) {

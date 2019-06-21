@@ -19,7 +19,7 @@ export class TransitionDVECommand extends AbstractCommand {
 		flipFlop: 1 << 11
 	}
 
-	rawName = 'TDvP'
+	rawName = 'CTDv'
 	mixEffect: number
 
 	properties: DVETransitionSettings
@@ -28,30 +28,9 @@ export class TransitionDVECommand extends AbstractCommand {
 		this._updateProps(newProps)
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
-			rate: Util.parseNumberBetween(rawCommand[1], 1, 250),
-			logoRate: Util.parseNumberBetween(rawCommand[2], 1, 250),
-			style: Util.parseEnum<Enums.DVEEffect>(rawCommand[3], Enums.DVEEffect),
-			fillSource: rawCommand[4] << 8 | (rawCommand[5] & 0xff),
-			keySource: rawCommand[6] << 8 | (rawCommand[7] & 0xff),
-
-			enableKey: rawCommand[8] === 1,
-			preMultiplied: rawCommand[9] === 1,
-			clip: Util.parseNumberBetween(rawCommand.readUInt16BE(10), 0, 1000),
-			gain: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 1000),
-			invertKey: rawCommand[14] === 1,
-			reverse: rawCommand[15] === 1,
-			flipFlop: rawCommand[16] === 1
-		}
-	}
-
 	serialize () {
-		const rawCommand = 'CTDv'
-		const buffer = new Buffer(24)
-		buffer.fill(0)
-		Buffer.from(rawCommand).copy(buffer, 0)
+		const buffer = Buffer.alloc(24, 0)
+		Buffer.from(this.rawName).copy(buffer, 0)
 
 		buffer.writeUInt16BE(this.flag, 4)
 
@@ -72,6 +51,32 @@ export class TransitionDVECommand extends AbstractCommand {
 		buffer[22] = this.properties.flipFlop ? 1 : 0
 
 		return buffer
+	}
+}
+
+export class TransitionDVEUpdateCommand extends AbstractCommand {
+	rawName = 'TDvP'
+	mixEffect: number
+
+	properties: DVETransitionSettings
+
+	deserialize (rawCommand: Buffer) {
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		this.properties = {
+			rate: Util.parseNumberBetween(rawCommand[1], 1, 250),
+			logoRate: Util.parseNumberBetween(rawCommand[2], 1, 250),
+			style: Util.parseEnum<Enums.DVEEffect>(rawCommand[3], Enums.DVEEffect),
+			fillSource: rawCommand[4] << 8 | (rawCommand[5] & 0xff),
+			keySource: rawCommand[6] << 8 | (rawCommand[7] & 0xff),
+
+			enableKey: rawCommand[8] === 1,
+			preMultiplied: rawCommand[9] === 1,
+			clip: Util.parseNumberBetween(rawCommand.readUInt16BE(10), 0, 1000),
+			gain: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 1000),
+			invertKey: rawCommand[14] === 1,
+			reverse: rawCommand[15] === 1,
+			flipFlop: rawCommand[16] === 1
+		}
 	}
 
 	applyToState (state: AtemState) {

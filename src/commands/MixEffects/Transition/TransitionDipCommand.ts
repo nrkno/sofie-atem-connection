@@ -9,7 +9,7 @@ export class TransitionDipCommand extends AbstractCommand {
 		input: 1 << 1
 	}
 
-	rawName = 'TDpP'
+	rawName = 'CTDp'
 	mixEffect: number
 
 	properties: DipTransitionSettings
@@ -18,18 +18,9 @@ export class TransitionDipCommand extends AbstractCommand {
 		this._updateProps(newProps)
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
-			rate: Util.parseNumberBetween(rawCommand[1], 0, 250),
-			input: rawCommand[2] << 8 | (rawCommand[3] & 0xFF)
-		}
-	}
-
 	serialize () {
-		const rawCommand = 'CTDp'
 		return new Buffer([
-			...Buffer.from(rawCommand),
+			...Buffer.from(this.rawName),
 			this.flag,
 			this.mixEffect,
 			this.properties.rate,
@@ -39,6 +30,21 @@ export class TransitionDipCommand extends AbstractCommand {
 			0x00,
 			0x00
 		])
+	}
+}
+
+export class TransitionDipUpdateCommand extends AbstractCommand {
+	rawName = 'TDpP'
+	mixEffect: number
+
+	properties: DipTransitionSettings
+
+	deserialize (rawCommand: Buffer) {
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		this.properties = {
+			rate: Util.parseNumberBetween(rawCommand[1], 0, 250),
+			input: rawCommand[2] << 8 | (rawCommand[3] & 0xFF)
+		}
 	}
 
 	applyToState (state: AtemState) {

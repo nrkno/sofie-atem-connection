@@ -26,6 +26,21 @@ const commandConverters: CommandTestConverterSet = {
 			'inputSource': (v: number) => ({ val: v, name: 'source' })
 		}
 	},
+	'CSBP': {
+		idAliases: {
+			'boxId': 'index'
+		},
+		propertyAliases: {
+			'cropBottom': (v: number) => ({ val: Math.round(v * 1000) }),
+			'cropTop': (v: number) => ({ val: Math.round(v * 1000) }),
+			'cropLeft': (v: number) => ({ val: Math.round(v * 1000) }),
+			'cropRight': (v: number) => ({ val: Math.round(v * 1000) }),
+			'size': (v: number) => ({ val: Math.round(v * 1000) }),
+			'positionX': (v: number) => ({ val: Math.round(v * 100), name: 'x' }),
+			'positionY': (v: number) => ({ val: Math.round(v * 100), name: 'y' }),
+			'inputSource': (v: number) => ({ val: v, name: 'source' })
+		}
+	},
 	'SSrc': {
 		idAliases: {},
 		propertyAliases: {
@@ -42,6 +57,20 @@ const commandConverters: CommandTestConverterSet = {
 			'borderSoftnessOut': (v: number) => ({ val: v, name: 'borderOuterSoftness' }),
 			'artFillInput': (v: number) => ({ val: v, name: 'artFillSource' }),
 			'artKeyInput': (v: number) => ({ val: v, name: 'artCutSource' })
+		}
+	},
+	'CSSc': {
+		idAliases: {},
+		propertyAliases: {
+			'artClip': (v: number) => ({ val: Math.round(v * 10) }),
+			'artGain': (v: number) => ({ val: Math.round(v * 10) }),
+			'borderLightSourceAltitude': (v: number) => ({ val: Math.round(v) }),
+			'borderLightSourceDirection': (v: number) => ({ val: Math.round(v * 10) }),
+			'borderHue': (v: number) => ({ val: Math.round(v * 10) }),
+			'borderInnerWidth': (v: number) => ({ val: Math.round(v * 100) }),
+			'borderLuma': (v: number) => ({ val: Math.round(v * 10) }),
+			'borderOuterWidth': (v: number) => ({ val: Math.round(v * 100) }),
+			'borderSaturation': (v: number) => ({ val: Math.round(v * 10) })
 		}
 	},
 	'DskP': {
@@ -73,6 +102,16 @@ const commandConverters: CommandTestConverterSet = {
 			return obj
 		}
 	},
+	'CDsG': {
+		idAliases: {
+			'downstreamKeyerId': 'index'
+		},
+		propertyAliases: {
+			'clip': (v: number) => ({ val: Math.round(v * 10) }),
+			'gain': (v: number) => ({ val: Math.round(v * 10) }),
+			'preMultipliedKey': (v: number) => ({ val: v, name: 'preMultiply' })
+		}
+	},
 	'DskS': {
 		idAliases: {
 			'downstreamKeyerId': 'index'
@@ -80,6 +119,12 @@ const commandConverters: CommandTestConverterSet = {
 		propertyAliases: {}
 	},
 	'DskB': {
+		idAliases: {
+			'downstreamKeyerId': 'index'
+		},
+		propertyAliases: {}
+	},
+	'DDsA': {
 		idAliases: {
 			'downstreamKeyerId': 'index'
 		},
@@ -102,6 +147,34 @@ const commandConverters: CommandTestConverterSet = {
 			'downstreamKeyerId': 'index'
 		},
 		propertyAliases: {}
+	},
+	'CDsC': {
+		idAliases: {
+			'downstreamKeyerId': 'index'
+		},
+		propertyAliases: {
+			'source': (v: number) => ({ val: v, name: 'input' })
+		}
+	},
+	'CDsF': {
+		idAliases: {
+			'downstreamKeyerId': 'index'
+		},
+		propertyAliases: {
+			'source': (v: number) => ({ val: v, name: 'input' })
+		}
+	},
+	'CDsM': {
+		idAliases: {
+			'downstreamKeyerId': 'index'
+		},
+		propertyAliases: {
+			'maskEnabled': (val: any) => ({ val, name: 'enabled' }),
+			'maskLeft': (v: number) => ({ val: Math.round(v * 1000), name: 'left' }),
+			'maskRight': (v: number) => ({ val: Math.round(v * 1000), name: 'right' }),
+			'maskTop': (v: number) => ({ val: Math.round(v * 1000), name: 'top' }),
+			'maskBottom': (v: number) => ({ val: Math.round(v * 1000), name: 'bottom' })
+		}
 	},
 	'AMIP': {
 		idAliases: {
@@ -153,6 +226,22 @@ const commandConverters: CommandTestConverterSet = {
 			'upstreamKeyerId': 'keyerIndex'
 		},
 		propertyAliases: {
+			'pattern': (val: any) => ({ val, name: 'style' }),
+			'inverse': (val: any) => ({ val, name: 'invert' }),
+			'size': (v: number) => ({ val: Math.round(v * 100) }),
+			'softness': (v: number) => ({ val: Math.round(v * 100) }),
+			'symmetry': (v: number) => ({ val: Math.round(v * 100) }),
+			'xPosition': (v: number) => ({ val: Math.round(v * 10000), name: 'positionX' }),
+			'yPosition': (v: number) => ({ val: Math.round(v * 10000), name: 'positionY' })
+		}
+	},
+	'CKPt': {
+		idAliases: {
+			'mixEffect': 'mixEffectIndex',
+			'upstreamKeyerId': 'keyerIndex'
+		},
+		propertyAliases: {
+			'pattern': (val: any) => ({ val, name: 'style' }),
 			'inverse': (val: any) => ({ val, name: 'invert' }),
 			'size': (v: number) => ({ val: Math.round(v * 100) }),
 			'softness': (v: number) => ({ val: Math.round(v * 100) }),
@@ -173,6 +262,25 @@ const commandConverters: CommandTestConverterSet = {
 			'ySuppress': (v: number) => ({ val: Math.round(v * 10) })
 		}
 	},
+	'CKCk': {
+		idAliases: {
+			'mixEffect': 'mixEffectIndex',
+			'upstreamKeyerId': 'keyerIndex'
+		},
+		propertyAliases: {
+			'gain': (v: number) => ({ val: Math.round(v * 10) }),
+			'hue': (v: number) => ({ val: Math.round(v * 10) }),
+			'lift': (v: number) => ({ val: Math.round(v * 10) }),
+			'ySuppress': (v: number) => ({ val: Math.round(v * 10) })
+		}
+	},
+	'CKTp': {
+		idAliases: {
+			'mixEffect': 'mixEffectIndex',
+			'upstreamKeyerId': 'keyerIndex'
+		},
+		propertyAliases: {}
+	},
 	'KeOn': {
 		idAliases: {
 			'mixEffect': 'mixEffectIndex',
@@ -180,7 +288,31 @@ const commandConverters: CommandTestConverterSet = {
 		},
 		propertyAliases: {}
 	},
+	'CKOn': {
+		idAliases: {
+			'mixEffect': 'mixEffectIndex',
+			'upstreamKeyerId': 'keyerIndex'
+		},
+		propertyAliases: {}
+	},
+	'CKeF': {
+		idAliases: {
+			'mixEffect': 'mixEffectIndex',
+			'upstreamKeyerId': 'keyerIndex'
+		},
+		propertyAliases: {}
+	},
 	'KeLm': {
+		idAliases: {
+			'mixEffect': 'mixEffectIndex',
+			'upstreamKeyerId': 'keyerIndex'
+		},
+		propertyAliases: {
+			'gain': (v: number) => ({ val: Math.round(v * 10) }),
+			'clip': (v: number) => ({ val: Math.round(v * 10) })
+		}
+	},
+	'CKLm': {
 		idAliases: {
 			'mixEffect': 'mixEffectIndex',
 			'upstreamKeyerId': 'keyerIndex'
@@ -228,7 +360,59 @@ const commandConverters: CommandTestConverterSet = {
 			'maskBottom': (v: number) => ({ val: Math.round(v * 1000) })
 		}
 	},
+	'CKDV': {
+		idAliases: {
+			'mixEffect': 'mixEffectIndex',
+			'upstreamKeyerId': 'keyerIndex'
+		},
+		propertyAliases: {
+			'positionX': (v: number) => ({ val: Math.round(v * 1000) }),
+			'positionY': (v: number) => ({ val: Math.round(v * 1000) }),
+			'sizeX': (v: number) => ({ val: Math.round(v * 1000) }),
+			'sizeY': (v: number) => ({ val: Math.round(v * 1000) }),
+			'rotation': (v: number) => ({ val: Math.round(v * 1000) }), // TODO - this doesnt match KeDV
+			'borderHue': (v: number) => ({ val: Math.round(v * 10) }),
+			'borderInnerWidth': (v: number) => ({ val: Math.round(v * 100) }),
+			'borderLuma': (v: number) => ({ val: Math.round(v * 10) }),
+			'borderOuterWidth': (v: number) => ({ val: Math.round(v * 100) }),
+			'borderSaturation': (v: number) => ({ val: Math.round(v * 10) }),
+			'lightSourceDirection': (v: number) => ({ val: Math.round(v * 10) }),
+			'borderShadowEnabled': (val: any) => ({ val, name: 'shadowEnabled' }),
+			'maskLeft': (v: number) => ({ val: Math.round(v * 1000) }),
+			'maskRight': (v: number) => ({ val: Math.round(v * 1000) }),
+			'maskTop': (v: number) => ({ val: Math.round(v * 1000) }),
+			'maskBottom': (v: number) => ({ val: Math.round(v * 1000) })
+		}
+	},
+	'CKeC': {
+		idAliases: {
+			'mixEffect': 'mixEffectIndex',
+			'upstreamKeyerId': 'keyerIndex'
+		},
+		propertyAliases: {}
+	},
+	'CKMs': {
+		idAliases: {
+			'mixEffect': 'mixEffectIndex',
+			'upstreamKeyerId': 'keyerIndex'
+		},
+		propertyAliases: {
+			'maskLeft': (v: number) => ({ val: Math.round(v * 1000) }),
+			'maskRight': (v: number) => ({ val: Math.round(v * 1000) }),
+			'maskTop': (v: number) => ({ val: Math.round(v * 1000) }),
+			'maskBottom': (v: number) => ({ val: Math.round(v * 1000) })
+		}
+	},
 	'TDvP': {
+		idAliases: {
+			'mixEffect': 'index'
+		},
+		propertyAliases: {
+			'gain': (v: number) => ({ val: Math.round(v * 10) }),
+			'clip': (v: number) => ({ val: Math.round(v * 10) })
+		}
+	},
+	'CTDv': {
 		idAliases: {
 			'mixEffect': 'index'
 		},
@@ -246,7 +430,24 @@ const commandConverters: CommandTestConverterSet = {
 			'clip': (v: number) => ({ val: Math.round(v * 10) })
 		}
 	},
+	'CTSt': {
+		idAliases: {
+			'mixEffect': 'index'
+		},
+		propertyAliases: {
+			'gain': (v: number) => ({ val: Math.round(v * 10) }),
+			'clip': (v: number) => ({ val: Math.round(v * 10) })
+		}
+	},
 	'TrPr': {
+		idAliases: {
+			'mixEffect': 'index'
+		},
+		propertyAliases: {
+			'previewTransition': (val: any) => ({ val, name: 'preview' })
+		}
+	},
+	'CTPr': {
 		idAliases: {
 			'mixEffect': 'index'
 		},
@@ -260,7 +461,19 @@ const commandConverters: CommandTestConverterSet = {
 		},
 		propertyAliases: {}
 	},
+	'CTTp': {
+		idAliases: {
+			'mixEffect': 'index'
+		},
+		propertyAliases: {}
+	},
 	'TMxP': {
+		idAliases: {
+			'mixEffect': 'index'
+		},
+		propertyAliases: {}
+	},
+	'CTMx': {
 		idAliases: {
 			'mixEffect': 'index'
 		},
@@ -272,7 +485,25 @@ const commandConverters: CommandTestConverterSet = {
 		},
 		propertyAliases: {}
 	},
+	'CTDp': {
+		idAliases: {
+			'mixEffect': 'index'
+		},
+		propertyAliases: {}
+	},
 	'TWpP': {
+		idAliases: {
+			'mixEffect': 'index'
+		},
+		propertyAliases: {
+			'symmetry': (v: number) => ({ val: Math.round(v * 100) }),
+			'xPosition': (v: number) => ({ val: Math.round(v * 10000) }),
+			'yPosition': (v: number) => ({ val: Math.round(v * 10000) }),
+			'borderSoftness': (v: number) => ({ val: Math.round(v * 100) }),
+			'borderWidth': (v: number) => ({ val: Math.round(v * 100) })
+		}
+	},
+	'CTWp': {
 		idAliases: {
 			'mixEffect': 'index'
 		},
@@ -310,13 +541,31 @@ const commandConverters: CommandTestConverterSet = {
 		},
 		propertyAliases: {}
 	},
+	'CMvI': {
+		idAliases: {
+			'multiViewerId': 'multiviewIndex'
+		},
+		propertyAliases: {}
+	},
 	'VidM': {
 		idAliases: {},
 		propertyAliases: {
 			'videoMode': (val: any) => ({ val, name: 'mode' })
 		}
 	},
+	'CVdM': {
+		idAliases: {},
+		propertyAliases: {
+			'videoMode': (val: any) => ({ val, name: 'mode' })
+		}
+	},
 	'RCPS': {
+		idAliases: {
+			'mediaPlayerId': 'index'
+		},
+		propertyAliases: {}
+	},
+	'SCPS': {
 		idAliases: {
 			'mediaPlayerId': 'index'
 		},
@@ -331,6 +580,12 @@ const commandConverters: CommandTestConverterSet = {
 			obj.frames = []
 			return obj
 		}
+	},
+	'SMPC': {
+		idAliases: {
+			// 'mediaPool': 'index'
+		},
+		propertyAliases: {}
 	},
 	'MPfe': {
 		idAliases: {
@@ -353,13 +608,49 @@ const commandConverters: CommandTestConverterSet = {
 		},
 		propertyAliases: {}
 	},
+	'CPgI': {
+		idAliases: {
+			'mixEffect': 'index'
+		},
+		propertyAliases: {}
+	},
 	'PrvI': {
 		idAliases: {
 			'mixEffect': 'index'
 		},
 		propertyAliases: {}
 	},
+	'CPvI': {
+		idAliases: {
+			'mixEffect': 'index'
+		},
+		propertyAliases: {}
+	},
+	'DCut': {
+		idAliases: {
+			'mixEffect': 'index'
+		},
+		propertyAliases: {}
+	},
+	'DAut': {
+		idAliases: {
+			'mixEffect': 'index'
+		},
+		propertyAliases: {}
+	},
 	'FtbS': {
+		idAliases: {
+			'mixEffect': 'index'
+		},
+		propertyAliases: {}
+	},
+	'FtbC': {
+		idAliases: {
+			'mixEffect': 'index'
+		},
+		propertyAliases: {}
+	},
+	'FtbA': {
 		idAliases: {
 			'mixEffect': 'index'
 		},
@@ -400,6 +691,7 @@ describe('Commands v7.2', () => {
 			case 'AMMO':
 			case 'KKFP':
 			case 'TrPs':
+			case 'SMPC':
 				continue
 		}
 

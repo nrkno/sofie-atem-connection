@@ -16,7 +16,7 @@ export class TransitionStingerCommand extends AbstractCommand {
 		mixRate: 1 << 8
 	}
 
-	rawName = 'TStP'
+	rawName = 'CTSt'
 	mixEffect: number
 
 	properties: StingerTransitionSettings
@@ -25,28 +25,9 @@ export class TransitionStingerCommand extends AbstractCommand {
 		this._updateProps(newProps)
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
-			source: rawCommand[1],
-			preMultipliedKey: rawCommand[2] === 1,
-
-			clip: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 1000),
-			gain: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 1000),
-			invert: rawCommand[8] === 1,
-
-			preroll: rawCommand[10] << 8 | rawCommand[11],
-			clipDuration: rawCommand[12] << 8 | rawCommand[13],
-			triggerPoint: rawCommand[14] << 8 | rawCommand[15],
-			mixRate: rawCommand[16] << 8 | rawCommand[17]
-		}
-	}
-
 	serialize () {
-		const rawCommand = 'CTSt'
-		const buffer = new Buffer(24)
-		buffer.fill(0)
-		Buffer.from(rawCommand).copy(buffer, 0)
+		const buffer = Buffer.alloc(24, 0)
+		Buffer.from(this.rawName).copy(buffer, 0)
 
 		buffer.writeUInt16BE(this.flag, 4)
 
@@ -64,6 +45,30 @@ export class TransitionStingerCommand extends AbstractCommand {
 		buffer.writeUInt16BE(this.properties.mixRate, 22)
 
 		return buffer
+	}
+}
+
+export class TransitionStingerUpdateCommand extends AbstractCommand {
+	rawName = 'TStP'
+	mixEffect: number
+
+	properties: StingerTransitionSettings
+
+	deserialize (rawCommand: Buffer) {
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		this.properties = {
+			source: rawCommand[1],
+			preMultipliedKey: rawCommand[2] === 1,
+
+			clip: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 1000),
+			gain: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 1000),
+			invert: rawCommand[8] === 1,
+
+			preroll: rawCommand[10] << 8 | rawCommand[11],
+			clipDuration: rawCommand[12] << 8 | rawCommand[13],
+			triggerPoint: rawCommand[14] << 8 | rawCommand[15],
+			mixRate: rawCommand[16] << 8 | rawCommand[17]
+		}
 	}
 
 	applyToState (state: AtemState) {

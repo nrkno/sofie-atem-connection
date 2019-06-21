@@ -71,11 +71,27 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 					}
 				}
 
+				if (mutatedCommand.mask !== undefined) {
+					cmd.flag = mutatedCommand.mask
+					delete mutatedCommand.mask
+				}
+
 				cmd.properties = mutatedCommand
 
+				const hexStr = (buf: Buffer) => {
+					const str = buf.toString('hex')
+					let str2 = ''
+					for (let i = 0; i < str.length; i += 2) {
+						str2 += str[i + 0] + str[i + 1]
+						str2 += (i % 16 === 14) ? '\n' : '-'
+					}
+					return str2.substring(0, str2.length - 1)
+				}
+
 				const encodedBytes = cmd.serialize!()
+				// console.log(hexStr(buffer.slice(4)))
 				expect(length).toEqual(encodedBytes.length + 4)
-				expect(buffer.slice(4)).toEqual(encodedBytes)
+				expect(hexStr(buffer.slice(4))).toEqual(hexStr(encodedBytes))
 			})
 		}
 	}

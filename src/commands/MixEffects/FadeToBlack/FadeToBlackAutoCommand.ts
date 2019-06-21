@@ -1,7 +1,7 @@
 import AbstractCommand from '../../AbstractCommand'
 
 export class FadeToBlackAutoCommand extends AbstractCommand {
-	rawName = 'FtbP'
+	rawName = 'FtbA'
 	mixEffect: number
 
 	properties: {}
@@ -11,7 +11,7 @@ export class FadeToBlackAutoCommand extends AbstractCommand {
 		buffer.writeUInt8(this.mixEffect, 0)
 
 		return Buffer.concat([
-			Buffer.from('FtbA'),
+			Buffer.from(this.rawName),
 			buffer
 		])
 	}

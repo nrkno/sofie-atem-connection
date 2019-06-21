@@ -33,6 +33,54 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 		rate: 1 << 25
 	}
 
+	rawName = 'CKDV'
+	mixEffect: number
+	upstreamKeyerId: number
+	properties: UpstreamKeyerDVESettings
+
+	serialize () {
+		const buffer = Buffer.alloc(64)
+		buffer.writeUInt32BE(this.flag, 0)
+		buffer.writeUInt8(this.mixEffect, 4)
+		buffer.writeUInt8(this.upstreamKeyerId, 5)
+
+		buffer.writeUInt32BE(this.properties.sizeX, 8)
+		buffer.writeUInt32BE(this.properties.sizeY, 12)
+		buffer.writeInt32BE(this.properties.positionX, 16)
+		buffer.writeInt32BE(this.properties.positionY, 20)
+		buffer.writeInt32BE(this.properties.rotation, 24)
+
+		buffer[28] = this.properties.borderEnabled ? 1 : 0
+		buffer[29] = this.properties.shadowEnabled ? 1 : 0
+		buffer.writeUInt8(this.properties.borderBevel, 30)
+		buffer.writeUInt16BE(this.properties.borderOuterWidth, 32)
+		buffer.writeUInt16BE(this.properties.borderInnerWidth, 34)
+		buffer.writeUInt8(this.properties.borderOuterSoftness, 36)
+		buffer.writeUInt8(this.properties.borderInnerSoftness, 37)
+		buffer.writeUInt8(this.properties.borderBevelSoftness, 38)
+		buffer.writeUInt8(this.properties.borderBevelPosition, 39)
+		buffer.writeUInt8(this.properties.borderOpacity, 40)
+
+		buffer.writeUInt16BE(this.properties.borderHue, 42)
+		buffer.writeUInt16BE(this.properties.borderSaturation, 44)
+		buffer.writeUInt16BE(this.properties.borderLuma, 46)
+
+		buffer.writeUInt16BE(this.properties.lightSourceDirection, 48)
+		buffer.writeUInt8(this.properties.lightSourceAltitude, 50)
+
+		buffer[51] = this.properties.maskEnabled ? 1 : 0
+		buffer.writeUInt16BE(this.properties.maskTop, 52)
+		buffer.writeUInt16BE(this.properties.maskBottom, 54)
+		buffer.writeUInt16BE(this.properties.maskLeft, 56)
+		buffer.writeUInt16BE(this.properties.maskRight, 58)
+
+		buffer.writeUInt8(this.properties.rate, 60)
+
+		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
+	}
+}
+
+export class MixEffectKeyDVEUpdateCommand extends AbstractCommand {
 	rawName = 'KeDV'
 	mixEffect: number
 	upstreamKeyerId: number
@@ -74,47 +122,6 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 
 			rate: Util.parseNumberBetween(rawCommand.readUInt8(56), 0, 250)
 		}
-	}
-
-	serialize () {
-		const buffer = Buffer.alloc(64)
-		buffer.writeUInt32BE(this.flag, 0)
-		buffer.writeUInt8(this.mixEffect, 4)
-		buffer.writeUInt8(this.upstreamKeyerId, 5)
-
-		buffer.writeUInt32BE(this.properties.sizeX, 8)
-		buffer.writeUInt32BE(this.properties.sizeY, 12)
-		buffer.writeInt32BE(this.properties.positionX, 16)
-		buffer.writeInt32BE(this.properties.positionY, 20)
-		buffer.writeInt32BE(this.properties.rotation, 24)
-
-		buffer[28] = this.properties.borderEnabled ? 1 : 0
-		buffer[29] = this.properties.shadowEnabled ? 1 : 0
-		buffer.writeUInt8(this.properties.borderBevel, 30)
-		buffer.writeUInt16BE(this.properties.borderOuterWidth, 32)
-		buffer.writeUInt16BE(this.properties.borderInnerWidth, 34)
-		buffer.writeUInt8(this.properties.borderOuterSoftness, 36)
-		buffer.writeUInt8(this.properties.borderInnerSoftness, 37)
-		buffer.writeUInt8(this.properties.borderBevelSoftness, 38)
-		buffer.writeUInt8(this.properties.borderBevelPosition, 39)
-		buffer.writeUInt8(this.properties.borderOpacity, 40)
-
-		buffer.writeUInt16BE(this.properties.borderHue, 42)
-		buffer.writeUInt16BE(this.properties.borderSaturation, 44)
-		buffer.writeUInt16BE(this.properties.borderLuma, 46)
-
-		buffer.writeUInt16BE(this.properties.lightSourceDirection, 48)
-		buffer.writeUInt8(this.properties.lightSourceAltitude, 50)
-
-		buffer[51] = this.properties.maskEnabled ? 1 : 0
-		buffer.writeUInt16BE(this.properties.maskTop, 52)
-		buffer.writeUInt16BE(this.properties.maskBottom, 54)
-		buffer.writeUInt16BE(this.properties.maskLeft, 56)
-		buffer.writeUInt16BE(this.properties.maskRight, 58)
-
-		buffer.writeUInt8(this.properties.rate, 60)
-
-		return Buffer.concat([Buffer.from('CKDV', 'ascii'), buffer])
 	}
 
 	applyToState (state: AtemState) {

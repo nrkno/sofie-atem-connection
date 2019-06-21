@@ -12,7 +12,7 @@ export class DownstreamKeyCutSourceCommand extends AbstractCommand {
 		buffer[0] = this.downstreamKeyerId
 		buffer.writeUInt16BE(this.properties.input, 2)
 
-		return Buffer.concat([Buffer.from('CDsC', 'ascii'), buffer])
+		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
 	}
 
 	updateProps (newProps: { input: number }) {
