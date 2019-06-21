@@ -1,6 +1,4 @@
 import { CommandParser } from '../../lib/atemCommandParser'
-import AbstractCommand from '../AbstractCommand'
-import * as Commands from '..'
 
 export type CommandTestConverterSet = { [key: string]: CommandTestConverter }
 export interface CommandTestConverter {
@@ -15,89 +13,77 @@ export interface TestCase {
 	command: { [key: string]: any }
 }
 
-export class CommandFactory {
-	commands: {[key: string]: AbstractCommand} = {}
+export function runTestForCommand (commandParser: CommandParser, commandConverters: CommandTestConverterSet, i: number, testCase: TestCase, allowUnknown?: boolean) {
+	const cmd = commandParser.commandFromRawName(testCase.name)
+	if (!cmd && allowUnknown) return
 
-	constructor () {
-		for (const cmd in Commands) {
-			try {
-				const rawName = new (Commands as any)[cmd]().rawCommand
-				if (rawName) {
-					this.commands[rawName] = (Commands as any)[cmd]
+	let matchedCase = false
+	if (cmd) {
+		const buffer = Buffer.from(testCase.bytes.replace(/-/g, ''), 'hex')
+		const length = buffer.readUInt16BE(0)
+		const name = buffer.toString('ascii', 4, 8)
+
+		const converter = commandConverters[name]
+		let mutatedCommand: { [key: string]: any } = {}
+		for (const key in testCase.command) {
+			const newKey = key[0].toLowerCase() + key.substring(1)
+			const propConv = converter ? converter.propertyAliases[`${name}.${newKey}`] || converter.propertyAliases[newKey] : undefined
+			const newProp = propConv ? propConv(testCase.command[key]) : { val: testCase.command[key] }
+
+			mutatedCommand[newProp.name || newKey] = newProp.val
+		}
+
+		if (converter && converter.customMutate) {
+			mutatedCommand = converter.customMutate(mutatedCommand)
+		}
+
+		if (typeof cmd.deserialize === 'function') {
+			matchedCase = true
+			test(`Test #${i}: ${testCase.name} - Deserialize`, () => {
+				cmd.deserialize!(buffer.slice(0, length).slice(8))
+
+				delete cmd.flag // Anything deserialized will never have flags
+				delete cmd.rawName
+				delete (cmd as any).rawCommand
+
+				if (converter) {
+					for (const key in cmd) {
+						const newName = converter.idAliases[key]
+						if (cmd.hasOwnProperty(key) && newName) {
+							if (!cmd.properties) cmd.properties = {}
+							cmd.properties[newName] = (cmd as any)[key]
+						}
+					}
 				}
-			} catch (e) {
-				// wwwwhatever
-			}
+
+				expect(cmd.properties).toEqual(mutatedCommand)
+			})
 		}
-	}
 
-	commandFromRawName (name: string): AbstractCommand | undefined {
-		if (this.commands[name]) {
-			// we instantiate a class based on the raw command name
-			return new (this.commands[name] as any)()
-			// return Object.create((this.commands as any)[name]['prototype'])
-		}
-		return undefined
-	}
-}
-
-export function runTestForCommand (commandParser: CommandParser, commandFactory: CommandFactory, commandConverters: CommandTestConverterSet, testCase: TestCase, allowUnknown?: boolean) {
-	const buffer = Buffer.from(testCase.bytes.replace(/-/g, ''), 'hex')
-	const length = buffer.readUInt16BE(0)
-	const name = buffer.toString('ascii', 4, 8)
-
-	const converter = commandConverters[name]
-
-	let mutatedCommand: { [key: string]: any } = {}
-	for (const key in testCase.command) {
-		const newKey = key[0].toLowerCase() + key.substring(1)
-		const propConv = converter ? converter.propertyAliases[`${name}.${newKey}`] || converter.propertyAliases[newKey] : undefined
-		const newProp = propConv ? propConv(testCase.command[key]) : { val: testCase.command[key] }
-
-		mutatedCommand[newProp.name || newKey] = newProp.val
-	}
-
-	if (converter && converter.customMutate) {
-		mutatedCommand = converter.customMutate(mutatedCommand)
-	}
-
-	const cmd = commandParser.commandFromRawName(name)
-	const cmd2 = commandFactory.commandFromRawName(name)
-	if (cmd && typeof cmd.deserialize === 'function') {
-		cmd.deserialize(buffer.slice(0, length).slice(8))
-
-		delete cmd.flag // Anything deserialized will never have flags
-		delete cmd.rawName
-		delete (cmd as any).rawCommand
-
-		if (converter) {
-			for (const key in cmd) {
-				const newName = converter.idAliases[key]
-				if (cmd.hasOwnProperty(key) && newName) {
-					if (!cmd.properties) cmd.properties = {}
-					cmd.properties[newName] = (cmd as any)[key]
+		if (typeof cmd.serialize === 'function') {
+			matchedCase = true
+			test(`Test #${i}: ${testCase.name} - Serialize`, () => {
+				if (converter) {
+					for (const id of Object.keys(converter.idAliases)) {
+						const id2 = converter.idAliases[id];
+						(cmd as any)[id] = mutatedCommand[id2]
+						delete mutatedCommand[id2]
+					}
 				}
-			}
+
+				cmd.properties = mutatedCommand
+
+				const encodedBytes = cmd.serialize!()
+				expect(length).toEqual(encodedBytes.length + 4)
+				expect(buffer.slice(4)).toEqual(encodedBytes)
+			})
 		}
+	}
 
-		expect(cmd.properties).toEqual(mutatedCommand)
-	} else if (cmd2 && typeof cmd2.serialize === 'function') {
-		if (converter) {
-			for (const id of Object.keys(converter.idAliases)) {
-				const id2 = converter.idAliases[id];
-				(cmd2 as any)[id] = mutatedCommand[id2]
-				delete mutatedCommand[id2]
-			}
-		}
-
-		cmd2.properties = mutatedCommand
-
-		const encodedBytes = cmd2.serialize()
-		expect(length).toEqual(encodedBytes.length + 4)
-		expect(buffer.slice(4)).toEqual(encodedBytes)
-	} else {
-		// Otherwise ignore, as its not supported
-		// TODO - should they be ignored in here, or filtered in the generator project?
-		expect(allowUnknown).toBeTruthy()
+	if (!matchedCase) {
+		test(`Test #${i}: ${testCase.name} - Skip`, () => {
+			// Command should have either a serialize or deserialize
+			expect(false).toBeTruthy()
+		})
 	}
 }

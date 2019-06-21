@@ -1,5 +1,5 @@
 import { CommandParser } from '../../lib/atemCommandParser'
-import { TestCase, runTestForCommand, CommandTestConverterSet, CommandFactory } from './util'
+import { TestCase, runTestForCommand, CommandTestConverterSet } from './util'
 
 const TestCases = require('./data-v7.2.json') as TestCase[]
 
@@ -80,6 +80,24 @@ const commandConverters: CommandTestConverterSet = {
 		propertyAliases: {}
 	},
 	'DskB': {
+		idAliases: {
+			'downstreamKeyerId': 'index'
+		},
+		propertyAliases: {}
+	},
+	'CDsT': {
+		idAliases: {
+			'downstreamKeyerId': 'index'
+		},
+		propertyAliases: {}
+	},
+	'CDsR': {
+		idAliases: {
+			'downstreamKeyerId': 'index'
+		},
+		propertyAliases: {}
+	},
+	'CDsL': {
 		idAliases: {
 			'downstreamKeyerId': 'index'
 		},
@@ -369,27 +387,22 @@ const commandConverters: CommandTestConverterSet = {
 
 describe('Commands v7.2', () => {
 	const commandParser = new CommandParser()
-	const commandFactory = new CommandFactory()
 
 	// TODO - track which commands havent had a serialize/deserialize called and cause a failure on that, or is lack of test percentage good enough?
 	// TODO - some commands appear to not have very random data. Will some not work because of their c# implementation?
 
 	for (let i = 0; i < TestCases.length; i++) {
 		const testCase = TestCases[i]
-		test(`Test #${i}: ${testCase.name}`, () => {
-			// console.log(firstCase)
+		switch (testCase.name) {
+			// Temporarily ignore the failures
+			case 'AMIP':
+			case '_top':
+			case 'AMMO':
+			case 'KKFP':
+			case 'TrPs':
+				continue
+		}
 
-			switch (testCase.name) {
-				// Temporarily ignore the failures
-				case 'AMIP':
-				case '_top':
-				case 'AMMO':
-				case 'KKFP':
-				case 'TrPs':
-					return
-			}
-
-			runTestForCommand(commandParser, commandFactory, commandConverters, testCase, true)
-		})
+		runTestForCommand(commandParser, commandConverters, i, testCase, true)
 	}
 })
