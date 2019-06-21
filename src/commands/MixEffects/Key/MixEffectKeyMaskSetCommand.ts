@@ -27,6 +27,6 @@ export class MixEffectKeyMaskSetCommand extends AbstractCommand {
 		buffer.writeInt16BE(this.properties.maskLeft, 8)
 		buffer.writeInt16BE(this.properties.maskRight, 10)
 
-		return Buffer.concat([Buffer.from('CKMs', 'ascii'), buffer])
+		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
 	}
 }

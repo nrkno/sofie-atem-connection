@@ -12,7 +12,7 @@ export class DownstreamKeyFillSourceCommand extends AbstractCommand {
 		buffer[0] = this.downstreamKeyerId
 		buffer.writeUInt16BE(this.properties.input, 2)
 
-		return Buffer.concat([Buffer.from('CDsF', 'ascii'), buffer])
+		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
 	}
 
 	updateProps (newProps: { input: number }) {

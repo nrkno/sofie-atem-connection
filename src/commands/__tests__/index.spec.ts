@@ -185,6 +185,15 @@ const commandConverters: CommandTestConverterSet = {
 			'gain': (v: number) => ({ val: Math.round(v * 100) / 100 })
 		}
 	},
+	'CAMI': {
+		idAliases: {
+			'index': 'index'
+		},
+		propertyAliases: {
+			'balance': (v: number) => ({ val: Math.round(v * 10) / 10 }),
+			'gain': (v: number) => ({ val: Math.round(v * 100) / 100 })
+		}
+	},
 	'AMMO': {
 		idAliases: {},
 		propertyAliases: {
@@ -211,6 +220,12 @@ const commandConverters: CommandTestConverterSet = {
 			delete obj['unknown']
 			delete obj['test3']
 			return obj
+		}
+	},
+	'FTFD': {
+		idAliases: {},
+		propertyAliases: {
+			'filename': (val: any) => ({ val, name: 'fileName' })
 		}
 	},
 	'Powr': {
@@ -681,6 +696,12 @@ const commandConverters: CommandTestConverterSet = {
 			'auxBus': 'id'
 		},
 		propertyAliases: {}
+	},
+	'CInL': {
+		idAliases: {
+			'inputId': 'id'
+		},
+		propertyAliases: {}
 	}
 }
 
@@ -701,6 +722,10 @@ describe('Commands v7.2', () => {
 			case 'TrPs':
 			case 'CTPs':
 			case 'SMPC':
+			case 'CAMI':
+			case 'FTSD':
+			case 'FTSU':
+			case 'MPSS':
 				continue
 		}
 

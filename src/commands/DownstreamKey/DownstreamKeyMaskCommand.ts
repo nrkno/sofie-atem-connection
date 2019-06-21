@@ -25,7 +25,7 @@ export class DownstreamKeyMaskCommand extends AbstractCommand {
 		buffer.writeInt16BE(this.properties.left, 8)
 		buffer.writeInt16BE(this.properties.right, 10)
 
-		return Buffer.concat([Buffer.from('CDsM', 'ascii'), buffer])
+		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
 	}
 
 	updateProps (newProps: Partial<DownstreamKeyerMask>) {

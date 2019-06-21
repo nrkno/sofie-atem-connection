@@ -21,6 +21,6 @@ export class MixEffectKeyTypeSetCommand extends AbstractCommand {
 		buffer.writeUInt8(this.properties.keyType, 3)
 		buffer[4] = this.properties.flyEnabled ? 1 : 0
 
-		return Buffer.concat([Buffer.from('CKTp', 'ascii'), buffer])
+		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
 	}
 }

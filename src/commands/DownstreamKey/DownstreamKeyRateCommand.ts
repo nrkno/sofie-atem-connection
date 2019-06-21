@@ -12,7 +12,7 @@ export class DownstreamKeyRateCommand extends AbstractCommand {
 		buffer[0] = this.downstreamKeyerId
 		buffer[1] = this.properties.rate
 
-		return Buffer.concat([Buffer.from('CDsR', 'ascii'), buffer])
+		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
 	}
 
 	updateProps (newProps: { rate: number }) {

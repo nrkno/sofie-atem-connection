@@ -22,7 +22,7 @@ export class DownstreamKeyGeneralCommand extends AbstractCommand {
 		buffer.writeInt16BE(this.properties.gain, 6)
 		buffer[8] = this.properties.invert ? 1 : 0
 
-		return Buffer.concat([Buffer.from('CDsG', 'ascii'), buffer])
+		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
 	}
 
 	updateProps (newProps: Partial<DownstreamKeyerGeneral>) {

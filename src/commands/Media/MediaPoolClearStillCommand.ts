@@ -8,9 +8,8 @@ export class MediaPoolClearStillCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		const rawCommand = 'CSTL'
 		return new Buffer([
-			...Buffer.from(rawCommand),
+			...Buffer.from(this.rawName),
 			this.properties.index,
 			0x00,
 			0x00,

@@ -16,6 +16,6 @@ export class MediaPoolSetClipCommand extends AbstractCommand {
 		buffer.write(this.properties.name, 2, 44)
 		buffer.writeUInt16BE(this.properties.frames, 66)
 
-		return Buffer.concat([ Buffer.from('SMPC', 'ascii'), buffer ])
+		return Buffer.concat([ Buffer.from(this.rawName, 'ascii'), buffer ])
 	}
 }
