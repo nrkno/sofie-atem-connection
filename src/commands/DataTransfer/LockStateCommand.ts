@@ -12,8 +12,7 @@ export class LockStateCommand extends AbstractCommand {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt16BE(this.properties.index, 0)
 		buffer[2] = this.properties.locked ? 1 : 0
-
-		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
+		return buffer
 	}
 }
 

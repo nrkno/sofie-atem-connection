@@ -62,7 +62,7 @@ export class SuperSourcePropertiesCommand extends AbstractCommand {
 		buffer.writeUInt16BE(this.properties.borderLightSourceDirection, 32)
 		buffer.writeUInt8(this.properties.borderLightSourceAltitude, 34)
 
-		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
+		return buffer
 	}
 }
 

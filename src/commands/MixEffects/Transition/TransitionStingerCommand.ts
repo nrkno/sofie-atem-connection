@@ -26,23 +26,21 @@ export class TransitionStingerCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		const buffer = Buffer.alloc(24, 0)
-		Buffer.from(this.rawName).copy(buffer, 0)
+		const buffer = Buffer.alloc(20)
+		buffer.writeUInt16BE(this.flag, 0)
 
-		buffer.writeUInt16BE(this.flag, 4)
+		buffer.writeUInt8(this.mixEffect, 2)
+		buffer.writeUInt8(this.properties.source, 3)
+		buffer.writeUInt8(this.properties.preMultipliedKey ? 1 : 0, 4)
 
-		buffer.writeUInt8(this.mixEffect, 6)
-		buffer.writeUInt8(this.properties.source, 7)
-		buffer.writeUInt8(this.properties.preMultipliedKey ? 1 : 0, 8)
+		buffer.writeUInt16BE(this.properties.clip, 6)
+		buffer.writeUInt16BE(this.properties.gain, 8)
+		buffer.writeUInt8(this.properties.invert ? 1 : 0, 10)
 
-		buffer.writeUInt16BE(this.properties.clip, 10)
-		buffer.writeUInt16BE(this.properties.gain, 12)
-		buffer.writeUInt8(this.properties.invert ? 1 : 0, 14)
-
-		buffer.writeUInt16BE(this.properties.preroll, 16)
-		buffer.writeUInt16BE(this.properties.clipDuration, 18)
-		buffer.writeUInt16BE(this.properties.triggerPoint, 20)
-		buffer.writeUInt16BE(this.properties.mixRate, 22)
+		buffer.writeUInt16BE(this.properties.preroll, 12)
+		buffer.writeUInt16BE(this.properties.clipDuration, 14)
+		buffer.writeUInt16BE(this.properties.triggerPoint, 16)
+		buffer.writeUInt16BE(this.properties.mixRate, 18)
 
 		return buffer
 	}

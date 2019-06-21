@@ -21,17 +21,14 @@ export class MediaPlayerStatusCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		return new Buffer([
-			...Buffer.from(this.rawName),
-			this.flag,
-			this.mediaPlayerId,
-			this.properties.playing,
-			this.properties.loop,
-			this.properties.atBeginning,
-			0x00,
-			this.properties.clipFrame >> 8,
-			this.properties.clipFrame & 0xFF
-		])
+		const buffer = Buffer.alloc(8)
+		buffer.writeUInt8(this.flag, 0)
+		buffer.writeUInt8(this.mediaPlayerId, 1)
+		buffer.writeUInt8(this.properties.playing ? 1 : 0, 2)
+		buffer.writeUInt8(this.properties.loop ? 1 : 0, 3)
+		buffer.writeUInt8(this.properties.atBeginning ? 1 : 0, 4)
+		buffer.writeUInt16BE(this.properties.clipFrame, 6)
+		return buffer
 	}
 }
 

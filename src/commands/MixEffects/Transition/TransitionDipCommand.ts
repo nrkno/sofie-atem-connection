@@ -19,17 +19,12 @@ export class TransitionDipCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		return new Buffer([
-			...Buffer.from(this.rawName),
-			this.flag,
-			this.mixEffect,
-			this.properties.rate,
-			0x00,
-			this.properties.input >> 8,
-			this.properties.input & 0xFF,
-			0x00,
-			0x00
-		])
+		const buffer = Buffer.alloc(8)
+		buffer.writeUInt8(this.flag, 0)
+		buffer.writeUInt8(this.mixEffect, 1)
+		buffer.writeUInt8(this.properties.rate, 2)
+		buffer.writeUInt16BE(this.properties.input, 4)
+		return buffer
 	}
 }
 

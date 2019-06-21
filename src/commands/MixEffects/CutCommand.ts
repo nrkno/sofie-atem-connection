@@ -7,6 +7,8 @@ export class CutCommand extends AbstractCommand {
 	properties: null
 
 	serialize () {
-		return new Buffer([...Buffer.from(this.rawName), this.mixEffect, 0x00, 0x00, 0x00])
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(this.mixEffect, 0)
+		return buffer
 	}
 }

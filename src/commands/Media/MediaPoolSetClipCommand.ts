@@ -10,12 +10,11 @@ export class MediaPoolSetClipCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		const buffer = new Buffer(68)
+		const buffer = Buffer.alloc(68)
 		buffer.writeUInt8(3, 0)
 		buffer.writeUInt8(this.properties.index, 1)
 		buffer.write(this.properties.name, 2, 44)
 		buffer.writeUInt16BE(this.properties.frames, 66)
-
-		return Buffer.concat([ Buffer.from(this.rawName, 'ascii'), buffer ])
+		return buffer
 	}
 }

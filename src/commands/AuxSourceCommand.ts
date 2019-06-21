@@ -10,13 +10,11 @@ export class AuxSourceCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		return new Buffer([
-			...Buffer.from(this.rawName),
-			0x01, // 'Set source' flags
-			this.auxBus,
-			this.properties.source >> 8,
-			this.properties.source & 0xFF
-		])
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(0x01, 0)
+		buffer.writeUInt8(this.auxBus, 1)
+		buffer.writeUInt16BE(this.properties.source, 2)
+		return buffer
 	}
 }
 

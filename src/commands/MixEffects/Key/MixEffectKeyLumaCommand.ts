@@ -22,12 +22,12 @@ export class MixEffectKeyLumaCommand extends AbstractCommand {
 		buffer.writeUInt8(this.mixEffect, 1)
 		buffer.writeUInt8(this.upstreamKeyerId, 2)
 
-		buffer[3] = this.properties.preMultiplied ? 1 : 0
+		buffer.writeUInt8(this.properties.preMultiplied ? 1 : 0, 3)
 		buffer.writeUInt16BE(this.properties.clip, 4)
 		buffer.writeUInt16BE(this.properties.gain, 6)
-		buffer[8] = this.properties.invert ? 1 : 0
+		buffer.writeUInt8(this.properties.invert ? 1 : 0, 8)
 
-		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
+		return buffer
 	}
 }
 

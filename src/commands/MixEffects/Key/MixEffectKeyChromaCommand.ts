@@ -27,9 +27,9 @@ export class MixEffectKeyChromaCommand extends AbstractCommand {
 		buffer.writeUInt16BE(this.properties.gain, 6)
 		buffer.writeUInt16BE(this.properties.ySuppress, 8)
 		buffer.writeUInt16BE(this.properties.lift, 10)
-		buffer[12] = this.properties.narrow ? 1 : 0
+		buffer.writeUInt8(this.properties.narrow ? 1 : 0, 12)
 
-		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
+		return buffer
 	}
 }
 

@@ -9,10 +9,6 @@ export class FadeToBlackAutoCommand extends AbstractCommand {
 	serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
-
-		return Buffer.concat([
-			Buffer.from(this.rawName),
-			buffer
-		])
+		return buffer
 	}
 }

@@ -76,7 +76,7 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 
 		buffer.writeUInt8(this.properties.rate, 60)
 
-		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
+		return buffer
 	}
 }
 

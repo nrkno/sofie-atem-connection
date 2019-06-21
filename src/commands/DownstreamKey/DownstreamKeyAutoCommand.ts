@@ -7,10 +7,8 @@ export class DownstreamKeyAutoCommand extends AbstractCommand {
 	properties: null
 
 	serialize () {
-		return new Buffer([
-			...Buffer.from(this.rawName),
-			this.downstreamKeyerId,
-			0x00, 0x00, 0x00
-		])
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(this.downstreamKeyerId, 0)
+		return buffer
 	}
 }

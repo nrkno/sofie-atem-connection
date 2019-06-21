@@ -12,9 +12,8 @@ export class VideoModeCommand extends AbstractCommand {
 
 	serialize () {
 		const buffer = Buffer.alloc(4)
-		buffer[0] = this.properties.mode
-
-		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
+		buffer.writeUInt8(this.properties.mode, 0)
+		return buffer
 	}
 }
 

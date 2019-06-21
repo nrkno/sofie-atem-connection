@@ -31,9 +31,9 @@ export class MixEffectKeyPatternCommand extends AbstractCommand {
 		buffer.writeUInt16BE(this.properties.softness, 8)
 		buffer.writeUInt16BE(this.properties.positionX, 10)
 		buffer.writeUInt16BE(this.properties.positionY, 12)
-		buffer[14] = this.properties.invert ? 1 : 0
+		buffer.writeUInt8(this.properties.invert ? 1 : 0, 14)
 
-		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
+		return buffer
 	}
 }
 

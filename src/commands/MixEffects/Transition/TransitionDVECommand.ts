@@ -29,26 +29,24 @@ export class TransitionDVECommand extends AbstractCommand {
 	}
 
 	serialize () {
-		const buffer = Buffer.alloc(24, 0)
-		Buffer.from(this.rawName).copy(buffer, 0)
+		const buffer = Buffer.alloc(20, 0)
+		buffer.writeUInt16BE(this.flag, 0)
 
-		buffer.writeUInt16BE(this.flag, 4)
+		buffer.writeUInt8(this.mixEffect, 2)
+		buffer.writeUInt8(this.properties.rate, 3)
+		buffer.writeUInt8(this.properties.logoRate, 4)
+		buffer.writeUInt8(this.properties.style, 5)
 
-		buffer.writeUInt8(this.mixEffect, 6)
-		buffer.writeUInt8(this.properties.rate, 7)
-		buffer.writeUInt8(this.properties.logoRate, 8)
-		buffer.writeUInt8(this.properties.style, 9)
+		buffer.writeUInt16BE(this.properties.fillSource, 6)
+		buffer.writeUInt16BE(this.properties.keySource, 8)
 
-		buffer.writeUInt16BE(this.properties.fillSource, 10)
-		buffer.writeUInt16BE(this.properties.keySource, 12)
-
-		buffer[14] = this.properties.enableKey ? 1 : 0
-		buffer[15] = this.properties.preMultiplied ? 1 : 0
-		buffer.writeUInt16BE(this.properties.clip, 16)
-		buffer.writeUInt16BE(this.properties.gain, 18)
-		buffer[20] = this.properties.invertKey ? 1 : 0
-		buffer[21] = this.properties.reverse ? 1 : 0
-		buffer[22] = this.properties.flipFlop ? 1 : 0
+		buffer.writeUInt8(this.properties.enableKey ? 1 : 0, 10)
+		buffer.writeUInt8(this.properties.preMultiplied ? 1 : 0, 11)
+		buffer.writeUInt16BE(this.properties.clip, 12)
+		buffer.writeUInt16BE(this.properties.gain, 14)
+		buffer.writeUInt8(this.properties.invertKey ? 1 : 0, 16)
+		buffer.writeUInt8(this.properties.reverse ? 1 : 0, 17)
+		buffer.writeUInt8(this.properties.flipFlop ? 1 : 0, 18)
 
 		return buffer
 	}

@@ -19,14 +19,12 @@ export class TransitionPropertiesCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		const buffer = Buffer.alloc(8, 0)
-		Buffer.from(this.rawName).copy(buffer, 0)
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(this.flag, 0)
 
-		buffer.writeUInt8(this.flag, 4)
-
-		buffer.writeUInt8(this.mixEffect, 5)
-		buffer.writeUInt8(this.properties.style, 6)
-		buffer.writeUInt8(this.properties.selection, 7)
+		buffer.writeUInt8(this.mixEffect, 1)
+		buffer.writeUInt8(this.properties.style, 2)
+		buffer.writeUInt8(this.properties.selection, 3)
 
 		return buffer
 	}

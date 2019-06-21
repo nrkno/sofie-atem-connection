@@ -15,11 +15,7 @@ export class FadeToBlackRateCommand extends AbstractCommand {
 		buffer.writeUInt8(1, 0)
 		buffer.writeUInt8(this.mixEffect, 1)
 		buffer.writeUInt8(this.properties.rate, 2)
-
-		return Buffer.concat([
-			Buffer.from(this.rawName),
-			buffer
-		])
+		return buffer
 	}
 }
 

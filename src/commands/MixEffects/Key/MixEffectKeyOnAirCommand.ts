@@ -14,8 +14,8 @@ export class MixEffectKeyOnAirCommand extends AbstractCommand {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		buffer.writeUInt8(this.upstreamKeyerId, 1)
-		buffer[2] = this.properties.onAir ? 1 : 0
-		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
+		buffer.writeUInt8(this.properties.onAir ? 1 : 0, 2)
+		return buffer
 	}
 }
 

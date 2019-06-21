@@ -13,13 +13,10 @@ export class TransitionPositionCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		return new Buffer([
-			...Buffer.from(this.rawName),
-			this.mixEffect,
-			0x00,
-			this.properties.handlePosition >> 8,
-			this.properties.handlePosition & 0xff
-		])
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(this.mixEffect, 0)
+		buffer.writeUInt16BE(this.properties.handlePosition, 2)
+		return buffer
 	}
 }
 

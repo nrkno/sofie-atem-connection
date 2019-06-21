@@ -27,7 +27,7 @@ export class InputPropertiesCommand extends AbstractCommand {
 		buffer.write(this.properties.longName || '', 4)
 		buffer.write(this.properties.shortName || '', 24)
 		buffer.writeUInt16BE(this.properties.externalPortType, 28)
-		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
+		return buffer
 	}
 }
 

@@ -27,24 +27,22 @@ export class TransitionWipeCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		const buffer = Buffer.alloc(24, 0)
-		Buffer.from(this.rawName).copy(buffer, 0)
+		const buffer = Buffer.alloc(20)
+		buffer.writeUInt16BE(this.flag, 0)
 
-		buffer.writeUInt16BE(this.flag, 4)
+		buffer.writeUInt8(this.mixEffect, 2)
+		buffer.writeUInt8(this.properties.rate, 3)
+		buffer.writeUInt8(this.properties.pattern, 4)
 
-		buffer.writeUInt8(this.mixEffect, 6)
-		buffer.writeUInt8(this.properties.rate, 7)
-		buffer.writeUInt8(this.properties.pattern, 8)
+		buffer.writeUInt16BE(this.properties.borderWidth, 6)
+		buffer.writeUInt16BE(this.properties.borderInput, 8)
+		buffer.writeUInt16BE(this.properties.symmetry, 10)
 
-		buffer.writeUInt16BE(this.properties.borderWidth, 10)
-		buffer.writeUInt16BE(this.properties.borderInput, 12)
-		buffer.writeUInt16BE(this.properties.symmetry, 14)
-
-		buffer.writeUInt16BE(this.properties.borderSoftness, 16)
-		buffer.writeUInt16BE(this.properties.xPosition, 18)
-		buffer.writeUInt16BE(this.properties.yPosition, 20)
-		buffer.writeUInt8(this.properties.reverseDirection ? 1 : 0, 22)
-		buffer.writeUInt8(this.properties.flipFlop ? 1 : 0, 23)
+		buffer.writeUInt16BE(this.properties.borderSoftness, 12)
+		buffer.writeUInt16BE(this.properties.xPosition, 14)
+		buffer.writeUInt16BE(this.properties.yPosition, 16)
+		buffer.writeUInt8(this.properties.reverseDirection ? 1 : 0, 18)
+		buffer.writeUInt8(this.properties.flipFlop ? 1 : 0, 19)
 
 		return buffer
 	}

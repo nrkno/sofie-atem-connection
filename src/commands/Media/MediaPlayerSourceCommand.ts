@@ -19,17 +19,13 @@ export class MediaPlayerSourceCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		return new Buffer([
-			...Buffer.from(this.rawName),
-			this.flag,
-			this.mediaPlayerId,
-			this.properties.sourceType,
-			this.properties.stillIndex,
-			this.properties.clipIndex,
-			0x00,
-			0x00,
-			0x00
-		])
+		const buffer = Buffer.alloc(8)
+		buffer.writeUInt8(this.flag, 0)
+		buffer.writeUInt8(this.mediaPlayerId, 1)
+		buffer.writeUInt8(this.properties.sourceType, 2)
+		buffer.writeUInt8(this.properties.stillIndex, 3)
+		buffer.writeUInt8(this.properties.clipIndex, 4)
+		return buffer
 	}
 }
 

@@ -17,6 +17,6 @@ export class DataTransferFileDescriptionCommand extends AbstractCommand {
 		if (this.properties.description) buffer.write(this.properties.description, 66, 128)
 		Buffer.from(this.properties.fileHash, 'base64').copy(buffer, 194, 0, 16)
 
-		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
+		return buffer
 	}
 }

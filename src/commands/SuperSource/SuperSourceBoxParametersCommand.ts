@@ -39,7 +39,7 @@ export class SuperSourceBoxParametersCommand extends AbstractCommand {
 		buffer.writeUInt16BE(this.properties.cropBottom, 16)
 		buffer.writeUInt16BE(this.properties.cropLeft, 18)
 		buffer.writeUInt16BE(this.properties.cropRight, 20)
-		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
+		return buffer
 	}
 }
 

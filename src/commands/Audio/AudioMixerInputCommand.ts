@@ -22,11 +22,7 @@ export class AudioMixerInputCommand extends AbstractCommand {
 		buffer.writeUInt8(this.properties.mixOption || 0, 4)
 		buffer.writeUInt16BE(Util.DecibelToUInt16BE(this.properties.gain || 0), 6)
 		buffer.writeInt16BE(Util.BalanceToInt(this.properties.balance || 0), 8)
-
-		return Buffer.concat([
-			Buffer.from(this.rawName, 'ascii'),
-			buffer
-		])
+		return buffer
 	}
 }
 

@@ -9,11 +9,9 @@ export class DownstreamKeyTieCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		return new Buffer([
-			...Buffer.from(this.rawName),
-			this.downstreamKeyerId,
-			this.properties.tie,
-			0x00, 0x00
-		])
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(this.downstreamKeyerId, 0)
+		buffer.writeUInt8(this.properties.tie ? 1 : 0, 1)
+		return buffer
 	}
 }

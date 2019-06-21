@@ -14,12 +14,10 @@ export class TransitionMixCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		return new Buffer([
-			...Buffer.from(this.rawName),
-			this.mixEffect,
-			this.properties.rate,
-			0x00, 0x00
-		])
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(this.mixEffect, 0)
+		buffer.writeUInt8(this.properties.rate, 1)
+		return buffer
 	}
 }
 

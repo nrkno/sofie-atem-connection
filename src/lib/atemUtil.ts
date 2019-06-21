@@ -127,7 +127,7 @@ export namespace Util {
 		const KBoKRi = KB / KRi * HalfCbCrRange
 		const KGoKRi = KG / KRi * HalfCbCrRange
 
-		const buffer = new Buffer(width * height * 4)
+		const buffer = Buffer.alloc(width * height * 4)
 		let i = 0
 		while (i < width * height * 4) {
 			const r1 = data[i + 0]
@@ -194,7 +194,7 @@ export namespace Util {
 		}
 
 		const buffer = Buffer.from(wav.data.samples)
-		const buffer2 = new Buffer(buffer.length)
+		const buffer2 = Buffer.alloc(buffer.length)
 		for (let i = 0; i < buffer.length; i += 3) {
 			// 24bit samples, change endian
 			buffer2[i] = buffer[i + 2]

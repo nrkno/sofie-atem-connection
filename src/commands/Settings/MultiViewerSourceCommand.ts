@@ -14,13 +14,11 @@ export class MultiViewerSourceCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		return new Buffer([
-			...Buffer.from(this.rawName),
-			this.multiViewerId,
-			this.properties.windowIndex,
-			this.properties.source >> 8,
-			this.properties.source & 0xFF
-		])
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(this.multiViewerId, 0)
+		buffer.writeUInt8(this.properties.windowIndex, 1)
+		buffer.writeUInt16BE(this.properties.source, 2)
+		return buffer
 	}
 }
 

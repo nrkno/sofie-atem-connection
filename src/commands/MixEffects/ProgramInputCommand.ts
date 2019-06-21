@@ -11,12 +11,10 @@ export class ProgramInputCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		return new Buffer([
-			this.mixEffect,
-			0x00,
-			this.properties.source >> 8,
-			this.properties.source & 0xFF
-		])
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(this.mixEffect, 0)
+		buffer.writeUInt16BE(this.properties.source, 2)
+		return buffer
 	}
 }
 
