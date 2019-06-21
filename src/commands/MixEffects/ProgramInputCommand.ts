@@ -12,7 +12,6 @@ export class ProgramInputCommand extends AbstractCommand {
 
 	serialize () {
 		return new Buffer([
-			...Buffer.from(this.rawName),
 			this.mixEffect,
 			0x00,
 			this.properties.source >> 8,

@@ -90,8 +90,8 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 
 				const encodedBytes = cmd.serialize!()
 				// console.log(hexStr(buffer.slice(4)))
-				expect(length).toEqual(encodedBytes.length + 4)
-				expect(hexStr(buffer.slice(4))).toEqual(hexStr(encodedBytes))
+				expect(length).toEqual(encodedBytes.length + 8)
+				expect(hexStr(buffer.slice(8))).toEqual(hexStr(encodedBytes))
 			})
 		}
 	}
