@@ -523,6 +523,14 @@ const commandConverters: CommandTestConverterSet = {
 			'handlePosition': (v: number) => ({ val: Math.round(v * 10000) })
 		}
 	},
+	'CTPs': {
+		idAliases: {
+			'mixEffect': 'index'
+		},
+		propertyAliases: {
+			'handlePosition': (v: number) => ({ val: Math.round(v * 10000) })
+		}
+	},
 	'MRPr': {
 		idAliases: {},
 		propertyAliases: {
@@ -691,6 +699,7 @@ describe('Commands v7.2', () => {
 			case 'AMMO':
 			case 'KKFP':
 			case 'TrPs':
+			case 'CTPs':
 			case 'SMPC':
 				continue
 		}

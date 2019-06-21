@@ -1,5 +1,4 @@
 import AbstractCommand from '../AbstractCommand'
-// import { Util } from '../..'
 
 export class AutoTransitionCommand extends AbstractCommand {
 	rawName = 'DAut'
@@ -7,16 +6,7 @@ export class AutoTransitionCommand extends AbstractCommand {
 
 	properties: null
 
-	// deserialize (rawCommand: Buffer) {
-	// 	this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-	// }
-
 	serialize () {
-		const rawCommand = 'DAut'
-		return new Buffer([...Buffer.from(rawCommand), this.mixEffect, 0x00, 0x00, 0x00])
-	}
-
-	applyToState () {
-		// nothing
+		return new Buffer([...Buffer.from(this.rawName), this.mixEffect, 0x00, 0x00, 0x00])
 	}
 }

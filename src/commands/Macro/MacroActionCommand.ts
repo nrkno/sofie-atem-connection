@@ -2,20 +2,15 @@ import AbstractCommand from '../AbstractCommand'
 import { MacroAction } from '../../enums'
 
 export class MacroActionCommand extends AbstractCommand {
-	rawName = 'MAct' // this seems unnecessary.
+	rawName = 'MAct'
 	index: number
 
 	properties: {
 		action: MacroAction
 	}
 
-	deserialize () {
-		//
-	}
-
 	serialize () {
-		const rawCommand = 'MAct'
-		const buffer = new Buffer([...Buffer.from(rawCommand), 0x00, 0x00, this.properties.action, 0x00])
+		const buffer = new Buffer([...Buffer.from(this.rawName), 0x00, 0x00, this.properties.action, 0x00])
 		switch (this.properties.action) {
 			case MacroAction.Run :
 			case MacroAction.Delete :
@@ -33,9 +28,5 @@ export class MacroActionCommand extends AbstractCommand {
 				break
 		}
 		return buffer
-	}
-
-	applyToState () {
-		//
 	}
 }

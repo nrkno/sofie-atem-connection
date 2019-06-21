@@ -8,21 +8,12 @@ export class DownstreamKeyOnAirCommand extends AbstractCommand {
 		onAir: boolean
 	}
 
-	// deserialize () {
-	// 	// nothing
-	// }
-
 	serialize () {
-		const rawCommand = 'CDsL'
 		return new Buffer([
-			...Buffer.from(rawCommand),
+			...Buffer.from(this.rawName),
 			this.downstreamKeyerId,
 			this.properties.onAir,
 			0x00, 0x00
 		])
-	}
-
-	applyToState () {
-		// nothing
 	}
 }
