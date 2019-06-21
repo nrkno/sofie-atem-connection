@@ -10,7 +10,9 @@ export class CommandParser {
 			try {
 				const cmdConstructor = (Commands as any)[cmd] as CommandConstructor
 				const rawName = new cmdConstructor().rawName
-				this.commands[rawName] = cmdConstructor
+				if (rawName) {
+					this.commands[rawName] = cmdConstructor
+				}
 			} catch (e) {
 				// wwwwhatever
 			}

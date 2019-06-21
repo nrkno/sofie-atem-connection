@@ -731,4 +731,12 @@ describe('Commands v7.2', () => {
 
 		runTestForCommand(commandParser, commandConverters, i, testCase, true)
 	}
+
+	test('Ensure all commands tested', () => {
+		// Verify that all commands were tested
+		const knownNames = Object.keys(commandParser.commands).sort()
+		const testNames = Array.from(new Set(TestCases.map(c => c.name))).filter(n => knownNames.indexOf(n) !== -1).sort()
+
+		expect(testNames).toEqual(knownNames)
+	})
 })
