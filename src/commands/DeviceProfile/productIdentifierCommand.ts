@@ -13,7 +13,7 @@ export class ProductIdentifierCommand extends AbstractCommand {
 
 	deserialize (rawCommand: Buffer) {
 		this.properties = {
-			deviceName: Util.bufToNullTerminatedString(rawCommand, 0, 32),
+			deviceName: Util.bufToNullTerminatedString(rawCommand, 0, 40),
 			model: Util.parseEnum<Enums.Model>(rawCommand[40], Enums.Model)
 		}
 	}
