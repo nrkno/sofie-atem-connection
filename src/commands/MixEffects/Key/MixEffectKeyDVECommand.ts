@@ -90,8 +90,10 @@ export class MixEffectKeyDVEUpdateCommand extends AbstractCommand {
 		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		this.upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
 		this.properties = {
-			sizeX: Util.parseNumberBetween(rawCommand.readUInt32BE(4), 0, 99990),
-			sizeY: Util.parseNumberBetween(rawCommand.readUInt32BE(8), 0, 99990),
+			// Note: these are higher than the ui shows, but are within the range the atem can be set to
+			sizeX: Util.parseNumberBetween(rawCommand.readUInt32BE(4), 0, Math.pow(2, 32) - 1),
+			sizeY: Util.parseNumberBetween(rawCommand.readUInt32BE(8), 0, Math.pow(2, 32) - 1),
+
 			positionX: Util.parseNumberBetween(rawCommand.readInt32BE(12), -1000 * 1000, 1000 * 1000),
 			positionY: Util.parseNumberBetween(rawCommand.readInt32BE(16), -1000 * 1000, 1000 * 1000),
 			rotation: Util.parseNumberBetween(rawCommand.readInt32BE(20), -332230, 332230),

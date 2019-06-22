@@ -15,8 +15,10 @@ export class MixEffectKeyFlyKeyframeGetCommand extends AbstractCommand {
 		this.properties = {
 			keyFrameId: Util.parseNumberBetween(rawCommand[2], 1, 2),
 
-			sizeX: Util.parseNumberBetween(rawCommand.readUInt32BE(4), 0, 99990),
-			sizeY: Util.parseNumberBetween(rawCommand.readUInt32BE(8), 0, 99990),
+			// Note: these are higher than the ui shows, but are within the range the atem can be set to
+			sizeX: Util.parseNumberBetween(rawCommand.readUInt32BE(4), 0, Math.pow(2, 32) - 1),
+			sizeY: Util.parseNumberBetween(rawCommand.readUInt32BE(8), 0, Math.pow(2, 32) - 1),
+
 			positionX: Util.parseNumberBetween(rawCommand.readInt32BE(12), -1000 * 1000, 1000 * 1000),
 			positionY: Util.parseNumberBetween(rawCommand.readInt32BE(16), -1000 * 1000, 1000 * 1000),
 			rotation: Util.parseNumberBetween(rawCommand.readInt32BE(20), -332230, 332230),
