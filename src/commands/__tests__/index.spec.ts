@@ -793,7 +793,6 @@ describe('Commands v7.2', () => {
 		const testCase = TestCases[i]
 		switch (testCase.name) {
 			// Temporarily ignore the failures
-			case '_pin':
 			case 'AMMO':
 			case 'KKFP': // LibAtem incorrectly(?) uses doubles
 			case 'CAMI': // floating point errors I think

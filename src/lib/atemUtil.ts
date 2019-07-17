@@ -30,7 +30,7 @@ export namespace Util {
 	}
 
 	export function parseEnum<G> (value: G, type: any): G {
-		if (!type[value]) throw Error('Value is not a valid option in enum')
+		if (!type[value]) throw Error(`Value ${value} is not a valid option in enum`)
 		return value
 	}
 

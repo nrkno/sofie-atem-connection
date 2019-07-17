@@ -1,4 +1,5 @@
 export enum Model {
+	Unknown = 0x00,
 	TVS = 0x01,
 	OneME = 0x02,
 	TwoME = 0x03,
