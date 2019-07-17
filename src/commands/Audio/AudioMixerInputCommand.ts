@@ -36,9 +36,9 @@ export class AudioMixerInputUpdateCommand extends AbstractCommand {
 	deserialize (rawCommand: Buffer) {
 		this.index = rawCommand.readUInt16BE(0)
 		this.properties = {
-			sourceType: rawCommand.readInt8(2),
-			portType: rawCommand.readInt8(7),
-			mixOption: rawCommand.readInt8(8),
+			sourceType: rawCommand.readUInt8(2),
+			portType: rawCommand.readUInt8(7),
+			mixOption: rawCommand.readUInt8(8),
 			gain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(10)),
 			balance: Util.IntToBalance(rawCommand.readInt16BE(12))
 		}
