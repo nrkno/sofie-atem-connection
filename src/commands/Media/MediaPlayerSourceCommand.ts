@@ -23,8 +23,8 @@ export class MediaPlayerSourceCommand extends AbstractCommand {
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mediaPlayerId, 1)
 		buffer.writeUInt8(this.properties.sourceType, 2)
-		buffer.writeUInt8(this.properties.stillIndex, 3)
-		buffer.writeUInt8(this.properties.clipIndex, 4)
+		buffer.writeUInt8(this.properties.clipIndex, 3)
+		buffer.writeUInt8(this.properties.stillIndex, 4)
 		return buffer
 	}
 }
@@ -39,8 +39,8 @@ export class MediaPlayerSourceUpdateCommand extends AbstractCommand {
 		this.mediaPlayerId = rawCommand[0]
 		this.properties = {
 			sourceType: rawCommand[1],
-			stillIndex: rawCommand[2],
-			clipIndex: rawCommand[3]
+			clipIndex: rawCommand[2],
+			stillIndex: rawCommand[3]
 		}
 	}
 
