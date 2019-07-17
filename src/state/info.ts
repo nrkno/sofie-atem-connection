@@ -17,6 +17,8 @@ export interface AtemCapabilites {
 	readonly DVEs: number
 	readonly stingers: number
 	readonly hasSuperSources: boolean
+	readonly superSources: number
+	readonly talkbackOverSDI: number
 }
 
 export class DeviceInfo {

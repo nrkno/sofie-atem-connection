@@ -216,7 +216,13 @@ const commandConverters: CommandTestConverterSet = {
 			'hyperDecks': (val: any) => ({ val, name: 'maxHyperdecks' }),
 			'mixEffectBlocks': (val: any) => ({ val, name: 'MEs' }),
 			'serialPort': (val: any) => ({ val, name: 'serialPorts' }),
-			'videoSources': (val: any) => ({ val, name: 'sources' })
+			'videoSources': (val: any) => ({ val, name: 'sources' }),
+			'superSource': (val: any) => ({ val, name: 'superSources' }),
+			'talkbackOverSDI': () => ({ val: 0 }) // @todo: should be fixed in atem-connection
+		},
+		customMutate: (obj: any) => {
+			obj.hasSuperSources = obj.superSources !== 0
+			return obj
 		}
 	},
 	'FTCD': {
@@ -745,7 +751,7 @@ describe('Commands v7.2', () => {
 		const testCase = TestCases[i]
 		switch (testCase.name) {
 			// Temporarily ignore the failures
-			case '_top':
+			// case '_top':
 			case '_pin':
 			case 'AMMO':
 			case 'KKFP': //
