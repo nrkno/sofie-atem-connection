@@ -730,6 +730,48 @@ const commandConverters: CommandTestConverterSet = {
 			obj.size = obj.body.length
 			return obj
 		}
+	},
+	'KKFP': {
+		idAliases: {
+			'keyerIndex': 'upstreamKeyerId',
+			'mixEffectIndex': 'mixEffect'
+		},
+		propertyAliases: {
+			'bevelPosition': (val: any) => ({ val, name: 'borderBevelPosition' }),
+			'bevelSoftness': (val: any) => ({ val, name: 'borderBevelSoftness' }),
+			'innerSoftness': (val: any) => ({ val, name: 'borderInnerSoftness' }),
+			'innerWidth': (val: any) => ({ val, name: 'borderInnerWidth' }),
+			'keyFrame': (val: any) => ({ val, name: 'keyFrameId' }),
+			'outerSoftness': (val: any) => ({ val, name: 'borderOuterSoftness' }),
+			'outerWidth': (val: any) => ({ val, name: 'borderOuterWidth' }),
+			'xPosition': (val: any) => ({ val, name: 'positionX' }),
+			'xSize': (val: any) => ({ val, name: 'sizeX' }),
+			'yPosition': (val: any) => ({ val, name: 'positionY' }),
+			'ySize': (val: any) => ({ val, name: 'sizeY' })
+		}
+	},
+	'MPCE': {
+		idAliases: {
+			'mediaPlayerId': 'index'
+		},
+		propertyAliases: {},
+		customMutate: (obj: any) => {
+			obj.clipIndex = 0
+			obj.stillIndex = 0
+			if (obj.sourceType === 1) {
+				obj.stillIndex = obj.sourceIndex
+			} else {
+				obj.clipIndex = obj.sourceIndex
+			}
+			delete obj.sourceIndex
+			return obj
+		}
+	},
+	'MPSS': {
+		idAliases: {
+			'mediaPlayerId': 'index'
+		},
+		propertyAliases: {}
 	}
 }
 
@@ -751,15 +793,12 @@ describe('Commands v7.2', () => {
 		const testCase = TestCases[i]
 		switch (testCase.name) {
 			// Temporarily ignore the failures
-			// case '_top':
 			case '_pin':
 			case 'AMMO':
-			case 'KKFP': //
-			case 'CAMI':
-			case 'AMIP':
-			case 'FTSU': // Extra props
-			case 'MPCE': // Differing props
-			case 'MPSS':
+			case 'KKFP': // LibAtem incorrectly(?) uses doubles
+			case 'CAMI': // floating point errors I think
+			case 'AMIP': // floating point errors I think
+			case 'FTSU': // Unkown props getting overwritten by generator: https://github.com/LibAtem/LibAtem/blob/master/LibAtem/Commands/DataTransfer/DataTransferDownloadRequestCommand.cs
 			case 'TDpP': // Range validation errors
 				continue
 		}
