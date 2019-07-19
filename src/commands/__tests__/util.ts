@@ -40,7 +40,7 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 		if (typeof cmd.deserialize === 'function') {
 			matchedCase = true
 			test(`Test #${i}: ${testCase.name} - Deserialize`, () => {
-				cmd.deserialize!(buffer.slice(0, length).slice(8))
+				cmd.deserialize!(buffer.slice(0, length).slice(8), commandParser.version)
 
 				delete cmd.flag // Anything deserialized will never have flags
 				delete cmd.rawName
@@ -88,7 +88,7 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 					return str2.substring(0, str2.length - 1)
 				}
 
-				const encodedBytes = cmd.serialize!()
+				const encodedBytes = cmd.serialize!(commandParser.version)
 				// console.log(hexStr(buffer.slice(4)))
 				expect(length).toEqual(encodedBytes.length + 8)
 				expect(hexStr(buffer.slice(8))).toEqual(hexStr(encodedBytes))

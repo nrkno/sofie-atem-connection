@@ -10,6 +10,12 @@ export enum Model {
 	TVSHD = 0x08
 }
 
+export enum ProtocolVersion {
+	V7_2 = 0x00020016, // 2.22 // TODO - verify this is correct
+	V8_0 = 0x0002001C, // 2.28
+	V8_0_1 = 0x0002001D // 2.29
+}
+
 export enum TransitionStyle {
 	MIX = 0x00,
 	DIP = 0x01,

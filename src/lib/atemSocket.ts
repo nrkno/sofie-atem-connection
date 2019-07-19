@@ -6,6 +6,7 @@ import AbstractCommand from '../commands/AbstractCommand'
 import { IPCMessageType } from '../enums'
 import exitHook = require('exit-hook')
 import { Util } from './atemUtil'
+import { VersionCommand } from '../commands'
 
 export class AtemSocket extends EventEmitter {
 	private _debug = false
@@ -79,7 +80,7 @@ export class AtemSocket extends EventEmitter {
 			return Promise.reject(new Error('Command is not serializable'))
 		}
 
-		const payload = command.serialize()
+		const payload = command.serialize(this._commandParser.version)
 		const fullPayload = Buffer.alloc(payload.length + 8, 0)
 		fullPayload.writeUInt16BE(fullPayload.length, 0)
 		fullPayload.write(command.rawName, 4, 4)
@@ -179,9 +180,16 @@ export class AtemSocket extends EventEmitter {
 		const cmd = this._commandParser.commandFromRawName(name)
 		if (cmd && typeof cmd.deserialize === 'function') {
 			try {
-				cmd.deserialize(buffer.slice(0, length).slice(8))
+				cmd.deserialize(buffer.slice(0, length).slice(8), this._commandParser.version)
 				cmd.packetId = packetId || -1
-				this.emit('receivedStateChange', cmd)
+
+				if (name === '_ver') { // init started
+					const verCmd = cmd as VersionCommand
+					this._commandParser.version = verCmd.properties.version
+					this.emit('initStart', cmd)
+				} else {
+					this.emit('receivedStateChange', cmd)
+				}
 			} catch (e) {
 				this.emit('error', e)
 			}

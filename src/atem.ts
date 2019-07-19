@@ -14,7 +14,8 @@ import {
 	SuperSourceBox,
 	TransitionProperties,
 	WipeTransitionSettings,
-	SuperSourceProperties
+	SuperSourceProperties,
+	SuperSourceBorder
 } from './state/video'
 import * as USK from './state/video/upstreamKeyers'
 import { InputChannel } from './state/input'
@@ -81,6 +82,10 @@ export class Atem extends EventEmitter {
 		this.socket.on('error', (e) => this.emit('error', e))
 		this.socket.on('connect', () => this.emit('connected'))
 		this.socket.on('disconnect', () => this.emit('disconnected'))
+		this.socket.on('initStart', (command: Commands.VersionCommand) => {
+			// this.state = Util.createStateObjectFromVersionCommand(command)
+			this._mutateState(command)
+		})
 	}
 
 	connect (address: string, port?: number) {
@@ -296,10 +301,17 @@ export class Atem extends EventEmitter {
 	}
 
 	setMultiViewerSource (newProps: Partial<MultiViewerSourceState>, mv = 0) {
-		const command = new Commands.MultiViewerSourceCommand()
-		command.multiViewerId = mv
-		command.updateProps(newProps)
-		return this.sendCommand(command)
+		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
+			const command = new Commands.MultiViewerSourceV8Command()
+			command.multiViewerId = mv
+			command.updateProps(newProps)
+			return this.sendCommand(command)
+		} else {
+			const command = new Commands.MultiViewerSourceCommand()
+			command.multiViewerId = mv
+			command.updateProps(newProps)
+			return this.sendCommand(command)
+		}
 	}
 
 	setMediaPlayerSettings (newProps: Partial<MediaPlayer>, player = 0) {
@@ -334,17 +346,38 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	setSuperSourceBoxSettings (newProps: Partial<SuperSourceBox>, box = 0) {
+	setSuperSourceBoxSettings (ssrcId: number, newProps: Partial<SuperSourceBox>, box = 0) {
 		const command = new Commands.SuperSourceBoxParametersCommand()
+		command.ssrcId = ssrcId
 		command.boxId = box
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setSuperSourceProperties (newProps: Partial<SuperSourceProperties>) {
-		const command = new Commands.SuperSourcePropertiesCommand()
-		command.updateProps(newProps)
-		return this.sendCommand(command)
+	setSuperSourceProperties (ssrcId: number, newProps: Partial<SuperSourceProperties>) {
+		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
+			const command = new Commands.SuperSourcePropertiesV8Command()
+			command.ssrcId = ssrcId
+			command.updateProps(newProps)
+			return this.sendCommand(command)
+		} else {
+			const command = new Commands.SuperSourcePropertiesCommand()
+			command.updateProps(newProps)
+			return this.sendCommand(command)
+		}
+	}
+
+	setSuperSourceBorder (ssrcId: number, newProps: Partial<SuperSourceBorder>) {
+		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
+			const command = new Commands.SuperSourceBorderCommand()
+			command.ssrcId = ssrcId
+			command.updateProps(newProps)
+			return this.sendCommand(command)
+		} else {
+			const command = new Commands.SuperSourcePropertiesCommand()
+			command.updateProps(newProps)
+			return this.sendCommand(command)
+		}
 	}
 
 	setInputSettings (newProps: Partial<InputChannel>, input = 0) {
@@ -497,16 +530,25 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	private _mutateState (command: AbstractCommand) {
-		if (typeof command.applyToState === 'function') {
-			command.applyToState(this.state)
-			this.emit('stateChanged', this.state, command)
+	private _mutateState (origCommand: AbstractCommand) {
+		let commands = [ origCommand ]
+		if (typeof origCommand.convertToLatestVersion === 'function') {
+			// This conversion means the user does not have to think about the old versions.
+			// Instead we convert it to the new types, and pretend it was that all along.
+			commands = origCommand.convertToLatestVersion()
 		}
-		for (const commandName in DataTransferCommands) {
-			if (command.constructor.name === commandName) {
-				this.dataTransferManager.handleCommand(command)
+
+		commands.forEach(command => {
+			if (typeof command.applyToState === 'function') {
+				command.applyToState(this.state)
+				this.emit('stateChanged', this.state, command)
 			}
-		}
+			for (const commandName in DataTransferCommands) {
+				if (command.constructor.name === commandName) {
+					this.dataTransferManager.handleCommand(command)
+				}
+			}
+		})
 	}
 
 	private _resolveCommand (trackingId: number) {

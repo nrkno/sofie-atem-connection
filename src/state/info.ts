@@ -1,4 +1,4 @@
-import { Model } from '../enums'
+import { Model, ProtocolVersion } from '../enums'
 
 export interface VersionProps {
 	readonly major: number
@@ -22,7 +22,7 @@ export interface AtemCapabilites {
 }
 
 export class DeviceInfo {
-	apiVersion: VersionProps
+	apiVersion: ProtocolVersion
 	capabilities: AtemCapabilites
 	model: Model
 	productIdentifier: string
