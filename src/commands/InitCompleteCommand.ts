@@ -10,5 +10,6 @@ export class InitCompleteCommand extends AbstractCommand {
 
 	applyToState () {
 		//
+		return `info`
 	}
 }

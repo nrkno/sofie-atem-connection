@@ -189,25 +189,19 @@ export class SuperSourcePropertiesUpdateCommand extends AbstractCommand {
 		}
 	}
 
-	convertToLatestVersion () {
-		const propsCmd = new SuperSourcePropertiesUpdateV8Command()
-		propsCmd.properties = this.properties.properties
-
-		const borderCmd = new SuperSourceBorderUpdateCommand()
-		borderCmd.properties = this.properties.border
-
-		return [ propsCmd, borderCmd ]
+	applyToState (state: AtemState) {
+		const supersource = state.video.getSuperSource(0)
+		supersource.properties = {
+			...this.properties.properties
+		}
+		supersource.border = {
+			...this.properties.border
+		}
+		return [
+			`video.superSources.0.properties`,
+			`video.superSources.0.border`
+		]
 	}
-
-	// applyToState (state: AtemState) {
-	// 	const supersource = state.video.getSuperSource(0)
-	// 	supersource.properties = {
-	// 		...this.properties.properties
-	// 	}
-	// 	supersource.border = {
-	// 		...this.properties.border
-	// 	}
-	// }
 }
 
 export class SuperSourcePropertiesUpdateV8Command extends AbstractCommand {
@@ -235,6 +229,7 @@ export class SuperSourcePropertiesUpdateV8Command extends AbstractCommand {
 		supersource.properties = {
 			...this.properties
 		}
+		return `video.superSources.${this.ssrcId}.properties`
 	}
 }
 
@@ -269,5 +264,6 @@ export class SuperSourceBorderUpdateCommand extends AbstractCommand {
 		supersource.border = {
 			...this.properties
 		}
+		return `video.superSources.${this.ssrcId}.border`
 	}
 }

@@ -25,6 +25,7 @@ import { Util } from './lib/atemUtil'
 import * as Enums from './enums'
 import { AudioChannel, AudioMasterChannel } from './state/audio'
 import exitHook = require('exit-hook')
+import { isArray } from 'util'
 
 export interface AtemOptions {
 	address?: string,
@@ -46,6 +47,11 @@ export class Atem extends EventEmitter {
 	private dataTransferManager: DT.DataTransferManager
 	private _log: (...args: any[]) => void
 	private _sentQueue: {[packetId: string]: AbstractCommand } = {}
+
+	on: ((event: 'error', listener: (message: any) => void) => this) &
+		((event: 'connected', listener: () => void) => this) &
+		((event: 'disconnected', listener: () => void) => this) &
+		((event: 'stateChanged', listener: (state: AtemState, path: string) => void) => this)
 
 	constructor (options?: AtemOptions) {
 		super()
@@ -301,17 +307,10 @@ export class Atem extends EventEmitter {
 	}
 
 	setMultiViewerSource (newProps: Partial<MultiViewerSourceState>, mv = 0) {
-		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
-			const command = new Commands.MultiViewerSourceV8Command()
-			command.multiViewerId = mv
-			command.updateProps(newProps)
-			return this.sendCommand(command)
-		} else {
-			const command = new Commands.MultiViewerSourceCommand()
-			command.multiViewerId = mv
-			command.updateProps(newProps)
-			return this.sendCommand(command)
-		}
+		const command = new Commands.MultiViewerSourceCommand()
+		command.multiViewerId = mv
+		command.updateProps(newProps)
+		return this.sendCommand(command)
 	}
 
 	setMediaPlayerSettings (newProps: Partial<MediaPlayer>, player = 0) {
@@ -530,25 +529,19 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	private _mutateState (origCommand: AbstractCommand) {
-		let commands = [ origCommand ]
-		if (typeof origCommand.convertToLatestVersion === 'function') {
-			// This conversion means the user does not have to think about the old versions.
-			// Instead we convert it to the new types, and pretend it was that all along.
-			commands = origCommand.convertToLatestVersion()
+	private _mutateState (command: AbstractCommand) {
+		if (typeof command.applyToState === 'function') {
+			let changePaths = command.applyToState(this.state)
+			if (!isArray(changePaths)) {
+				changePaths = [ changePaths ]
+			}
+			changePaths.forEach(path => this.emit('stateChanged', this.state, path))
 		}
-
-		commands.forEach(command => {
-			if (typeof command.applyToState === 'function') {
-				command.applyToState(this.state)
-				this.emit('stateChanged', this.state, command)
+		for (const commandName in DataTransferCommands) {
+			if (command.constructor.name === commandName) {
+				this.dataTransferManager.handleCommand(command)
 			}
-			for (const commandName in DataTransferCommands) {
-				if (command.constructor.name === commandName) {
-					this.dataTransferManager.handleCommand(command)
-				}
-			}
-		})
+		}
 	}
 
 	private _resolveCommand (trackingId: number) {

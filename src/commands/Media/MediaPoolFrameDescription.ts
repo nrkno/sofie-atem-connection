@@ -23,8 +23,11 @@ export class MediaPoolFrameDescriptionCommand extends AbstractCommand {
 	applyToState (state: AtemState) {
 		if (this.mediaPool === 0) {
 			state.media.stillPool[this.frameIndex] = this.properties
+			return `media.stillPool.${this.frameIndex}`
 		} else if (this.mediaPool < 3) {
 			state.media.clipPool[this.mediaPool - 1].frames[this.frameIndex] = this.properties
+			return `media.clipPool.${this.mediaPool - 1}.${this.frameIndex}`
 		}
+		return `media`
 	}
 }

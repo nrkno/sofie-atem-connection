@@ -20,5 +20,6 @@ export class SuperSourceConfigCommand extends AbstractCommand {
 			...state.info,
 			...this.properties
 		}
+		return `info`
 	}
 }

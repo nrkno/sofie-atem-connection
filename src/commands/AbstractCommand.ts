@@ -16,8 +16,7 @@ export default abstract class AbstractCommand {
 	deserialize? (rawCommand: Buffer, version: ProtocolVersion): void
 	serialize? (version: ProtocolVersion): Buffer
 
-	applyToState? (state: AtemState): void
-	convertToLatestVersion? (): Array<AbstractCommand>
+	applyToState? (state: AtemState): string | string[]
 
 	updateProps (newProps: object) {
 		this._updateProps(newProps)

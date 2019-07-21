@@ -44,5 +44,6 @@ export class TransitionPositionUpdateCommand extends AbstractCommand {
 		mixEffect.transitionFramesLeft = this.properties.remainingFrames
 		mixEffect.transitionPosition = this.properties.handlePosition
 		mixEffect.inTransition = this.properties.inTransition
+		return `video.ME.${this.mixEffect}.transition`
 	}
 }

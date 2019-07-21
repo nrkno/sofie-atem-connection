@@ -21,5 +21,6 @@ export class PowerStatusCommand extends AbstractCommand {
 	applyToState (state: AtemState) {
 		const count = state.info.power.length
 		state.info.power = this.properties.slice(0, count)
+		return `info.power`
 	}
 }

@@ -74,5 +74,6 @@ export class TransitionStingerUpdateCommand extends AbstractCommand {
 		mixEffect.transitionSettings.stinger = {
 			...this.properties
 		}
+		return `video.ME.${this.mixEffect}.transitionSettings.stinger`
 	}
 }

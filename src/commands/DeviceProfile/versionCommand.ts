@@ -17,5 +17,6 @@ export class VersionCommand extends AbstractCommand {
 
 	applyToState (state: AtemState) {
 		state.info.apiVersion = this.properties.version
+		return `info.apiVersion`
 	}
 }

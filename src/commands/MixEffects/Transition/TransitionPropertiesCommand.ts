@@ -51,5 +51,6 @@ export class TransitionPropertiesUpdateCommand extends AbstractCommand {
 		mixEffect.transitionProperties = {
 			...this.properties
 		}
+		return `video.ME.${this.mixEffect}.transitionProperties`
 	}
 }

@@ -41,5 +41,6 @@ export class AudioMixerMasterUpdateCommand extends AbstractCommand {
 			...state.audio.master,
 			...this.properties
 		}
+		return `audio.master`
 	}
 }

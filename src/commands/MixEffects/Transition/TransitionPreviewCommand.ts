@@ -36,5 +36,6 @@ export class PreviewTransitionUpdateCommand extends AbstractCommand {
 	applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionPreview = this.properties.preview
+		return `video.ME.${this.mixEffect}.transitionPreview`
 	}
 }

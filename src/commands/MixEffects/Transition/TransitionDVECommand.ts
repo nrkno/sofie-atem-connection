@@ -82,5 +82,6 @@ export class TransitionDVEUpdateCommand extends AbstractCommand {
 		mixEffect.transitionSettings.DVE = {
 			...this.properties
 		}
+		return `video.ME.${this.mixEffect}.transitionSettings.DVE`
 	}
 }

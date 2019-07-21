@@ -3,13 +3,10 @@ export interface MultiViewerSourceState {
 	windowIndex: number
 }
 
-export class Settings7XState {
-	multiViewers: { [viewerIndex: string]: MultiViewerSourceState } = {}
-	videoMode: number
-}
 export interface MultiViewerWindowState extends MultiViewerSourceState {
 	safeTitle: boolean
 	audioMeter: boolean
+	// TODO - supports safeTitle & audioMeter?
 }
 
 export class MultiViewer {

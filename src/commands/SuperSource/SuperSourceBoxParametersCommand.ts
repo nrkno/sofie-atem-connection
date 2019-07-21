@@ -88,5 +88,6 @@ export class SuperSourceBoxParametersUpdateCommand extends AbstractCommand {
 		supersource.boxes[this.boxId] = {
 			...this.properties
 		}
+		return `video.superSources.${this.ssrcId}.boxes.${this.boxId}`
 	}
 }

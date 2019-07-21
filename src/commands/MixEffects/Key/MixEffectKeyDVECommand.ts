@@ -132,5 +132,6 @@ export class MixEffectKeyDVEUpdateCommand extends AbstractCommand {
 		upstreamKeyer.dveSettings = {
 			...this.properties
 		}
+		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.dveSettings`
 	}
 }

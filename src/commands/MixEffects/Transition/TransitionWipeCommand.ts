@@ -75,5 +75,6 @@ export class TransitionWipeUpdateCommand extends AbstractCommand {
 		mixEffect.transitionSettings.wipe = {
 			...this.properties
 		}
+		return `video.ME.${this.mixEffect}.transitionSettings.wipe`
 	}
 }

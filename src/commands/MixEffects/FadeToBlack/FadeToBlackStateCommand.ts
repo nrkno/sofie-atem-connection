@@ -27,5 +27,6 @@ export class FadeToBlackStateCommand extends AbstractCommand {
 			...mixEffect.fadeToBlack,
 			...this.properties
 		}
+		return `video.ME.${this.mixEffect}.fadeToBlack`
 	}
 }

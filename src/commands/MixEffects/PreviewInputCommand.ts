@@ -36,5 +36,6 @@ export class PreviewInputUpdateCommand extends AbstractCommand {
 	applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.previewInput = this.properties.source
+		return `video.ME.${this.mixEffect}.previewInput`
 	}
 }

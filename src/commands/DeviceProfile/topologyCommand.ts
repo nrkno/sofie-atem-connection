@@ -30,5 +30,6 @@ export class TopologyCommand extends AbstractCommand {
 			...state.info.capabilities,
 			...this.properties
 		}
+		return `info.capabilities`
 	}
 }

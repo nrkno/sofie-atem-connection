@@ -33,5 +33,7 @@ export class ProductIdentifierCommand extends AbstractCommand {
 				state.info.power = [false]
 				break
 		}
+
+		return `info`
 	}
 }
