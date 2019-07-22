@@ -3,7 +3,7 @@ import { AtemState } from '../../state'
 import { MultiViewerSourceState } from '../../state/settings'
 
 export class MultiViewerSourceCommand extends AbstractCommand {
-	rawName = 'MvIn'
+	rawName = 'CMvI'
 	multiViewerId: number
 	index: number
 
@@ -13,6 +13,22 @@ export class MultiViewerSourceCommand extends AbstractCommand {
 		this._updateProps(newProps)
 	}
 
+	serialize () {
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(this.multiViewerId, 0)
+		buffer.writeUInt8(this.properties.windowIndex, 1)
+		buffer.writeUInt16BE(this.properties.source, 2)
+		return buffer
+	}
+}
+
+export class MultiViewerSourceUpdateCommand extends AbstractCommand {
+	rawName = 'MvIn'
+	multiViewerId: number
+	index: number
+
+	properties: MultiViewerSourceState
+
 	deserialize (rawCommand: Buffer) {
 		this.index = rawCommand.readUInt8(1)
 		this.multiViewerId = rawCommand.readUInt8(0)
@@ -21,17 +37,6 @@ export class MultiViewerSourceCommand extends AbstractCommand {
 			source: rawCommand.readUInt16BE(2),
 			windowIndex: rawCommand.readUInt8(1)
 		}
-	}
-
-	serialize () {
-		const rawCommand = 'CMvI'
-		return new Buffer([
-			...Buffer.from(rawCommand),
-			this.multiViewerId,
-			this.properties.windowIndex,
-			this.properties.source >> 8,
-			this.properties.source & 0xFF
-		])
 	}
 
 	applyToState (state: AtemState) {

@@ -15,14 +15,13 @@ export class DownstreamKeyGeneralCommand extends AbstractCommand {
 
 	serialize () {
 		const buffer = Buffer.alloc(12)
-		buffer[0] = this.flag
-		buffer[1] = this.downstreamKeyerId
-		buffer[2] = this.properties.preMultiply ? 1 : 0
+		buffer.writeUInt8(this.flag, 0)
+		buffer.writeUInt8(this.downstreamKeyerId, 1)
+		buffer.writeUInt8(this.properties.preMultiply ? 1 : 0, 2)
 		buffer.writeInt16BE(this.properties.clip, 4)
 		buffer.writeInt16BE(this.properties.gain, 6)
-		buffer[8] = this.properties.invert ? 1 : 0
-
-		return Buffer.concat([Buffer.from('CDsG', 'ascii'), buffer])
+		buffer.writeUInt8(this.properties.invert ? 1 : 0, 8)
+		return buffer
 	}
 
 	updateProps (newProps: Partial<DownstreamKeyerGeneral>) {

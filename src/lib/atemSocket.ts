@@ -80,12 +80,17 @@ export class AtemSocket extends EventEmitter {
 		}
 
 		const payload = command.serialize()
-		if (this._debug) this.log('PAYLOAD', payload)
+		const fullPayload = Buffer.alloc(payload.length + 8, 0)
+		fullPayload.writeUInt16BE(fullPayload.length, 0)
+		fullPayload.write(command.rawName, 4, 4)
+		payload.copy(fullPayload, 8, 0)
+
+		if (this._debug) this.log('PAYLOAD', fullPayload)
 
 		return this._sendSubprocessMessage({
 			cmd: IPCMessageType.OutboundCommand,
 			payload: {
-				data: payload,
+				data: fullPayload,
 				trackingId
 			}
 		})

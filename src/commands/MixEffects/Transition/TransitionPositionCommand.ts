@@ -3,7 +3,25 @@ import { AtemState } from '../../../state'
 import { Util } from '../../..'
 
 export class TransitionPositionCommand extends AbstractCommand {
-	rawName = 'TrPs' // this seems unnecessary.
+	rawName = 'CTPs'
+	mixEffect: number
+
+	properties: {
+		readonly inTransition: boolean
+		readonly remainingFrames: number // 0...250
+		handlePosition: number // 0...10000
+	}
+
+	serialize () {
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(this.mixEffect, 0)
+		buffer.writeUInt16BE(this.properties.handlePosition, 2)
+		return buffer
+	}
+}
+
+export class TransitionPositionUpdateCommand extends AbstractCommand {
+	rawName = 'TrPs'
 	mixEffect: number
 
 	properties: {
@@ -19,17 +37,6 @@ export class TransitionPositionCommand extends AbstractCommand {
 			remainingFrames: Util.parseNumberBetween(rawCommand[2], 0, 250),
 			handlePosition: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 10000)
 		}
-	}
-
-	serialize () {
-		const rawCommand = 'CTPs'
-		return new Buffer([
-			...Buffer.from(rawCommand),
-			this.mixEffect,
-			0x00,
-			this.properties.handlePosition >> 8,
-			this.properties.handlePosition & 0xff
-		])
 	}
 
 	applyToState (state: AtemState) {

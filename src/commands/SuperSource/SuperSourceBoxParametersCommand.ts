@@ -17,28 +17,12 @@ export class SuperSourceBoxParametersCommand extends AbstractCommand {
 		cropRight: 1 << 9
 	}
 
-	rawName = 'SSBP'
+	rawName = 'CSBP'
 	boxId: number
 	properties: SuperSourceBox
 
 	updateProps (newProps: Partial<SuperSourceBox>) {
 		this._updateProps(newProps)
-	}
-
-	deserialize (rawCommand: Buffer) {
-		this.boxId = rawCommand[0]
-		this.properties = {
-			enabled: rawCommand[1] === 1,
-			source: rawCommand.readUInt16BE(2),
-			x: Util.parseNumberBetween(rawCommand.readInt16BE(4), -4800, 4800),
-			y: Util.parseNumberBetween(rawCommand.readInt16BE(6), -3400, 3400),
-			size: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 70, 1000),
-			cropped: rawCommand[10] === 1,
-			cropTop: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 18000),
-			cropBottom: Util.parseNumberBetween(rawCommand.readUInt16BE(14), 0, 18000),
-			cropLeft: Util.parseNumberBetween(rawCommand.readUInt16BE(16), 0, 32000),
-			cropRight: Util.parseNumberBetween(rawCommand.readUInt16BE(18), 0, 32000)
-		}
 	}
 
 	serialize () {
@@ -55,7 +39,29 @@ export class SuperSourceBoxParametersCommand extends AbstractCommand {
 		buffer.writeUInt16BE(this.properties.cropBottom, 16)
 		buffer.writeUInt16BE(this.properties.cropLeft, 18)
 		buffer.writeUInt16BE(this.properties.cropRight, 20)
-		return Buffer.concat([Buffer.from('CSBP', 'ascii'), buffer])
+		return buffer
+	}
+}
+
+export class SuperSourceBoxParametersUpdateCommand extends AbstractCommand {
+	rawName = 'SSBP'
+	boxId: number
+	properties: SuperSourceBox
+
+	deserialize (rawCommand: Buffer) {
+		this.boxId = rawCommand[0]
+		this.properties = {
+			enabled: rawCommand[1] === 1,
+			source: rawCommand.readUInt16BE(2),
+			x: Util.parseNumberBetween(rawCommand.readInt16BE(4), -4800, 4800),
+			y: Util.parseNumberBetween(rawCommand.readInt16BE(6), -3400, 3400),
+			size: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 70, 1000),
+			cropped: rawCommand[10] === 1,
+			cropTop: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 18000),
+			cropBottom: Util.parseNumberBetween(rawCommand.readUInt16BE(14), 0, 18000),
+			cropLeft: Util.parseNumberBetween(rawCommand.readUInt16BE(16), 0, 32000),
+			cropRight: Util.parseNumberBetween(rawCommand.readUInt16BE(18), 0, 32000)
+		}
 	}
 
 	applyToState (state: AtemState) {

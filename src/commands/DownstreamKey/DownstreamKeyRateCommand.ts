@@ -9,10 +9,9 @@ export class DownstreamKeyRateCommand extends AbstractCommand {
 
 	serialize () {
 		const buffer = Buffer.alloc(4)
-		buffer[0] = this.downstreamKeyerId
-		buffer[1] = this.properties.rate
-
-		return Buffer.concat([Buffer.from('CDsR', 'ascii'), buffer])
+		buffer.writeUInt8(this.downstreamKeyerId, 0)
+		buffer.writeUInt8(this.properties.rate, 1)
+		return buffer
 	}
 
 	updateProps (newProps: { rate: number }) {

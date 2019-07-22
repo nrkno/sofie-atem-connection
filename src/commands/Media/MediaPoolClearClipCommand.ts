@@ -8,14 +8,9 @@ export class MediaPoolClearClipCommand extends AbstractCommand {
 	}
 
 	serialize () {
-		const rawCommand = 'CMPC'
-		return new Buffer([
-			...Buffer.from(rawCommand),
-			this.properties.index,
-			0x00,
-			0x00,
-			0x00
-		])
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(this.properties.index, 0)
+		return buffer
 	}
 
 	updateProps (props: { index: number }) {

@@ -2,40 +2,30 @@ import AbstractCommand from '../AbstractCommand'
 import { MacroAction } from '../../enums'
 
 export class MacroActionCommand extends AbstractCommand {
-	rawName = 'MAct' // this seems unnecessary.
+	rawName = 'MAct'
 	index: number
 
 	properties: {
 		action: MacroAction
 	}
 
-	deserialize () {
-		//
-	}
-
 	serialize () {
-		const rawCommand = 'MAct'
-		const buffer = new Buffer([...Buffer.from(rawCommand), 0x00, 0x00, this.properties.action, 0x00])
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(this.properties.action, 2)
 		switch (this.properties.action) {
 			case MacroAction.Run :
 			case MacroAction.Delete :
-				buffer[4] = this.index >> 8
-				buffer[5] = this.index & 0xff
+				buffer.writeUInt16BE(this.index, 0)
 				break
 			case MacroAction.Stop :
 			case MacroAction.StopRecord :
 			case MacroAction.InsertUserWait :
 			case MacroAction.Continue :
-				buffer[4] = 0xff
-				buffer[5] = 0xff
+				buffer.writeUInt16BE(0xffff, 0)
 				break
 			default :
 				break
 		}
 		return buffer
-	}
-
-	applyToState () {
-		//
 	}
 }

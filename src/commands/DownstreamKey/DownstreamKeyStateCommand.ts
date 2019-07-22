@@ -19,13 +19,6 @@ export class DownstreamKeyStateCommand extends AbstractCommand {
 		}
 	}
 
-	serialize () {
-		// TODO(Lange - 2018-04-26): Commands such as this one don't have a corresponding serialize companion.
-		// Perhaps we should restructure the code to make commands like this less awkward, and avoid
-		// needing to define a stub serialize method.
-		return new Buffer(0)
-	}
-
 	applyToState (state: AtemState) {
 		state.video.downstreamKeyers[this.downstreamKeyerId] = {
 			...state.video.downstreamKeyers[this.downstreamKeyerId],

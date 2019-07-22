@@ -15,7 +15,7 @@ export class DataTransferDataCommand extends AbstractCommand {
 		buffer.writeUInt16BE(this.properties.transferId, 0)
 		buffer.writeUInt16BE(this.properties.size, 2)
 
-		return Buffer.concat([Buffer.from('FTDa', 'ascii'), buffer, this.properties.body])
+		return Buffer.concat([ buffer, this.properties.body ])
 	}
 
 	deserialize (rawCommand: Buffer) {

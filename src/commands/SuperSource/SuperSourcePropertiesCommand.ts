@@ -28,39 +28,12 @@ export class SuperSourcePropertiesCommand extends AbstractCommand {
 		borderLightSourceAltitude: 1 << 19
 	}
 
-	rawName = 'SSrc'
+	rawName = 'CSSc'
 	boxId: number
 	properties: SuperSourceProperties
 
 	updateProps (newProps: Partial<SuperSourceProperties>) {
 		this._updateProps(newProps)
-	}
-
-	deserialize (rawCommand: Buffer) {
-		this.boxId = rawCommand[0]
-		this.properties = {
-			artFillSource: rawCommand.readUInt16BE(0),
-			artCutSource: rawCommand.readUInt16BE(2),
-			artOption: Util.parseEnum<Enums.SuperSourceArtOption>(rawCommand.readUInt8(4), Enums.SuperSourceArtOption),
-			artPreMultiplied: rawCommand[5] === 1,
-			artClip: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 1000),
-			artGain: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 1000),
-			artInvertKey: rawCommand[10] === 1,
-
-			borderEnabled: rawCommand[11] === 1,
-			borderBevel: Util.parseEnum<Enums.BorderBevel>(rawCommand.readUInt8(12), Enums.BorderBevel),
-			borderOuterWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(14), 0, 1600),
-			borderInnerWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(16), 0, 1600),
-			borderOuterSoftness: Util.parseNumberBetween(rawCommand.readUInt8(18), 0, 100),
-			borderInnerSoftness: Util.parseNumberBetween(rawCommand.readUInt8(19), 0, 100),
-			borderBevelSoftness: Util.parseNumberBetween(rawCommand.readUInt8(20), 0, 100),
-			borderBevelPosition: Util.parseNumberBetween(rawCommand.readUInt8(21), 0, 100),
-			borderHue: Util.parseNumberBetween(rawCommand.readUInt16BE(22), 0, 3599),
-			borderSaturation: Util.parseNumberBetween(rawCommand.readUInt16BE(24), 0, 1000),
-			borderLuma: Util.parseNumberBetween(rawCommand.readUInt16BE(26), 0, 1000),
-			borderLightSourceDirection: Util.parseNumberBetween(rawCommand.readUInt16BE(28), 0, 3599),
-			borderLightSourceAltitude: Util.parseNumberBetween(rawCommand.readUInt8(30), 0, 100)
-		}
 	}
 
 	serialize () {
@@ -89,7 +62,40 @@ export class SuperSourcePropertiesCommand extends AbstractCommand {
 		buffer.writeUInt16BE(this.properties.borderLightSourceDirection, 32)
 		buffer.writeUInt8(this.properties.borderLightSourceAltitude, 34)
 
-		return Buffer.concat([Buffer.from('CSSc', 'ascii'), buffer])
+		return buffer
+	}
+}
+
+export class SuperSourcePropertiesUpdateCommand extends AbstractCommand {
+	rawName = 'SSrc'
+	boxId: number
+	properties: SuperSourceProperties
+
+	deserialize (rawCommand: Buffer) {
+		this.boxId = rawCommand[0]
+		this.properties = {
+			artFillSource: rawCommand.readUInt16BE(0),
+			artCutSource: rawCommand.readUInt16BE(2),
+			artOption: Util.parseEnum<Enums.SuperSourceArtOption>(rawCommand.readUInt8(4), Enums.SuperSourceArtOption),
+			artPreMultiplied: rawCommand[5] === 1,
+			artClip: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 1000),
+			artGain: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 1000),
+			artInvertKey: rawCommand[10] === 1,
+
+			borderEnabled: rawCommand[11] === 1,
+			borderBevel: Util.parseEnum<Enums.BorderBevel>(rawCommand.readUInt8(12), Enums.BorderBevel),
+			borderOuterWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(14), 0, 1600),
+			borderInnerWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(16), 0, 1600),
+			borderOuterSoftness: Util.parseNumberBetween(rawCommand.readUInt8(18), 0, 100),
+			borderInnerSoftness: Util.parseNumberBetween(rawCommand.readUInt8(19), 0, 100),
+			borderBevelSoftness: Util.parseNumberBetween(rawCommand.readUInt8(20), 0, 100),
+			borderBevelPosition: Util.parseNumberBetween(rawCommand.readUInt8(21), 0, 100),
+			borderHue: Util.parseNumberBetween(rawCommand.readUInt16BE(22), 0, 3599),
+			borderSaturation: Util.parseNumberBetween(rawCommand.readUInt16BE(24), 0, 1000),
+			borderLuma: Util.parseNumberBetween(rawCommand.readUInt16BE(26), 0, 1000),
+			borderLightSourceDirection: Util.parseNumberBetween(rawCommand.readUInt16BE(28), 0, 3599),
+			borderLightSourceAltitude: Util.parseNumberBetween(rawCommand.readUInt8(30), 0, 100)
+		}
 	}
 
 	applyToState (state: AtemState) {

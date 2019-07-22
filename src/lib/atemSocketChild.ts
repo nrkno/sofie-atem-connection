@@ -100,19 +100,12 @@ export class AtemSocketChild extends EventEmitter {
 	public _sendCommand (serializedCommand: Buffer, trackingId: number) {
 		const payload = serializedCommand
 		if (this._debug) this.log('PAYLOAD', payload)
-		const buffer = new Buffer(16 + payload.length)
-		buffer.fill(0)
+		const buffer = Buffer.alloc(12 + payload.length, 0)
+		buffer.writeUInt16BE(0x0800 | payload.length + 12, 0) // Opcode & Length
+		buffer.writeUInt16BE(this._sessionId, 2)
+		buffer.writeUInt16BE(this._localPacketId, 10)
 
-		buffer[0] = (16 + payload.length) / 256 | 0x08
-		buffer[1] = (16 + payload.length) % 256
-		buffer[2] = this._sessionId >> 8
-		buffer[3] = this._sessionId & 0xff
-		buffer[10] = this._localPacketId / 256
-		buffer[11] = this._localPacketId % 256
-		buffer[12] = (4 + payload.length) / 256
-		buffer[13] = (4 + payload.length) % 256
-
-		payload.copy(buffer, 16)
+		payload.copy(buffer, 12)
 		this._sendPacket(buffer)
 
 		this._inFlight.push({
@@ -207,15 +200,11 @@ export class AtemSocketChild extends EventEmitter {
 	}
 
 	private _sendAck (packetId: number) {
-		const buffer = new Buffer(12)
-		buffer.fill(0)
-		buffer[0] = 0x80
-		buffer[1] = 0x0C
-		buffer[2] = this._sessionId >> 8
-		buffer[3] = this._sessionId & 0xFF
-		buffer[4] = packetId >> 8
-		buffer[5] = packetId & 0xFF
-		buffer[9] = 0x41
+		const buffer = Buffer.alloc(12, 0)
+		buffer.writeUInt16BE(0x800C, 0) // Opcode & Length
+		buffer.writeUInt16BE(this._sessionId, 2)
+		buffer.writeUInt16BE(packetId, 4)
+		buffer.writeUInt8(0x41, 9)
 		this._sendPacket(buffer)
 	}
 

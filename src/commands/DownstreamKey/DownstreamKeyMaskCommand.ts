@@ -16,16 +16,15 @@ export class DownstreamKeyMaskCommand extends AbstractCommand {
 
 	serialize () {
 		const buffer = Buffer.alloc(12)
-		buffer[0] = this.flag
-		buffer[1] = this.downstreamKeyerId
-		buffer[2] = this.properties.enabled ? 1 : 0
+		buffer.writeUInt8(this.flag, 0)
+		buffer.writeUInt8(this.downstreamKeyerId, 1)
+		buffer.writeUInt8(this.properties.enabled ? 1 : 0, 2)
 
 		buffer.writeInt16BE(this.properties.top, 4)
 		buffer.writeInt16BE(this.properties.bottom, 6)
 		buffer.writeInt16BE(this.properties.left, 8)
 		buffer.writeInt16BE(this.properties.right, 10)
-
-		return Buffer.concat([Buffer.from('CDsM', 'ascii'), buffer])
+		return buffer
 	}
 
 	updateProps (newProps: Partial<DownstreamKeyerMask>) {

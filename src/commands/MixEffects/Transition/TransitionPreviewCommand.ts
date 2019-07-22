@@ -3,7 +3,23 @@ import { AtemState } from '../../../state'
 import { Util } from '../../..'
 
 export class PreviewTransitionCommand extends AbstractCommand {
-	rawName = 'TrPr' // this seems unnecessary.
+	rawName = 'CTPr'
+	mixEffect: number
+
+	properties: {
+		preview: boolean
+	}
+
+	serialize () {
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(this.mixEffect, 0)
+		buffer.writeUInt8(this.properties.preview ? 1 : 0, 1)
+		return buffer
+	}
+}
+
+export class PreviewTransitionUpdateCommand extends AbstractCommand {
+	rawName = 'TrPr'
 	mixEffect: number
 
 	properties: {
@@ -15,16 +31,6 @@ export class PreviewTransitionCommand extends AbstractCommand {
 		this.properties = {
 			preview: rawCommand[1] === 1
 		}
-	}
-
-	serialize () {
-		const rawCommand = 'CTPr'
-		return new Buffer([
-			...Buffer.from(rawCommand),
-			this.mixEffect,
-			this.properties.preview,
-			0x00, 0x00
-		])
 	}
 
 	applyToState (state: AtemState) {

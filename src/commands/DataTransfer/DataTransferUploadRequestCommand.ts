@@ -2,7 +2,7 @@ import AbstractCommand from '../AbstractCommand'
 import { Enums } from '../..'
 
 export class DataTransferUploadRequestCommand extends AbstractCommand {
-	rawName = ''
+	rawName = 'FTSD'
 
 	properties: {
 		transferId: number,
@@ -19,7 +19,6 @@ export class DataTransferUploadRequestCommand extends AbstractCommand {
 		buffer.writeUInt16BE(this.properties.transferIndex, 6)
 		buffer.writeUInt32BE(this.properties.size, 8)
 		buffer.writeUInt16BE(this.properties.mode, 12) // @todo: should this be split into 2x enum8?
-
-		return Buffer.concat([Buffer.from('FTSD', 'ascii'), buffer])
+		return buffer
 	}
 }
