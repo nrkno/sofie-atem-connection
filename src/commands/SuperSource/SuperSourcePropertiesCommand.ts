@@ -62,7 +62,6 @@ export class SuperSourcePropertiesCommand extends AbstractCommand {
 		buffer.writeUInt16BE(this.properties.borderLightSourceDirection, 32)
 		buffer.writeUInt8(this.properties.borderLightSourceAltitude, 34)
 
-		// return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
 		return buffer
 	}
 }
@@ -79,6 +78,7 @@ export class SuperSourcePropertiesV8Command extends AbstractCommand {
 	}
 
 	rawName = 'CSSc'
+	minimumVersion = ProtocolVersion.V8_0
 	ssrcId: number
 	properties: SuperSourceProperties
 
@@ -100,7 +100,6 @@ export class SuperSourcePropertiesV8Command extends AbstractCommand {
 		buffer.writeUInt16BE(this.properties.artGain, 10)
 		buffer.writeUInt8(this.properties.artInvertKey ? 1 : 0, 12)
 
-		// return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
 		return buffer
 	}
 }
@@ -122,7 +121,8 @@ export class SuperSourceBorderCommand extends AbstractCommand {
 		borderLightSourceAltitude: 1 << 12
 	}
 
-	rawName = 'SSBd'
+	rawName = 'CSBd'
+	minimumVersion = ProtocolVersion.V8_0
 	ssrcId: number
 	properties: SuperSourceBorder
 
@@ -151,7 +151,6 @@ export class SuperSourceBorderCommand extends AbstractCommand {
 		buffer.writeUInt8(this.properties.borderLightSourceAltitude, 22)
 
 		return buffer
-		return Buffer.concat([Buffer.from(this.rawName, 'ascii'), buffer])
 	}
 }
 
@@ -206,21 +205,20 @@ export class SuperSourcePropertiesUpdateCommand extends AbstractCommand {
 
 export class SuperSourcePropertiesUpdateV8Command extends AbstractCommand {
 	rawName = 'SSrc'
+	minimumVersion = ProtocolVersion.V8_0
 	ssrcId: number
 	properties: SuperSourceProperties
-
-	minimumVersion = ProtocolVersion.V8_0
 
 	deserialize (rawCommand: Buffer) {
 		this.ssrcId = rawCommand.readUInt8(0)
 		this.properties = {
-			artFillSource: rawCommand.readUInt16BE(0),
-			artCutSource: rawCommand.readUInt16BE(2),
-			artOption: Util.parseEnum<Enums.SuperSourceArtOption>(rawCommand.readUInt8(4), Enums.SuperSourceArtOption),
-			artPreMultiplied: rawCommand[5] === 1,
-			artClip: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 1000),
-			artGain: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 1000),
-			artInvertKey: rawCommand[10] === 1
+			artFillSource: rawCommand.readUInt16BE(2),
+			artCutSource: rawCommand.readUInt16BE(4),
+			artOption: Util.parseEnum<Enums.SuperSourceArtOption>(rawCommand.readUInt8(6), Enums.SuperSourceArtOption),
+			artPreMultiplied: rawCommand[7] === 1,
+			artClip: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 1000),
+			artGain: Util.parseNumberBetween(rawCommand.readUInt16BE(10), 0, 1000),
+			artInvertKey: rawCommand[12] === 1
 		}
 	}
 
@@ -235,10 +233,9 @@ export class SuperSourcePropertiesUpdateV8Command extends AbstractCommand {
 
 export class SuperSourceBorderUpdateCommand extends AbstractCommand {
 	rawName = 'SSBd'
+	minimumVersion = ProtocolVersion.V8_0
 	ssrcId: number
 	properties: SuperSourceBorder
-
-	minimumVersion: ProtocolVersion.V8_0
 
 	deserialize (rawCommand: Buffer) {
 		this.ssrcId = rawCommand.readUInt8(0)

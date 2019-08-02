@@ -1,5 +1,5 @@
 import { CommandParser } from '../../lib/atemCommandParser'
-import { TestCase, runTestForCommand, CommandTestConverterSet } from './util'
+import { TestCase, runTestForCommand, CommandTestConverterSet, ensureAllCommandsCovered } from './util'
 import { ProtocolVersion } from '../../enums'
 
 const TestCases = require('./data-v7.2.json') as TestCase[]
@@ -813,18 +813,7 @@ describe('Commands v7.2', () => {
 	const commandParser = new CommandParser()
 	commandParser.version = ProtocolVersion.V7_2
 
-	test('Ensure all commands tested', () => {
-		// Verify that all commands were tested
-		let knownNames = Object.keys(commandParser.commands).sort()
-		const testNames = Array.from(new Set(TestCases.map(c => c.name))).filter(n => knownNames.indexOf(n) !== -1).sort()
-
-		// Temporarily ignore these missing cases
-		knownNames = knownNames.filter(n => n !== 'InCm' && n !== 'InPr' && n !== 'KeFS')
-		// Ignore 8.0+ commands:
-		knownNames = knownNames.filter(n => n !== 'SSBd')
-
-		expect(testNames).toEqual(knownNames)
-	})
+	ensureAllCommandsCovered(commandParser, TestCases)
 
 	for (let i = 0; i < TestCases.length; i++) {
 		const testCase = TestCases[i]

@@ -32,7 +32,7 @@ export class CommandParser {
 				return commands[0]
 			} else { // now we should have a version defined
 				const baseline = commands.find(cmd => !cmd.minimumVersion)
-				const overrides = commands.filter(cmd => cmd.minimumVersion && cmd.minimumVersion < this.version)
+				const overrides = commands.filter(cmd => cmd.minimumVersion && cmd.minimumVersion <= this.version)
 
 				if (overrides.length === 0) return baseline
 

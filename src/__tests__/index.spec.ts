@@ -1,4 +1,5 @@
 import { Atem, Enums } from '../index'
+import { ProtocolVersion } from '../enums'
 
 function cleanupAtem (atem: Atem) {
 	const atem2 = atem as any
@@ -64,6 +65,7 @@ test('setSuperSourceProperties - 8.0', async () => {
 		expect(conn.sendCommand).toHaveBeenCalledTimes(1)
 		expect(conn.sendCommand).toHaveBeenNthCalledWith(1, {
 			rawName: 'CSSc',
+			minimumVersion: ProtocolVersion.V8_0,
 			ssrcId: 2,
 			flag: 12,
 			properties: {
@@ -110,7 +112,8 @@ test('setSuperSourceBorder - 8.0', async () => {
 		})
 		expect(conn.sendCommand).toHaveBeenCalledTimes(1)
 		expect(conn.sendCommand).toHaveBeenNthCalledWith(1, {
-			rawName: 'SSBd',
+			rawName: 'CSBd',
+			minimumVersion: ProtocolVersion.V8_0,
 			ssrcId: 2,
 			flag: 1088,
 			properties: {

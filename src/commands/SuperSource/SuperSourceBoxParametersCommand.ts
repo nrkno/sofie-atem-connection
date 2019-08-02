@@ -32,12 +32,14 @@ export class SuperSourceBoxParametersCommand extends AbstractCommand {
 		let i = 0
 		if (version >= ProtocolVersion.V8_0) {
 			i = 1
-			buffer.writeUInt8(this.ssrcId, 0)
+			buffer.writeUInt8(this.ssrcId, i + 1)
 		}
 
-		buffer.writeUInt16BE(this.flag, i + 0)
+		buffer.writeUInt16BE(this.flag, 0)
 		buffer.writeUInt8(this.boxId, i + 2)
 		buffer.writeUInt8(this.properties.enabled ? 1 : 0, i + 3)
+
+		if (i === 1) i++ // Needs to be 2 byte aligned now
 		buffer.writeUInt16BE(this.properties.source, i + 4)
 		buffer.writeInt16BE(this.properties.x, i + 6)
 		buffer.writeInt16BE(this.properties.y, i + 8)
@@ -48,7 +50,6 @@ export class SuperSourceBoxParametersCommand extends AbstractCommand {
 		buffer.writeUInt16BE(this.properties.cropLeft, i + 18)
 		buffer.writeUInt16BE(this.properties.cropRight, i + 20)
 		return buffer
-		return Buffer.concat([Buffer.from('CSBP', 'ascii'), buffer])
 	}
 }
 
@@ -62,15 +63,15 @@ export class SuperSourceBoxParametersUpdateCommand extends AbstractCommand {
 	deserialize (rawCommand: Buffer, version: ProtocolVersion) {
 		let i = 0
 		if (version >= ProtocolVersion.V8_0) {
-			i = 1
+			i = 2
 			this.ssrcId = rawCommand.readUInt8(0)
 		} else {
 			this.ssrcId = 0
 		}
 
-		this.boxId = rawCommand.readUInt8(i + 0)
+		this.boxId = rawCommand.readUInt8(i > 0 ? 1 : 0)
 		this.properties = {
-			enabled: rawCommand[i + 1] === 1,
+			enabled: rawCommand[i > 0 ? 2 : 1] === 1,
 			source: rawCommand.readUInt16BE(i + 2),
 			x: Util.parseNumberBetween(rawCommand.readInt16BE(i + 4), -4800, 4800),
 			y: Util.parseNumberBetween(rawCommand.readInt16BE(i + 6), -3400, 3400),
