@@ -86,13 +86,13 @@
     "npm-scripts-info": "0.3.9",
     "open-cli": "^5.0.0",
     "sleep-ms": "^2.0.1",
-    "standard-version": "^6.0.1",
+    "standard-version": "^7.0.0",
     "trash-cli": "^3.0.0",
     "ts-jest": "^24.0.2",
     "tslint": "^5.17.0",
     "tslint-config-security": "^1.16.0",
     "tslint-config-standard": "8.0.1",
-    "typedoc": "0.14.2",
+    "typedoc": "^0.15.0",
     "typescript": "^3.3.4000"
   },
   "keywords": [
@@ -108,9 +108,6 @@
     "p-retry": "^4.1.0",
     "tslib": "^1.9.0",
     "wavefile": "^8.4.4"
-  },
-  "resolutions": {
-    "typedoc/**/marked": "^0.6.2"
   },
   "standard-version": {
     "message": "chore(release): %s [skip ci]",
