@@ -47,5 +47,6 @@ export class TransitionDipUpdateCommand extends AbstractCommand {
 		mixEffect.transitionSettings.dip = {
 			...this.properties
 		}
+		return `video.ME.${this.mixEffect}.transitionSettings.dip`
 	}
 }

@@ -24,5 +24,6 @@ export class DownstreamKeyStateCommand extends AbstractCommand {
 			...state.video.downstreamKeyers[this.downstreamKeyerId],
 			...this.properties
 		}
+		return `video.downstreamKeyers.${this.downstreamKeyerId}`
 	}
 }

@@ -35,5 +35,6 @@ export class MacroPropertiesCommand extends AbstractCommand {
 			...state.macro.macroProperties[this.macroIndexID],
 			...this.properties
 		}
+		return `macro.macroProperties.${this.macroIndexID}`
 	}
 }

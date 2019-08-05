@@ -50,5 +50,6 @@ export class AudioMixerInputUpdateCommand extends AbstractCommand {
 			...state.audio.channels[this.index],
 			...this.properties
 		}
+		return `audio.channels.${this.index}`
 	}
 }

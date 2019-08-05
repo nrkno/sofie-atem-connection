@@ -7,7 +7,14 @@ export enum Model {
 	OneME4K = 0x05,
 	TwoME4K = 0x06,
 	TwoMEBS4K = 0x07,
-	TVSHD = 0x08
+	TVSHD = 0x08,
+	Constellation8K = 0x0b
+}
+
+export enum ProtocolVersion {
+	V7_2 = 0x00020016, // 2.22 // TODO - verify this is correct
+	V8_0 = 0x0002001C, // 2.28
+	V8_0_1 = 0x0002001D // 2.29
 }
 
 export enum TransitionStyle {

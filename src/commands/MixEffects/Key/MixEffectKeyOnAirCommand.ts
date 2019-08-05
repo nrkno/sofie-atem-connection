@@ -39,5 +39,6 @@ export class MixEffectKeyOnAirUpdateCommand extends AbstractCommand {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		const upstreamKeyer = mixEffect.getUpstreamKeyer(this.upstreamKeyerId)
 		upstreamKeyer.onAir = this.properties.onAir
+		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.onAir`
 	}
 }

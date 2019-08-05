@@ -49,5 +49,6 @@ export class MediaPlayerSourceUpdateCommand extends AbstractCommand {
 			...state.media.players[this.mediaPlayerId],
 			...this.properties
 		}
+		return `media.players.${this.mediaPlayerId}`
 	}
 }

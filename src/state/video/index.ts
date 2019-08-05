@@ -138,7 +138,9 @@ export interface SuperSourceProperties {
 	artClip: number
 	artGain: number
 	artInvertKey: boolean
+}
 
+export interface SuperSourceBorder {
 	borderEnabled: boolean
 	borderBevel: Enum.BorderBevel
 	borderOuterWidth: number
@@ -154,6 +156,17 @@ export interface SuperSourceProperties {
 	borderLightSourceAltitude: number
 }
 
+export class SuperSource {
+	index: number
+	boxes: { [index: string]: SuperSourceBox } = {}
+	properties: SuperSourceProperties
+	border: SuperSourceBorder
+
+	constructor (index: number) {
+		this.index = index
+	}
+}
+
 export interface FadeToBlackProperties {
 	isFullyBlack: boolean
 	rate: number
@@ -165,8 +178,7 @@ export class AtemVideoState {
 	ME: { [index: string]: MixEffect } = {}
 	downstreamKeyers: { [index: string]: DownstreamKeyer } = {}
 	auxilliaries: { [index: string]: number } = {}
-	superSourceBoxes: { [index: string]: SuperSourceBox } = {}
-	superSourceProperties: SuperSourceProperties
+	superSources: { [index: string]: SuperSource } = {}
 
 	getMe (index: number) {
 		if (!this.ME[index]) {
@@ -174,6 +186,14 @@ export class AtemVideoState {
 		}
 
 		return this.ME[index]
+	}
+
+	getSuperSource (index: number) {
+		if (!this.superSources[index]) {
+			this.superSources[index] = new SuperSource(index)
+		}
+
+		return this.superSources[index]
 	}
 
 	getDownstreamKeyer (index: number) {

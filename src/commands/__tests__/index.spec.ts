@@ -1,5 +1,6 @@
 import { CommandParser } from '../../lib/atemCommandParser'
-import { TestCase, runTestForCommand, CommandTestConverterSet } from './util'
+import { TestCase, runTestForCommand, CommandTestConverterSet, ensureAllCommandsCovered } from './util'
+import { ProtocolVersion } from '../../enums'
 
 const TestCases = require('./data-v7.2.json') as TestCase[]
 
@@ -9,6 +10,11 @@ const commandConverters: CommandTestConverterSet = {
 		propertyAliases: {
 			'apiMajor': (v: number) => ({ val: v, name: 'major' }),
 			'apiMinor': (v: number) => ({ val: v, name: 'minor' })
+		},
+		customMutate: (o: any) => {
+			return {
+				version: (o.major << 16) + o.minor
+			}
 		}
 	},
 	'_pin': {
@@ -63,6 +69,34 @@ const commandConverters: CommandTestConverterSet = {
 			'borderSoftnessOut': (v: number) => ({ val: v, name: 'borderOuterSoftness' }),
 			'artFillInput': (v: number) => ({ val: v, name: 'artFillSource' }),
 			'artKeyInput': (v: number) => ({ val: v, name: 'artCutSource' })
+		},
+		customMutate: (o: any) => {
+			return {
+				properties: {
+					artFillSource: o.artFillSource,
+					artCutSource: o.artCutSource,
+					artOption: o.artOption,
+					artPreMultiplied: o.artPreMultiplied,
+					artClip: o.artClip,
+					artGain: o.artGain,
+					artInvertKey: o.artInvertKey
+				},
+				border: {
+					borderEnabled: o.borderEnabled,
+					borderBevel: o.borderBevel,
+					borderOuterWidth: o.borderOuterWidth,
+					borderInnerWidth: o.borderInnerWidth,
+					borderOuterSoftness: o.borderOuterSoftness,
+					borderInnerSoftness: o.borderInnerSoftness,
+					borderBevelSoftness: o.borderBevelSoftness,
+					borderBevelPosition: o.borderBevelPosition,
+					borderHue: o.borderHue,
+					borderSaturation: o.borderSaturation,
+					borderLuma: o.borderLuma,
+					borderLightSourceDirection: o.borderLightSourceDirection,
+					borderLightSourceAltitude: o.borderLightSourceAltitude
+				}
+			}
 		}
 	},
 	'CSSc': {
@@ -777,17 +811,9 @@ const commandConverters: CommandTestConverterSet = {
 
 describe('Commands v7.2', () => {
 	const commandParser = new CommandParser()
+	commandParser.version = ProtocolVersion.V7_2
 
-	test('Ensure all commands tested', () => {
-		// Verify that all commands were tested
-		let knownNames = Object.keys(commandParser.commands).sort()
-		const testNames = Array.from(new Set(TestCases.map(c => c.name))).filter(n => knownNames.indexOf(n) !== -1).sort()
-
-		// Temporarily ignore these missing cases
-		knownNames = knownNames.filter(n => n !== 'InCm' && n !== 'InPr' && n !== 'KeFS')
-
-		expect(testNames).toEqual(knownNames)
-	})
+	ensureAllCommandsCovered(commandParser, TestCases)
 
 	for (let i = 0; i < TestCases.length; i++) {
 		const testCase = TestCases[i]

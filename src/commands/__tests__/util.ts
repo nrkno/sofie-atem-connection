@@ -1,4 +1,5 @@
 import { CommandParser } from '../../lib/atemCommandParser'
+import { ProtocolVersion } from '../../enums'
 
 export type CommandTestConverterSet = { [key: string]: CommandTestConverter }
 export interface CommandTestConverter {
@@ -40,7 +41,7 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 		if (typeof cmd.deserialize === 'function') {
 			matchedCase = true
 			test(`Test #${i}: ${testCase.name} - Deserialize`, () => {
-				cmd.deserialize!(buffer.slice(0, length).slice(8))
+				cmd.deserialize!(buffer.slice(0, length).slice(8), commandParser.version)
 
 				delete cmd.flag // Anything deserialized will never have flags
 				delete cmd.rawName
@@ -88,7 +89,7 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 					return str2.substring(0, str2.length - 1)
 				}
 
-				const encodedBytes = cmd.serialize!()
+				const encodedBytes = cmd.serialize!(commandParser.version)
 				// console.log(hexStr(buffer.slice(4)))
 				expect(length).toEqual(encodedBytes.length + 8)
 				expect(hexStr(buffer.slice(8))).toEqual(hexStr(encodedBytes))
@@ -102,4 +103,30 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 			expect(false).toBeTruthy()
 		})
 	}
+}
+
+export function ensureAllCommandsCovered (commandParser: CommandParser, testCases: Array<TestCase>) {
+	test('Ensure all commands tested', () => {
+		// Verify that all commands were tested
+		const expectUndefined = commandParser.version === ProtocolVersion.V7_2
+		let knownNames: string[] = []
+		for (const name of Object.keys(commandParser.commands)) {
+			for (const cmd of commandParser.commands[name]) {
+				const inst = new cmd()
+				if ((expectUndefined && !inst.minimumVersion) || inst.minimumVersion === commandParser.version) {
+					knownNames.push(name)
+				}
+			}
+		}
+
+		// knownNames = Object.keys(commandParser.commands).sort()
+		const testNames = Array.from(new Set(testCases.map(c => c.name))).filter(n => knownNames.indexOf(n) !== -1).sort()
+
+		// Temporarily ignore these missing cases
+		knownNames = knownNames.filter(n => n !== 'InCm' && n !== 'InPr' && n !== 'KeFS')
+
+		knownNames.sort()
+
+		expect(testNames).toEqual(knownNames)
+	})
 }

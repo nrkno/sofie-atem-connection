@@ -24,5 +24,6 @@ export class MacroRunStatusCommand extends AbstractCommand {
 			...state.macro.macroPlayer,
 			...this.properties
 		}
+		return `macro.macroPlayer`
 	}
 }

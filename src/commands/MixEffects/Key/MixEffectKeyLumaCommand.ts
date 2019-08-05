@@ -54,5 +54,6 @@ export class MixEffectKeyLumaUpdateCommand extends AbstractCommand {
 		upstreamKeyer.lumaSettings = {
 			...this.properties
 		}
+		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.lumaSettings`
 	}
 }

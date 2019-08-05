@@ -43,9 +43,11 @@ export class MultiViewerSourceUpdateCommand extends AbstractCommand {
 		const obj: { [key: string]: MultiViewerSourceState } = {}
 		obj[this.index] = this.properties
 
-		state.settings.multiViewers[this.multiViewerId] = {
-			...state.settings.multiViewers[this.multiViewerId],
+		state.settings.getMultiViewer(this.multiViewerId).windows[this.index] = {
+			...state.settings.getMultiViewer(this.multiViewerId).windows[this.index],
 			...obj
 		}
+
+		return `settings.multiViewers.${this.multiViewerId}.windows.${this.index}`
 	}
 }

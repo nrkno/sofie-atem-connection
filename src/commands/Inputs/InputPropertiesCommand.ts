@@ -78,5 +78,6 @@ export class InputPropertiesUpdateCommand extends AbstractCommand {
 		state.inputs[this.inputId] = {
 			...this.properties
 		}
+		return `inputs.${this.inputId}`
 	}
 }

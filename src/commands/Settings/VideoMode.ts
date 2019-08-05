@@ -33,5 +33,6 @@ export class VideoModeUpdateCommand extends AbstractCommand {
 
 	applyToState (state: AtemState) {
 		state.settings.videoMode = this.properties.mode
+		return `settings.videoMode`
 	}
 }

@@ -14,7 +14,8 @@ import {
 	SuperSourceBox,
 	TransitionProperties,
 	WipeTransitionSettings,
-	SuperSourceProperties
+	SuperSourceProperties,
+	SuperSourceBorder
 } from './state/video'
 import * as USK from './state/video/upstreamKeyers'
 import { InputChannel } from './state/input'
@@ -24,6 +25,7 @@ import { Util } from './lib/atemUtil'
 import * as Enums from './enums'
 import { AudioChannel, AudioMasterChannel } from './state/audio'
 import exitHook = require('exit-hook')
+import { isArray } from 'util'
 
 export interface AtemOptions {
 	address?: string,
@@ -45,6 +47,11 @@ export class Atem extends EventEmitter {
 	private dataTransferManager: DT.DataTransferManager
 	private _log: (...args: any[]) => void
 	private _sentQueue: {[packetId: string]: AbstractCommand } = {}
+
+	on: ((event: 'error', listener: (message: any) => void) => this) &
+		((event: 'connected', listener: () => void) => this) &
+		((event: 'disconnected', listener: () => void) => this) &
+		((event: 'stateChanged', listener: (state: AtemState, path: string) => void) => this)
 
 	constructor (options?: AtemOptions) {
 		super()
@@ -334,17 +341,38 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	setSuperSourceBoxSettings (newProps: Partial<SuperSourceBox>, box = 0) {
+	setSuperSourceBoxSettings (newProps: Partial<SuperSourceBox>, box = 0, ssrcId = 0) {
 		const command = new Commands.SuperSourceBoxParametersCommand()
+		command.ssrcId = ssrcId
 		command.boxId = box
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setSuperSourceProperties (newProps: Partial<SuperSourceProperties>) {
-		const command = new Commands.SuperSourcePropertiesCommand()
-		command.updateProps(newProps)
-		return this.sendCommand(command)
+	setSuperSourceProperties (newProps: Partial<SuperSourceProperties>, ssrcId = 0) {
+		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
+			const command = new Commands.SuperSourcePropertiesV8Command()
+			command.ssrcId = ssrcId
+			command.updateProps(newProps)
+			return this.sendCommand(command)
+		} else {
+			const command = new Commands.SuperSourcePropertiesCommand()
+			command.updateProps(newProps)
+			return this.sendCommand(command)
+		}
+	}
+
+	setSuperSourceBorder (newProps: Partial<SuperSourceBorder>, ssrcId = 0) {
+		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
+			const command = new Commands.SuperSourceBorderCommand()
+			command.ssrcId = ssrcId
+			command.updateProps(newProps)
+			return this.sendCommand(command)
+		} else {
+			const command = new Commands.SuperSourcePropertiesCommand()
+			command.updateProps(newProps)
+			return this.sendCommand(command)
+		}
 	}
 
 	setInputSettings (newProps: Partial<InputChannel>, input = 0) {
@@ -499,8 +527,11 @@ export class Atem extends EventEmitter {
 
 	private _mutateState (command: AbstractCommand) {
 		if (typeof command.applyToState === 'function') {
-			command.applyToState(this.state)
-			this.emit('stateChanged', this.state, command)
+			let changePaths = command.applyToState(this.state)
+			if (!isArray(changePaths)) {
+				changePaths = [ changePaths ]
+			}
+			changePaths.forEach(path => this.emit('stateChanged', this.state, path))
 		}
 		for (const commandName in DataTransferCommands) {
 			if (command.constructor.name === commandName) {

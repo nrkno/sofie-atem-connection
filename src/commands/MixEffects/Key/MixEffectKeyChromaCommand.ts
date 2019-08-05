@@ -57,5 +57,6 @@ export class MixEffectKeyChromaUpdateCommand extends AbstractCommand {
 		upstreamKeyer.chromaSettings = {
 			...this.properties
 		}
+		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.chromaSettings`
 	}
 }

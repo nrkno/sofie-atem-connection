@@ -63,5 +63,6 @@ export class MixEffectKeyUpdateCommand extends AbstractCommand {
 		upstreamKeyer.patternSettings = {
 			...this.properties
 		}
+		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.patternSettings`
 	}
 }

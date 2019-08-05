@@ -40,5 +40,6 @@ export class FadeToBlackRateUpdateCommand extends AbstractCommand {
 			...mixEffect.fadeToBlack,
 			rate: this.properties.rate
 		}
+		return `video.ME.${this.mixEffect}.fadeToBlack`
 	}
 }

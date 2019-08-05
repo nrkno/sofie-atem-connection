@@ -35,5 +35,6 @@ export class AuxSourceUpdateCommand extends AbstractCommand {
 
 	applyToState (state: AtemState) {
 		state.video.auxilliaries[this.auxBus] = this.properties.source
+		return `video.auxilliaries.${this.auxBus}`
 	}
 }

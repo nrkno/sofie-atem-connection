@@ -36,5 +36,6 @@ export class ProgramInputUpdateCommand extends AbstractCommand {
 	applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.programInput = this.properties.source
+		return `video.ME.${this.mixEffect}.programInput`
 	}
 }
