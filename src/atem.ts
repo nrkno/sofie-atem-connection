@@ -88,10 +88,6 @@ export class Atem extends EventEmitter {
 		this.socket.on('error', (e) => this.emit('error', e))
 		this.socket.on('connect', () => this.emit('connected'))
 		this.socket.on('disconnect', () => this.emit('disconnected'))
-		this.socket.on('initStart', (command: Commands.VersionCommand) => {
-			// this.state = Util.createStateObjectFromVersionCommand(command)
-			this._mutateState(command)
-		})
 	}
 
 	connect (address: string, port?: number) {

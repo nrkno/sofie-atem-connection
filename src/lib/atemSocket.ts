@@ -186,10 +186,9 @@ export class AtemSocket extends EventEmitter {
 				if (name === '_ver') { // init started
 					const verCmd = cmd as VersionCommand
 					this._commandParser.version = verCmd.properties.version
-					this.emit('initStart', cmd)
-				} else {
-					this.emit('receivedStateChange', cmd)
 				}
+
+				this.emit('receivedStateChange', cmd)
 			} catch (e) {
 				this.emit('error', e)
 			}
