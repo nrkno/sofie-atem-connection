@@ -35,10 +35,10 @@ test('setSuperSourceProperties - 7.2', async () => {
 	try {
 		expect(conn.sendCommand).not.toHaveBeenCalled()
 
-		await conn.setSuperSourceProperties(2, {
+		await conn.setSuperSourceProperties({
 			artPreMultiplied: true,
 			artOption: Enums.SuperSourceArtOption.Background
-		})
+		}, 2)
 		expect(conn.sendCommand).toHaveBeenCalledTimes(1)
 		expect(conn.sendCommand).toHaveBeenNthCalledWith(1, {
 			rawName: 'CSSc',
@@ -58,10 +58,10 @@ test('setSuperSourceProperties - 8.0', async () => {
 	try {
 		expect(conn.sendCommand).not.toHaveBeenCalled()
 
-		await conn.setSuperSourceProperties(2, {
+		await conn.setSuperSourceProperties({
 			artPreMultiplied: true,
 			artOption: Enums.SuperSourceArtOption.Background
-		})
+		}, 2)
 		expect(conn.sendCommand).toHaveBeenCalledTimes(1)
 		expect(conn.sendCommand).toHaveBeenNthCalledWith(1, {
 			rawName: 'CSSc',
@@ -83,10 +83,10 @@ test('setSuperSourceBorder - 7.2', async () => {
 	try {
 		expect(conn.sendCommand).not.toHaveBeenCalled()
 
-		await conn.setSuperSourceBorder(2, {
+		await conn.setSuperSourceBorder({
 			borderBevelSoftness: 12,
 			borderLuma: 3
-		})
+		}, 2)
 		expect(conn.sendCommand).toHaveBeenCalledTimes(1)
 		expect(conn.sendCommand).toHaveBeenNthCalledWith(1, {
 			rawName: 'CSSc',
@@ -106,10 +106,10 @@ test('setSuperSourceBorder - 8.0', async () => {
 	try {
 		expect(conn.sendCommand).not.toHaveBeenCalled()
 
-		await conn.setSuperSourceBorder(2, {
+		await conn.setSuperSourceBorder({
 			borderBevelSoftness: 12,
 			borderLuma: 3
-		})
+		}, 2)
 		expect(conn.sendCommand).toHaveBeenCalledTimes(1)
 		expect(conn.sendCommand).toHaveBeenNthCalledWith(1, {
 			rawName: 'CSBd',
