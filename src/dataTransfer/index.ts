@@ -42,7 +42,7 @@ export class DataTransferManager {
 
 		// try to establish the associated DataLock:
 		let lock: DataLock | undefined
-		if (command.constructor.name === Commands.LockObtainedCommand.name || command.constructor.name === Commands.LockStateCommand.name) {
+		if (command.constructor.name === Commands.LockObtainedCommand.name || command.constructor.name === Commands.LockStateUpdateCommand.name) {
 			switch (command.properties.index) {
 				case 0 :
 					lock = this.stillsLock
@@ -73,7 +73,7 @@ export class DataTransferManager {
 		if (command.constructor.name === Commands.LockObtainedCommand.name) {
 			lock.lockObtained()
 		}
-		if (command.constructor.name === Commands.LockStateCommand.name) {
+		if (command.constructor.name === Commands.LockStateUpdateCommand.name) {
 			if (!command.properties.locked) lock.lostLock()
 			else lock.updateLock(command.properties.locked)
 		}
