@@ -13,7 +13,7 @@ export class MultiViewer {
 	index: number
 	layout: number
 	overlayOpacity: number
-	windows: { [index: string]: MultiViewerWindowState }
+	windows: { [index: string]: MultiViewerWindowState } = {}
 
 	constructor (index: number) {
 		this.index = index
