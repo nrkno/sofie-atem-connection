@@ -21,7 +21,7 @@ const commandConverters: CommandTestConverterSet = {
 
 describe('Commands v8.0.1', () => {
 	const commandParser = new CommandParser()
-	commandParser.version = ProtocolVersion.V8_0
+	commandParser.version = ProtocolVersion.V8_0_1
 
 	ensureAllCommandsCovered(commandParser, TestCases)
 
