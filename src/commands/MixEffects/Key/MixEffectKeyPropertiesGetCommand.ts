@@ -30,5 +30,6 @@ export class MixEffectKeyPropertiesGetCommand extends AbstractCommand {
 			mixEffect.upstreamKeyers[this.properties.upstreamKeyerId],
 			this.properties
 		)
+		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.properties.upstreamKeyerId}`
 	}
 }

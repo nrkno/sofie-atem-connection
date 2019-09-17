@@ -13,6 +13,10 @@ export namespace Util {
 		return array
 	}
 
+	export function bufToBase64String (buffer: Buffer, start: number, length: number): string {
+		return buffer.toString('base64', start, start + length)
+	}
+
 	export function bufToNullTerminatedString (buffer: Buffer, start: number, length: number): string {
 		const slice = buffer.slice(start, start + length)
 		const nullIndex = slice.indexOf('\0')
@@ -26,7 +30,7 @@ export namespace Util {
 	}
 
 	export function parseEnum<G> (value: G, type: any): G {
-		if (!type[value]) throw Error('Value is not a valid option in enum')
+		if (!type[value]) throw Error(`Value ${value} is not a valid option in enum`)
 		return value
 	}
 
@@ -77,7 +81,7 @@ export namespace Util {
 		}, {
 			onFailedAttempt: error => {
 				if (log) {
-					log(`Failed to send IPC message: ${error.message} (attempt ${error.attemptNumber}/${error.attemptNumber + error.attemptsLeft}).`)
+					log(`Failed to send IPC message: ${error.message} (attempt ${error.attemptNumber}/${error.attemptNumber + error.retriesLeft}).`)
 				}
 			},
 			retries: 5
@@ -123,7 +127,7 @@ export namespace Util {
 		const KBoKRi = KB / KRi * HalfCbCrRange
 		const KGoKRi = KG / KRi * HalfCbCrRange
 
-		const buffer = new Buffer(width * height * 4)
+		const buffer = Buffer.alloc(width * height * 4)
 		let i = 0
 		while (i < width * height * 4) {
 			const r1 = data[i + 0]
@@ -190,7 +194,7 @@ export namespace Util {
 		}
 
 		const buffer = Buffer.from(wav.data.samples)
-		const buffer2 = new Buffer(buffer.length)
+		const buffer2 = Buffer.alloc(buffer.length)
 		for (let i = 0; i < buffer.length; i += 3) {
 			// 24bit samples, change endian
 			buffer2[i] = buffer[i + 2]

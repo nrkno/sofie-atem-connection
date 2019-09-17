@@ -14,6 +14,30 @@ export class MixEffectKeyPatternCommand extends AbstractCommand {
 		invert: 1 << 6
 	}
 
+	rawName = 'CKPt'
+	mixEffect: number
+	upstreamKeyerId: number
+	properties: UpstreamKeyerPatternSettings
+
+	serialize () {
+		const buffer = Buffer.alloc(16)
+		buffer.writeUInt8(this.flag, 0)
+		buffer.writeUInt8(this.mixEffect, 1)
+		buffer.writeUInt8(this.upstreamKeyerId, 2)
+
+		buffer.writeUInt8(this.properties.style, 3)
+		buffer.writeUInt16BE(this.properties.size, 4)
+		buffer.writeUInt16BE(this.properties.symmetry, 6)
+		buffer.writeUInt16BE(this.properties.softness, 8)
+		buffer.writeUInt16BE(this.properties.positionX, 10)
+		buffer.writeUInt16BE(this.properties.positionY, 12)
+		buffer.writeUInt8(this.properties.invert ? 1 : 0, 14)
+
+		return buffer
+	}
+}
+
+export class MixEffectKeyUpdateCommand extends AbstractCommand {
 	rawName = 'KePt'
 	mixEffect: number
 	upstreamKeyerId: number
@@ -33,28 +57,12 @@ export class MixEffectKeyPatternCommand extends AbstractCommand {
 		}
 	}
 
-	serialize () {
-		const buffer = Buffer.alloc(16)
-		buffer.writeUInt8(this.flag, 0)
-		buffer.writeUInt8(this.mixEffect, 1)
-		buffer.writeUInt8(this.upstreamKeyerId, 2)
-
-		buffer.writeUInt8(this.properties.style, 3)
-		buffer.writeUInt16BE(this.properties.size, 4)
-		buffer.writeUInt16BE(this.properties.symmetry, 6)
-		buffer.writeUInt16BE(this.properties.softness, 8)
-		buffer.writeUInt16BE(this.properties.positionX, 10)
-		buffer.writeUInt16BE(this.properties.positionY, 12)
-		buffer[14] = this.properties.invert ? 1 : 0
-
-		return Buffer.concat([Buffer.from('CKPt', 'ascii'), buffer])
-	}
-
 	applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		const upstreamKeyer = mixEffect.getUpstreamKeyer(this.upstreamKeyerId)
 		upstreamKeyer.patternSettings = {
 			...this.properties
 		}
+		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.patternSettings`
 	}
 }

@@ -1,7 +1,7 @@
 import AbstractCommand from '../AbstractCommand'
 
 export class DataTransferDownloadRequestCommand extends AbstractCommand {
-	rawName = ''
+	rawName = 'FTSU'
 
 	properties: {
 		transferId: number,
@@ -18,6 +18,6 @@ export class DataTransferDownloadRequestCommand extends AbstractCommand {
 		buffer.writeUInt16BE(0x00f9, 8)
 		buffer.writeUInt16BE(0x020f, 10)
 
-		return Buffer.concat([Buffer.from('FTSU', 'ascii'), buffer])
+		return buffer
 	}
 }

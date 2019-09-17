@@ -14,7 +14,8 @@ import {
 	SuperSourceBox,
 	TransitionProperties,
 	WipeTransitionSettings,
-	SuperSourceProperties
+	SuperSourceProperties,
+	SuperSourceBorder
 } from './state/video'
 import * as USK from './state/video/upstreamKeyers'
 import { InputChannel } from './state/input'
@@ -23,6 +24,8 @@ import * as DT from './dataTransfer'
 import { Util } from './lib/atemUtil'
 import * as Enums from './enums'
 import { AudioChannel, AudioMasterChannel } from './state/audio'
+import exitHook = require('exit-hook')
+import { isArray } from 'util'
 
 export interface AtemOptions {
 	address?: string,
@@ -45,6 +48,11 @@ export class Atem extends EventEmitter {
 	private _log: (...args: any[]) => void
 	private _sentQueue: {[packetId: string]: AbstractCommand } = {}
 
+	on: ((event: 'error', listener: (message: any) => void) => this) &
+		((event: 'connected', listener: () => void) => this) &
+		((event: 'disconnected', listener: () => void) => this) &
+		((event: 'stateChanged', listener: (state: AtemState, path: string) => void) => this)
+
 	constructor (options?: AtemOptions) {
 		super()
 		if (options) {
@@ -64,6 +72,16 @@ export class Atem extends EventEmitter {
 		this.dataTransferManager = new DT.DataTransferManager(
 			(command: AbstractCommand) => this.sendCommand(command)
 		)
+
+		// When the parent process begins exiting, remove the listeners on our child process.
+		// We do this to avoid throwing an error when the child process exits
+		// as a natural part of the parent process exiting.
+		exitHook(() => {
+			if (this.dataTransferManager) {
+				this.dataTransferManager.stop()
+			}
+		})
+
 		this.socket.on('receivedStateChange', (command: AbstractCommand) => this._mutateState(command))
 		this.socket.on(Enums.IPCMessageType.CommandAcknowledged, ({ trackingId }: {trackingId: number}) => this._resolveCommand(trackingId))
 		this.socket.on(Enums.IPCMessageType.CommandTimeout, ({ trackingId }: {trackingId: number}) => this._rejectCommand(trackingId))
@@ -118,9 +136,16 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	autoDownstreamKey (key = 0) {
+	fadeToBlack (me = 0) {
+		const command = new Commands.FadeToBlackAutoCommand()
+		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	autoDownstreamKey (key = 0, isTowardsOnAir?: boolean) {
 		const command = new Commands.DownstreamKeyAutoCommand()
 		command.downstreamKeyerId = key
+		command.updateProps({ isTowardsOnAir })
 		return this.sendCommand(command)
 	}
 
@@ -317,17 +342,38 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	setSuperSourceBoxSettings (newProps: Partial<SuperSourceBox>, box = 0) {
+	setSuperSourceBoxSettings (newProps: Partial<SuperSourceBox>, box = 0, ssrcId = 0) {
 		const command = new Commands.SuperSourceBoxParametersCommand()
+		command.ssrcId = ssrcId
 		command.boxId = box
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setSuperSourceProperties (newProps: Partial<SuperSourceProperties>) {
-		const command = new Commands.SuperSourcePropertiesCommand()
-		command.updateProps(newProps)
-		return this.sendCommand(command)
+	setSuperSourceProperties (newProps: Partial<SuperSourceProperties>, ssrcId = 0) {
+		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
+			const command = new Commands.SuperSourcePropertiesV8Command()
+			command.ssrcId = ssrcId
+			command.updateProps(newProps)
+			return this.sendCommand(command)
+		} else {
+			const command = new Commands.SuperSourcePropertiesCommand()
+			command.updateProps(newProps)
+			return this.sendCommand(command)
+		}
+	}
+
+	setSuperSourceBorder (newProps: Partial<SuperSourceBorder>, ssrcId = 0) {
+		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
+			const command = new Commands.SuperSourceBorderCommand()
+			command.ssrcId = ssrcId
+			command.updateProps(newProps)
+			return this.sendCommand(command)
+		} else {
+			const command = new Commands.SuperSourcePropertiesCommand()
+			command.updateProps(newProps)
+			return this.sendCommand(command)
+		}
 	}
 
 	setInputSettings (newProps: Partial<InputChannel>, input = 0) {
@@ -482,8 +528,11 @@ export class Atem extends EventEmitter {
 
 	private _mutateState (command: AbstractCommand) {
 		if (typeof command.applyToState === 'function') {
-			command.applyToState(this.state)
-			this.emit('stateChanged', this.state, command)
+			let changePaths = command.applyToState(this.state)
+			if (!isArray(changePaths)) {
+				changePaths = [ changePaths ]
+			}
+			changePaths.forEach(path => this.emit('stateChanged', this.state, path))
 		}
 		for (const commandName in DataTransferCommands) {
 			if (command.constructor.name === commandName) {

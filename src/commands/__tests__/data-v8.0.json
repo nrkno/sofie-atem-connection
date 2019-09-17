@@ -1,0 +1,1502 @@
+[
+  {
+    "name": "SSBd",
+    "bytes": "00-20-00-00-53-53-42-64-01-00-03-00-04-65-01-94-55-5D-4E-23-01-F3-01-7F-00-19-01-C7-5A-00-00-00",
+    "command": {
+      "SSrcId": 1,
+      "BorderEnabled": false,
+      "BorderBevel": 3,
+      "BorderWidthOut": 11.249334936611977,
+      "BorderWidthIn": 4.0385940689773268,
+      "BorderSoftnessOut": 85,
+      "BorderSoftnessIn": 93,
+      "BorderBevelSoftness": 78,
+      "BorderBevelPosition": 35,
+      "BorderHue": 49.90762287807074,
+      "BorderSaturation": 38.297788444113813,
+      "BorderLuma": 2.4578185297818012,
+      "BorderLightSourceDirection": 45.463436578290271,
+      "BorderLightSourceAltitude": 90.07831606551926
+    }
+  },
+  {
+    "name": "SSBd",
+    "bytes": "00-20-00-00-53-53-42-64-00-00-02-00-03-CF-05-4E-4A-62-09-30-09-DA-00-D3-00-FB-08-96-60-00-00-00",
+    "command": {
+      "SSrcId": 0,
+      "BorderEnabled": false,
+      "BorderBevel": 2,
+      "BorderWidthOut": 9.75186739571014,
+      "BorderWidthIn": 13.579617677992029,
+      "BorderSoftnessOut": 74,
+      "BorderSoftnessIn": 98,
+      "BorderBevelSoftness": 9,
+      "BorderBevelPosition": 48,
+      "BorderHue": 252.16245864115771,
+      "BorderSaturation": 21.124104140849834,
+      "BorderLuma": 25.113237334933707,
+      "BorderLightSourceDirection": 219.84152231628144,
+      "BorderLightSourceAltitude": 96.005813123661014
+    }
+  },
+  {
+    "name": "SSBd",
+    "bytes": "00-20-00-00-53-53-42-64-00-00-00-00-05-C8-04-A4-39-52-49-4E-00-4E-00-ED-00-4D-00-D6-0E-00-00-00",
+    "command": {
+      "SSrcId": 0,
+      "BorderEnabled": false,
+      "BorderBevel": 0,
+      "BorderWidthOut": 14.79886633846856,
+      "BorderWidthIn": 11.881385488380392,
+      "BorderSoftnessOut": 57,
+      "BorderSoftnessIn": 82,
+      "BorderBevelSoftness": 73,
+      "BorderBevelPosition": 78,
+      "BorderHue": 7.805042893022784,
+      "BorderSaturation": 23.689886798937753,
+      "BorderLuma": 7.7153536061362145,
+      "BorderLightSourceDirection": 21.39458508612336,
+      "BorderLightSourceAltitude": 13.885229273645781
+    }
+  },
+  {
+    "name": "SSBd",
+    "bytes": "00-20-00-00-53-53-42-64-01-00-02-00-01-92-05-F2-35-52-42-17-02-B7-02-23-02-1D-0A-8C-50-00-00-00",
+    "command": {
+      "SSrcId": 1,
+      "BorderEnabled": false,
+      "BorderBevel": 2,
+      "BorderWidthOut": 4.0168513450850041,
+      "BorderWidthIn": 15.215674630932359,
+      "BorderSoftnessOut": 53,
+      "BorderSoftnessIn": 82,
+      "BorderBevelSoftness": 66,
+      "BorderBevelPosition": 23,
+      "BorderHue": 69.452979081335,
+      "BorderSaturation": 54.686463556572086,
+      "BorderLuma": 54.138279358920769,
+      "BorderLightSourceDirection": 269.97085701398123,
+      "BorderLightSourceAltitude": 80.164857851418134
+    }
+  },
+  {
+    "name": "SSBd",
+    "bytes": "00-20-00-00-53-53-42-64-01-00-01-00-00-02-01-85-61-1F-46-60-06-71-01-1A-02-26-01-09-3A-00-00-00",
+    "command": {
+      "SSrcId": 1,
+      "BorderEnabled": false,
+      "BorderBevel": 1,
+      "BorderWidthOut": 0.02047609538793382,
+      "BorderWidthIn": 3.8882834407912026,
+      "BorderSoftnessOut": 97,
+      "BorderSoftnessIn": 31,
+      "BorderBevelSoftness": 70,
+      "BorderBevelPosition": 96,
+      "BorderHue": 164.85174090943843,
+      "BorderSaturation": 28.199159227404351,
+      "BorderLuma": 54.959319790340643,
+      "BorderLightSourceDirection": 26.520962966662353,
+      "BorderLightSourceAltitude": 57.900769569864849
+    }
+  },
+  {
+    "name": "SSBd",
+    "bytes": "00-20-00-00-53-53-42-64-00-00-01-00-04-D3-04-45-55-11-4F-0C-0D-80-01-2C-00-49-01-D6-51-00-00-00",
+    "command": {
+      "SSrcId": 0,
+      "BorderEnabled": false,
+      "BorderBevel": 1,
+      "BorderWidthOut": 12.345161101010238,
+      "BorderWidthIn": 10.934451987470711,
+      "BorderSoftnessOut": 85,
+      "BorderSoftnessIn": 17,
+      "BorderBevelSoftness": 79,
+      "BorderBevelPosition": 12,
+      "BorderHue": 345.57160085941274,
+      "BorderSaturation": 30.01527089160647,
+      "BorderLuma": 7.3124178253637711,
+      "BorderLightSourceDirection": 47.007774629540634,
+      "BorderLightSourceAltitude": 81.232519904725493
+    }
+  },
+  {
+    "name": "SSBd",
+    "bytes": "00-20-00-00-53-53-42-64-00-00-01-00-01-42-05-2B-02-59-3E-34-03-50-03-42-00-54-0B-A5-16-00-00-00",
+    "command": {
+      "SSrcId": 0,
+      "BorderEnabled": false,
+      "BorderBevel": 1,
+      "BorderWidthOut": 3.2192607909530686,
+      "BorderWidthIn": 13.225628791947678,
+      "BorderSoftnessOut": 2,
+      "BorderSoftnessIn": 89,
+      "BorderBevelSoftness": 62,
+      "BorderBevelPosition": 52,
+      "BorderHue": 84.799318418744633,
+      "BorderSaturation": 83.4135821011912,
+      "BorderLuma": 8.3633696233683121,
+      "BorderLightSourceDirection": 298.11412310479864,
+      "BorderLightSourceAltitude": 21.957543176579076
+    }
+  },
+  {
+    "name": "SSBd",
+    "bytes": "00-20-00-00-53-53-42-64-01-00-03-00-02-82-02-E6-19-20-39-52-0A-E6-03-5A-03-84-08-BF-04-00-00-00",
+    "command": {
+      "SSrcId": 1,
+      "BorderEnabled": false,
+      "BorderBevel": 3,
+      "BorderWidthOut": 6.4221834644778566,
+      "BorderWidthIn": 7.4244253446461759,
+      "BorderSoftnessOut": 25,
+      "BorderSoftnessIn": 32,
+      "BorderBevelSoftness": 57,
+      "BorderBevelPosition": 82,
+      "BorderHue": 279.02761482425387,
+      "BorderSaturation": 85.797954437228825,
+      "BorderLuma": 89.979561739591674,
+      "BorderLightSourceDirection": 223.86228685442461,
+      "BorderLightSourceAltitude": 4.2771710568467025
+    }
+  },
+  {
+    "name": "SSBd",
+    "bytes": "00-20-00-00-53-53-42-64-00-00-02-00-01-10-05-48-31-1C-61-07-01-23-02-D3-00-30-09-8F-48-00-00-00",
+    "command": {
+      "SSrcId": 0,
+      "BorderEnabled": false,
+      "BorderBevel": 2,
+      "BorderWidthOut": 2.7182965887329993,
+      "BorderWidthIn": 13.523180580475918,
+      "BorderSoftnessOut": 49,
+      "BorderSoftnessIn": 28,
+      "BorderBevelSoftness": 97,
+      "BorderBevelPosition": 7,
+      "BorderHue": 29.075526642927677,
+      "BorderSaturation": 72.299139840667664,
+      "BorderLuma": 4.8245039790982869,
+      "BorderLightSourceDirection": 244.73071642342524,
+      "BorderLightSourceAltitude": 72.2209545188681
+    }
+  },
+  {
+    "name": "SSBd",
+    "bytes": "00-20-00-00-53-53-42-64-00-00-03-00-03-C0-00-23-60-06-00-63-0C-A3-02-61-03-70-06-E7-54-00-00-00",
+    "command": {
+      "SSrcId": 0,
+      "BorderEnabled": false,
+      "BorderBevel": 3,
+      "BorderWidthOut": 9.5963128477317809,
+      "BorderWidthIn": 0.352110751137189,
+      "BorderSoftnessOut": 96,
+      "BorderSoftnessIn": 6,
+      "BorderBevelSoftness": 0,
+      "BorderBevelPosition": 99,
+      "BorderHue": 323.46597063479294,
+      "BorderSaturation": 60.90975942132517,
+      "BorderLuma": 88.017643097796309,
+      "BorderLightSourceDirection": 176.65156545762511,
+      "BorderLightSourceAltitude": 84.172483759081217
+    }
+  },
+  {
+    "name": "CSBd",
+    "bytes": "00-20-00-00-43-53-42-64-00-04-01-00-03-00-02-85-05-5A-3A-63-35-42-03-5A-01-4A-03-A9-0A-94-04-00",
+    "command": {
+      "Mask": 4,
+      "SSrcId": 1,
+      "BorderEnabled": false,
+      "BorderBevel": 3,
+      "BorderOuterWidth": 6.4549168676393656,
+      "BorderInnerWidth": 13.6998328257817,
+      "BorderOuterSoftness": 58,
+      "BorderInnerSoftness": 99,
+      "BorderBevelSoftness": 53,
+      "BorderBevelPosition": 66,
+      "BorderHue": 85.812724092422386,
+      "BorderSaturation": 33.01226596022596,
+      "BorderLuma": 93.654197684328167,
+      "BorderLightSourceDirection": 270.75863241122971,
+      "BorderLightSourceAltitude": 4
+    }
+  },
+  {
+    "name": "CSBd",
+    "bytes": "00-20-00-00-43-53-42-64-08-00-01-00-02-00-03-BF-02-C5-44-53-19-57-09-4E-03-CD-00-28-07-99-50-00",
+    "command": {
+      "Mask": 2048,
+      "SSrcId": 1,
+      "BorderEnabled": false,
+      "BorderBevel": 2,
+      "BorderOuterWidth": 9.5884882852381512,
+      "BorderInnerWidth": 7.0908929291604519,
+      "BorderOuterSoftness": 68,
+      "BorderInnerSoftness": 83,
+      "BorderBevelSoftness": 25,
+      "BorderBevelPosition": 87,
+      "BorderHue": 238.2364481941035,
+      "BorderSaturation": 97.278421836569166,
+      "BorderLuma": 3.9709395281835178,
+      "BorderLightSourceDirection": 194.53615109274915,
+      "BorderLightSourceAltitude": 80
+    }
+  },
+  {
+    "name": "CSBd",
+    "bytes": "00-20-00-00-43-53-42-64-00-80-01-00-01-00-05-12-02-FC-49-4F-40-52-01-FB-00-86-02-5A-03-D7-24-00",
+    "command": {
+      "Mask": 128,
+      "SSrcId": 1,
+      "BorderEnabled": false,
+      "BorderBevel": 1,
+      "BorderOuterWidth": 12.980295515144382,
+      "BorderInnerWidth": 7.6353885417968907,
+      "BorderOuterSoftness": 73,
+      "BorderInnerSoftness": 79,
+      "BorderBevelSoftness": 64,
+      "BorderBevelPosition": 82,
+      "BorderHue": 50.708609513057681,
+      "BorderSaturation": 13.435372064558496,
+      "BorderLuma": 60.2481667232924,
+      "BorderLightSourceDirection": 98.322687444287666,
+      "BorderLightSourceAltitude": 36
+    }
+  },
+  {
+    "name": "CSBd",
+    "bytes": "00-20-00-00-43-53-42-64-01-00-00-00-03-00-00-A5-01-61-13-1E-59-27-06-C4-02-FD-00-55-00-B0-4A-00",
+    "command": {
+      "Mask": 256,
+      "SSrcId": 0,
+      "BorderEnabled": false,
+      "BorderBevel": 3,
+      "BorderOuterWidth": 1.6456382654819817,
+      "BorderInnerWidth": 3.5259387882081508,
+      "BorderOuterSoftness": 19,
+      "BorderInnerSoftness": 30,
+      "BorderBevelSoftness": 89,
+      "BorderBevelPosition": 39,
+      "BorderHue": 173.16186267769052,
+      "BorderSaturation": 76.491712488463023,
+      "BorderLuma": 8.5014263673226473,
+      "BorderLightSourceDirection": 17.641393445684294,
+      "BorderLightSourceAltitude": 74
+    }
+  },
+  {
+    "name": "CSBd",
+    "bytes": "00-20-00-00-43-53-42-64-08-00-01-00-02-00-00-A6-01-B5-20-31-5E-38-02-1E-03-72-03-03-0A-7F-2D-00",
+    "command": {
+      "Mask": 2048,
+      "SSrcId": 1,
+      "BorderEnabled": false,
+      "BorderBevel": 2,
+      "BorderOuterWidth": 1.6551414661366222,
+      "BorderInnerWidth": 4.3746008744345053,
+      "BorderOuterSoftness": 32,
+      "BorderInnerSoftness": 49,
+      "BorderBevelSoftness": 94,
+      "BorderBevelPosition": 56,
+      "BorderHue": 54.240631995136212,
+      "BorderSaturation": 88.220985181732559,
+      "BorderLuma": 77.096880868588059,
+      "BorderLightSourceDirection": 268.73145889864838,
+      "BorderLightSourceAltitude": 45
+    }
+  },
+  {
+    "name": "CSBd",
+    "bytes": "00-20-00-00-43-53-42-64-00-10-00-00-03-00-01-29-03-FD-41-07-2B-3A-05-2B-02-8F-00-74-00-9A-21-00",
+    "command": {
+      "Mask": 16,
+      "SSrcId": 0,
+      "BorderEnabled": false,
+      "BorderBevel": 3,
+      "BorderOuterWidth": 2.974470929696444,
+      "BorderInnerWidth": 10.214929347026594,
+      "BorderOuterSoftness": 65,
+      "BorderInnerSoftness": 7,
+      "BorderBevelSoftness": 43,
+      "BorderBevelPosition": 58,
+      "BorderHue": 132.25601335347443,
+      "BorderSaturation": 65.528649308499254,
+      "BorderLuma": 11.581246280847697,
+      "BorderLightSourceDirection": 15.390975154047354,
+      "BorderLightSourceAltitude": 33
+    }
+  },
+  {
+    "name": "CSBd",
+    "bytes": "00-20-00-00-43-53-42-64-02-00-01-00-03-00-05-E0-03-BF-43-57-10-08-05-30-02-10-01-79-05-95-5F-00",
+    "command": {
+      "Mask": 512,
+      "SSrcId": 1,
+      "BorderEnabled": false,
+      "BorderBevel": 3,
+      "BorderOuterWidth": 15.044824778588872,
+      "BorderInnerWidth": 9.5886819705314377,
+      "BorderOuterSoftness": 67,
+      "BorderInnerSoftness": 87,
+      "BorderBevelSoftness": 16,
+      "BorderBevelPosition": 8,
+      "BorderHue": 132.84941328300602,
+      "BorderSaturation": 52.828534344597031,
+      "BorderLuma": 37.66233838985783,
+      "BorderLightSourceDirection": 142.86955891697181,
+      "BorderLightSourceAltitude": 95
+    }
+  },
+  {
+    "name": "CSBd",
+    "bytes": "00-20-00-00-43-53-42-64-00-10-00-00-01-00-00-90-02-80-14-12-56-0A-03-36-01-CE-00-14-02-1C-49-00",
+    "command": {
+      "Mask": 16,
+      "SSrcId": 0,
+      "BorderEnabled": false,
+      "BorderBevel": 1,
+      "BorderOuterWidth": 1.4354710734614502,
+      "BorderInnerWidth": 6.4033363267794883,
+      "BorderOuterSoftness": 20,
+      "BorderInnerSoftness": 18,
+      "BorderBevelSoftness": 86,
+      "BorderBevelPosition": 10,
+      "BorderHue": 82.180400277851334,
+      "BorderSaturation": 46.237032276688623,
+      "BorderLuma": 1.9985449975349685,
+      "BorderLightSourceDirection": 54.03597261036559,
+      "BorderLightSourceAltitude": 73
+    }
+  },
+  {
+    "name": "CSBd",
+    "bytes": "00-20-00-00-43-53-42-64-01-00-00-00-02-00-05-52-03-1D-0D-56-50-55-08-E3-00-D3-01-8B-0B-5F-51-00",
+    "command": {
+      "Mask": 256,
+      "SSrcId": 0,
+      "BorderEnabled": false,
+      "BorderBevel": 2,
+      "BorderOuterWidth": 13.619378245258412,
+      "BorderInnerWidth": 7.9705761931699586,
+      "BorderOuterSoftness": 13,
+      "BorderInnerSoftness": 86,
+      "BorderBevelSoftness": 80,
+      "BorderBevelPosition": 85,
+      "BorderHue": 227.50530350930302,
+      "BorderSaturation": 21.057989644379351,
+      "BorderLuma": 39.49127334146354,
+      "BorderLightSourceDirection": 291.14227826774226,
+      "BorderLightSourceAltitude": 81
+    }
+  },
+  {
+    "name": "CSBd",
+    "bytes": "00-20-00-00-43-53-42-64-00-02-00-00-01-00-01-86-05-E8-09-44-5F-5C-07-33-01-D0-03-74-0B-40-47-00",
+    "command": {
+      "Mask": 2,
+      "SSrcId": 0,
+      "BorderEnabled": false,
+      "BorderBevel": 1,
+      "BorderOuterWidth": 3.901252927212628,
+      "BorderInnerWidth": 15.122122421451902,
+      "BorderOuterSoftness": 9,
+      "BorderInnerSoftness": 68,
+      "BorderBevelSoftness": 95,
+      "BorderBevelPosition": 92,
+      "BorderHue": 184.28261636639138,
+      "BorderSaturation": 46.441035879049927,
+      "BorderLuma": 88.405467610995032,
+      "BorderLightSourceDirection": 288.02249433427238,
+      "BorderLightSourceAltitude": 71
+    }
+  },
+  {
+    "name": "SSBP",
+    "bytes": "00-20-00-00-53-53-42-50-00-02-00-00-07-D1-FE-DE-F7-07-00-8D-00-00-26-60-1F-EC-19-64-45-57-00-00",
+    "command": {
+      "SSrcId": 0,
+      "BoxIndex": 2,
+      "Enabled": false,
+      "InputSource": 2001,
+      "PositionX": -2.8995814262421664,
+      "PositionY": -22.971381377881109,
+      "Size": 0.14050941172545281,
+      "Cropped": false,
+      "CropTop": 9.8236622707097148,
+      "CropBottom": 8.1716596801633283,
+      "CropLeft": 6.4998144090640428,
+      "CropRight": 17.750740834395746
+    }
+  },
+  {
+    "name": "SSBP",
+    "bytes": "00-20-00-00-53-53-42-50-01-02-00-00-00-09-0B-73-FC-CA-00-71-00-00-42-C9-36-DA-42-CE-71-4A-00-00",
+    "command": {
+      "SSrcId": 1,
+      "BoxIndex": 2,
+      "Enabled": false,
+      "InputSource": 9,
+      "PositionX": 29.312979465961917,
+      "PositionY": -8.2153754375015247,
+      "Size": 0.11309369289925959,
+      "Cropped": false,
+      "CropTop": 17.097348362718407,
+      "CropBottom": 14.041926675495658,
+      "CropLeft": 17.102451287723355,
+      "CropRight": 29.002026303206584
+    }
+  },
+  {
+    "name": "SSBP",
+    "bytes": "00-20-00-00-53-53-42-50-01-02-00-00-0B-C3-06-CA-FB-BA-00-65-00-00-04-BC-06-A4-5A-45-79-EE-00-00",
+    "command": {
+      "SSrcId": 1,
+      "BoxIndex": 2,
+      "Enabled": false,
+      "InputSource": 3011,
+      "PositionX": 17.375716597482434,
+      "PositionY": -10.936252940882119,
+      "Size": 0.1013881075528395,
+      "Cropped": false,
+      "CropTop": 1.2123324830142468,
+      "CropBottom": 1.6996123370247018,
+      "CropLeft": 23.109414647849935,
+      "CropRight": 31.213692843547879
+    }
+  },
+  {
+    "name": "SSBP",
+    "bytes": "00-20-00-00-53-53-42-50-00-03-00-00-0F-B4-EE-8A-00-57-00-C5-00-00-02-DD-1B-74-29-F2-0D-92-00-00",
+    "command": {
+      "SSrcId": 0,
+      "BoxIndex": 3,
+      "Enabled": false,
+      "InputSource": 4020,
+      "PositionX": -44.70420777644226,
+      "PositionY": 0.86934061109523553,
+      "Size": 0.19694897128592664,
+      "Cropped": false,
+      "CropTop": 0.73276393801568263,
+      "CropBottom": 7.0275960047857815,
+      "CropLeft": 10.738056977623168,
+      "CropRight": 3.4740159080708475
+    }
+  },
+  {
+    "name": "SSBP",
+    "bytes": "00-20-00-00-53-53-42-50-00-02-00-00-00-04-0C-AA-08-2A-03-0B-00-00-08-99-39-3A-50-5E-75-FD-00-00",
+    "command": {
+      "SSrcId": 0,
+      "BoxIndex": 2,
+      "Enabled": false,
+      "InputSource": 4,
+      "PositionX": 32.420867704051012,
+      "PositionY": 20.902186354111038,
+      "Size": 0.77875908569840679,
+      "Cropped": false,
+      "CropTop": 2.2005947754721134,
+      "CropBottom": 14.650118190166594,
+      "CropLeft": 20.574332008405744,
+      "CropRight": 30.204937054871088
+    }
+  },
+  {
+    "name": "SSBP",
+    "bytes": "00-20-00-00-53-53-42-50-01-02-00-00-00-0A-FD-02-0C-02-02-0B-00-00-3B-E6-21-E7-57-68-69-87-00-00",
+    "command": {
+      "SSrcId": 1,
+      "BoxIndex": 2,
+      "Enabled": false,
+      "InputSource": 10,
+      "PositionX": -7.65787775426073,
+      "PositionY": 30.744959287692311,
+      "Size": 0.5232437272105569,
+      "Cropped": false,
+      "CropTop": 15.334375878486027,
+      "CropBottom": 8.6787768838362656,
+      "CropLeft": 22.376240144658947,
+      "CropRight": 27.014799220028706
+    }
+  },
+  {
+    "name": "SSBP",
+    "bytes": "00-20-00-00-53-53-42-50-00-01-00-00-07-D1-05-63-00-14-03-6B-00-00-0D-62-1D-3B-00-7F-75-97-00-00",
+    "command": {
+      "SSrcId": 0,
+      "BoxIndex": 1,
+      "Enabled": false,
+      "InputSource": 2001,
+      "PositionX": 13.785865663451085,
+      "PositionY": 0.19712172178417858,
+      "Size": 0.87501191930613109,
+      "Cropped": false,
+      "CropTop": 3.4258943393015744,
+      "CropBottom": 7.4832865695856912,
+      "CropLeft": 0.12658089405232151,
+      "CropRight": 30.102545484016904
+    }
+  },
+  {
+    "name": "SSBP",
+    "bytes": "00-20-00-00-53-53-42-50-01-03-00-00-00-0D-F9-B6-FC-6C-03-5F-00-00-16-5F-1B-CB-02-17-39-3E-00-00",
+    "command": {
+      "SSrcId": 1,
+      "BoxIndex": 3,
+      "Enabled": false,
+      "InputSource": 13,
+      "PositionX": -16.097629070327443,
+      "PositionY": -9.1559317480567515,
+      "Size": 0.8634505515328843,
+      "Cropped": false,
+      "CropTop": 5.7272973338734809,
+      "CropBottom": 7.1145531037424474,
+      "CropLeft": 0.53458410526373612,
+      "CropRight": 14.653943143158193
+    }
+  },
+  {
+    "name": "SSBP",
+    "bytes": "00-20-00-00-53-53-42-50-00-03-00-00-00-04-0F-1D-04-9B-01-35-00-00-02-E3-3C-A5-05-A6-37-BF-00-00",
+    "command": {
+      "SSrcId": 0,
+      "BoxIndex": 3,
+      "Enabled": false,
+      "InputSource": 4,
+      "PositionX": 38.694062765079579,
+      "PositionY": 11.78556626745759,
+      "Size": 0.30868750027319763,
+      "Cropped": false,
+      "CropTop": 0.73862994589779052,
+      "CropBottom": 15.524682799132858,
+      "CropLeft": 1.4462810016452712,
+      "CropRight": 14.271047971337591
+    }
+  },
+  {
+    "name": "SSBP",
+    "bytes": "00-20-00-00-53-53-42-50-01-01-00-00-0B-E1-10-D0-F9-29-03-03-00-00-28-40-0A-20-47-C3-3A-F7-00-00",
+    "command": {
+      "SSrcId": 1,
+      "BoxIndex": 1,
+      "Enabled": false,
+      "InputSource": 3041,
+      "PositionX": 43.035959107352411,
+      "PositionY": -17.507546705895823,
+      "Size": 0.77082644229327624,
+      "Cropped": false,
+      "CropTop": 10.303916270986161,
+      "CropBottom": 2.5920650924519011,
+      "CropLeft": 18.371467732997363,
+      "CropRight": 15.094543687577612
+    }
+  },
+  {
+    "name": "CSBP",
+    "bytes": "00-20-00-00-43-53-42-50-00-20-00-01-00-00-0F-AA-EE-1B-00-B1-02-9E-00-00-23-33-00-A2-59-36-6F-72",
+    "command": {
+      "Mask": 32,
+      "SSrcId": 0,
+      "BoxIndex": 1,
+      "Enabled": false,
+      "Source": 4010,
+      "PositionX": -45.812943353230573,
+      "PositionY": 1.769991747927852,
+      "Size": 0.66964118891378921,
+      "Cropped": false,
+      "CropTop": 9.0113903987274462,
+      "CropBottom": 0.16185614287939673,
+      "CropLeft": 22.837912361527753,
+      "CropRight": 28.53044912057484
+    }
+  },
+  {
+    "name": "CSBP",
+    "bytes": "00-20-00-00-43-53-42-50-00-80-00-02-00-00-27-25-0E-FD-07-2C-03-8E-00-00-1C-E9-00-83-51-85-1D-3A",
+    "command": {
+      "Mask": 128,
+      "SSrcId": 0,
+      "BoxIndex": 2,
+      "Enabled": false,
+      "Source": 10021,
+      "PositionX": 38.368276740595832,
+      "PositionY": 18.359695345330838,
+      "Size": 0.91009659172505908,
+      "Cropped": false,
+      "CropTop": 7.4007025358270395,
+      "CropBottom": 0.13100555079570297,
+      "CropLeft": 20.86852637905093,
+      "CropRight": 7.4821190272840292
+    }
+  },
+  {
+    "name": "CSBP",
+    "bytes": "00-20-00-00-43-53-42-50-00-80-00-02-00-00-1F-45-F7-E7-FC-2C-00-C8-00-00-2F-82-18-25-60-43-30-0B",
+    "command": {
+      "Mask": 128,
+      "SSrcId": 0,
+      "BoxIndex": 2,
+      "Enabled": false,
+      "Source": 8005,
+      "PositionX": -20.729026379403205,
+      "PositionY": -9.8049445225880216,
+      "Size": 0.19984457594335292,
+      "Cropped": false,
+      "CropTop": 12.162078333162739,
+      "CropBottom": 6.1809549351134132,
+      "CropLeft": 24.643116798551343,
+      "CropRight": 12.298546126251363
+    }
+  },
+  {
+    "name": "CSBP",
+    "bytes": "00-20-00-00-43-53-42-50-00-01-00-01-00-00-00-11-F9-1A-0D-45-02-EB-00-00-34-65-10-A2-07-E2-48-B9",
+    "command": {
+      "Mask": 1,
+      "SSrcId": 0,
+      "BoxIndex": 1,
+      "Enabled": false,
+      "Source": 17,
+      "PositionX": -17.659558103261311,
+      "PositionY": 33.967885928213548,
+      "Size": 0.746835289735736,
+      "Cropped": false,
+      "CropTop": 13.413373816485226,
+      "CropBottom": 4.2581971326182586,
+      "CropLeft": 2.0179637977937066,
+      "CropRight": 18.617450931397013
+    }
+  },
+  {
+    "name": "CSBP",
+    "bytes": "00-20-00-00-43-53-42-50-00-04-01-02-00-00-1F-41-F9-59-08-E2-01-B6-00-00-1F-AB-00-38-48-8F-4C-E4",
+    "command": {
+      "Mask": 4,
+      "SSrcId": 1,
+      "BoxIndex": 2,
+      "Enabled": false,
+      "Source": 8001,
+      "PositionX": -17.025342762947709,
+      "PositionY": 22.740177622409618,
+      "Size": 0.43750383656821396,
+      "Cropped": false,
+      "CropTop": 8.1068792948997022,
+      "CropBottom": 0.055788145426562116,
+      "CropLeft": 18.575420850224525,
+      "CropRight": 19.684379825221551
+    }
+  },
+  {
+    "name": "CSBP",
+    "bytes": "00-20-00-00-43-53-42-50-00-80-00-03-00-00-1F-41-F3-C3-FD-0D-02-7A-00-00-1E-7C-23-5C-70-0C-07-DF",
+    "command": {
+      "Mask": 128,
+      "SSrcId": 0,
+      "BoxIndex": 3,
+      "Enabled": false,
+      "Source": 8001,
+      "PositionX": -31.332103006230717,
+      "PositionY": -7.54884886441233,
+      "Size": 0.633872842846379,
+      "Cropped": false,
+      "CropTop": 7.8037637843767955,
+      "CropBottom": 9.0523594650683741,
+      "CropLeft": 28.683870254402919,
+      "CropRight": 2.014923856600618
+    }
+  },
+  {
+    "name": "CSBP",
+    "bytes": "00-20-00-00-43-53-42-50-00-40-01-02-00-00-00-10-FC-71-06-26-01-60-00-00-26-CB-28-2A-7A-45-6B-6E",
+    "command": {
+      "Mask": 64,
+      "SSrcId": 1,
+      "BoxIndex": 2,
+      "Enabled": false,
+      "Source": 16,
+      "PositionX": -9.1094761756758551,
+      "PositionY": 15.741870750552907,
+      "Size": 0.35244154757002438,
+      "Cropped": false,
+      "CropTop": 9.93054226503267,
+      "CropBottom": 10.282374033835891,
+      "CropLeft": 31.300922184857036,
+      "CropRight": 27.501728771022396
+    }
+  },
+  {
+    "name": "CSBP",
+    "bytes": "00-20-00-00-43-53-42-50-00-01-01-03-00-00-1F-45-FC-26-FF-BF-02-F0-00-00-2D-1E-44-9D-75-FF-73-70",
+    "command": {
+      "Mask": 1,
+      "SSrcId": 1,
+      "BoxIndex": 3,
+      "Enabled": false,
+      "Source": 8005,
+      "PositionX": -9.85713907790237,
+      "PositionY": -0.64960549522638755,
+      "Size": 0.75173361776477365,
+      "Cropped": false,
+      "CropTop": 11.54974702165916,
+      "CropBottom": 17.564781060239664,
+      "CropLeft": 30.206502153634329,
+      "CropRight": 29.55231389289364
+    }
+  },
+  {
+    "name": "CSBP",
+    "bytes": "00-20-00-00-43-53-42-50-00-01-01-03-00-00-00-12-EF-B4-04-A7-03-03-00-00-0C-C8-3E-84-5C-36-0E-FE",
+    "command": {
+      "Mask": 1,
+      "SSrcId": 1,
+      "BoxIndex": 3,
+      "Enabled": false,
+      "Source": 18,
+      "PositionX": -41.715267595702443,
+      "PositionY": 11.912981853779865,
+      "Size": 0.77054633022311436,
+      "Cropped": false,
+      "CropTop": 3.2724119104782177,
+      "CropBottom": 16.00432339497112,
+      "CropLeft": 23.605675916935166,
+      "CropRight": 3.8375203180301565
+    }
+  },
+  {
+    "name": "CSBP",
+    "bytes": "00-20-00-00-43-53-42-50-00-20-01-01-00-00-1F-41-F4-07-F9-56-03-C5-00-00-1F-DF-2B-65-13-B8-44-6F",
+    "command": {
+      "Mask": 32,
+      "SSrcId": 1,
+      "BoxIndex": 1,
+      "Enabled": false,
+      "Source": 8001,
+      "PositionX": -30.651291883853865,
+      "PositionY": -17.057298890807338,
+      "Size": 0.96489119893167685,
+      "Cropped": false,
+      "CropTop": 8.1594808838141528,
+      "CropBottom": 11.10871321200799,
+      "CropLeft": 5.0483408593797785,
+      "CropRight": 17.519088902286761
+    }
+  },
+  {
+    "name": "SSrc",
+    "bytes": "00-18-00-00-53-53-72-63-00-00-00-14-00-10-00-00-02-12-02-65-00-00-00-00",
+    "command": {
+      "SSrcId": 0,
+      "ArtFillInput": 20,
+      "ArtKeyInput": 16,
+      "ArtOption": 0,
+      "ArtPreMultiplied": false,
+      "ArtClip": 53.021516815303606,
+      "ArtGain": 61.296685161672848,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "SSrc",
+    "bytes": "00-18-00-00-53-53-72-63-00-00-00-02-00-10-01-00-01-FA-01-2F-00-00-00-00",
+    "command": {
+      "SSrcId": 0,
+      "ArtFillInput": 2,
+      "ArtKeyInput": 16,
+      "ArtOption": 1,
+      "ArtPreMultiplied": false,
+      "ArtClip": 50.577703933500551,
+      "ArtGain": 30.296290866237268,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "SSrc",
+    "bytes": "00-18-00-00-53-53-72-63-00-00-17-70-00-05-01-00-03-1F-02-81-00-00-00-00",
+    "command": {
+      "SSrcId": 0,
+      "ArtFillInput": 6000,
+      "ArtKeyInput": 5,
+      "ArtOption": 1,
+      "ArtPreMultiplied": false,
+      "ArtClip": 79.933174969597331,
+      "ArtGain": 64.146317571469737,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "SSrc",
+    "bytes": "00-18-00-00-53-53-72-63-01-00-1F-42-1B-5A-01-00-03-8E-00-DD-00-00-00-00",
+    "command": {
+      "SSrcId": 1,
+      "ArtFillInput": 8002,
+      "ArtKeyInput": 7002,
+      "ArtOption": 1,
+      "ArtPreMultiplied": false,
+      "ArtClip": 91.005235906227128,
+      "ArtGain": 22.076935843600396,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "SSrc",
+    "bytes": "00-18-00-00-53-53-72-63-00-00-1F-41-27-1B-00-00-02-13-00-AB-00-00-00-00",
+    "command": {
+      "SSrcId": 0,
+      "ArtFillInput": 8001,
+      "ArtKeyInput": 10011,
+      "ArtOption": 0,
+      "ArtPreMultiplied": false,
+      "ArtClip": 53.131595045855093,
+      "ArtGain": 17.083955890072488,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "SSrc",
+    "bytes": "00-18-00-00-53-53-72-63-00-00-13-92-00-0D-01-00-00-08-02-71-00-00-00-00",
+    "command": {
+      "SSrcId": 0,
+      "ArtFillInput": 5010,
+      "ArtKeyInput": 13,
+      "ArtOption": 1,
+      "ArtPreMultiplied": false,
+      "ArtClip": 0.83598904350585723,
+      "ArtGain": 62.505195132691973,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "SSrc",
+    "bytes": "00-18-00-00-53-53-72-63-01-00-1F-43-17-70-01-00-00-AC-03-0D-00-00-00-00",
+    "command": {
+      "SSrcId": 1,
+      "ArtFillInput": 8003,
+      "ArtKeyInput": 6000,
+      "ArtOption": 1,
+      "ArtPreMultiplied": false,
+      "ArtClip": 17.178228365806035,
+      "ArtGain": 78.132313386598753,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "SSrc",
+    "bytes": "00-18-00-00-53-53-72-63-01-00-1F-46-00-09-00-00-03-96-01-BE-00-00-00-00",
+    "command": {
+      "SSrcId": 1,
+      "ArtFillInput": 8006,
+      "ArtKeyInput": 9,
+      "ArtOption": 0,
+      "ArtPreMultiplied": false,
+      "ArtClip": 91.817102856848891,
+      "ArtGain": 44.568865580749168,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "SSrc",
+    "bytes": "00-18-00-00-53-53-72-63-01-00-27-24-0B-C2-00-00-00-22-02-AB-00-00-00-00",
+    "command": {
+      "SSrcId": 1,
+      "ArtFillInput": 10020,
+      "ArtKeyInput": 3010,
+      "ArtOption": 0,
+      "ArtPreMultiplied": false,
+      "ArtClip": 3.3695966486677511,
+      "ArtGain": 68.27972459992381,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "SSrc",
+    "bytes": "00-18-00-00-53-53-72-63-01-00-13-9C-1F-43-00-00-03-52-01-B6-00-00-00-00",
+    "command": {
+      "SSrcId": 1,
+      "ArtFillInput": 5020,
+      "ArtKeyInput": 8003,
+      "ArtOption": 0,
+      "ArtPreMultiplied": false,
+      "ArtClip": 84.990362070962021,
+      "ArtGain": 43.839447127580385,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "CSSc",
+    "bytes": "00-18-00-00-43-53-53-63-02-00-17-70-00-05-00-00-03-49-00-21-00-00-00-00",
+    "command": {
+      "Mask": 2,
+      "SSrcId": 0,
+      "ArtFillSource": 6000,
+      "ArtCutSource": 5,
+      "ArtOption": 0,
+      "ArtPreMultiplied": false,
+      "ArtClip": 84.121406210642959,
+      "ArtGain": 3.3374738895043143,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "CSSc",
+    "bytes": "00-18-00-00-43-53-53-63-10-01-0B-CC-00-11-01-00-00-CF-01-0B-00-00-00-00",
+    "command": {
+      "Mask": 16,
+      "SSrcId": 1,
+      "ArtFillSource": 3020,
+      "ArtCutSource": 17,
+      "ArtOption": 1,
+      "ArtPreMultiplied": false,
+      "ArtClip": 20.653949221900639,
+      "ArtGain": 26.728399017233592,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "CSSc",
+    "bytes": "00-18-00-00-43-53-53-63-40-00-0B-CD-00-0D-00-00-00-AD-03-8A-00-00-00-00",
+    "command": {
+      "Mask": 64,
+      "SSrcId": 0,
+      "ArtFillSource": 3021,
+      "ArtCutSource": 13,
+      "ArtOption": 0,
+      "ArtPreMultiplied": false,
+      "ArtClip": 17.329795480393706,
+      "ArtGain": 90.558048659264131,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "CSSc",
+    "bytes": "00-18-00-00-43-53-53-63-20-00-13-9C-17-70-01-00-01-29-03-C5-00-00-00-00",
+    "command": {
+      "Mask": 32,
+      "SSrcId": 0,
+      "ArtFillSource": 5020,
+      "ArtCutSource": 6000,
+      "ArtOption": 1,
+      "ArtPreMultiplied": false,
+      "ArtClip": 29.657257781204418,
+      "ArtGain": 96.50644883350769,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "CSSc",
+    "bytes": "00-18-00-00-43-53-53-63-02-00-00-0E-00-10-00-00-01-3C-03-7C-00-00-00-00",
+    "command": {
+      "Mask": 2,
+      "SSrcId": 0,
+      "ArtFillSource": 14,
+      "ArtCutSource": 16,
+      "ArtOption": 0,
+      "ArtPreMultiplied": false,
+      "ArtClip": 31.625173954118587,
+      "ArtGain": 89.227553824534439,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "CSSc",
+    "bytes": "00-18-00-00-43-53-53-63-02-01-0B-D7-00-05-01-00-02-D0-03-7F-00-00-00-00",
+    "command": {
+      "Mask": 2,
+      "SSrcId": 1,
+      "ArtFillSource": 3031,
+      "ArtCutSource": 5,
+      "ArtOption": 1,
+      "ArtPreMultiplied": false,
+      "ArtClip": 71.980108261099147,
+      "ArtGain": 89.499895456014158,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "CSSc",
+    "bytes": "00-18-00-00-43-53-53-63-04-01-27-25-1F-42-01-00-01-95-00-41-00-00-00-00",
+    "command": {
+      "Mask": 4,
+      "SSrcId": 1,
+      "ArtFillSource": 10021,
+      "ArtCutSource": 8002,
+      "ArtOption": 1,
+      "ArtPreMultiplied": false,
+      "ArtClip": 40.496789682887865,
+      "ArtGain": 6.5219565325053193,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "CSSc",
+    "bytes": "00-18-00-00-43-53-53-63-04-01-0B-E0-00-02-00-00-00-09-00-25-00-00-00-00",
+    "command": {
+      "Mask": 4,
+      "SSrcId": 1,
+      "ArtFillSource": 3040,
+      "ArtCutSource": 2,
+      "ArtOption": 0,
+      "ArtPreMultiplied": false,
+      "ArtClip": 0.8861284241481352,
+      "ArtGain": 3.6969826108296315,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "CSSc",
+    "bytes": "00-18-00-00-43-53-53-63-08-01-1F-45-00-05-01-00-01-80-00-06-00-00-00-00",
+    "command": {
+      "Mask": 8,
+      "SSrcId": 1,
+      "ArtFillSource": 8005,
+      "ArtCutSource": 5,
+      "ArtOption": 1,
+      "ArtPreMultiplied": false,
+      "ArtClip": 38.360867806878346,
+      "ArtGain": 0.55480133767929,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "CSSc",
+    "bytes": "00-18-00-00-43-53-53-63-08-01-0F-B4-27-1B-00-00-00-2D-03-A8-00-00-00-00",
+    "command": {
+      "Mask": 8,
+      "SSrcId": 1,
+      "ArtFillSource": 4020,
+      "ArtCutSource": 10011,
+      "ArtOption": 0,
+      "ArtPreMultiplied": false,
+      "ArtClip": 4.4845646733811888,
+      "ArtGain": 93.568236796915642,
+      "ArtInvertKey": false
+    }
+  },
+  {
+    "name": "_MvC",
+    "bytes": "00-14-00-00-5F-4D-76-43-9F-55-00-00-00-00-00-00-00-00-00-00",
+    "command": {
+      "Count": 159,
+      "WindowCount": 85,
+      "CanRouteInputs": false,
+      "Unknown": false,
+      "SupportsVuMeters": false,
+      "CanToggleSafeArea": false,
+      "CanSwapPreviewProgram": false
+    }
+  },
+  {
+    "name": "_MvC",
+    "bytes": "00-14-00-00-5F-4D-76-43-00-00-00-00-00-00-00-00-00-00-00-00",
+    "command": {
+      "Count": 0,
+      "WindowCount": 0,
+      "CanRouteInputs": false,
+      "Unknown": false,
+      "SupportsVuMeters": false,
+      "CanToggleSafeArea": false,
+      "CanSwapPreviewProgram": false
+    }
+  },
+  {
+    "name": "_MvC",
+    "bytes": "00-14-00-00-5F-4D-76-43-9D-DB-00-00-00-00-00-00-00-00-00-00",
+    "command": {
+      "Count": 157,
+      "WindowCount": 219,
+      "CanRouteInputs": false,
+      "Unknown": false,
+      "SupportsVuMeters": false,
+      "CanToggleSafeArea": false,
+      "CanSwapPreviewProgram": false
+    }
+  },
+  {
+    "name": "_MvC",
+    "bytes": "00-14-00-00-5F-4D-76-43-C0-73-00-00-00-00-00-00-00-00-00-00",
+    "command": {
+      "Count": 192,
+      "WindowCount": 115,
+      "CanRouteInputs": false,
+      "Unknown": false,
+      "SupportsVuMeters": false,
+      "CanToggleSafeArea": false,
+      "CanSwapPreviewProgram": false
+    }
+  },
+  {
+    "name": "_MvC",
+    "bytes": "00-14-00-00-5F-4D-76-43-5E-D8-00-00-00-00-00-00-00-00-00-00",
+    "command": {
+      "Count": 94,
+      "WindowCount": 216,
+      "CanRouteInputs": false,
+      "Unknown": false,
+      "SupportsVuMeters": false,
+      "CanToggleSafeArea": false,
+      "CanSwapPreviewProgram": false
+    }
+  },
+  {
+    "name": "_MvC",
+    "bytes": "00-14-00-00-5F-4D-76-43-B3-84-00-00-00-00-00-00-00-00-00-00",
+    "command": {
+      "Count": 179,
+      "WindowCount": 132,
+      "CanRouteInputs": false,
+      "Unknown": false,
+      "SupportsVuMeters": false,
+      "CanToggleSafeArea": false,
+      "CanSwapPreviewProgram": false
+    }
+  },
+  {
+    "name": "_MvC",
+    "bytes": "00-14-00-00-5F-4D-76-43-3C-71-00-00-00-00-00-00-00-00-00-00",
+    "command": {
+      "Count": 60,
+      "WindowCount": 113,
+      "CanRouteInputs": false,
+      "Unknown": false,
+      "SupportsVuMeters": false,
+      "CanToggleSafeArea": false,
+      "CanSwapPreviewProgram": false
+    }
+  },
+  {
+    "name": "_MvC",
+    "bytes": "00-14-00-00-5F-4D-76-43-15-DB-00-00-00-00-00-00-00-00-00-00",
+    "command": {
+      "Count": 21,
+      "WindowCount": 219,
+      "CanRouteInputs": false,
+      "Unknown": false,
+      "SupportsVuMeters": false,
+      "CanToggleSafeArea": false,
+      "CanSwapPreviewProgram": false
+    }
+  },
+  {
+    "name": "_MvC",
+    "bytes": "00-14-00-00-5F-4D-76-43-E0-7A-00-00-00-00-00-00-00-00-00-00",
+    "command": {
+      "Count": 224,
+      "WindowCount": 122,
+      "CanRouteInputs": false,
+      "Unknown": false,
+      "SupportsVuMeters": false,
+      "CanToggleSafeArea": false,
+      "CanSwapPreviewProgram": false
+    }
+  },
+  {
+    "name": "_MvC",
+    "bytes": "00-14-00-00-5F-4D-76-43-27-5D-00-00-00-00-00-00-00-00-00-00",
+    "command": {
+      "Count": 39,
+      "WindowCount": 93,
+      "CanRouteInputs": false,
+      "Unknown": false,
+      "SupportsVuMeters": false,
+      "CanToggleSafeArea": false,
+      "CanSwapPreviewProgram": false
+    }
+  },
+  {
+    "name": "_top",
+    "bytes": "00-20-00-00-5F-74-6F-70-56-AF-86-B7-E0-0B-84-01-0B-F2-E6-01-01-DA-01-01-01-00-00-00-00-00-00-00",
+    "command": {
+      "MixEffectBlocks": 86,
+      "VideoSources": 175,
+      "ColorGenerators": 134,
+      "Auxiliaries": 183,
+      "TalkbackOutputs": 224,
+      "MediaPlayers": 11,
+      "SerialPort": 132,
+      "HyperDecks": 1,
+      "DVE": 11,
+      "Stingers": 242,
+      "SuperSource": 230,
+      "TalkbackOverSDI": 218
+    }
+  },
+  {
+    "name": "_top",
+    "bytes": "00-20-00-00-5F-74-6F-70-07-49-FB-CD-7E-6E-F9-83-D1-09-4D-01-01-B1-01-01-01-00-00-00-00-00-00-00",
+    "command": {
+      "MixEffectBlocks": 7,
+      "VideoSources": 73,
+      "ColorGenerators": 251,
+      "Auxiliaries": 205,
+      "TalkbackOutputs": 126,
+      "MediaPlayers": 110,
+      "SerialPort": 249,
+      "HyperDecks": 131,
+      "DVE": 209,
+      "Stingers": 9,
+      "SuperSource": 77,
+      "TalkbackOverSDI": 177
+    }
+  },
+  {
+    "name": "_top",
+    "bytes": "00-20-00-00-5F-74-6F-70-29-BB-50-14-13-C1-86-6B-D2-1F-BD-01-01-2C-01-01-01-00-00-00-00-00-00-00",
+    "command": {
+      "MixEffectBlocks": 41,
+      "VideoSources": 187,
+      "ColorGenerators": 80,
+      "Auxiliaries": 20,
+      "TalkbackOutputs": 19,
+      "MediaPlayers": 193,
+      "SerialPort": 134,
+      "HyperDecks": 107,
+      "DVE": 210,
+      "Stingers": 31,
+      "SuperSource": 189,
+      "TalkbackOverSDI": 44
+    }
+  },
+  {
+    "name": "_top",
+    "bytes": "00-20-00-00-5F-74-6F-70-3C-C8-CA-FB-59-DE-6F-3C-20-CC-9D-01-01-57-01-01-01-00-00-00-00-00-00-00",
+    "command": {
+      "MixEffectBlocks": 60,
+      "VideoSources": 200,
+      "ColorGenerators": 202,
+      "Auxiliaries": 251,
+      "TalkbackOutputs": 89,
+      "MediaPlayers": 222,
+      "SerialPort": 111,
+      "HyperDecks": 60,
+      "DVE": 32,
+      "Stingers": 204,
+      "SuperSource": 157,
+      "TalkbackOverSDI": 87
+    }
+  },
+  {
+    "name": "_top",
+    "bytes": "00-20-00-00-5F-74-6F-70-2A-8F-9F-F0-91-34-17-4D-61-D3-8D-01-01-24-01-01-01-00-00-00-00-00-00-00",
+    "command": {
+      "MixEffectBlocks": 42,
+      "VideoSources": 143,
+      "ColorGenerators": 159,
+      "Auxiliaries": 240,
+      "TalkbackOutputs": 145,
+      "MediaPlayers": 52,
+      "SerialPort": 23,
+      "HyperDecks": 77,
+      "DVE": 97,
+      "Stingers": 211,
+      "SuperSource": 141,
+      "TalkbackOverSDI": 36
+    }
+  },
+  {
+    "name": "_top",
+    "bytes": "00-20-00-00-5F-74-6F-70-B9-6F-ED-48-6B-7B-07-E6-8B-CF-90-01-01-B5-01-01-01-00-00-00-00-00-00-00",
+    "command": {
+      "MixEffectBlocks": 185,
+      "VideoSources": 111,
+      "ColorGenerators": 237,
+      "Auxiliaries": 72,
+      "TalkbackOutputs": 107,
+      "MediaPlayers": 123,
+      "SerialPort": 7,
+      "HyperDecks": 230,
+      "DVE": 139,
+      "Stingers": 207,
+      "SuperSource": 144,
+      "TalkbackOverSDI": 181
+    }
+  },
+  {
+    "name": "_top",
+    "bytes": "00-20-00-00-5F-74-6F-70-A2-FD-2A-F2-98-11-90-5C-1D-F8-E9-01-01-83-01-01-01-00-00-00-00-00-00-00",
+    "command": {
+      "MixEffectBlocks": 162,
+      "VideoSources": 253,
+      "ColorGenerators": 42,
+      "Auxiliaries": 242,
+      "TalkbackOutputs": 152,
+      "MediaPlayers": 17,
+      "SerialPort": 144,
+      "HyperDecks": 92,
+      "DVE": 29,
+      "Stingers": 248,
+      "SuperSource": 233,
+      "TalkbackOverSDI": 131
+    }
+  },
+  {
+    "name": "_top",
+    "bytes": "00-20-00-00-5F-74-6F-70-22-95-D9-9D-08-6F-C9-67-3A-A5-41-01-01-E8-01-01-01-00-00-00-00-00-00-00",
+    "command": {
+      "MixEffectBlocks": 34,
+      "VideoSources": 149,
+      "ColorGenerators": 217,
+      "Auxiliaries": 157,
+      "TalkbackOutputs": 8,
+      "MediaPlayers": 111,
+      "SerialPort": 201,
+      "HyperDecks": 103,
+      "DVE": 58,
+      "Stingers": 165,
+      "SuperSource": 65,
+      "TalkbackOverSDI": 232
+    }
+  },
+  {
+    "name": "_top",
+    "bytes": "00-20-00-00-5F-74-6F-70-F0-27-CF-A4-C4-B6-CB-59-FD-E9-4D-01-01-92-01-01-01-00-00-00-00-00-00-00",
+    "command": {
+      "MixEffectBlocks": 240,
+      "VideoSources": 39,
+      "ColorGenerators": 207,
+      "Auxiliaries": 164,
+      "TalkbackOutputs": 196,
+      "MediaPlayers": 182,
+      "SerialPort": 203,
+      "HyperDecks": 89,
+      "DVE": 253,
+      "Stingers": 233,
+      "SuperSource": 77,
+      "TalkbackOverSDI": 146
+    }
+  },
+  {
+    "name": "_top",
+    "bytes": "00-20-00-00-5F-74-6F-70-0A-24-B4-50-43-30-07-C0-85-69-25-01-01-D5-01-01-01-00-00-00-00-00-00-00",
+    "command": {
+      "MixEffectBlocks": 10,
+      "VideoSources": 36,
+      "ColorGenerators": 180,
+      "Auxiliaries": 80,
+      "TalkbackOutputs": 67,
+      "MediaPlayers": 48,
+      "SerialPort": 7,
+      "HyperDecks": 192,
+      "DVE": 133,
+      "Stingers": 105,
+      "SuperSource": 37,
+      "TalkbackOverSDI": 213
+    }
+  },
+  {
+    "name": "AMIP",
+    "bytes": "00-18-00-00-41-4D-49-50-00-12-01-00-00-00-00-00-00-00-06-58-E5-8D-00-00",
+    "command": {
+      "Index": 18,
+      "SourceType": 1,
+      "PortType": 256,
+      "MixOption": 0,
+      "Gain": -26.097278201091228,
+      "Balance": -33.853999797186816
+    }
+  },
+  {
+    "name": "AMIP",
+    "bytes": "00-18-00-00-41-4D-49-50-00-0E-02-00-00-00-00-80-00-00-01-92-FB-5D-00-00",
+    "command": {
+      "Index": 14,
+      "SourceType": 2,
+      "PortType": 128,
+      "MixOption": 0,
+      "Gain": -38.224477637504954,
+      "Balance": -5.9331063907281987
+    }
+  },
+  {
+    "name": "AMIP",
+    "bytes": "00-18-00-00-41-4D-49-50-00-08-02-00-00-00-00-40-01-00-2D-52-04-DE-00-00",
+    "command": {
+      "Index": 8,
+      "SourceType": 2,
+      "PortType": 64,
+      "MixOption": 1,
+      "Gain": -9.0183414765627941,
+      "Balance": 6.2312182766530713
+    }
+  },
+  {
+    "name": "AMIP",
+    "bytes": "00-18-00-00-41-4D-49-50-00-0F-00-00-00-00-00-01-00-00-93-88-1E-6C-00-00",
+    "command": {
+      "Index": 15,
+      "SourceType": 0,
+      "PortType": 1,
+      "MixOption": 0,
+      "Gain": 1.2334810492696111,
+      "Balance": 38.940605376353759
+    }
+  },
+  {
+    "name": "AMIP",
+    "bytes": "00-18-00-00-41-4D-49-50-03-E9-01-00-00-00-00-00-00-00-9E-86-00-42-00-00",
+    "command": {
+      "Index": 1001,
+      "SourceType": 1,
+      "PortType": 0,
+      "MixOption": 0,
+      "Gain": 1.8576702314205682,
+      "Balance": 0.33070861842981686
+    }
+  },
+  {
+    "name": "AMIP",
+    "bytes": "00-18-00-00-41-4D-49-50-00-0B-01-00-00-00-00-00-02-00-04-74-F5-1B-00-00",
+    "command": {
+      "Index": 11,
+      "SourceType": 1,
+      "PortType": 0,
+      "MixOption": 2,
+      "Gain": -29.170901672464904,
+      "Balance": -13.943254558343092
+    }
+  },
+  {
+    "name": "AMIP",
+    "bytes": "00-18-00-00-41-4D-49-50-05-15-02-00-00-00-00-02-02-00-6F-75-F1-A9-00-00",
+    "command": {
+      "Index": 1301,
+      "SourceType": 2,
+      "PortType": 2,
+      "MixOption": 2,
+      "Gain": -1.2020499713105917,
+      "Balance": -18.355723921375219
+    }
+  },
+  {
+    "name": "AMIP",
+    "bytes": "00-18-00-00-41-4D-49-50-05-15-02-00-00-00-00-00-00-00-0F-FB-F3-EA-00-00",
+    "command": {
+      "Index": 1301,
+      "SourceType": 2,
+      "PortType": 0,
+      "MixOption": 0,
+      "Gain": -18.070286198391909,
+      "Balance": -15.471762868329774
+    }
+  },
+  {
+    "name": "AMIP",
+    "bytes": "00-18-00-00-41-4D-49-50-00-11-01-00-00-00-00-40-02-00-E4-66-21-9F-00-00",
+    "command": {
+      "Index": 17,
+      "SourceType": 1,
+      "PortType": 64,
+      "MixOption": 2,
+      "Gain": 5.0296631775513188,
+      "Balance": 43.033015352223536
+    }
+  },
+  {
+    "name": "AMIP",
+    "bytes": "00-18-00-00-41-4D-49-50-00-10-01-00-00-00-00-80-02-00-61-80-04-07-00-00",
+    "command": {
+      "Index": 16,
+      "SourceType": 1,
+      "PortType": 128,
+      "MixOption": 2,
+      "Gain": -2.3641070789866307,
+      "Balance": 5.1535227592818043
+    }
+  }
+]

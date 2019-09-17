@@ -22,5 +22,6 @@ export class MacroRecordingStatusCommand extends AbstractCommand {
 			...state.macro.macroRecorder,
 			...this.properties
 		}
+		return `macro.macroRecorder`
 	}
 }

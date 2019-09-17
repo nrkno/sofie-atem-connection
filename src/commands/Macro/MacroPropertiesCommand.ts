@@ -11,8 +11,8 @@ export class MacroPropertiesCommand extends AbstractCommand {
 
 	deserialize (rawCommand: Buffer) {
 		this.macroIndexID = rawCommand.readUInt16BE(0)
-		const descLen = rawCommand.readUInt16BE(4)
-		const nameLen = rawCommand.readUInt16BE(6)
+		const nameLen = rawCommand.readUInt16BE(4)
+		const descLen = rawCommand.readUInt16BE(6)
 
 		this.properties = {
 			description: '',
@@ -35,5 +35,6 @@ export class MacroPropertiesCommand extends AbstractCommand {
 			...state.macro.macroProperties[this.macroIndexID],
 			...this.properties
 		}
+		return `macro.macroProperties.${this.macroIndexID}`
 	}
 }

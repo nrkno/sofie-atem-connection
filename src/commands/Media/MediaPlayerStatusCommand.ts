@@ -11,7 +11,7 @@ export class MediaPlayerStatusCommand extends AbstractCommand {
 		frame: 1 << 3
 	}
 
-	rawName = 'RCPS'
+	rawName = 'SCPS'
 	mediaPlayerId: number
 
 	properties: MediaPlayer
@@ -19,6 +19,24 @@ export class MediaPlayerStatusCommand extends AbstractCommand {
 	updateProps (newProps: Partial<MediaPlayer>) {
 		this._updateProps(newProps)
 	}
+
+	serialize () {
+		const buffer = Buffer.alloc(8)
+		buffer.writeUInt8(this.flag, 0)
+		buffer.writeUInt8(this.mediaPlayerId, 1)
+		buffer.writeUInt8(this.properties.playing ? 1 : 0, 2)
+		buffer.writeUInt8(this.properties.loop ? 1 : 0, 3)
+		buffer.writeUInt8(this.properties.atBeginning ? 1 : 0, 4)
+		buffer.writeUInt16BE(this.properties.clipFrame, 6)
+		return buffer
+	}
+}
+
+export class MediaPlayerStatusUpdateCommand extends AbstractCommand {
+	rawName = 'RCPS'
+	mediaPlayerId: number
+
+	properties: MediaPlayer
 
 	deserialize (rawCommand: Buffer) {
 		this.mediaPlayerId = Util.parseNumberBetween(rawCommand[0], 0, 3)
@@ -30,25 +48,11 @@ export class MediaPlayerStatusCommand extends AbstractCommand {
 		}
 	}
 
-	serialize () {
-		const rawCommand = 'SCPS'
-		return new Buffer([
-			...Buffer.from(rawCommand),
-			this.flag,
-			this.mediaPlayerId,
-			this.properties.playing,
-			this.properties.loop,
-			this.properties.atBeginning,
-			0x00,
-			this.properties.clipFrame >> 8,
-			this.properties.clipFrame & 0xFF
-		])
-	}
-
 	applyToState (state: AtemState) {
 		state.media.players[this.mediaPlayerId] = {
 			...state.media.players[this.mediaPlayerId],
 			...this.properties
 		}
+		return `media.players.${this.mediaPlayerId}`
 	}
 }

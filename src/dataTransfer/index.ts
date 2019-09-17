@@ -16,10 +16,12 @@ export class DataTransferManager {
 	readonly clip1Lock = new DataLock(1, this.commandQueue)
 	readonly clip2Lock = new DataLock(2, this.commandQueue)
 
+	readonly interval: NodeJS.Timer
+
 	transferIndex = 0
 
 	constructor (sendCommand: (command: Commands.AbstractCommand) => Promise<Commands.AbstractCommand>) {
-		setInterval(() => {
+		this.interval = setInterval(() => {
 			if (this.commandQueue.length <= 0) {
 				return
 			}
@@ -31,12 +33,16 @@ export class DataTransferManager {
 		}, 0)
 	}
 
+	stop () {
+		clearInterval(this.interval)
+	}
+
 	handleCommand (command: Commands.AbstractCommand) {
 		const allLocks = [ this.stillsLock, this.clip1Lock, this.clip2Lock ]
 
 		// try to establish the associated DataLock:
 		let lock: DataLock | undefined
-		if (command.constructor.name === Commands.LockObtainedCommand.name || command.constructor.name === Commands.LockStateCommand.name) {
+		if (command.constructor.name === Commands.LockObtainedCommand.name || command.constructor.name === Commands.LockStateUpdateCommand.name) {
 			switch (command.properties.index) {
 				case 0 :
 					lock = this.stillsLock
@@ -67,7 +73,7 @@ export class DataTransferManager {
 		if (command.constructor.name === Commands.LockObtainedCommand.name) {
 			lock.lockObtained()
 		}
-		if (command.constructor.name === Commands.LockStateCommand.name) {
+		if (command.constructor.name === Commands.LockStateUpdateCommand.name) {
 			if (!command.properties.locked) lock.lostLock()
 			else lock.updateLock(command.properties.locked)
 		}

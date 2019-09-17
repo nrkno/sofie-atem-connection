@@ -2,40 +2,44 @@ import AbstractCommand from '../../AbstractCommand'
 import { AtemState } from '../../../state'
 import { Util } from '../../..'
 
-export class PreviewTransitionCommand extends AbstractCommand {
-	rawName = 'CTPr'
+export class FadeToBlackRateCommand extends AbstractCommand {
+	rawName = 'FtbC'
 	mixEffect: number
 
 	properties: {
-		preview: boolean
+		rate: number
 	}
 
 	serialize () {
 		const buffer = Buffer.alloc(4)
-		buffer.writeUInt8(this.mixEffect, 0)
-		buffer.writeUInt8(this.properties.preview ? 1 : 0, 1)
+		buffer.writeUInt8(1, 0)
+		buffer.writeUInt8(this.mixEffect, 1)
+		buffer.writeUInt8(this.properties.rate, 2)
 		return buffer
 	}
 }
 
-export class PreviewTransitionUpdateCommand extends AbstractCommand {
-	rawName = 'TrPr'
+export class FadeToBlackRateUpdateCommand extends AbstractCommand {
+	rawName = 'FtbP'
 	mixEffect: number
 
 	properties: {
-		preview: boolean
+		rate: number
 	}
 
 	deserialize (rawCommand: Buffer) {
 		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		this.properties = {
-			preview: rawCommand[1] === 1
+			rate: rawCommand.readUInt8(1)
 		}
 	}
 
 	applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
-		mixEffect.transitionPreview = this.properties.preview
-		return `video.ME.${this.mixEffect}.transitionPreview`
+		mixEffect.fadeToBlack = {
+			...mixEffect.fadeToBlack,
+			rate: this.properties.rate
+		}
+		return `video.ME.${this.mixEffect}.fadeToBlack`
 	}
 }

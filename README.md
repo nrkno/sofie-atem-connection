@@ -66,8 +66,9 @@ This event will be fired once we have connected with the ATEM.
 - `disconnected`
 Whenever the connection to the ATEM fails and does not recover within 5 seconds this is called.
 
-- `stateChanged(state)`
+- `stateChanged(state, path)`
 Whenever a packet from the ATEM is received that changes the state, this event will be fired.
+The path parameter is a path into the state that represents the change, to allow for filtering of events. eg video.ME.0.programInput
 
 ## Debug
 
@@ -85,7 +86,8 @@ RECV <Buffer 00 0c 90 60 5f 76 65 72 00 02 00 10>...
 
 ## Test
 
-This module will run tests by jest (in the future).
+This module run tests with jest.
 ```sh
 $ yarn unit
 ```
+There is a suite of generated serialization tests, using [atem-connection-test-generator](https://github.com/LibAtem/atem-connection-test-generator) as the [LibAtem](https://github.com/LibAtem) project has tests to verify its serialization against the Blackmagic Atem SDK

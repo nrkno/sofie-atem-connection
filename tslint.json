@@ -1,5 +1,8 @@
 {
-  "extends": "tslint-config-standard",
+  "extends": [
+	  "tslint-config-standard",
+	  "tslint-config-security"
+  ],
   "rules": {
     "indent": [true, "tabs", 4],
     "ter-indent": [true, "tab",{

@@ -19,7 +19,9 @@ export class TopologyCommand extends AbstractCommand {
 			maxHyperdecks: rawCommand[7],
 			DVEs: rawCommand[8],
 			stingers: rawCommand[9],
-			hasSuperSources: rawCommand[10] === 1
+			hasSuperSources: rawCommand[10] !== 0,
+			superSources: rawCommand[10],
+			talkbackOverSDI: rawCommand[13]
 		}
 	}
 
@@ -28,5 +30,6 @@ export class TopologyCommand extends AbstractCommand {
 			...state.info.capabilities,
 			...this.properties
 		}
+		return `info.capabilities`
 	}
 }

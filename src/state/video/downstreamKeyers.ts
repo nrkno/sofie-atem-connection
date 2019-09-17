@@ -3,6 +3,7 @@ export interface DownstreamKeyerBase {
 	inTransition: boolean
 	isAuto: boolean
 	remainingFrames: number
+	isTowardsOnAir?: boolean
 }
 
 export interface DownstreamKeyer extends DownstreamKeyerBase {

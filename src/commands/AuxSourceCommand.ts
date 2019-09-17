@@ -2,6 +2,23 @@ import AbstractCommand from './AbstractCommand'
 import { AtemState } from '../state'
 
 export class AuxSourceCommand extends AbstractCommand {
+	rawName = 'CAuS'
+	auxBus: number
+
+	properties: {
+		source: number
+	}
+
+	serialize () {
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(0x01, 0)
+		buffer.writeUInt8(this.auxBus, 1)
+		buffer.writeUInt16BE(this.properties.source, 2)
+		return buffer
+	}
+}
+
+export class AuxSourceUpdateCommand extends AbstractCommand {
 	rawName = 'AuxS'
 	auxBus: number
 
@@ -16,18 +33,8 @@ export class AuxSourceCommand extends AbstractCommand {
 		}
 	}
 
-	serialize () {
-		const rawCommand = 'CAuS'
-		return new Buffer([
-			...Buffer.from(rawCommand),
-			0x01,
-			this.auxBus,
-			this.properties.source >> 8,
-			this.properties.source & 0xFF
-		])
-	}
-
 	applyToState (state: AtemState) {
 		state.video.auxilliaries[this.auxBus] = this.properties.source
+		return `video.auxilliaries.${this.auxBus}`
 	}
 }

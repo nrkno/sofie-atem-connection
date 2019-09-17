@@ -11,7 +11,7 @@ export class InputPropertiesCommand extends AbstractCommand {
 		isExternal: 1 << 2
 	}
 
-	rawName = 'InPr'
+	rawName = 'CInL'
 	inputId: number
 
 	properties: InputChannel
@@ -19,6 +19,23 @@ export class InputPropertiesCommand extends AbstractCommand {
 	updateProps (newProps: Partial<InputChannel>) {
 		this._updateProps(newProps)
 	}
+
+	serialize () {
+		const buffer = Buffer.alloc(32)
+		buffer.writeUInt8(this.flag, 0)
+		buffer.writeUInt16BE(this.inputId, 2)
+		buffer.write(this.properties.longName || '', 4)
+		buffer.write(this.properties.shortName || '', 24)
+		buffer.writeUInt16BE(this.properties.externalPortType, 28)
+		return buffer
+	}
+}
+
+export class InputPropertiesUpdateCommand extends AbstractCommand {
+	rawName = 'InPr'
+	inputId: number
+
+	properties: InputChannel
 
 	deserialize (rawCommand: Buffer) {
 		this.inputId = rawCommand.readUInt16BE(0)
@@ -54,16 +71,6 @@ export class InputPropertiesCommand extends AbstractCommand {
 		}
 	}
 
-	serialize () {
-		const buffer = Buffer.alloc(32)
-		buffer.writeUInt8(this.flag, 0)
-		buffer.writeUInt16BE(this.inputId, 2)
-		buffer.write(this.properties.longName || '', 4)
-		buffer.write(this.properties.shortName || '', 24)
-		buffer.writeUInt16BE(this.properties.externalPortType, 28)
-		return Buffer.concat([Buffer.from('CInL', 'ascii'), buffer])
-	}
-
 	applyToState (state: AtemState) {
 		// @TODO(Lange - 04/30/2018): We may need something to clean up inputs which
 		// don't exist anymore, which can happen when switching the connection from
@@ -71,5 +78,6 @@ export class InputPropertiesCommand extends AbstractCommand {
 		state.inputs[this.inputId] = {
 			...this.properties
 		}
+		return `inputs.${this.inputId}`
 	}
 }

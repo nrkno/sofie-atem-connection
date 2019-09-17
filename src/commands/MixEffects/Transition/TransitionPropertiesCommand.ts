@@ -9,7 +9,7 @@ export class TransitionPropertiesCommand extends AbstractCommand {
 		selection: 1 << 1
 	}
 
-	rawName = 'TrSS'
+	rawName = 'CTTp'
 	mixEffect: number
 
 	properties: TransitionProperties
@@ -17,6 +17,24 @@ export class TransitionPropertiesCommand extends AbstractCommand {
 	updateProps (newProps: Partial<TransitionProperties>) {
 		this._updateProps(newProps)
 	}
+
+	serialize () {
+		const buffer = Buffer.alloc(4)
+		buffer.writeUInt8(this.flag, 0)
+
+		buffer.writeUInt8(this.mixEffect, 1)
+		buffer.writeUInt8(this.properties.style, 2)
+		buffer.writeUInt8(this.properties.selection, 3)
+
+		return buffer
+	}
+}
+
+export class TransitionPropertiesUpdateCommand extends AbstractCommand {
+	rawName = 'TrSS'
+	mixEffect: number
+
+	properties: TransitionProperties
 
 	deserialize (rawCommand: Buffer) {
 		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
@@ -28,25 +46,11 @@ export class TransitionPropertiesCommand extends AbstractCommand {
 		}
 	}
 
-	serialize () {
-		const rawCommand = 'CTTp'
-		const buffer = new Buffer(8)
-		buffer.fill(0)
-		Buffer.from(rawCommand).copy(buffer, 0)
-
-		buffer.writeUInt8(this.flag, 4)
-
-		buffer.writeUInt8(this.mixEffect, 5)
-		buffer.writeUInt8(this.properties.style, 6)
-		buffer.writeUInt8(this.properties.selection, 7)
-
-		return buffer
-	}
-
 	applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionProperties = {
 			...this.properties
 		}
+		return `video.ME.${this.mixEffect}.transitionProperties`
 	}
 }

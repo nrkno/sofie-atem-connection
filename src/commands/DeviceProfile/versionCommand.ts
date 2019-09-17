@@ -1,30 +1,22 @@
 import AbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
-import { VersionProps } from '../../state/info'
+import { ProtocolVersion } from '../../enums'
 
 export class VersionCommand extends AbstractCommand {
 	rawName = '_ver'
 
-	properties: VersionProps
-
-	updateProps (newProps: Partial<VersionProps>) {
-		this._updateProps(newProps)
+	properties: {
+		version: ProtocolVersion
 	}
 
 	deserialize (rawCommand: Buffer) {
 		this.properties = {
-			major: rawCommand[1],
-			minor: rawCommand[3]
+			version: rawCommand.readUInt32BE(0)
 		}
-	}
-
-	serialize () {
-		return new Buffer(0)
 	}
 
 	applyToState (state: AtemState) {
-		state.info.apiVersion = {
-			...this.properties
-		}
+		state.info.apiVersion = this.properties.version
+		return `info.apiVersion`
 	}
 }

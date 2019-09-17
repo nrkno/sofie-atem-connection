@@ -25,5 +25,6 @@ export class MediaPoolClipDescriptionCommand extends AbstractCommand {
 			newProps.frames = state.media.clipPool[this.mediaPool].frames
 		}
 		state.media.clipPool[this.mediaPool] = newProps
+		return `media.clipPool.${this.mediaPool}`
 	}
 }

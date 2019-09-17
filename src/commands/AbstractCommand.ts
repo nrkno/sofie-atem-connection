@@ -1,19 +1,22 @@
 import { AtemState } from '../state'
+import { ProtocolVersion } from '../enums'
 
 export default abstract class AbstractCommand {
 	static MaskFlags?: { [key: string]: number }
 	abstract rawName: string
 	packetId: number
 	flag: number = 0
+	minimumVersion?: ProtocolVersion
 
 	resolve: (cmd: AbstractCommand) => void
 	reject: (cmd: AbstractCommand) => void
 
 	abstract properties: any
 
-	deserialize? (rawCommand: Buffer): void
-	serialize? (): Buffer
-	applyToState? (state: AtemState): void
+	deserialize? (rawCommand: Buffer, version: ProtocolVersion): void
+	serialize? (version: ProtocolVersion): Buffer
+
+	applyToState? (state: AtemState): string | string[]
 
 	updateProps (newProps: object) {
 		this._updateProps(newProps)

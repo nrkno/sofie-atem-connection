@@ -16,7 +16,7 @@ export class TransitionStingerCommand extends AbstractCommand {
 		mixRate: 1 << 8
 	}
 
-	rawName = 'TStP'
+	rawName = 'CTSt'
 	mixEffect: number
 
 	properties: StingerTransitionSettings
@@ -24,6 +24,33 @@ export class TransitionStingerCommand extends AbstractCommand {
 	updateProps (newProps: Partial<StingerTransitionSettings>) {
 		this._updateProps(newProps)
 	}
+
+	serialize () {
+		const buffer = Buffer.alloc(20)
+		buffer.writeUInt16BE(this.flag, 0)
+
+		buffer.writeUInt8(this.mixEffect, 2)
+		buffer.writeUInt8(this.properties.source, 3)
+		buffer.writeUInt8(this.properties.preMultipliedKey ? 1 : 0, 4)
+
+		buffer.writeUInt16BE(this.properties.clip, 6)
+		buffer.writeUInt16BE(this.properties.gain, 8)
+		buffer.writeUInt8(this.properties.invert ? 1 : 0, 10)
+
+		buffer.writeUInt16BE(this.properties.preroll, 12)
+		buffer.writeUInt16BE(this.properties.clipDuration, 14)
+		buffer.writeUInt16BE(this.properties.triggerPoint, 16)
+		buffer.writeUInt16BE(this.properties.mixRate, 18)
+
+		return buffer
+	}
+}
+
+export class TransitionStingerUpdateCommand extends AbstractCommand {
+	rawName = 'TStP'
+	mixEffect: number
+
+	properties: StingerTransitionSettings
 
 	deserialize (rawCommand: Buffer) {
 		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
@@ -42,34 +69,11 @@ export class TransitionStingerCommand extends AbstractCommand {
 		}
 	}
 
-	serialize () {
-		const rawCommand = 'CTSt'
-		const buffer = new Buffer(24)
-		buffer.fill(0)
-		Buffer.from(rawCommand).copy(buffer, 0)
-
-		buffer.writeUInt16BE(this.flag, 4)
-
-		buffer.writeUInt8(this.mixEffect, 6)
-		buffer.writeUInt8(this.properties.source, 7)
-		buffer.writeUInt8(this.properties.preMultipliedKey ? 1 : 0, 8)
-
-		buffer.writeUInt16BE(this.properties.clip, 10)
-		buffer.writeUInt16BE(this.properties.gain, 12)
-		buffer.writeUInt8(this.properties.invert ? 1 : 0, 14)
-
-		buffer.writeUInt16BE(this.properties.preroll, 16)
-		buffer.writeUInt16BE(this.properties.clipDuration, 18)
-		buffer.writeUInt16BE(this.properties.triggerPoint, 20)
-		buffer.writeUInt16BE(this.properties.mixRate, 22)
-
-		return buffer
-	}
-
 	applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionSettings.stinger = {
 			...this.properties
 		}
+		return `video.ME.${this.mixEffect}.transitionSettings.stinger`
 	}
 }

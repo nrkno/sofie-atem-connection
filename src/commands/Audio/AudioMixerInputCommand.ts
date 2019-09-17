@@ -9,6 +9,24 @@ export class AudioMixerInputCommand extends AbstractCommand {
 		gain: 1 << 1,
 		balance: 1 << 2
 	}
+	rawName = 'CAMI'
+	mixEffect: number
+
+	properties: Partial<AudioChannel>
+	index: number
+
+	serialize () {
+		const buffer = Buffer.alloc(12)
+		buffer.writeUInt8(this.flag, 0)
+		buffer.writeUInt16BE(this.index, 2)
+		buffer.writeUInt8(this.properties.mixOption || 0, 4)
+		buffer.writeUInt16BE(Util.DecibelToUInt16BE(this.properties.gain || 0), 6)
+		buffer.writeInt16BE(Util.BalanceToInt(this.properties.balance || 0), 8)
+		return buffer
+	}
+}
+
+export class AudioMixerInputUpdateCommand extends AbstractCommand {
 	rawName = 'AMIP'
 	mixEffect: number
 
@@ -18,26 +36,12 @@ export class AudioMixerInputCommand extends AbstractCommand {
 	deserialize (rawCommand: Buffer) {
 		this.index = rawCommand.readUInt16BE(0)
 		this.properties = {
-			sourceType: rawCommand.readInt8(2),
-			portType: rawCommand.readInt8(7),
-			mixOption: rawCommand.readInt8(8),
+			sourceType: rawCommand.readUInt8(2),
+			portType: rawCommand.readUInt8(7),
+			mixOption: rawCommand.readUInt8(8),
 			gain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(10)),
 			balance: Util.IntToBalance(rawCommand.readInt16BE(12))
 		}
-	}
-
-	serialize () {
-		const buffer = Buffer.alloc(12)
-		buffer.writeUInt8(this.flag, 0)
-		buffer.writeUInt16BE(this.index, 2)
-		buffer.writeUInt8(this.properties.mixOption || 0, 4)
-		buffer.writeUInt16BE(Util.DecibelToUInt16BE(this.properties.gain || 0), 6)
-		buffer.writeInt16BE(Util.BalanceToInt(this.properties.balance || 0), 8)
-
-		return Buffer.concat([
-			Buffer.from('CAMI', 'ascii'),
-			buffer
-		])
 	}
 
 	applyToState (state: AtemState) {
@@ -46,5 +50,6 @@ export class AudioMixerInputCommand extends AbstractCommand {
 			...state.audio.channels[this.index],
 			...this.properties
 		}
+		return `audio.channels.${this.index}`
 	}
 }

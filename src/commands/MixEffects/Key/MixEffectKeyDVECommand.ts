@@ -33,48 +33,10 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 		rate: 1 << 25
 	}
 
-	rawName = 'KeDV'
+	rawName = 'CKDV'
 	mixEffect: number
 	upstreamKeyerId: number
 	properties: UpstreamKeyerDVESettings
-
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
-		this.properties = {
-			sizeX: Util.parseNumberBetween(rawCommand.readUInt32BE(4), 0, 99990),
-			sizeY: Util.parseNumberBetween(rawCommand.readUInt32BE(8), 0, 99990),
-			positionX: Util.parseNumberBetween(rawCommand.readInt32BE(12), -1000 * 1000, 1000 * 1000),
-			positionY: Util.parseNumberBetween(rawCommand.readInt32BE(16), -1000 * 1000, 1000 * 1000),
-			rotation: Util.parseNumberBetween(rawCommand.readInt32BE(20), -332230, 332230),
-
-			borderEnabled: rawCommand[24] === 1,
-			shadowEnabled: rawCommand[25] === 1,
-			borderBevel: Util.parseEnum<Enums.BorderBevel>(rawCommand.readUInt8(26), Enums.BorderBevel),
-			borderOuterWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(28), 0, 1600),
-			borderInnerWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(30), 0, 1600),
-			borderOuterSoftness: Util.parseNumberBetween(rawCommand.readInt8(32), 0, 100),
-			borderInnerSoftness: Util.parseNumberBetween(rawCommand.readInt8(33), 0, 100),
-			borderBevelSoftness: Util.parseNumberBetween(rawCommand.readInt8(34), 0, 100),
-			borderBevelPosition: Util.parseNumberBetween(rawCommand.readInt8(35), 0, 100),
-
-			borderOpacity: Util.parseNumberBetween(rawCommand.readInt8(36), 0, 100),
-			borderHue: Util.parseNumberBetween(rawCommand.readUInt16BE(38), 0, 3600),
-			borderSaturation: Util.parseNumberBetween(rawCommand.readUInt16BE(40), 0, 1000),
-			borderLuma: Util.parseNumberBetween(rawCommand.readUInt16BE(42), 0, 1000),
-
-			lightSourceDirection: Util.parseNumberBetween(rawCommand.readUInt16BE(44), 0, 3599),
-			lightSourceAltitude: Util.parseNumberBetween(rawCommand.readUInt8(46), 0, 100),
-
-			maskEnabled: rawCommand[47] === 1,
-			maskTop: Util.parseNumberBetween(rawCommand.readUInt16BE(48), 0, 38000),
-			maskBottom: Util.parseNumberBetween(rawCommand.readUInt16BE(50), 0, 38000),
-			maskLeft: Util.parseNumberBetween(rawCommand.readUInt16BE(52), 0, 52000),
-			maskRight: Util.parseNumberBetween(rawCommand.readUInt16BE(54), 0, 52000),
-
-			rate: Util.parseNumberBetween(rawCommand.readInt8(56), 0, 250)
-		}
-	}
 
 	serialize () {
 		const buffer = Buffer.alloc(64)
@@ -114,7 +76,54 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 
 		buffer.writeUInt8(this.properties.rate, 60)
 
-		return Buffer.concat([Buffer.from('CKDV', 'ascii'), buffer])
+		return buffer
+	}
+}
+
+export class MixEffectKeyDVEUpdateCommand extends AbstractCommand {
+	rawName = 'KeDV'
+	mixEffect: number
+	upstreamKeyerId: number
+	properties: UpstreamKeyerDVESettings
+
+	deserialize (rawCommand: Buffer) {
+		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		this.upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
+		this.properties = {
+			// Note: these are higher than the ui shows, but are within the range the atem can be set to
+			sizeX: Util.parseNumberBetween(rawCommand.readUInt32BE(4), 0, Math.pow(2, 32) - 1),
+			sizeY: Util.parseNumberBetween(rawCommand.readUInt32BE(8), 0, Math.pow(2, 32) - 1),
+
+			positionX: Util.parseNumberBetween(rawCommand.readInt32BE(12), -1000 * 1000, 1000 * 1000),
+			positionY: Util.parseNumberBetween(rawCommand.readInt32BE(16), -1000 * 1000, 1000 * 1000),
+			rotation: Util.parseNumberBetween(rawCommand.readInt32BE(20), -332230, 332230),
+
+			borderEnabled: rawCommand[24] === 1,
+			shadowEnabled: rawCommand[25] === 1,
+			borderBevel: Util.parseEnum<Enums.BorderBevel>(rawCommand.readUInt8(26), Enums.BorderBevel),
+			borderOuterWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(28), 0, 1600),
+			borderInnerWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(30), 0, 1600),
+			borderOuterSoftness: Util.parseNumberBetween(rawCommand.readInt8(32), 0, 100),
+			borderInnerSoftness: Util.parseNumberBetween(rawCommand.readInt8(33), 0, 100),
+			borderBevelSoftness: Util.parseNumberBetween(rawCommand.readInt8(34), 0, 100),
+			borderBevelPosition: Util.parseNumberBetween(rawCommand.readInt8(35), 0, 100),
+
+			borderOpacity: Util.parseNumberBetween(rawCommand.readInt8(36), 0, 100),
+			borderHue: Util.parseNumberBetween(rawCommand.readUInt16BE(38), 0, 3600),
+			borderSaturation: Util.parseNumberBetween(rawCommand.readUInt16BE(40), 0, 1000),
+			borderLuma: Util.parseNumberBetween(rawCommand.readUInt16BE(42), 0, 1000),
+
+			lightSourceDirection: Util.parseNumberBetween(rawCommand.readUInt16BE(44), 0, 3599),
+			lightSourceAltitude: Util.parseNumberBetween(rawCommand.readUInt8(46), 0, 100),
+
+			maskEnabled: rawCommand[47] === 1,
+			maskTop: Util.parseNumberBetween(rawCommand.readUInt16BE(48), 0, 38000),
+			maskBottom: Util.parseNumberBetween(rawCommand.readUInt16BE(50), 0, 38000),
+			maskLeft: Util.parseNumberBetween(rawCommand.readUInt16BE(52), 0, 52000),
+			maskRight: Util.parseNumberBetween(rawCommand.readUInt16BE(54), 0, 52000),
+
+			rate: Util.parseNumberBetween(rawCommand.readUInt8(56), 0, 250)
+		}
 	}
 
 	applyToState (state: AtemState) {
@@ -123,5 +132,6 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 		upstreamKeyer.dveSettings = {
 			...this.properties
 		}
+		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.dveSettings`
 	}
 }

@@ -1,7 +1,6 @@
 import { AtemState } from '../../state'
 import { MediaPlayerSource } from '../../state/media'
 import AbstractCommand from '../AbstractCommand'
-import { Enums } from '../..'
 
 export class MediaPlayerSourceCommand extends AbstractCommand {
 	static MaskFlags = {
@@ -10,37 +9,39 @@ export class MediaPlayerSourceCommand extends AbstractCommand {
 		clipIndex: 1 << 2
 	}
 
+	rawName = 'MPSS'
+	mediaPlayerId: number
+
+	properties: MediaPlayerSource
+
+	updateProps (newProps: Partial<MediaPlayerSource>) {
+		this._updateProps(newProps)
+	}
+
+	serialize () {
+		const buffer = Buffer.alloc(8)
+		buffer.writeUInt8(this.flag, 0)
+		buffer.writeUInt8(this.mediaPlayerId, 1)
+		buffer.writeUInt8(this.properties.sourceType, 2)
+		buffer.writeUInt8(this.properties.clipIndex, 3)
+		buffer.writeUInt8(this.properties.stillIndex, 4)
+		return buffer
+	}
+}
+
+export class MediaPlayerSourceUpdateCommand extends AbstractCommand {
 	rawName = 'MPCE'
 	mediaPlayerId: number
 
 	properties: MediaPlayerSource
 
-	updateProps (newProps: Partial<{ sourceType: Enums.MediaSourceType, stillIndex: number, clipIndex: number }>) {
-		this._updateProps(newProps)
-	}
-
 	deserialize (rawCommand: Buffer) {
 		this.mediaPlayerId = rawCommand[0]
 		this.properties = {
 			sourceType: rawCommand[1],
-			stillIndex: rawCommand[2],
-			clipIndex: rawCommand[3]
+			clipIndex: rawCommand[2],
+			stillIndex: rawCommand[3]
 		}
-	}
-
-	serialize () {
-		const rawCommand = 'MPSS'
-		return new Buffer([
-			...Buffer.from(rawCommand),
-			this.flag,
-			this.mediaPlayerId,
-			this.properties.sourceType,
-			this.properties.stillIndex,
-			this.properties.clipIndex,
-			0x00,
-			0x00,
-			0x00
-		])
 	}
 
 	applyToState (state: AtemState) {
@@ -48,5 +49,6 @@ export class MediaPlayerSourceCommand extends AbstractCommand {
 			...state.media.players[this.mediaPlayerId],
 			...this.properties
 		}
+		return `media.players.${this.mediaPlayerId}`
 	}
 }
