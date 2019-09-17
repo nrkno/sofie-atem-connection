@@ -1,6 +1,51 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [1.0.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.10.0...1.0.0) (2019-09-17)
+
+
+### Bug Fixes
+
+* broken autoDownstreamKey function and mangled multiviewer window state ([71c61f6](https://github.com/nrkno/tv-automation-atem-connection/commit/71c61f6))
+* consistent API for super source methods ([4327660](https://github.com/nrkno/tv-automation-atem-connection/commit/4327660))
+* data transfer uses old command names ([e6a6bd0](https://github.com/nrkno/tv-automation-atem-connection/commit/e6a6bd0))
+* disable unsupported v8 tests ([8bcafb5](https://github.com/nrkno/tv-automation-atem-connection/commit/8bcafb5))
+* dve value range ([33784bc](https://github.com/nrkno/tv-automation-atem-connection/commit/33784bc))
+* exclude test helpers in build ([041c37f](https://github.com/nrkno/tv-automation-atem-connection/commit/041c37f))
+* exit cleanly after running tests ([c23a9f9](https://github.com/nrkno/tv-automation-atem-connection/commit/c23a9f9))
+* ignore failing tests ([8cfcfaf](https://github.com/nrkno/tv-automation-atem-connection/commit/8cfcfaf))
+* improve commandParser typings ([1e26d6d](https://github.com/nrkno/tv-automation-atem-connection/commit/1e26d6d))
+* Make buffer use in serialize consistent. Remove setting command name in serialize. ([40eec6e](https://github.com/nrkno/tv-automation-atem-connection/commit/40eec6e))
+* More command test data mangling ([8bd9009](https://github.com/nrkno/tv-automation-atem-connection/commit/8bd9009))
+* multiviewer state initialization ([2547af1](https://github.com/nrkno/tv-automation-atem-connection/commit/2547af1))
+* regenerate commands test data ([fe619c4](https://github.com/nrkno/tv-automation-atem-connection/commit/fe619c4))
+* restructure all command tests to use new structure ([957ed76](https://github.com/nrkno/tv-automation-atem-connection/commit/957ed76))
+* some broken cases ([9ebde2e](https://github.com/nrkno/tv-automation-atem-connection/commit/9ebde2e))
+* some more command serialization ([cf66953](https://github.com/nrkno/tv-automation-atem-connection/commit/cf66953))
+* some tests ([3f14715](https://github.com/nrkno/tv-automation-atem-connection/commit/3f14715))
+* **AudioMixerInputCommand:** sign in deserialization  ([d9a3865](https://github.com/nrkno/tv-automation-atem-connection/commit/d9a3865))
+* **MediaPlayerSourceCommand:** order of serialization ([a0a89f3](https://github.com/nrkno/tv-automation-atem-connection/commit/a0a89f3))
+* **MixEffectFlyKeyFrameGetCommand:** correct validators ([a1648c1](https://github.com/nrkno/tv-automation-atem-connection/commit/a1648c1))
+* tidy up some commented out code ([f1a1252](https://github.com/nrkno/tv-automation-atem-connection/commit/f1a1252))
+* topology command ([e5812d9](https://github.com/nrkno/tv-automation-atem-connection/commit/e5812d9))
+
+
+### Features
+
+* 8.0.1 support ([eaa1e72](https://github.com/nrkno/tv-automation-atem-connection/commit/eaa1e72))
+* Add test for api methods which change command based on version ([7208ee4](https://github.com/nrkno/tv-automation-atem-connection/commit/7208ee4))
+* add test to verify that all commands have serialization test cases ([3cb9ae7](https://github.com/nrkno/tv-automation-atem-connection/commit/3cb9ae7))
+* Enable and fix v8 command tests ([3a7d23d](https://github.com/nrkno/tv-automation-atem-connection/commit/3a7d23d))
+* enable running tests in circleci ([662638d](https://github.com/nrkno/tv-automation-atem-connection/commit/662638d))
+* expect commands to be split to be a serialize or deserialize (unless they use the same name for both) ([e9704f2](https://github.com/nrkno/tv-automation-atem-connection/commit/e9704f2))
+* FadeToBlack control ([660e8dc](https://github.com/nrkno/tv-automation-atem-connection/commit/660e8dc))
+* initial multi-version support ([fedc690](https://github.com/nrkno/tv-automation-atem-connection/commit/fedc690))
+* prototype serialize command ([010fff2](https://github.com/nrkno/tv-automation-atem-connection/commit/010fff2))
+* prototype what separate command converter structures would look like ([378be83](https://github.com/nrkno/tv-automation-atem-connection/commit/378be83))
+* restructure some core buffer usage, and move command header (length + name) writing into common command serialization code ([3c8b062](https://github.com/nrkno/tv-automation-atem-connection/commit/3c8b062))
+* split some commands ([beae1c4](https://github.com/nrkno/tv-automation-atem-connection/commit/beae1c4))
+* stateChanged events report a path instead of the Command ([845909f](https://github.com/nrkno/tv-automation-atem-connection/commit/845909f))
 
 # [0.10.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.9.0...0.10.0) (2019-04-02)
 
