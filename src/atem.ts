@@ -142,9 +142,10 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	autoDownstreamKey (key = 0) {
+	autoDownstreamKey (key = 0, isTowardsOnAir?: boolean) {
 		const command = new Commands.DownstreamKeyAutoCommand()
 		command.downstreamKeyerId = key
+		command.updateProps({ isTowardsOnAir })
 		return this.sendCommand(command)
 	}
 

@@ -10,7 +10,11 @@ export class DownstreamKeyAutoCommand extends AbstractCommand {
 	}
 
 	properties: {
-		isTowardsOnAir: boolean
+		isTowardsOnAir?: boolean
+	}
+
+	updateProps (newProps: Partial<DownstreamKeyAutoCommand['properties']>) {
+		this._updateProps(newProps)
 	}
 
 	serialize (version: ProtocolVersion) {

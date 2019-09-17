@@ -40,12 +40,10 @@ export class MultiViewerSourceUpdateCommand extends AbstractCommand {
 	}
 
 	applyToState (state: AtemState) {
-		const obj: { [key: string]: MultiViewerSourceState } = {}
-		obj[this.index] = this.properties
-
-		state.settings.getMultiViewer(this.multiViewerId).windows[this.index] = {
-			...state.settings.getMultiViewer(this.multiViewerId).windows[this.index],
-			...obj
+		const multiviewer = state.settings.getMultiViewer(this.multiViewerId)
+		multiviewer.windows[this.index] = {
+			...multiviewer.windows[this.index],
+			...this.properties
 		}
 
 		return `settings.multiViewers.${this.multiViewerId}.windows.${this.index}`
