@@ -831,3 +831,19 @@ describe('Commands v7.2', () => {
 		runTestForCommand(commandParser, commandConverters, i, testCase, true)
 	}
 })
+
+describe('Serialize with no properties', () => {
+	const commandParser = new CommandParser()
+	commandParser.version = ProtocolVersion.V7_2
+
+	for (const name of Object.keys(commandParser.commands)) {
+		for (const cmd of commandParser.commands[name]) {
+			test(`Test  ${name}`, () => {
+				const inst = new cmd()
+				if (inst.serialize) {
+					expect(inst.serialize(commandParser.version)).toBeTruthy()
+				}
+			})
+		}
+	}
+})
