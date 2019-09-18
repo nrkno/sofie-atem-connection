@@ -623,11 +623,15 @@ export class Atem extends EventEmitter {
 		do {
 			lastSize = inputs.size
 			inputs.forEach(inputId => {
+				if (!this.state.inputs[inputId]) {
+					// Data isn't hydrated yet, we'll get 'em next time.
+					return
+				}
 				const portType = this.state.inputs[inputId].internalPortType
 				switch (portType) {
 					case Enums.InternalPortType.SuperSource:
 						const firstSsrcIndex = this.state.inputs
-							.findIndex(input => input.internalPortType === Enums.InternalPortType.SuperSource)
+							.findIndex(input => input && input.internalPortType === Enums.InternalPortType.SuperSource)
 						const ssrcId = firstSsrcIndex - inputId
 						const ssrc = this.state.video.getSuperSource(ssrcId)
 						Object.values(ssrc.boxes).forEach(box => {
@@ -638,7 +642,7 @@ export class Atem extends EventEmitter {
 						break
 					case Enums.InternalPortType.MEOutput:
 						const firstMeIndex = this.state.inputs
-							.findIndex(input => input.internalPortType === Enums.InternalPortType.MEOutput)
+							.findIndex(input => input && input.internalPortType === Enums.InternalPortType.MEOutput)
 						const nestedMeId = firstMeIndex - inputId
 						calcActiveMeInputs(nestedMeId).forEach(i => inputs.add(i))
 						break
@@ -647,9 +651,8 @@ export class Atem extends EventEmitter {
 				}
 			})
 		} while (inputs.size !== lastSize)
-		
-		// Nice oneliner to return only the unique values and no duplicates.
-		return Array.from(new Set<number>(inputs))
+
+		return Array.from(inputs).filter(value => typeof value === 'number').sort((a, b) => a - b)
 	}
 
 	private _mutateState (command: AbstractCommand) {
