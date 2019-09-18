@@ -621,17 +621,29 @@ export class Atem extends EventEmitter {
 	private _calcActiveMeInputs (mode: 'program' | 'preview', meId: number): number[] {
 		const inputs = new Set<number>()
 		const meRef = this.state.video.getMe(meId)
-		inputs.add(meRef[mode === 'program' ? 'programInput' : 'previewInput'])
+
+		if (mode === 'preview') {
+			if (meRef.transitionProperties.selection & 1) {
+				inputs.add(meRef.previewInput)
+			}
+		} else {
+			inputs.add(meRef.programInput)
+		}
 
 		// Upstream Keyers
 		Object.values(meRef.upstreamKeyers).filter(usk => {
+			// Pretty gross bitwise operations in this next line, be warned.
+			// TODO(Lange): This feels fragile but I'm unsure how to make it more robust.
+			const isPartOfTransition = meRef.transitionProperties.selection & (2 ** (usk.upstreamKeyerId + 1))
 			if (mode === 'program') {
+				if (meRef.inTransition) {
+					return usk.onAir || isPartOfTransition
+				}
+
 				return usk.onAir
 			}
 
-			// Pretty gross bitwise operations in this next line, be warned.
-			// TODO(Lange): This feels fragile but I'm unsure how to make it more robust.
-			return meRef.transitionProperties.selection & (2 ** (usk.upstreamKeyerId + 1))
+			return isPartOfTransition
 		}).forEach(usk => {
 			inputs.add(usk.fillSource)
 
@@ -665,8 +677,9 @@ export class Atem extends EventEmitter {
 		// Compute what sources are currently participating in a transition.
 		// We only care about this for PGM.
 		if (meRef.inTransition && mode === 'program') {
-			// The previewInput is always participating in the transition.
-			inputs.add(meRef.previewInput)
+			if (meRef.transitionProperties.selection & 1) {
+				inputs.add(meRef.previewInput)
+			}
 
 			// From here, what inputs are participating in the transition depends
 			// on the transition style being used, so we handle each separately.
