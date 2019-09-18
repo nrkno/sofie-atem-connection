@@ -532,87 +532,11 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	listVisibleInputs (mode: 'program' | 'preview', me = 0): number[] {
+	listVisibleInputs(mode: 'program' | 'preview', me = 0): number[] {
 		const inputs = new Set<number>()
 
-		const calcActiveMeInputs = (meId: number) => {
-			const activeMeInputs = new Set<number>()
-			const meRef = this.state.video.getMe(meId)
-			activeMeInputs.add(meRef[mode === 'program' ? 'programInput' : 'previewInput'])
-
-			// Upstream Keyers
-			Object.values(meRef.upstreamKeyers).filter(usk => {
-				if (mode === 'program') {
-					return usk.onAir
-				}
-
-				// Pretty gross bitwise operations in this next line, be warned.
-				// TODO(Lange): This feels fragile but I'm unsure how to make it more robust.
-				return meRef.transitionProperties.selection & (2 ** (usk.upstreamKeyerId + 1))
-			}).forEach(usk => {
-				activeMeInputs.add(usk.fillSource)
-
-				// This is the only USK type that actually uses the cutSource.
-				if (usk.mixEffectKeyType === Enums.MixEffectKeyType.Luma) {
-					activeMeInputs.add(usk.cutSource)
-				}
-			})
-
-			// DSKs only show up on ME 1,
-			// so we only add them if that's the ME we are currently processing.
-			// TODO: Is this still true for the new Constellation ATEMs?
-			if (meId === 0) {
-				Object.values(this.state.video.downstreamKeyers).filter(dsk => {
-					if (mode === 'program') {
-						return dsk.onAir || dsk.inTransition
-					}
-
-					return dsk.properties.tie && !dsk.onAir
-				}).forEach(dsk => {
-					activeMeInputs.add(dsk.sources.fillSource)
-					activeMeInputs.add(dsk.sources.cutSource)
-				})
-			}
-
-			// Compute what sources are currently participating in a transition.
-			// We only care about this for PGM.
-			if (meRef.inTransition && mode === 'program') {
-				// The previewInput is always participating in the transition.
-				activeMeInputs.add(meRef.previewInput)
-
-				// From here, what inputs are participating in the transition depends
-				// on the transition style being used, so we handle each separately.
-				switch (meRef.transitionProperties.style) {
-					case Enums.TransitionStyle.DIP:
-						activeMeInputs.add(meRef.transitionSettings.dip.input)
-						break
-					case Enums.TransitionStyle.DVE:
-						activeMeInputs.add(meRef.transitionSettings.DVE.fillSource)
-						if (meRef.transitionSettings.DVE.enableKey) {
-							activeMeInputs.add(meRef.transitionSettings.DVE.keySource)
-						}
-						break
-					case Enums.TransitionStyle.WIPE:
-						if (meRef.transitionSettings.wipe.borderWidth > 0) {
-							activeMeInputs.add(meRef.transitionSettings.wipe.borderInput)
-						}
-						break
-					case Enums.TransitionStyle.STING:
-						activeMeInputs.add(meRef.transitionSettings.stinger.source)
-						break
-					default:
-						// Do nothing.
-						// This is the code path that MIX will take.
-						// It's already handled above when we add the previewInput
-						// to the activeInputs array.
-				}
-			}
-
-			return activeMeInputs
-		}
-
 		// Start with the basics: the surface level of what is in the target ME.
-		calcActiveMeInputs(me).forEach(i => inputs.add(i))
+		this._calcActiveMeInputs(mode, me).forEach(i => inputs.add(i))
 	
 		// Loop over the active input IDs we've found so far,
 		// and check if any of them are SuperSources or other nested MEs.
@@ -640,7 +564,8 @@ export class Atem extends EventEmitter {
 						break
 					case Enums.InternalPortType.MEOutput:
 						const nestedMeId = (inputId - 10000) / 10 - 1
-						calcActiveMeInputs(nestedMeId).forEach(i => inputs.add(i))
+						const nestedMeMode = (inputId - 10000) % 10 === 0 ? 'program' : 'preview'
+						this._calcActiveMeInputs(nestedMeMode, nestedMeId).forEach(i => inputs.add(i))
 						break
 					default:
 						// Do nothing.
@@ -648,7 +573,9 @@ export class Atem extends EventEmitter {
 			})
 		} while (inputs.size !== lastSize)
 
-		return Array.from(inputs).filter(value => typeof value === 'number').sort((a, b) => a - b)
+		// undefined sometimes sneaks its way in here.
+		// Don't know why.
+		return Array.from(inputs).filter(i => typeof i === 'number').sort((a, b) => a - b)
 	}
 
 	private _mutateState (command: AbstractCommand) {
@@ -678,5 +605,86 @@ export class Atem extends EventEmitter {
 			this._sentQueue[trackingId].reject(this._sentQueue[trackingId])
 			delete this._sentQueue[trackingId]
 		}
+	}
+
+	private _calcActiveMeInputs(mode: 'program' | 'preview', meId: number): number[] {
+		const inputs = new Set<number>()
+		const meRef = this.state.video.getMe(meId)
+		inputs.add(meRef[mode === 'program' ? 'programInput' : 'previewInput'])
+
+		// Upstream Keyers
+		Object.values(meRef.upstreamKeyers).filter(usk => {
+			if (mode === 'program') {
+				return usk.onAir
+			}
+
+			// Pretty gross bitwise operations in this next line, be warned.
+			// TODO(Lange): This feels fragile but I'm unsure how to make it more robust.
+			return meRef.transitionProperties.selection & (2 ** (usk.upstreamKeyerId + 1))
+		}).forEach(usk => {
+			inputs.add(usk.fillSource)
+
+			// This is the only USK type that actually uses the cutSource.
+			if (usk.mixEffectKeyType === Enums.MixEffectKeyType.Luma) {
+				inputs.add(usk.cutSource)
+			}
+		})
+
+		// DSKs only show up on ME 1,
+		// so we only add them if that's the ME we are currently processing.
+		// TODO: Is this still true for the new Constellation ATEMs?
+		if (meId === 0) {
+			Object.values(this.state.video.downstreamKeyers).filter(dsk => {
+				if (mode === 'program') {
+					return dsk.onAir || dsk.inTransition
+				}
+
+				if (!dsk.properties) {
+					// Data isn't hydrated yet, we'll get 'em next time.
+					return
+				}
+
+				return dsk.properties.tie && !dsk.onAir
+			}).forEach(dsk => {
+				inputs.add(dsk.sources.fillSource)
+				inputs.add(dsk.sources.cutSource)
+			})
+		}
+
+		// Compute what sources are currently participating in a transition.
+		// We only care about this for PGM.
+		if (meRef.inTransition && mode === 'program') {
+			// The previewInput is always participating in the transition.
+			inputs.add(meRef.previewInput)
+
+			// From here, what inputs are participating in the transition depends
+			// on the transition style being used, so we handle each separately.
+			switch (meRef.transitionProperties.style) {
+				case Enums.TransitionStyle.DIP:
+					inputs.add(meRef.transitionSettings.dip.input)
+					break
+				case Enums.TransitionStyle.DVE:
+					inputs.add(meRef.transitionSettings.DVE.fillSource)
+					if (meRef.transitionSettings.DVE.enableKey) {
+						inputs.add(meRef.transitionSettings.DVE.keySource)
+					}
+					break
+				case Enums.TransitionStyle.WIPE:
+					if (meRef.transitionSettings.wipe.borderWidth > 0) {
+						inputs.add(meRef.transitionSettings.wipe.borderInput)
+					}
+					break
+				case Enums.TransitionStyle.STING:
+					inputs.add(meRef.transitionSettings.stinger.source)
+					break
+				default:
+					// Do nothing.
+					// This is the code path that MIX will take.
+					// It's already handled above when we add the previewInput
+					// to the activeInputs array.
+			}
+		}
+
+		return Array.from(inputs)
 	}
 }
