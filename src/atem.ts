@@ -542,11 +542,15 @@ export class Atem extends EventEmitter {
 		// and check if any of them are SuperSources or other nested MEs.
 		// If so, iterate through them and find out what they are showing.
 		// Keep looping until we stop discovering new things.
-		// TODO(Lange): this can almost certainly be cleaner and avoid some duplicate work.
 		let lastSize: number
+		let lastProcessed = 0
 		do {
+			// Only processes inputs we haven't already processed.
+			// This is an important optimization because this function could potentially
+			// be in a hot code path and get called many many times a second,
+			// every time the ATEM's state updates.
 			lastSize = inputs.size
-			inputs.forEach(inputId => {
+			Array.from(inputs).slice(lastProcessed).forEach(inputId => {
 				if (!this.state.inputs[inputId]) {
 					// Data isn't hydrated yet, we'll get 'em next time.
 					return
@@ -571,6 +575,7 @@ export class Atem extends EventEmitter {
 						// Do nothing.
 				}
 			})
+			lastProcessed = inputs.size - 1
 		} while (inputs.size !== lastSize)
 
 		// undefined sometimes sneaks its way in here.
