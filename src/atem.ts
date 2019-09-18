@@ -532,6 +532,126 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	listVisibleInputs (mode: 'program' | 'preview', me = 0): number[] {
+		const inputs = new Set<number>()
+
+		const calcActiveMeInputs = (meId: number) => {
+			const activeMeInputs = new Set<number>()
+			const meRef = this.state.video.getMe(meId)
+			activeMeInputs.add(meRef[mode === 'program' ? 'programInput' : 'previewInput'])
+
+			// Upstream Keyers
+			Object.values(meRef.upstreamKeyers).filter(usk => {
+				if (mode === 'program') {
+					return usk.onAir
+				}
+
+				// Pretty gross bitwise operations in this next line, be warned.
+				// TODO(Lange): This feels fragile but I'm unsure how to make it more robust.
+				return meRef.transitionProperties.selection & (2 ** (usk.upstreamKeyerId + 1))
+			}).forEach(usk => {
+				activeMeInputs.add(usk.fillSource)
+
+				// This is the only USK type that actually uses the cutSource.
+				if (usk.mixEffectKeyType === Enums.MixEffectKeyType.Luma) {
+					activeMeInputs.add(usk.cutSource)
+				}
+			})
+
+			// DSKs only show up on ME 1,
+			// so we only add them if that's the ME we are currently processing.
+			// TODO: Is this still true for the new Constellation ATEMs?
+			if (meId === 0) {
+				Object.values(this.state.video.downstreamKeyers).filter(dsk => {
+					if (mode === 'program') {
+						return dsk.onAir || dsk.inTransition
+					}
+
+					return dsk.properties.tie && !dsk.onAir
+				}).forEach(dsk => {
+					activeMeInputs.add(dsk.sources.fillSource)
+					activeMeInputs.add(dsk.sources.cutSource)
+				})
+			}
+
+			// Compute what sources are currently participating in a transition.
+			// We only care about this for PGM.
+			if (meRef.inTransition && mode === 'program') {
+				// The previewInput is always participating in the transition.
+				activeMeInputs.add(meRef.previewInput)
+
+				// From here, what inputs are participating in the transition depends
+				// on the transition style being used, so we handle each separately.
+				switch (meRef.transitionProperties.style) {
+					case Enums.TransitionStyle.DIP:
+						activeMeInputs.add(meRef.transitionSettings.dip.input)
+						break
+					case Enums.TransitionStyle.DVE:
+						activeMeInputs.add(meRef.transitionSettings.DVE.fillSource)
+						if (meRef.transitionSettings.DVE.enableKey) {
+							activeMeInputs.add(meRef.transitionSettings.DVE.keySource)
+						}
+						break
+					case Enums.TransitionStyle.WIPE:
+						if (meRef.transitionSettings.wipe.borderWidth > 0) {
+							activeMeInputs.add(meRef.transitionSettings.wipe.borderInput)
+						}
+						break
+					case Enums.TransitionStyle.STING:
+						activeMeInputs.add(meRef.transitionSettings.stinger.source)
+						break
+					default:
+						// Do nothing.
+						// This is the code path that MIX will take.
+						// It's already handled above when we add the previewInput
+						// to the activeInputs array.
+				}
+			}
+
+			return activeMeInputs
+		}
+
+		// Start with the basics: the surface level of what is in the target ME.
+		calcActiveMeInputs(me).forEach(i => inputs.add(i))
+	
+		// Loop over the active input IDs we've found so far,
+		// and check if any of them are SuperSources or other nested MEs.
+		// If so, iterate through them and find out what they are showing.
+		// Keep looping until we stop discovering new things.
+		// TODO(Lange): this can almost certainly be cleaner and avoid some duplicate work.
+		let lastSize: number
+		do {
+			lastSize = inputs.size
+			inputs.forEach(inputId => {
+				const portType = this.state.inputs[inputId].internalPortType
+				switch (portType) {
+					case Enums.InternalPortType.SuperSource:
+						const firstSsrcIndex = this.state.inputs
+							.findIndex(input => input.internalPortType === Enums.InternalPortType.SuperSource)
+						const ssrcId = firstSsrcIndex - inputId
+						const ssrc = this.state.video.getSuperSource(ssrcId)
+						Object.values(ssrc.boxes).forEach(box => {
+							if (box.enabled) {
+								inputs.add(box.source)
+							}
+						})
+						break
+					case Enums.InternalPortType.MEOutput:
+						const firstMeIndex = this.state.inputs
+							.findIndex(input => input.internalPortType === Enums.InternalPortType.MEOutput)
+						const nestedMeId = firstMeIndex - inputId
+						calcActiveMeInputs(nestedMeId).forEach(i => inputs.add(i))
+						break
+					default:
+						// Do nothing.
+				}
+			})
+		} while (inputs.size !== lastSize)
+		
+		// Nice oneliner to return only the unique values and no duplicates.
+		return Array.from(new Set<number>(inputs))
+	}
+
 	private _mutateState (command: AbstractCommand) {
 		if (typeof command.applyToState === 'function') {
 			let changePaths = command.applyToState(this.state)
