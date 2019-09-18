@@ -532,12 +532,12 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	listVisibleInputs(mode: 'program' | 'preview', me = 0): number[] {
+	listVisibleInputs (mode: 'program' | 'preview', me = 0): number[] {
 		const inputs = new Set<number>()
 
 		// Start with the basics: the surface level of what is in the target ME.
 		this._calcActiveMeInputs(mode, me).forEach(i => inputs.add(i))
-	
+
 		// Loop over the active input IDs we've found so far,
 		// and check if any of them are SuperSources or other nested MEs.
 		// If so, iterate through them and find out what they are showing.
@@ -575,7 +575,7 @@ export class Atem extends EventEmitter {
 
 		// undefined sometimes sneaks its way in here.
 		// Don't know why.
-		return Array.from(inputs).filter(i => typeof i === 'number').sort((a, b) => a - b)
+		return Array.from(inputs).filter((i: unknown) => typeof i === 'number').sort((a, b) => a - b)
 	}
 
 	private _mutateState (command: AbstractCommand) {
@@ -607,7 +607,7 @@ export class Atem extends EventEmitter {
 		}
 	}
 
-	private _calcActiveMeInputs(mode: 'program' | 'preview', meId: number): number[] {
+	private _calcActiveMeInputs (mode: 'program' | 'preview', meId: number): number[] {
 		const inputs = new Set<number>()
 		const meRef = this.state.video.getMe(meId)
 		inputs.add(meRef[mode === 'program' ? 'programInput' : 'previewInput'])
