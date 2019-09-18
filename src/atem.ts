@@ -563,7 +563,7 @@ export class Atem extends EventEmitter {
 						})
 						break
 					case Enums.InternalPortType.MEOutput:
-						const nestedMeId = (inputId - 10000) / 10 - 1
+						const nestedMeId = ((inputId - (inputId % 10)) - 10000) / 10 - 1
 						const nestedMeMode = (inputId - 10000) % 10 === 0 ? 'program' : 'preview'
 						this._calcActiveMeInputs(nestedMeMode, nestedMeId).forEach(i => inputs.add(i))
 						break
