@@ -607,6 +607,12 @@ export class Atem extends EventEmitter {
 		}
 	}
 
+	/**
+	 * Helper method used by listVisibleInputs.
+	 * This got broken out into its own method because
+	 * it gets called multiple times, and gets called in a loop.
+	 * Breaking it out made listVisibleInputs much easier to read.
+	 */
 	private _calcActiveMeInputs (mode: 'program' | 'preview', meId: number): number[] {
 		const inputs = new Set<number>()
 		const meRef = this.state.video.getMe(meId)
