@@ -630,9 +630,7 @@ export class Atem extends EventEmitter {
 				const portType = this.state.inputs[inputId].internalPortType
 				switch (portType) {
 					case Enums.InternalPortType.SuperSource:
-						const firstSsrcIndex = this.state.inputs
-							.findIndex(input => input && input.internalPortType === Enums.InternalPortType.SuperSource)
-						const ssrcId = firstSsrcIndex - inputId
+						const ssrcId = 0 // TODO: don't hardcode this
 						const ssrc = this.state.video.getSuperSource(ssrcId)
 						Object.values(ssrc.boxes).forEach(box => {
 							if (box.enabled) {
@@ -641,9 +639,7 @@ export class Atem extends EventEmitter {
 						})
 						break
 					case Enums.InternalPortType.MEOutput:
-						const firstMeIndex = this.state.inputs
-							.findIndex(input => input && input.internalPortType === Enums.InternalPortType.MEOutput)
-						const nestedMeId = firstMeIndex - inputId
+						const nestedMeId = (inputId - 10000) / 10 - 1
 						calcActiveMeInputs(nestedMeId).forEach(i => inputs.add(i))
 						break
 					default:
