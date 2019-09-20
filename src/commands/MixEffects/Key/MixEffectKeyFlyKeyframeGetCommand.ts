@@ -25,12 +25,12 @@ export class MixEffectKeyFlyKeyframeGetCommand extends AbstractCommand {
 
 			borderOuterWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(24), 0, 65535),
 			borderInnerWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(26), 0, 65535),
-			borderOuterSoftness: Util.parseNumberBetween(rawCommand.readUInt8(28), 0, 254),
-			borderInnerSoftness: Util.parseNumberBetween(rawCommand.readUInt8(29), 0, 254),
-			borderBevelSoftness: Util.parseNumberBetween(rawCommand.readUInt8(30), 0, 254),
-			borderBevelPosition: Util.parseNumberBetween(rawCommand.readUInt8(31), 0, 254),
+			borderOuterSoftness: Util.parseNumberBetween(rawCommand.readUInt8(28), 0, 255),
+			borderInnerSoftness: Util.parseNumberBetween(rawCommand.readUInt8(29), 0, 255),
+			borderBevelSoftness: Util.parseNumberBetween(rawCommand.readUInt8(30), 0, 255),
+			borderBevelPosition: Util.parseNumberBetween(rawCommand.readUInt8(31), 0, 255),
 
-			borderOpacity: Util.parseNumberBetween(rawCommand.readUInt8(32), 0, 254),
+			borderOpacity: Util.parseNumberBetween(rawCommand.readUInt8(32), 0, 255),
 			borderHue: Util.parseNumberBetween(rawCommand.readUInt16BE(34), 0, 65535),
 			borderSaturation: Util.parseNumberBetween(rawCommand.readUInt16BE(36), 0, 65535),
 			borderLuma: Util.parseNumberBetween(rawCommand.readUInt16BE(38), 0, 65535),

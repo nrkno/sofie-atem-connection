@@ -27,6 +27,8 @@ export class ProductIdentifierCommand extends AbstractCommand {
 			case Enums.Model.TwoME:
 			case Enums.Model.TwoME4K:
 			case Enums.Model.TwoMEBS4K:
+			case Enums.Model.Constellation:
+			case Enums.Model.Constellation8K:
 				state.info.power = [false, false]
 				break
 			default:
