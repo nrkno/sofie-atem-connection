@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/nrkno/tv-automation-atem-connection/compare/1.0.0...1.0.1) (2019-09-21)
+
+
+### Bug Fixes
+
+* better support for constellation ([b540f11](https://github.com/nrkno/tv-automation-atem-connection/commit/b540f11))
+* better support for constellation ([#58](https://github.com/nrkno/tv-automation-atem-connection/issues/58)) ([5bb512d](https://github.com/nrkno/tv-automation-atem-connection/commit/5bb512d))
+
 ## [1.0.0](https://github.com/nrkno/tv-automation-atem-connection/compare/0.10.0...1.0.0) (2019-09-17)
 
 
