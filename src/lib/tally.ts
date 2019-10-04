@@ -5,7 +5,8 @@ import * as Enums from '../enums'
  * Emulates the ATEM's own tally logic as it appears
  * in the ATEM multiviewer.
  *
- * Useful for re-implementing tally functionality in other systems.
+ * Useful for any code which needs a full list of all
+ * sources present in Preview and/or Program.
  */
 export function listVisibleInputs (mode: 'program' | 'preview', state: AtemState, me = 0): number[] {
 	const inputs = new Set<number>()
