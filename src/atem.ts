@@ -633,8 +633,8 @@ export class Atem extends EventEmitter {
 		// Upstream Keyers
 		Object.values(meRef.upstreamKeyers).filter(usk => {
 			// Pretty gross bitwise operations in this next line, be warned.
-			// TODO(Lange): This feels fragile but I'm unsure how to make it more robust.
-			const isPartOfTransition = meRef.transitionProperties.selection & (2 ** (usk.upstreamKeyerId + 1))
+			const keyerMask = 1 << (usk.upstreamKeyerId + 1)
+			const isPartOfTransition = meRef.transitionProperties.selection & keyerMask
 			if (mode === 'program') {
 				if (meRef.inTransition) {
 					return usk.onAir || isPartOfTransition
