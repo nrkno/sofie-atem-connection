@@ -663,7 +663,7 @@ export class Atem extends EventEmitter {
 
 				if (!dsk.properties) {
 					// Data isn't hydrated yet, we'll get 'em next time.
-					return
+					return false
 				}
 
 				return dsk.properties.tie && !dsk.onAir
