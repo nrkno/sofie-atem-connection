@@ -698,7 +698,11 @@ export class Atem extends EventEmitter {
 					}
 					break
 				case Enums.TransitionStyle.STING:
-					inputs.add(meRef.transitionSettings.stinger.source)
+					const mediaPlayerIndex = meRef.transitionSettings.stinger.source
+					const fillInputId = 3000 + (mediaPlayerIndex * 10)
+					const keyInputId = fillInputId + 1
+					inputs.add(fillInputId)
+					inputs.add(keyInputId)
 					break
 				default:
 					// Do nothing.
