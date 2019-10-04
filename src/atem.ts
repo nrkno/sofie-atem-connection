@@ -655,7 +655,6 @@ export class Atem extends EventEmitter {
 
 		// DSKs only show up on ME 1,
 		// so we only add them if that's the ME we are currently processing.
-		// TODO: Is this still true for the new Constellation ATEMs?
 		if (meId === 0) {
 			Object.values(this.state.video.downstreamKeyers).filter(dsk => {
 				if (mode === 'program') {
