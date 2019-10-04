@@ -120,8 +120,7 @@ function _calcActiveMeInputs (mode: 'program' | 'preview', state: AtemState, meI
 	}
 
 	// Compute what sources are currently participating in a transition.
-	// We only care about this for PGM.
-	if (meRef.inTransition && mode === 'program') {
+	if ((meRef.inTransition && mode === 'program') || (mode === 'preview' && meRef.transitionPosition > 0)) {
 		if (meRef.transitionProperties.selection & 1) {
 			inputs.add(meRef.previewInput)
 		}
