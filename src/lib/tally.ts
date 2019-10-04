@@ -78,7 +78,6 @@ function _calcActiveMeInputs (mode: 'program' | 'preview', state: AtemState, meI
 
 	// Upstream Keyers
 	Object.values(meRef.upstreamKeyers).filter(usk => {
-		// Pretty gross bitwise operations in this next line, be warned.
 		const keyerMask = 1 << (usk.upstreamKeyerId + 1)
 		const isPartOfTransition = meRef.transitionProperties.selection & keyerMask
 		if (mode === 'program') {
