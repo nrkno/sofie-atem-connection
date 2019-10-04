@@ -558,7 +558,7 @@ export class Atem extends EventEmitter {
 				const portType = this.state.inputs[inputId].internalPortType
 				switch (portType) {
 					case Enums.InternalPortType.SuperSource:
-						const ssrcId = 0 // TODO: don't hardcode this
+						const ssrcId = inputId - 6000
 						const ssrc = this.state.video.getSuperSource(ssrcId)
 						Object.values(ssrc.boxes).forEach(box => {
 							if (box.enabled) {
