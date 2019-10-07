@@ -7,11 +7,11 @@ export interface DownstreamKeyerBase {
 }
 
 export interface DownstreamKeyer extends DownstreamKeyerBase {
-	sources: {
+	sources?: {
 		fillSource: number,
 		cutSource: number
 	}
-	properties: DownstreamKeyerProperties
+	properties?: DownstreamKeyerProperties
 }
 
 export interface DownstreamKeyerGeneral {

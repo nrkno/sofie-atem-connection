@@ -44,6 +44,9 @@ export class FadeToBlackRateUpdateCommand extends DeserializedCommand<{ rate: nu
 	applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.fadeToBlack = {
+			isFullyBlack: false,
+			inTransition: false,
+			remainingFrames: 0,
 			...mixEffect.fadeToBlack,
 			rate: this.properties.rate
 		}

@@ -170,6 +170,7 @@ export namespace Util {
 		const HD = [1280, 720]
 		const FHD = [1920, 1080]
 		const UHD = [3840, 2160]
+		// TODO - add 8k options
 
 		const enumToResolution = [
 			NTSC, PAL, NTSC, PAL,

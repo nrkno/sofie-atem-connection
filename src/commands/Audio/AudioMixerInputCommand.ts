@@ -56,7 +56,6 @@ export class AudioMixerInputUpdateCommand extends DeserializedCommand<AudioChann
 	}
 
 	applyToState (state: AtemState) {
-		// const channel = state.audio.getChannel(this.index)
 		state.audio.channels[this.index] = {
 			...state.audio.channels[this.index],
 			...this.properties

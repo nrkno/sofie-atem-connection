@@ -11,21 +11,18 @@ export default class DataTransferAudio extends DataTransferFrame {
 		this.name = name
 	}
 
-	start () {
-		const command = new Commands.DataTransferUploadRequestCommand()
-		command.updateProps({
+	public start () {
+		const command = new Commands.DataTransferUploadRequestCommand({
 			transferId: this.transferId,
 			transferStoreId: this.storeId,
 			transferIndex: 0,
 			size: this.data.length,
 			mode: Enums.TransferMode.WriteAudio
 		})
-		this.commandQueue.push(command)
+		return [ command ]
 	}
 
-	sendDescription () {
-		const command = new Commands.DataTransferFileDescriptionCommand()
-		command.updateProps({ name: this.name, fileHash: this.hash, transferId: this.transferId })
-		this.commandQueue.push(command)
+	public sendDescription (): Commands.ISerializableCommand {
+		return new Commands.DataTransferFileDescriptionCommand({ name: this.name, fileHash: this.hash, transferId: this.transferId })
 	}
 }

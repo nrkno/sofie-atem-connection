@@ -33,6 +33,7 @@ export class FadeToBlackStateCommand extends DeserializedCommand<FadeToBlackProp
 	applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.fadeToBlack = {
+			rate: 0,
 			...mixEffect.fadeToBlack,
 			...this.properties
 		}

@@ -17,10 +17,10 @@ export interface AtemCapabilites {
 }
 
 export class DeviceInfo {
-	apiVersion: ProtocolVersion
-	capabilities: AtemCapabilites
-	model: Model
-	productIdentifier: string
-	superSourceBoxes: number
-	power: boolean[]
+	apiVersion: ProtocolVersion = 0
+	capabilities?: AtemCapabilites
+	model: Model = Model.Unknown
+	productIdentifier?: string
+	superSourceBoxes?: number
+	power: boolean[] = []
 }

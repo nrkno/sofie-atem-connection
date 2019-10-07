@@ -6,11 +6,6 @@ export interface UpstreamKeyerBase {
 	flyEnabled: boolean,
 	fillSource: number,
 	cutSource: number,
-	maskEnabled: boolean,
-	maskTop: number,
-	maskBottom: number,
-	maskLeft: number,
-	maskRight: number,
 }
 
 export interface UpstreamKeyerMaskSettings {
@@ -93,11 +88,11 @@ export interface UpstreamKeyerTypeSettings {
 }
 
 export interface UpstreamKeyer extends UpstreamKeyerBase {
-	dveSettings: UpstreamKeyerDVESettings,
-	chromaSettings: UpstreamKeyerChromaSettings,
-	lumaSettings: UpstreamKeyerLumaSettings,
-	patternSettings: UpstreamKeyerPatternSettings,
-	flyKeyframes: Array<UpstreamKeyerFlyKeyframe>,
-	flyProperties: UpstreamKeyerFlySettings,
+	dveSettings?: UpstreamKeyerDVESettings,
+	chromaSettings?: UpstreamKeyerChromaSettings,
+	lumaSettings?: UpstreamKeyerLumaSettings,
+	patternSettings?: UpstreamKeyerPatternSettings,
+	flyKeyframes: Array<UpstreamKeyerFlyKeyframe | undefined>,
+	flyProperties?: UpstreamKeyerFlySettings,
 	onAir: boolean
 }

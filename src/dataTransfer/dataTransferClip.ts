@@ -16,43 +16,44 @@ export default class DataTransferClip extends DataTransfer {
 		this.name = name
 	}
 
-	start () {
-		const clearMediaCommand = new Commands.MediaPoolClearClipCommand(this.clipIndex)
-		clearMediaCommand.updateProps({
-			index: this.clipIndex
-		})
-		this.commandQueue.push(clearMediaCommand)
+	public start () {
+		const commands: Commands.ISerializableCommand[] = []
+		commands.push(new Commands.MediaPoolClearClipCommand(this.clipIndex))
 		this.frames[this.curFrame].state = Enums.TransferState.Locked
-		this.frames[this.curFrame].start()
+		commands.push(...this.frames[this.curFrame].start())
+		return commands
 	}
 
-	handleCommand (command: Commands.IDeserializedCommand) {
-		this.frames[this.curFrame].handleCommand(command)
+	public handleCommand (command: Commands.IDeserializedCommand): Commands.ISerializableCommand[] {
+		const commands: Commands.ISerializableCommand[] = []
+
+		commands.push(...this.frames[this.curFrame].handleCommand(command))
 		if (this.state !== Enums.TransferState.Transferring) this.state = Enums.TransferState.Transferring
 		if (this.frames[this.curFrame].state === Enums.TransferState.Finished) {
 			this.curFrame++
 			if (this.curFrame < this.frames.length) {
 				this.frames[this.curFrame].state = Enums.TransferState.Locked
-				this.frames[this.curFrame].start()
+				commands.push(...this.frames[this.curFrame].start())
 			} else {
-				const command = new Commands.MediaPoolSetClipCommand()
-				command.updateProps({
+				const command = new Commands.MediaPoolSetClipCommand({
 					index: this.clipIndex,
 					name: this.name,
 					frames: this.frames.length
 				})
-				this.commandQueue.push(command)
+				commands.push(command)
 				this.state = Enums.TransferState.Finished
 			}
 		}
+
+		return commands
 	}
 
 	get transferId () {
 		return this.frames[this.curFrame].transferId
 	}
 
-	gotLock () {
+	public gotLock (): Commands.ISerializableCommand[] {
 		this.state = Enums.TransferState.Locked
-		this.start()
+		return this.start()
 	}
 }

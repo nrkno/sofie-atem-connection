@@ -62,11 +62,11 @@ export interface TransitionProperties {
 }
 
 export interface TransitionSettings {
-	dip: DipTransitionSettings
-	DVE: DVETransitionSettings
-	mix: MixTransitionSettings
-	stinger: StingerTransitionSettings
-	wipe: WipeTransitionSettings
+	dip?: DipTransitionSettings
+	DVE?: DVETransitionSettings
+	mix?: MixTransitionSettings
+	stinger?: StingerTransitionSettings
+	wipe?: WipeTransitionSettings
 }
 
 export interface IMixEffect {
@@ -76,11 +76,11 @@ export interface IMixEffect {
 	transitionPreview: boolean
 	transitionPosition: number
 	transitionFramesLeft: number
-	fadeToBlack: FadeToBlackProperties
+	fadeToBlack?: FadeToBlackProperties
 	numberOfKeyers: number
 	transitionProperties: TransitionProperties
-	transitionSettings: TransitionSettings,
-	upstreamKeyers: { [index: number]: USK.UpstreamKeyer }
+	transitionSettings: TransitionSettings
+	upstreamKeyers: { [index: number]: USK.UpstreamKeyer | undefined }
 }
 
 export class MixEffect implements IMixEffect {
@@ -91,21 +91,15 @@ export class MixEffect implements IMixEffect {
 	transitionPreview: boolean = false
 	transitionPosition: number = 0
 	transitionFramesLeft: number = 0
-	fadeToBlack: FadeToBlackProperties
+	fadeToBlack?: FadeToBlackProperties
 	numberOfKeyers: number = 0
 	transitionProperties: TransitionProperties
-	transitionSettings: TransitionSettings = {} as any
-	upstreamKeyers: { [index: number]: USK.UpstreamKeyer } = []
+	transitionSettings: TransitionSettings = {}
+	upstreamKeyers: { [index: number]: USK.UpstreamKeyer | undefined } = []
 
 	constructor (index: number) {
 		this.index = index
 
-		this.fadeToBlack = {
-			isFullyBlack: false,
-			rate: 0,
-			inTransition: false,
-			remainingFrames: 0
-		}
 		this.transitionProperties = {
 			style: Enum.TransitionStyle.MIX,
 			selection: 0,
@@ -114,19 +108,21 @@ export class MixEffect implements IMixEffect {
 		}
 	}
 
-	getUpstreamKeyer (index: number) {
-		if (!this.upstreamKeyers[index]) {
-			this.upstreamKeyers[index] = {
-				dveSettings: {} as any,
-				chromaSettings: {} as any,
-				lumaSettings: {} as any,
-				patternSettings: {} as any,
-				flyKeyframes: [],
-				flyProperties: {} as any
-			} as any
+	getUpstreamKeyer (index: number): USK.UpstreamKeyer {
+		const usk = this.upstreamKeyers[index]
+		if (!usk) {
+			return this.upstreamKeyers[index] = {
+				upstreamKeyerId: index,
+				mixEffectKeyType: 0,
+				cutSource: 0,
+				fillSource: 0,
+				onAir: false,
+				flyEnabled: false,
+				flyKeyframes: []
+			}
 		}
 
-		return this.upstreamKeyers[index]
+		return usk
 	}
 }
 
@@ -219,27 +215,32 @@ export class AtemVideoState {
 	superSources: { [index: string]: SuperSource | undefined } = {}
 
 	getMe (index: number): MixEffect {
-		let me = this.ME[index]
+		const me = this.ME[index]
 		if (!me) {
-			me = this.ME[index] = new MixEffect(index)
+			return this.ME[index] = new MixEffect(index)
 		}
 
 		return me
 	}
 
 	getSuperSource (index: number): SuperSource {
-		let ssrc = this.superSources[index]
+		const ssrc = this.superSources[index]
 		if (!ssrc) {
-			ssrc = this.superSources[index] = new SuperSource(index)
+			return this.superSources[index] = new SuperSource(index)
 		}
 
 		return ssrc
 	}
 
 	getDownstreamKeyer (index: number): DownstreamKeyer {
-		let dsk = this.downstreamKeyers[index]
+		const dsk = this.downstreamKeyers[index]
 		if (!dsk) {
-			dsk = this.downstreamKeyers[index] = {} as DownstreamKeyer
+			return this.downstreamKeyers[index] = {
+				isAuto: false,
+				remainingFrames: 0,
+				onAir: false,
+				inTransition: false
+			}
 		}
 
 		return dsk

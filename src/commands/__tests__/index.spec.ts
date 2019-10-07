@@ -20,7 +20,7 @@ const commandConverters: CommandTestConverterSet = {
 	'_pin': {
 		idAliases: {},
 		propertyAliases: {
-			'name': (val: any) => ({ val, name: 'deviceName' })
+			'name': (val: any) => ({ val, name: 'productIdentifier' })
 		}
 	},
 	'SSBP': {

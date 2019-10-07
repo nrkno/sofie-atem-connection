@@ -1,10 +1,7 @@
 import { BasicWritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { Util } from '../..'
-
-export interface InputSource {
-	source: number
-}
+import { InputSource } from './PreviewInputCommand'
 
 export class ProgramInputCommand extends BasicWritableCommand<InputSource> {
 	static readonly rawName = 'CPgI'

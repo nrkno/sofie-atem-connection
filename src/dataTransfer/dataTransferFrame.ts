@@ -19,7 +19,7 @@ export default class DataTransferFrame extends DataTransfer {
 		this.hash = this.data ? crypto.createHash('md5').update(this.data).digest().toString() : ''
 	}
 
-	start () {
+	public start () {
 		const command = new Commands.DataTransferUploadRequestCommand({
 			transferId: this.transferId,
 			transferStoreId: this.storeId,
@@ -27,45 +27,51 @@ export default class DataTransferFrame extends DataTransfer {
 			size: this.data.length,
 			mode: Enums.TransferMode.TEST
 		})
-		this.commandQueue.push(command)
+		return [ command ]
 	}
 
-	sendDescription () {
-		const command = new Commands.DataTransferFileDescriptionCommand({ fileHash: this.hash, transferId: this.transferId })
-		this.commandQueue.push(command)
+	public sendDescription (): Commands.ISerializableCommand {
+		return new Commands.DataTransferFileDescriptionCommand({ fileHash: this.hash, transferId: this.transferId })
 	}
 
-	handleCommand (command: Commands.IDeserializedCommand) {
+	public handleCommand (command: Commands.IDeserializedCommand): Commands.ISerializableCommand[] {
+		const commands: Commands.ISerializableCommand[] = []
 		if (command.constructor.name === Commands.DataTransferUploadContinueCommand.name) {
 			if (this.state === Enums.TransferState.Locked) {
 				this.state = Enums.TransferState.Transferring
-				this.sendDescription()
+				commands.push(this.sendDescription())
 			}
-			this.queueCommand(command.properties.chunkCount, command.properties.chunkSize)
+			commands.push(...this.queueCommand(command.properties.chunkCount, command.properties.chunkSize))
 		} else if (command.constructor.name === Commands.DataTransferCompleteCommand.name) {
 			if (this.state === Enums.TransferState.Transferring) {
 				this.state = Enums.TransferState.Finished
 			}
 		}
+
+		return commands
 	}
 
-	gotLock () {
+	public gotLock () {
 		this.state = Enums.TransferState.Locked
-		this.start()
+		return this.start()
 	}
 
-	queueCommand (chunkCount: number, chunkSize: number) {
+	private queueCommand (chunkCount: number, chunkSize: number): Commands.ISerializableCommand[] {
+		const commands: Commands.ISerializableCommand[] = []
+
 		chunkSize += -4
 		this.lastSent = new Date()
 
 		for (let i = 0; i < chunkCount; i++) {
-			if (this._sent > this.data.length) return
+			if (this._sent > this.data.length) break
 			const command = new Commands.DataTransferDataCommand({
 				transferId: this.transferId,
 				body: this.data.slice(this._sent, this._sent + chunkSize)
 			})
-			this.commandQueue.push(command)
+			commands.push(command)
 			this._sent += chunkSize
 		}
+
+		return commands
 	}
 }

@@ -9,7 +9,7 @@ export class AtemSocketChild extends EventEmitter {
 	private _connectionState = ConnectionState.Closed
 	private _debug = false
 	private _reconnectTimer: NodeJS.Timer | undefined
-	private _retransmitTimer: NodeJS.Timer
+	private _retransmitTimer: NodeJS.Timer | undefined
 
 	private _localPacketId = 1
 	private _maxPacketID = (1 << 15) - 1 // Atem expects 15 not 16 bits before wrapping
@@ -34,7 +34,7 @@ export class AtemSocketChild extends EventEmitter {
 		super()
 		this._address = options.address || ''
 		this._port = options.port || this._port
-		this._createSocket()
+		this._socket = this._createSocket()
 	}
 
 	public connect (address?: string, port?: number) {
@@ -55,7 +55,9 @@ export class AtemSocketChild extends EventEmitter {
 			}, this._reconnectInterval)
 		}
 		// Check for retransmits every 10 milliseconds
-		this._retransmitTimer = setInterval(() => this._checkForRetransmit(), 10)
+		if (!this._retransmitTimer) {
+			this._retransmitTimer = setInterval(() => this._checkForRetransmit(), 10)
+		}
 
 		if (address) {
 			this._address = address
@@ -78,8 +80,14 @@ export class AtemSocketChild extends EventEmitter {
 				resolve()
 			}
 		}).then(() => {
-			clearInterval(this._retransmitTimer)
-			clearInterval(this._reconnectTimer as NodeJS.Timer)
+			if (this._retransmitTimer) {
+				clearInterval(this._retransmitTimer)
+				this._retransmitTimer = undefined
+			}
+			if (this._reconnectTimer) {
+				clearInterval(this._reconnectTimer)
+				this._reconnectTimer = undefined
+			}
 			this._reconnectTimer = undefined
 
 			this._connectionState = ConnectionState.Closed
@@ -88,8 +96,8 @@ export class AtemSocketChild extends EventEmitter {
 		})
 	}
 
-	public log (...args: any[]): void {
-		const payload = format.apply(format, args)
+	public log (fmt: string, ...args: any[]): void {
+		const payload = format(fmt, ...args)
 		this.emit(IPCMessageType.Log, payload)
 	}
 
@@ -122,6 +130,8 @@ export class AtemSocketChild extends EventEmitter {
 		this._socket = createSocket('udp4')
 		this._socket.bind()
 		this._socket.on('message', (packet, rinfo) => this._receivePacket(packet, rinfo))
+
+		return this._socket
 	}
 
 	private _receivePacket (packet: Buffer, rinfo: any) {

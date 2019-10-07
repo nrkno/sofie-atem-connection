@@ -35,7 +35,7 @@ export class MixEffectKeyPropertiesGetCommand extends DeserializedCommand<Upstre
 	applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.upstreamKeyers[this.properties.upstreamKeyerId] = {
-			...mixEffect.upstreamKeyers[this.properties.upstreamKeyerId],
+			...mixEffect.getUpstreamKeyer(this.properties.upstreamKeyerId),
 			...this.properties
 		}
 		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.properties.upstreamKeyerId}`

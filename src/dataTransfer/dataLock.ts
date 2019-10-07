@@ -4,82 +4,83 @@ import DataTransfer from './dataTransfer'
 import DataTransferClip from './dataTransferClip'
 
 export default class DataLock {
-	storeId: number
-	state: number
-	transfer: DataTransfer | undefined
-	queue: Array<DataTransfer> = []
+	private storeId: number
+	private isLocked: boolean
+	private taskQueue: Array<DataTransfer> = []
 
-	commandQueue: Array<Commands.ISerializableCommand> = []
+	public activeTransfer: DataTransfer | undefined
 
-	constructor (storeId: number, commandQueue: Array<Commands.ISerializableCommand>) {
+	private queueCommand: (cmd: Commands.ISerializableCommand) => void
+
+	constructor (storeId: number, queueCommand: (cmd: Commands.ISerializableCommand) => void) {
 		this.storeId = storeId
-		this.commandQueue = commandQueue
+		this.queueCommand = queueCommand
+		this.isLocked = false
 	}
 
 	enqueue (transfer: DataTransfer) {
-		this.queue.push(transfer)
-		if (!this.transfer) {
+		this.taskQueue.push(transfer)
+		if (!this.activeTransfer) {
 			this.dequeueAndRun()
 		}
 	}
 
-	dequeueAndRun () {
-		if ((this.transfer === undefined || this.transfer.state === Enums.TransferState.Finished) && this.queue.length > 0) {
-			this.transfer = this.queue.shift()
+	private dequeueAndRun () {
+		if ((this.activeTransfer === undefined || this.activeTransfer.state === Enums.TransferState.Finished) && this.taskQueue.length > 0) {
+			this.activeTransfer = this.taskQueue.shift()
 
-			if (this.state === 1) {
+			if (this.isLocked) {
 				this.lockObtained()
 			} else {
-				this._getLock()
+				this.queueCommand(new Commands.LockStateCommand(this.storeId, true))
 			}
-		} else if (this.transfer) {
-			this.transfer.fail(new Error('Tried to run next transfer, but one was still in-progress'))
 		}
 	}
 
 	lockObtained () {
-		this.state = 1
-		if (this.transfer && this.transfer.state === Enums.TransferState.Queued) {
-			this.transfer.gotLock()
+		this.isLocked = true
+		if (this.activeTransfer && this.activeTransfer.state === Enums.TransferState.Queued) {
+			this.activeTransfer.gotLock().forEach(cmd => this.queueCommand(cmd))
 		}
 	}
 
 	lostLock () {
-		this.state = 0
-		if (this.transfer && this.transfer.state !== Enums.TransferState.Finished) {
+		this.isLocked = false
+		if (this.activeTransfer && this.activeTransfer.state !== Enums.TransferState.Finished) {
 			// @todo: dequeue any old commands
-			this.transfer.fail(new Error('Lost lock mid-transfer'))
+			this.activeTransfer.rejectPromise(new Error('Lost lock mid-transfer'))
 		}
-		this.transfer = undefined
+		this.activeTransfer = undefined
 		this.dequeueAndRun()
 	}
 
 	updateLock (locked: boolean) {
-		this.state = locked ? 1 : 0
+		this.isLocked = locked
 	}
 
 	transferFinished () {
-		if (this.transfer && this.transfer.state === Enums.TransferState.Finished) {
-			this.transfer.resolvePromise(this.transfer)
+		if (this.activeTransfer && this.activeTransfer.state === Enums.TransferState.Finished) {
+			this.activeTransfer.resolvePromise(this.activeTransfer)
+			this.activeTransfer = undefined
 		}
 
-		if (this.queue.length > 0) {
+		if (this.taskQueue.length > 0) {
 			this.dequeueAndRun()
 		} else { // unlock
-			this._releaseLock()
+			this.queueCommand(new Commands.LockStateCommand(this.storeId, false))
 		}
 	}
 
 	transferErrored (code: number) {
-		if (this.transfer) {
+		if (this.activeTransfer) {
 			switch (code) {
 				case 1: // Probably means "retry".
-					if (this.transfer instanceof DataTransferClip) {
+					if (this.activeTransfer instanceof DataTransferClip) {
 						// Retry the last frame.
-						this.transfer.frames[this.transfer.curFrame].start()
+						this.activeTransfer.frames[this.activeTransfer.curFrame].start().forEach(cmd => this.queueCommand(cmd))
 					} else {
 						// Retry the entire transfer.
-						this.transfer.start()
+						this.activeTransfer.start().forEach(cmd => this.queueCommand(cmd))
 					}
 					break
 				case 2: // Unknown.
@@ -89,23 +90,13 @@ export default class DataLock {
 				default:
 					// Abort the transfer.
 					// @todo: dequeue any old commands
-					this.transfer.fail(new Error(`Code ${code}`))
-					this.transfer = undefined
+					this.activeTransfer.rejectPromise(new Error(`Code ${code}`))
+					this.activeTransfer = undefined
 					this.dequeueAndRun()
 			}
 		} else {
-			this.transfer = undefined
+			this.activeTransfer = undefined
 			this.dequeueAndRun()
 		}
-	}
-
-	_getLock () {
-		const command = new Commands.LockStateCommand(this.storeId, true)
-		this.commandQueue.push(command)
-	}
-
-	_releaseLock () {
-		const command = new Commands.LockStateCommand(this.storeId, false)
-		this.commandQueue.push(command)
 	}
 }

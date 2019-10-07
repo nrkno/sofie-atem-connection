@@ -34,6 +34,12 @@ export interface AtemOptions {
 	externalLog?: (arg0?: any,arg1?: any,arg2?: any,arg3?: any) => void
 }
 
+interface SentCommand {
+	command: ISerializableCommand
+	resolve: (cmd: ISerializableCommand) => void
+	reject: (cmd: ISerializableCommand) => void
+}
+
 export class Atem extends EventEmitter {
 	DEFAULT_PORT = 9910
 	RECONNECT_INTERVAL = 5000
@@ -45,12 +51,9 @@ export class Atem extends EventEmitter {
 	private socket: AtemSocket
 	private dataTransferManager: DT.DataTransferManager
 	private _log: (...args: any[]) => void
-	private _sentQueue: {[packetId: string]: ISerializableCommand } = {}
+	private _sentQueue: {[packetId: string]: SentCommand } = {}
 
-	on: ((event: 'error', listener: (message: any) => void) => this) &
-		((event: 'connected', listener: () => void) => this) &
-		((event: 'disconnected', listener: () => void) => this) &
-		((event: 'stateChanged', listener: (state: AtemState, path: string) => void) => this)
+	on!: ((event: 'error', listener: (message: any) => void) => this) & ((event: 'connected', listener: () => void) => this) & ((event: 'disconnected', listener: () => void) => this) & ((event: 'stateChanged', listener: (state: AtemState, path: string) => void) => this)
 
 	constructor (options?: AtemOptions) {
 		super()
@@ -103,12 +106,14 @@ export class Atem extends EventEmitter {
 		})
 	}
 
-	sendCommand (command: ISerializableCommand): Promise<any> {
+	sendCommand (command: ISerializableCommand): Promise<ISerializableCommand> {
 		const nextPacketId = this.socket.nextPacketId
-		this._sentQueue[nextPacketId] = command
 		return new Promise((resolve, reject) => {
-			command.resolve = resolve
-			command.reject = reject
+			this._sentQueue[nextPacketId] = {
+				command,
+				resolve,
+				reject
+			}
 			this.socket._sendCommand(command, nextPacketId).catch(reject)
 		})
 	}
@@ -465,15 +470,17 @@ export class Atem extends EventEmitter {
 	}
 
 	private _resolveCommand (trackingId: number) {
-		if (this._sentQueue[trackingId]) {
-			this._sentQueue[trackingId].resolve(this._sentQueue[trackingId])
+		const sent = this._sentQueue[trackingId]
+		if (sent) {
+			sent.resolve(sent.command)
 			delete this._sentQueue[trackingId]
 		}
 	}
 
 	private _rejectCommand (trackingId: number) {
-		if (this._sentQueue[trackingId]) {
-			this._sentQueue[trackingId].reject(this._sentQueue[trackingId])
+		const sent = this._sentQueue[trackingId]
+		if (sent) {
+			sent.reject(sent.command)
 			delete this._sentQueue[trackingId]
 		}
 	}

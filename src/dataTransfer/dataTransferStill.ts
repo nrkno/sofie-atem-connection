@@ -13,9 +13,7 @@ export default class DataTransferStill extends DataTransferFrame {
 		this.description = description
 	}
 
-	sendDescription () {
-		const command = new Commands.DataTransferFileDescriptionCommand()
-		command.updateProps({ description: this.description, name: this.name, fileHash: this.hash, transferId: this.transferId })
-		this.commandQueue.push(command)
+	public sendDescription (): Commands.ISerializableCommand {
+		return new Commands.DataTransferFileDescriptionCommand({ description: this.description, name: this.name, fileHash: this.hash, transferId: this.transferId })
 	}
 }

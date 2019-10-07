@@ -17,13 +17,14 @@ export class AtemSocket extends EventEmitter {
 	private _socketProcess: ChildProcess | null
 	private _commandParser: CommandParser = new CommandParser()
 
-	constructor (options: { address?: string, port?: number, debug?: boolean, log?: (args1: any, args2?: any, args3?: any) => void }) {
+	constructor (options: { address?: string, port?: number, debug?: boolean, log?: (...args: any[]) => void }) {
 		super()
-		this._address = options.address || this._address
+		this._address = options.address || ''
 		this._port = options.port || this._port
 		this._debug = options.debug || false
 		this.log = options.log || this.log
 
+		this._socketProcess = null
 		this._createSocketProcess()
 
 		// When the parent process begins exiting, remove the listeners on our child process.
@@ -160,7 +161,7 @@ export class AtemSocket extends EventEmitter {
 				this.emit(IPCMessageType.CommandTimeout, message.payload)
 				break
 			case IPCMessageType.InboundCommand:
-				this._parseCommand(Buffer.from(payload.packet.data), payload.remotePacketId)
+				this._parseCommand(Buffer.from(payload.packet.data))
 				break
 			case IPCMessageType.Disconnect:
 				this.emit(IPCMessageType.Disconnect)
@@ -168,7 +169,7 @@ export class AtemSocket extends EventEmitter {
 		}
 	}
 
-	private _parseCommand (buffer: Buffer, packetId?: number) {
+	private _parseCommand (buffer: Buffer) {
 		const length = buffer.readUInt16BE(0)
 		const name = buffer.toString('ascii', 4, 8)
 
@@ -181,7 +182,6 @@ export class AtemSocket extends EventEmitter {
 		if (cmdConstructor && typeof cmdConstructor.deserialize === 'function') {
 			try {
 				const cmd: IDeserializedCommand = cmdConstructor.deserialize(buffer.slice(0, length).slice(8), this._commandParser.version)
-				cmd.packetId = packetId || -1
 
 				if (name === '_ver') { // init started
 					const verCmd = cmd as VersionCommand
@@ -195,7 +195,7 @@ export class AtemSocket extends EventEmitter {
 		}
 
 		if (buffer.length > length) {
-			this._parseCommand(buffer.slice(length), packetId)
+			this._parseCommand(buffer.slice(length))
 		}
 	}
 }
