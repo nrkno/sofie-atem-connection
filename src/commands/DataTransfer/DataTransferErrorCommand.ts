@@ -1,17 +1,25 @@
 import AbstractCommand from '../AbstractCommand'
 
 export class DataTransferErrorCommand extends AbstractCommand {
-	rawName = 'FTDE'
+	static readonly rawName = 'FTDE'
 
-	properties: {
-		transferId: number,
+	readonly properties: Readonly<{
+		transferId: number
 		errorCode: number
+	}>
+
+	constructor (properties: DataTransferErrorCommand['properties']) {
+		super()
+
+		this.properties = properties
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.properties = {
+	static deserialize (rawCommand: Buffer): DataTransferErrorCommand {
+		const properties = {
 			transferId: rawCommand.readUInt16BE(0),
 			errorCode: rawCommand.readUInt8(2)
 		}
+
+		return new DataTransferErrorCommand(properties)
 	}
 }

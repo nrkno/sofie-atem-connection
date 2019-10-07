@@ -4,30 +4,39 @@ import { MacroPropertiesState } from '../../state/macro'
 import { Util } from '../../lib/atemUtil'
 
 export class MacroPropertiesCommand extends AbstractCommand {
-	rawName = 'MPrp'
+	static readonly rawName = 'MPrp'
 
-	macroIndexID: number
-	properties: MacroPropertiesState
+	readonly macroIndexID: number
+	readonly properties: MacroPropertiesState
 
-	deserialize (rawCommand: Buffer) {
-		this.macroIndexID = rawCommand.readUInt16BE(0)
+	constructor (macroIndexID: number, properties: MacroPropertiesState) {
+		super()
+
+		this.macroIndexID = macroIndexID
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer): MacroPropertiesCommand {
+		const macroIndexID = rawCommand.readUInt16BE(0)
 		const nameLen = rawCommand.readUInt16BE(4)
 		const descLen = rawCommand.readUInt16BE(6)
 
-		this.properties = {
+		const properties = {
 			description: '',
 			isUsed: Boolean(rawCommand[2] & 1 << 0),
-			macroIndex: this.macroIndexID,
+			macroIndex: macroIndexID,
 			name: ''
 		}
 
 		if (descLen > 0) {
-			this.properties.description = Util.bufToNullTerminatedString(rawCommand, (8 + nameLen), descLen)
+			properties.description = Util.bufToNullTerminatedString(rawCommand, (8 + nameLen), descLen)
 		}
 
 		if (nameLen > 0) {
-			this.properties.name = Util.bufToNullTerminatedString(rawCommand, 8, nameLen)
+			properties.name = Util.bufToNullTerminatedString(rawCommand, 8, nameLen)
 		}
+
+		return new MacroPropertiesCommand(macroIndexID, properties)
 	}
 
 	applyToState (state: AtemState) {

@@ -1,15 +1,14 @@
 import AbstractCommand from './AbstractCommand'
 
 export class InitCompleteCommand extends AbstractCommand {
-	rawName = 'InCm'
-	properties: null
+	static readonly rawName = 'InCm'
+	readonly properties: null = null
 
-	deserialize () {
-		//
+	static deserialize () {
+		return new InitCompleteCommand()
 	}
 
 	applyToState () {
-		//
 		return `info`
 	}
 }

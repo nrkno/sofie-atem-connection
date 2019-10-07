@@ -3,18 +3,23 @@ import { AtemState } from '../../state'
 import { MacroRecorderState } from '../../state/macro'
 
 export class MacroRecordingStatusCommand extends AbstractCommand {
-	rawName = 'MRcS'
+	static readonly rawName = 'MRcS'
 
-	macroIndexID: number
-	properties: MacroRecorderState
+	readonly properties: Readonly<MacroRecorderState>
 
-	deserialize (rawCommand: Buffer) {
-		this.macroIndexID = rawCommand.readUInt16BE(2)
+	constructor (properties: MacroRecorderState) {
+		super()
 
-		this.properties = {
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer) {
+		const properties = {
 			isRecording: Boolean(rawCommand[0] & 1 << 0),
-			macroIndex: this.macroIndexID
+			macroIndex: rawCommand.readUInt16BE(2)
 		}
+
+		return new MacroRecordingStatusCommand(properties)
 	}
 
 	applyToState (state: AtemState) {

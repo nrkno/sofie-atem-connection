@@ -1,9 +1,9 @@
-import AbstractCommand from '../../AbstractCommand'
+import AbstractCommand, { WritableCommand } from '../../AbstractCommand'
 import { AtemState } from '../../../state'
 import { UpstreamKeyerPatternSettings } from '../../../state/video/upstreamKeyers'
 import { Util, Enums } from '../../..'
 
-export class MixEffectKeyPatternCommand extends AbstractCommand {
+export class MixEffectKeyPatternCommand extends WritableCommand<UpstreamKeyerPatternSettings> {
 	static MaskFlags = {
 		style: 1 << 0,
 		size: 1 << 1,
@@ -14,10 +14,17 @@ export class MixEffectKeyPatternCommand extends AbstractCommand {
 		invert: 1 << 6
 	}
 
-	rawName = 'CKPt'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: UpstreamKeyerPatternSettings
+	static readonly rawName = 'CKPt'
+
+	readonly mixEffect: number
+	readonly upstreamKeyerId: number
+
+	constructor (mixEffect: number, upstreamKeyerId: number) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.upstreamKeyerId = upstreamKeyerId
+	}
 
 	serialize () {
 		const buffer = Buffer.alloc(16)
@@ -25,12 +32,12 @@ export class MixEffectKeyPatternCommand extends AbstractCommand {
 		buffer.writeUInt8(this.mixEffect, 1)
 		buffer.writeUInt8(this.upstreamKeyerId, 2)
 
-		buffer.writeUInt8(this.properties.style, 3)
-		buffer.writeUInt16BE(this.properties.size, 4)
-		buffer.writeUInt16BE(this.properties.symmetry, 6)
-		buffer.writeUInt16BE(this.properties.softness, 8)
-		buffer.writeUInt16BE(this.properties.positionX, 10)
-		buffer.writeUInt16BE(this.properties.positionY, 12)
+		buffer.writeUInt8(this.properties.style || 0, 3)
+		buffer.writeUInt16BE(this.properties.size || 0, 4)
+		buffer.writeUInt16BE(this.properties.symmetry || 0, 6)
+		buffer.writeUInt16BE(this.properties.softness || 0, 8)
+		buffer.writeUInt16BE(this.properties.positionX || 0, 10)
+		buffer.writeUInt16BE(this.properties.positionY || 0, 12)
 		buffer.writeUInt8(this.properties.invert ? 1 : 0, 14)
 
 		return buffer
@@ -38,15 +45,24 @@ export class MixEffectKeyPatternCommand extends AbstractCommand {
 }
 
 export class MixEffectKeyUpdateCommand extends AbstractCommand {
-	rawName = 'KePt'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: UpstreamKeyerPatternSettings
+	static readonly rawName = 'KePt'
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
-		this.properties = {
+	readonly mixEffect: number
+	readonly upstreamKeyerId: number
+	readonly properties: Readonly<UpstreamKeyerPatternSettings>
+
+	constructor (mixEffect: number, upstreamKeyerId: number, properties: UpstreamKeyerPatternSettings) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.upstreamKeyerId = upstreamKeyerId
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer): MixEffectKeyUpdateCommand {
+		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
+		const properties = {
 			style: Util.parseEnum<Enums.Pattern>(rawCommand[2], Enums.Pattern),
 			size: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 10000),
 			symmetry: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 10000),
@@ -55,6 +71,8 @@ export class MixEffectKeyUpdateCommand extends AbstractCommand {
 			positionY: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 10000),
 			invert: rawCommand[14] === 1
 		}
+
+		return new MixEffectKeyUpdateCommand(mixEffect, upstreamKeyerId, properties)
 	}
 
 	applyToState (state: AtemState) {

@@ -11,8 +11,6 @@ export interface MultiViewerWindowState extends MultiViewerSourceState {
 
 export class MultiViewer {
 	index: number
-	layout: number
-	overlayOpacity: number
 	windows: { [index: string]: MultiViewerWindowState } = {}
 
 	constructor (index: number) {
@@ -31,6 +29,10 @@ export class MultiViewer {
 export class SettingsState {
 	multiViewers: { [index: string]: MultiViewer } = {}
 	videoMode: number
+
+	constructor () {
+		this.videoMode = 0
+	}
 
 	getMultiViewer (index: number) {
 		if (!this.multiViewers[index]) {

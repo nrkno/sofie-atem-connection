@@ -19,15 +19,15 @@ export class MediaState {
 	players: Array<MediaPlayer & MediaPlayerSource> = []
 }
 
-export class StillFrame {
+export interface StillFrame {
 	isUsed: boolean
 	hash: string
 	fileName: string
 }
 
-export class ClipBank {
+export interface ClipBank {
 	isUsed: boolean
 	name: string
 	frameCount: number
-	frames: Array<StillFrame> = []
+	frames: Array<StillFrame>
 }

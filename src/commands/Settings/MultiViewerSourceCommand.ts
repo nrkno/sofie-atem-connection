@@ -1,51 +1,57 @@
-import AbstractCommand from '../AbstractCommand'
+import AbstractCommand, { WritableCommand } from '../AbstractCommand'
 import { AtemState } from '../../state'
 import { MultiViewerSourceState } from '../../state/settings'
 
-export class MultiViewerSourceCommand extends AbstractCommand {
-	rawName = 'CMvI'
-	multiViewerId: number
-	index: number
+export class MultiViewerSourceCommand extends WritableCommand<MultiViewerSourceState> {
+	static readonly rawName = 'CMvI'
 
-	properties: MultiViewerSourceState
+	readonly multiViewerId: number
 
-	updateProps (newProps: Partial<MultiViewerSourceState>) {
-		this._updateProps(newProps)
+	constructor (multiviewerId: number) {
+		super()
+
+		this.multiViewerId = multiviewerId
 	}
 
 	serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.multiViewerId, 0)
-		buffer.writeUInt8(this.properties.windowIndex, 1)
-		buffer.writeUInt16BE(this.properties.source, 2)
+		buffer.writeUInt8(this.properties.windowIndex || 0, 1)
+		buffer.writeUInt16BE(this.properties.source || 0, 2)
 		return buffer
 	}
 }
 
 export class MultiViewerSourceUpdateCommand extends AbstractCommand {
-	rawName = 'MvIn'
-	multiViewerId: number
-	index: number
+	static readonly rawName = 'MvIn'
 
-	properties: MultiViewerSourceState
+	readonly multiViewerId: number
+	readonly properties: Readonly<MultiViewerSourceState>
 
-	deserialize (rawCommand: Buffer) {
-		this.index = rawCommand.readUInt8(1)
-		this.multiViewerId = rawCommand.readUInt8(0)
+	constructor (multiviewerId: number, properties: MultiViewerSourceState) {
+		super()
 
-		this.properties = {
+		this.multiViewerId = multiviewerId
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer): MultiViewerSourceUpdateCommand {
+		const multiViewerId = rawCommand.readUInt8(0)
+		const properties = {
 			source: rawCommand.readUInt16BE(2),
 			windowIndex: rawCommand.readUInt8(1)
 		}
+
+		return new MultiViewerSourceUpdateCommand(multiViewerId, properties)
 	}
 
 	applyToState (state: AtemState) {
 		const multiviewer = state.settings.getMultiViewer(this.multiViewerId)
-		multiviewer.windows[this.index] = {
-			...multiviewer.windows[this.index],
+		multiviewer.windows[this.properties.windowIndex] = {
+			...multiviewer.windows[this.properties.windowIndex],
 			...this.properties
 		}
 
-		return `settings.multiViewers.${this.multiViewerId}.windows.${this.index}`
+		return `settings.multiViewers.${this.multiViewerId}.windows.${this.properties.windowIndex}`
 	}
 }

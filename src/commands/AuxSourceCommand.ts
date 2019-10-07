@@ -2,11 +2,19 @@ import AbstractCommand from './AbstractCommand'
 import { AtemState } from '../state'
 
 export class AuxSourceCommand extends AbstractCommand {
-	rawName = 'CAuS'
-	auxBus: number
+	static readonly rawName = 'CAuS'
 
-	properties: {
+	readonly auxBus: number
+
+	readonly properties: Readonly<{
 		source: number
+	}>
+
+	constructor (auxBus: number, source: number) {
+		super()
+
+		this.auxBus = auxBus
+		this.properties = { source }
 	}
 
 	serialize () {
@@ -19,18 +27,28 @@ export class AuxSourceCommand extends AbstractCommand {
 }
 
 export class AuxSourceUpdateCommand extends AbstractCommand {
-	rawName = 'AuxS'
-	auxBus: number
+	static readonly rawName = 'AuxS'
 
-	properties: {
+	readonly auxBus: number
+
+	readonly properties: Readonly<{
 		source: number
+	}>
+
+	constructor (auxBus: number, properties: AuxSourceUpdateCommand['properties']) {
+		super()
+
+		this.auxBus = auxBus
+		this.properties = properties
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.auxBus = rawCommand[0]
-		this.properties = {
+	static deserialize (rawCommand: Buffer): AuxSourceUpdateCommand {
+		const auxBus = rawCommand[0]
+		const properties = {
 			source: rawCommand.readUInt16BE(2)
 		}
+
+		return new AuxSourceUpdateCommand(auxBus, properties)
 	}
 
 	applyToState (state: AtemState) {

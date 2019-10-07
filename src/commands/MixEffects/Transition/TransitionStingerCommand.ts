@@ -1,9 +1,9 @@
-import AbstractCommand from '../../AbstractCommand'
+import AbstractCommand, { WritableCommand } from '../../AbstractCommand'
 import { AtemState } from '../../../state'
 import { StingerTransitionSettings } from '../../../state/video'
 import { Util } from '../../..'
 
-export class TransitionStingerCommand extends AbstractCommand {
+export class TransitionStingerCommand extends WritableCommand<StingerTransitionSettings> {
 	static MaskFlags = {
 		source: 1 << 0,
 		preMultipliedKey: 1 << 1,
@@ -16,13 +16,14 @@ export class TransitionStingerCommand extends AbstractCommand {
 		mixRate: 1 << 8
 	}
 
-	rawName = 'CTSt'
-	mixEffect: number
+	static readonly rawName = 'CTSt'
 
-	properties: StingerTransitionSettings
+	readonly mixEffect: number
 
-	updateProps (newProps: Partial<StingerTransitionSettings>) {
-		this._updateProps(newProps)
+	constructor (mixEffect: number) {
+		super()
+
+		this.mixEffect = mixEffect
 	}
 
 	serialize () {
@@ -30,31 +31,38 @@ export class TransitionStingerCommand extends AbstractCommand {
 		buffer.writeUInt16BE(this.flag, 0)
 
 		buffer.writeUInt8(this.mixEffect, 2)
-		buffer.writeUInt8(this.properties.source, 3)
+		buffer.writeUInt8(this.properties.source || 0, 3)
 		buffer.writeUInt8(this.properties.preMultipliedKey ? 1 : 0, 4)
 
-		buffer.writeUInt16BE(this.properties.clip, 6)
-		buffer.writeUInt16BE(this.properties.gain, 8)
+		buffer.writeUInt16BE(this.properties.clip || 0, 6)
+		buffer.writeUInt16BE(this.properties.gain || 0, 8)
 		buffer.writeUInt8(this.properties.invert ? 1 : 0, 10)
 
-		buffer.writeUInt16BE(this.properties.preroll, 12)
-		buffer.writeUInt16BE(this.properties.clipDuration, 14)
-		buffer.writeUInt16BE(this.properties.triggerPoint, 16)
-		buffer.writeUInt16BE(this.properties.mixRate, 18)
+		buffer.writeUInt16BE(this.properties.preroll || 0, 12)
+		buffer.writeUInt16BE(this.properties.clipDuration || 0, 14)
+		buffer.writeUInt16BE(this.properties.triggerPoint || 0, 16)
+		buffer.writeUInt16BE(this.properties.mixRate || 0, 18)
 
 		return buffer
 	}
 }
 
 export class TransitionStingerUpdateCommand extends AbstractCommand {
-	rawName = 'TStP'
-	mixEffect: number
+	static readonly rawName = 'TStP'
 
-	properties: StingerTransitionSettings
+	readonly mixEffect: number
+	readonly properties: Readonly<StingerTransitionSettings>
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
+	constructor (mixEffect: number, properties: StingerTransitionSettings) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer): TransitionStingerUpdateCommand {
+		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const properties = {
 			source: rawCommand[1],
 			preMultipliedKey: rawCommand[2] === 1,
 
@@ -67,6 +75,8 @@ export class TransitionStingerUpdateCommand extends AbstractCommand {
 			triggerPoint: rawCommand[14] << 8 | rawCommand[15],
 			mixRate: rawCommand[16] << 8 | rawCommand[17]
 		}
+
+		return new TransitionStingerUpdateCommand(mixEffect, properties)
 	}
 
 	applyToState (state: AtemState) {

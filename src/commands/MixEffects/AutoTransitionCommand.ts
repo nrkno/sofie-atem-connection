@@ -1,7 +1,7 @@
 import AbstractCommand from '../AbstractCommand'
 
 export class AutoTransitionCommand extends AbstractCommand {
-	rawName = 'DAut'
+	static readonly rawName = 'DAut'
 	mixEffect: number
 
 	properties: null

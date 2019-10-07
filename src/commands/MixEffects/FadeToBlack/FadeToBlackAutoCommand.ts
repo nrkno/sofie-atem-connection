@@ -1,7 +1,7 @@
 import AbstractCommand from '../../AbstractCommand'
 
 export class FadeToBlackAutoCommand extends AbstractCommand {
-	rawName = 'FtbA'
+	static readonly rawName = 'FtbA'
 	mixEffect: number
 
 	properties: {}

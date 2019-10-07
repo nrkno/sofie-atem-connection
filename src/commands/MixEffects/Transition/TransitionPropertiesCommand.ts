@@ -1,21 +1,22 @@
-import AbstractCommand from '../../AbstractCommand'
+import AbstractCommand, { WritableCommand } from '../../AbstractCommand'
 import { AtemState } from '../../../state'
 import { TransitionProperties } from '../../../state/video'
 import { Util, Enums } from '../../..'
 
-export class TransitionPropertiesCommand extends AbstractCommand {
+export class TransitionPropertiesCommand extends WritableCommand<TransitionProperties> {
 	static MaskFlags = {
 		style: 1 << 0,
 		selection: 1 << 1
 	}
 
-	rawName = 'CTTp'
-	mixEffect: number
+	static readonly rawName = 'CTTp'
 
-	properties: TransitionProperties
+	readonly mixEffect: number
 
-	updateProps (newProps: Partial<TransitionProperties>) {
-		this._updateProps(newProps)
+	constructor (mixEffect: number) {
+		super()
+
+		this.mixEffect = mixEffect
 	}
 
 	serialize () {
@@ -23,27 +24,36 @@ export class TransitionPropertiesCommand extends AbstractCommand {
 		buffer.writeUInt8(this.flag, 0)
 
 		buffer.writeUInt8(this.mixEffect, 1)
-		buffer.writeUInt8(this.properties.style, 2)
-		buffer.writeUInt8(this.properties.selection, 3)
+		buffer.writeUInt8(this.properties.style || 0, 2)
+		buffer.writeUInt8(this.properties.selection || 0, 3)
 
 		return buffer
 	}
 }
 
 export class TransitionPropertiesUpdateCommand extends AbstractCommand {
-	rawName = 'TrSS'
-	mixEffect: number
+	static readonly rawName = 'TrSS'
 
-	properties: TransitionProperties
+	readonly mixEffect: number
+	readonly properties: Readonly<TransitionProperties>
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
+	constructor (mixEffect: number, properties: TransitionProperties) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer): TransitionPropertiesUpdateCommand {
+		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const properties = {
 			style: Util.parseEnum<Enums.TransitionStyle>(rawCommand[1], Enums.TransitionStyle),// rawCommand[1],
 			selection: rawCommand[2],
 			nextStyle: Util.parseEnum<Enums.TransitionStyle>(rawCommand[3], Enums.TransitionStyle),
 			nextSelection: rawCommand[4]
 		}
+
+		return new TransitionPropertiesUpdateCommand(mixEffect, properties)
 	}
 
 	applyToState (state: AtemState) {

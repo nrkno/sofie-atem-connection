@@ -4,16 +4,28 @@ import { UpstreamKeyerFlyKeyframe } from '../../../state/video/upstreamKeyers'
 import { Util } from '../../..'
 
 export class MixEffectKeyFlyKeyframeGetCommand extends AbstractCommand {
-	rawName = 'KKFP'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: UpstreamKeyerFlyKeyframe
+	static readonly rawName = 'KKFP'
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
-		this.properties = {
-			keyFrameId: Util.parseNumberBetween(rawCommand[2], 1, 2),
+	readonly mixEffect: number
+	readonly upstreamKeyerId: number
+	readonly keyFrameId: number
+	readonly properties: Readonly<UpstreamKeyerFlyKeyframe>
+
+	constructor (mixEffect: number, upstreamKeyerId: number, keyFrameId: number, properties: UpstreamKeyerFlyKeyframe) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.upstreamKeyerId = upstreamKeyerId
+		this.keyFrameId = keyFrameId
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer) {
+		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
+		const keyFrameId = Util.parseNumberBetween(rawCommand[2], 1, 2)
+		const properties = {
+			keyFrameId: keyFrameId,
 
 			// Note: these are higher than the ui shows, but are within the range the atem can be set to
 			sizeX: Util.parseNumberBetween(rawCommand.readUInt32BE(4), 0, Math.pow(2, 32) - 1),
@@ -44,6 +56,8 @@ export class MixEffectKeyFlyKeyframeGetCommand extends AbstractCommand {
 			maskLeft: Util.parseNumberBetween(rawCommand.readInt16BE(48), -16000, 16000),
 			maskRight: Util.parseNumberBetween(rawCommand.readInt16BE(50), -16000, 16000)
 		}
+
+		return new MixEffectKeyFlyKeyframeGetCommand(mixEffect, upstreamKeyerId, keyFrameId, properties)
 	}
 
 	applyToState (state: AtemState) {

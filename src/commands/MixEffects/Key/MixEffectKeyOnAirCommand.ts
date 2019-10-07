@@ -3,11 +3,20 @@ import { AtemState } from '../../../state'
 import { Util } from '../../..'
 
 export class MixEffectKeyOnAirCommand extends AbstractCommand {
-	rawName = 'CKOn'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: {
+	static readonly rawName = 'CKOn'
+
+	readonly mixEffect: number
+	readonly upstreamKeyerId: number
+	readonly properties: Readonly<{
 		onAir: boolean
+	}>
+
+	constructor (mixEffect: number, upstreamKeyerId: number, onAir: boolean) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.upstreamKeyerId = upstreamKeyerId
+		this.properties = { onAir }
 	}
 
 	serialize () {
@@ -20,19 +29,29 @@ export class MixEffectKeyOnAirCommand extends AbstractCommand {
 }
 
 export class MixEffectKeyOnAirUpdateCommand extends AbstractCommand {
-	rawName = 'KeOn'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: {
+	static readonly rawName = 'KeOn'
+
+	readonly mixEffect: number
+	readonly upstreamKeyerId: number
+	readonly properties: Readonly<{
 		onAir: boolean
+	}>
+
+	constructor (mixEffect: number, upstreamKeyerId: number, properties: MixEffectKeyOnAirUpdateCommand['properties']) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.upstreamKeyerId = upstreamKeyerId
+		this.properties = properties
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
-		this.properties = {
+	static deserialize (rawCommand: Buffer) {
+		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
+		const properties = {
 			onAir: rawCommand[2] === 1
 		}
+		return new MixEffectKeyOnAirUpdateCommand(mixEffect, upstreamKeyerId, properties)
 	}
 
 	applyToState (state: AtemState) {

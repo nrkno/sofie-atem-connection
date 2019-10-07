@@ -1,5 +1,6 @@
 import { CommandParser } from '../../lib/atemCommandParser'
 import { ProtocolVersion } from '../../enums'
+import { AbstractCommand } from '..';
 
 export type CommandTestConverterSet = { [key: string]: CommandTestConverter }
 export interface CommandTestConverter {
@@ -15,11 +16,11 @@ export interface TestCase {
 }
 
 export function runTestForCommand (commandParser: CommandParser, commandConverters: CommandTestConverterSet, i: number, testCase: TestCase, allowUnknown?: boolean) {
-	const cmd = commandParser.commandFromRawName(testCase.name)
-	if (!cmd && allowUnknown) return
+	const cmdConstructor = commandParser.commandFromRawName(testCase.name)
+	if (!cmdConstructor && allowUnknown) return
 
 	let matchedCase = false
-	if (cmd) {
+	if (cmdConstructor) {
 		const buffer = Buffer.from(testCase.bytes.replace(/-/g, ''), 'hex')
 		const length = buffer.readUInt16BE(0)
 		const name = buffer.toString('ascii', 4, 8)
@@ -38,14 +39,13 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 			mutatedCommand = converter.customMutate(mutatedCommand)
 		}
 
-		if (typeof cmd.deserialize === 'function') {
+		if (typeof cmdConstructor.deserialize === 'function') {
 			matchedCase = true
 			test(`Test #${i}: ${testCase.name} - Deserialize`, () => {
-				cmd.deserialize!(buffer.slice(0, length).slice(8), commandParser.version)
+				const cmd: AbstractCommand = cmdConstructor.deserialize!(buffer.slice(0, length).slice(8), commandParser.version)
 
 				delete cmd.flag // Anything deserialized will never have flags
-				delete cmd.rawName
-				delete (cmd as any).rawCommand
+				// delete (cmd as any).rawCommand
 
 				if (converter) {
 					for (const key in cmd) {
@@ -61,6 +61,7 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 			})
 		}
 
+		const cmd: AbstractCommand = new cmdConstructor() // TODO - params
 		if (typeof cmd.serialize === 'function') {
 			matchedCase = true
 			test(`Test #${i}: ${testCase.name} - Serialize`, () => {
@@ -112,8 +113,7 @@ export function ensureAllCommandsCovered (commandParser: CommandParser, testCase
 		let knownNames: string[] = []
 		for (const name of Object.keys(commandParser.commands)) {
 			for (const cmd of commandParser.commands[name]) {
-				const inst = new cmd()
-				if ((expectUndefined && !inst.minimumVersion) || inst.minimumVersion === commandParser.version) {
+				if ((expectUndefined && !cmd.minimumVersion) || cmd.minimumVersion === commandParser.version) {
 					knownNames.push(name)
 				}
 			}

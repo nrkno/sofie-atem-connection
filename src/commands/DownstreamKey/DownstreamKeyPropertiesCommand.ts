@@ -4,13 +4,21 @@ import { DownstreamKeyerProperties } from '../../state/video/downstreamKeyers'
 import { Util } from '../..'
 
 export class DownstreamKeyPropertiesCommand extends AbstractCommand {
-	rawName = 'DskP'
-	downstreamKeyerId: number
-	properties: DownstreamKeyerProperties
+	static readonly rawName = 'DskP'
 
-	deserialize (rawCommand: Buffer) {
-		this.downstreamKeyerId = rawCommand[0]
-		this.properties = {
+	readonly downstreamKeyerId: number
+	readonly properties: Readonly<DownstreamKeyerProperties>
+
+	constructor (downstreamKeyerId: number, properties: DownstreamKeyerProperties) {
+		super()
+
+		this.downstreamKeyerId = downstreamKeyerId
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer) {
+		const downstreamKeyerId = rawCommand[0]
+		const properties = {
 			tie: rawCommand[1] === 1,
 			rate: Util.parseNumberBetween(rawCommand[2], 0, 300),
 
@@ -27,6 +35,8 @@ export class DownstreamKeyPropertiesCommand extends AbstractCommand {
 				right: Util.parseNumberBetween(rawCommand.readInt16BE(16), -16000, 16000)
 			}
 		}
+
+		return new DownstreamKeyPropertiesCommand(downstreamKeyerId, properties)
 	}
 
 	applyToState (state: AtemState) {

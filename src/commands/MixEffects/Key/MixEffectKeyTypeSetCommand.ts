@@ -7,7 +7,7 @@ export class MixEffectKeyTypeSetCommand extends AbstractCommand {
 		flyEnabled: 1 << 1
 	}
 
-	rawName = 'CKTp'
+	static readonly rawName = 'CKTp'
 	mixEffect: number
 	upstreamKeyerId: number
 	properties: UpstreamKeyerTypeSettings

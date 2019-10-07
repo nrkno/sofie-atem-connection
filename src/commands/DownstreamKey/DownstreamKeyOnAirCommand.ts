@@ -1,7 +1,7 @@
 import AbstractCommand from '../AbstractCommand'
 
 export class DownstreamKeyOnAirCommand extends AbstractCommand {
-	rawName = 'CDsL'
+	static readonly rawName = 'CDsL'
 	downstreamKeyerId: number
 
 	properties: {

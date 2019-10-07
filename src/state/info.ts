@@ -1,10 +1,5 @@
 import { Model, ProtocolVersion } from '../enums'
 
-export interface VersionProps {
-	readonly major: number
-	readonly minor: number
-}
-
 export interface AtemCapabilites {
 	readonly MEs: number
 	readonly sources: number

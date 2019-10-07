@@ -2,7 +2,7 @@ import AbstractCommand from '../AbstractCommand'
 import { MacroAction } from '../../enums'
 
 export class MacroActionCommand extends AbstractCommand {
-	rawName = 'MAct'
+	static readonly rawName = 'MAct'
 	index: number
 
 	properties: {

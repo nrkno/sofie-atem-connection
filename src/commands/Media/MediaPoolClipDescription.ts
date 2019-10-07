@@ -4,19 +4,28 @@ import AbstractCommand from '../AbstractCommand'
 import { Util } from '../../lib/atemUtil'
 
 export class MediaPoolClipDescriptionCommand extends AbstractCommand {
-	rawName = 'MPCS'
+	static readonly rawName = 'MPCS'
 
-	mediaPool: number
-	properties: ClipBank
+	readonly mediaPool: number
+	readonly properties: Readonly<ClipBank>
 
-	deserialize (rawCommand: Buffer) {
-		this.mediaPool = rawCommand[0]
-		this.properties = {
+	constructor (mediaPool: number, properties: ClipBank) {
+		super()
+
+		this.mediaPool = mediaPool
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer) {
+		const mediaPool = rawCommand[0]
+		const properties = {
 			isUsed: rawCommand[1] === 1,
 			name: Util.bufToNullTerminatedString(rawCommand, 2, 64),
 			frameCount: rawCommand.readUInt16BE(66),
 			frames: []
 		}
+
+		return new MediaPoolClipDescriptionCommand(mediaPool, properties)
 	}
 
 	applyToState (state: AtemState) {

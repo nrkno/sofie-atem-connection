@@ -9,11 +9,17 @@ export class AudioMixerInputCommand extends AbstractCommand {
 		gain: 1 << 1,
 		balance: 1 << 2
 	}
-	rawName = 'CAMI'
-	mixEffect: number
+	static readonly rawName = 'CAMI'
 
+	readonly index: number
 	properties: Partial<AudioChannel>
-	index: number
+
+	constructor (index: number) {
+		super()
+
+		this.index = index
+		this.properties = {}
+	}
 
 	serialize () {
 		const buffer = Buffer.alloc(12)
@@ -27,21 +33,29 @@ export class AudioMixerInputCommand extends AbstractCommand {
 }
 
 export class AudioMixerInputUpdateCommand extends AbstractCommand {
-	rawName = 'AMIP'
-	mixEffect: number
+	static readonly rawName = 'AMIP'
 
-	properties: Partial<AudioChannel>
-	index: number
+	readonly index: number
+	readonly properties: Readonly<AudioChannel>
 
-	deserialize (rawCommand: Buffer) {
-		this.index = rawCommand.readUInt16BE(0)
-		this.properties = {
+	constructor (index: number, properties: AudioChannel) {
+		super()
+
+		this.index = index
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer): AudioMixerInputUpdateCommand {
+		const index = rawCommand.readUInt16BE(0)
+		const properties = {
 			sourceType: rawCommand.readUInt8(2),
 			portType: rawCommand.readUInt8(7),
 			mixOption: rawCommand.readUInt8(8),
 			gain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(10)),
 			balance: Util.IntToBalance(rawCommand.readInt16BE(12))
 		}
+
+		return new AudioMixerInputUpdateCommand(index, properties)
 	}
 
 	applyToState (state: AtemState) {

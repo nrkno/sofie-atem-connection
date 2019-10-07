@@ -4,18 +4,26 @@ import { Util } from '../../lib/atemUtil'
 import { Enums } from '../..'
 
 export class ProductIdentifierCommand extends AbstractCommand {
-	rawName = '_pin'
+	static readonly rawName = '_pin'
 
-	properties: {
+	readonly properties: Readonly<{
 		deviceName: string
 		model: number
+	}>
+
+	constructor (properties: ProductIdentifierCommand['properties']) {
+		super()
+
+		this.properties = properties
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.properties = {
+	static deserialize (rawCommand: Buffer) {
+		const properties = {
 			deviceName: Util.bufToNullTerminatedString(rawCommand, 0, 40),
 			model: Util.parseEnum<Enums.Model>(rawCommand[40], Enums.Model)
 		}
+
+		return new ProductIdentifierCommand(properties)
 	}
 
 	applyToState (state: AtemState) {

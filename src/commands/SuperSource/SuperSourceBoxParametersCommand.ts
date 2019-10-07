@@ -18,10 +18,19 @@ export class SuperSourceBoxParametersCommand extends AbstractCommand {
 		cropRight: 1 << 9
 	}
 
-	rawName = 'CSBP'
-	ssrcId: number
-	boxId: number
-	properties: SuperSourceBox
+	static readonly rawName = 'CSBP'
+
+	readonly ssrcId: number
+	readonly boxId: number
+	properties: Partial<SuperSourceBox>
+
+	constructor (ssrcId: number, boxId: number) {
+		super()
+
+		this.ssrcId = ssrcId
+		this.boxId = boxId
+		this.properties = {}
+	}
 
 	updateProps (newProps: Partial<SuperSourceBox>) {
 		this._updateProps(newProps)
@@ -40,37 +49,44 @@ export class SuperSourceBoxParametersCommand extends AbstractCommand {
 		buffer.writeUInt8(this.properties.enabled ? 1 : 0, i + 3)
 
 		if (i === 1) i++ // Needs to be 2 byte aligned now
-		buffer.writeUInt16BE(this.properties.source, i + 4)
-		buffer.writeInt16BE(this.properties.x, i + 6)
-		buffer.writeInt16BE(this.properties.y, i + 8)
-		buffer.writeUInt16BE(this.properties.size, i + 10)
+		buffer.writeUInt16BE(this.properties.source || 0, i + 4)
+		buffer.writeInt16BE(this.properties.x || 0, i + 6)
+		buffer.writeInt16BE(this.properties.y || 0, i + 8)
+		buffer.writeUInt16BE(this.properties.size || 0, i + 10)
 		buffer.writeUInt8(this.properties.cropped ? 1 : 0, i + 12)
-		buffer.writeUInt16BE(this.properties.cropTop, i + 14)
-		buffer.writeUInt16BE(this.properties.cropBottom, i + 16)
-		buffer.writeUInt16BE(this.properties.cropLeft, i + 18)
-		buffer.writeUInt16BE(this.properties.cropRight, i + 20)
+		buffer.writeUInt16BE(this.properties.cropTop || 0, i + 14)
+		buffer.writeUInt16BE(this.properties.cropBottom || 0, i + 16)
+		buffer.writeUInt16BE(this.properties.cropLeft || 0, i + 18)
+		buffer.writeUInt16BE(this.properties.cropRight || 0, i + 20)
 		return buffer
 	}
 }
 
 export class SuperSourceBoxParametersUpdateCommand extends AbstractCommand {
+	static readonly rawName = 'SSBP'
 
-	rawName = 'SSBP'
-	ssrcId: number
-	boxId: number
-	properties: SuperSourceBox
+	readonly ssrcId: number
+	readonly boxId: number
+	readonly properties: Readonly<SuperSourceBox>
 
-	deserialize (rawCommand: Buffer, version: ProtocolVersion) {
+	constructor (ssrcId: number, boxId: number, properties: SuperSourceBox) {
+		super()
+
+		this.ssrcId = ssrcId
+		this.boxId = boxId
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer, version: ProtocolVersion): SuperSourceBoxParametersUpdateCommand {
+		let ssrcId = 0
 		let i = 0
 		if (version >= ProtocolVersion.V8_0) {
 			i = 2
-			this.ssrcId = rawCommand.readUInt8(0)
-		} else {
-			this.ssrcId = 0
+			ssrcId = rawCommand.readUInt8(0)
 		}
 
-		this.boxId = rawCommand.readUInt8(i > 0 ? 1 : 0)
-		this.properties = {
+		const boxId = rawCommand.readUInt8(i > 0 ? 1 : 0)
+		const properties = {
 			enabled: rawCommand[i > 0 ? 2 : 1] === 1,
 			source: rawCommand.readUInt16BE(i + 2),
 			x: Util.parseNumberBetween(rawCommand.readInt16BE(i + 4), -4800, 4800),
@@ -82,6 +98,8 @@ export class SuperSourceBoxParametersUpdateCommand extends AbstractCommand {
 			cropLeft: Util.parseNumberBetween(rawCommand.readUInt16BE(i + 16), 0, 32000),
 			cropRight: Util.parseNumberBetween(rawCommand.readUInt16BE(i + 18), 0, 32000)
 		}
+
+		return new SuperSourceBoxParametersUpdateCommand(ssrcId, boxId, properties)
 	}
 
 	applyToState (state: AtemState) {

@@ -4,20 +4,30 @@ import AbstractCommand from '../AbstractCommand'
 import { Util } from '../../lib/atemUtil'
 
 export class MediaPoolFrameDescriptionCommand extends AbstractCommand {
-	rawName = 'MPfe'
+	static readonly rawName = 'MPfe'
 
-	mediaPool: number
-	frameIndex: number
-	properties: StillFrame
+	readonly mediaPool: number
+	readonly frameIndex: number
+	readonly properties: Readonly<StillFrame>
 
-	deserialize (rawCommand: Buffer) {
-		this.mediaPool = rawCommand[0]
-		this.frameIndex = rawCommand.readUInt16BE(2)
-		this.properties = {
+	constructor (mediaPool: number, frameIndex: number,properties: StillFrame) {
+		super()
+
+		this.mediaPool = mediaPool
+		this.frameIndex = frameIndex
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer) {
+		const mediaPool = rawCommand[0]
+		const frameIndex = rawCommand.readUInt16BE(2)
+		const properties = {
 			isUsed: rawCommand[4] === 1,
 			hash: Util.bufToBase64String(rawCommand, 5, 16),
 			fileName: Util.bufToNullTerminatedString(rawCommand, 24, rawCommand[23])
 		}
+
+		return new MediaPoolFrameDescriptionCommand(mediaPool, frameIndex, properties)
 	}
 
 	applyToState (state: AtemState) {

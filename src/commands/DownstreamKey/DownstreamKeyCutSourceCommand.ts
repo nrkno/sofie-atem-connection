@@ -1,7 +1,7 @@
 import AbstractCommand from '../AbstractCommand'
 
 export class DownstreamKeyCutSourceCommand extends AbstractCommand {
-	rawName = 'CDsC'
+	static readonly rawName = 'CDsC'
 	downstreamKeyerId: number
 	properties: {
 		input: number

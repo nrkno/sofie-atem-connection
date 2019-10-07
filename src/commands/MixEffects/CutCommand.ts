@@ -1,7 +1,7 @@
 import AbstractCommand from '../AbstractCommand'
 
 export class CutCommand extends AbstractCommand {
-	rawName = 'DCut'
+	static readonly rawName = 'DCut'
 	mixEffect: number
 
 	properties: null

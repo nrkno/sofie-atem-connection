@@ -10,7 +10,7 @@ export class DownstreamKeyMaskCommand extends AbstractCommand {
 		right: 1 << 4
 	}
 
-	rawName = 'CDsM'
+	static readonly rawName = 'CDsM'
 	downstreamKeyerId: number
 	properties: DownstreamKeyerMask
 

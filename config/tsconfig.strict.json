@@ -1,12 +1,16 @@
 {
-  "compilerOptions": {
-    "strictNullChecks": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny" : true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
-  }
+	"compilerOptions": {
+		"strict": true,
+		"alwaysStrict": false,
+		"strictNullChecks": true,
+		"strictPropertyInitialization": false,
+		"strictFunctionTypes": true,
+		"forceConsistentCasingInFileNames": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitAny": true,
+		"noImplicitReturns": true,
+		"noImplicitThis": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true
+	}
 }

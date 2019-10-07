@@ -1,7 +1,7 @@
 import AbstractCommand from '../AbstractCommand'
 
 export class DataTransferDownloadRequestCommand extends AbstractCommand {
-	rawName = 'FTSU'
+	static readonly rawName = 'FTSU'
 
 	properties: {
 		transferId: number,

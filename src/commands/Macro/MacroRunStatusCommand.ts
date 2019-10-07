@@ -3,20 +3,25 @@ import { AtemState } from '../../state'
 import { MacroPlayerState } from '../../state/macro'
 
 export class MacroRunStatusCommand extends AbstractCommand {
-	rawName = 'MRPr'
+	static readonly rawName = 'MRPr'
 
-	macroIndexID: number
-	properties: MacroPlayerState
+	readonly properties: Readonly<MacroPlayerState>
 
-	deserialize (rawCommand: Buffer) {
-		this.macroIndexID = rawCommand.readUInt16BE(2)
+	constructor (properties: MacroPlayerState) {
+		super()
 
-		this.properties = {
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer) {
+		const properties = {
 			isRunning: Boolean(rawCommand[0] & 1 << 0),
 			isWaiting: Boolean(rawCommand[0] & 1 << 1),
 			loop: Boolean(rawCommand[1] & 1 << 0),
-			macroIndex: this.macroIndexID
+			macroIndex: rawCommand.readUInt16BE(2)
 		}
+
+		return new MacroRunStatusCommand(properties)
 	}
 
 	applyToState (state: AtemState) {

@@ -1,7 +1,7 @@
 import AbstractCommand from '../AbstractCommand'
 
 export class MediaPoolSetClipCommand extends AbstractCommand {
-	rawName = 'SMPC'
+	static readonly rawName = 'SMPC'
 
 	properties: {
 		index: number,

@@ -4,10 +4,17 @@ import DataTransfer from './dataTransfer'
 import DataTransferFrame from './dataTransferFrame'
 
 export default class DataTransferClip extends DataTransfer {
-	clipIndex: number // 0 or 1
+	readonly clipIndex: number // 0 or 1
 	frames: Array<DataTransferFrame> = []
 	curFrame = 0
-	description: { name: string }
+	readonly name: string
+
+	constructor (clipIndex: number, name: string) {
+		super(0, 1 + clipIndex)
+
+		this.clipIndex = clipIndex
+		this.name = name
+	}
 
 	start () {
 		const clearMediaCommand = new Commands.MediaPoolClearClipCommand()
@@ -31,7 +38,7 @@ export default class DataTransferClip extends DataTransfer {
 				const command = new Commands.MediaPoolSetClipCommand()
 				command.updateProps({
 					index: this.clipIndex,
-					name: this.description.name,
+					name: this.name,
 					frames: this.frames.length
 				})
 				this.commandQueue.push(command)

@@ -60,7 +60,7 @@ export default class DataLock {
 
 	transferFinished () {
 		if (this.transfer && this.transfer.state === Enums.TransferState.Finished) {
-			this.transfer.finish(this.transfer)
+			this.transfer.resolvePromise(this.transfer)
 		}
 
 		if (this.queue.length > 0) {
@@ -100,21 +100,12 @@ export default class DataLock {
 	}
 
 	_getLock () {
-		const command = new Commands.LockStateCommand()
-		command.updateProps({
-			index: this.storeId,
-			locked: true
-		})
-
+		const command = new Commands.LockStateCommand(this.storeId, true)
 		this.commandQueue.push(command)
 	}
 
 	_releaseLock () {
-		const command = new Commands.LockStateCommand()
-		command.updateProps({
-			index: this.storeId,
-			locked: false
-		})
+		const command = new Commands.LockStateCommand(this.storeId, false)
 		this.commandQueue.push(command)
 	}
 }

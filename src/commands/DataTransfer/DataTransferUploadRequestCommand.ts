@@ -2,7 +2,7 @@ import AbstractCommand from '../AbstractCommand'
 import { Enums } from '../..'
 
 export class DataTransferUploadRequestCommand extends AbstractCommand {
-	rawName = 'FTSD'
+	static readonly rawName = 'FTSD'
 
 	properties: {
 		transferId: number,

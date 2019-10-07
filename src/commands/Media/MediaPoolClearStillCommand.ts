@@ -1,7 +1,7 @@
 import AbstractCommand from '../AbstractCommand'
 
 export class MediaPoolClearStillCommand extends AbstractCommand {
-	rawName = 'CSTL'
+	static readonly rawName = 'CSTL'
 
 	properties: {
 		index: number

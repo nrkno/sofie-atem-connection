@@ -3,7 +3,13 @@ import { Commands, Enums } from '..'
 import DataTransferFrame from './dataTransferFrame'
 
 export default class DataTransferAudio extends DataTransferFrame {
-	description: { name: string }
+	readonly name: string
+
+	constructor (transferId: number, storeId: number, data: Buffer, name: string) {
+		super(transferId, storeId, 0, data)
+
+		this.name = name
+	}
 
 	start () {
 		const command = new Commands.DataTransferUploadRequestCommand()
@@ -19,7 +25,7 @@ export default class DataTransferAudio extends DataTransferFrame {
 
 	sendDescription () {
 		const command = new Commands.DataTransferFileDescriptionCommand()
-		command.updateProps({ ...this.description, fileHash: this.hash, transferId: this.transferId })
+		command.updateProps({ name: this.name, fileHash: this.hash, transferId: this.transferId })
 		this.commandQueue.push(command)
 	}
 }

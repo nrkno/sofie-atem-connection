@@ -1,15 +1,21 @@
-import AbstractCommand from '../../AbstractCommand'
+import AbstractCommand, { BasicWritableCommand } from '../../AbstractCommand'
 import { AtemState } from '../../../state'
 import { Util } from '../../..'
 
-export class TransitionPositionCommand extends AbstractCommand {
-	rawName = 'CTPs'
-	mixEffect: number
+export interface HandlePositionProps {
+	handlePosition: number // 0...10000
+}
 
-	properties: {
-		readonly inTransition: boolean
-		readonly remainingFrames: number // 0...250
-		handlePosition: number // 0...10000
+export class TransitionPositionCommand extends BasicWritableCommand<HandlePositionProps> {
+	static readonly rawName = 'CTPs'
+
+	readonly mixEffect: number
+
+	constructor (mixEffect: number, handlePosition: number) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.properties = { handlePosition }
 	}
 
 	serialize () {
@@ -21,22 +27,31 @@ export class TransitionPositionCommand extends AbstractCommand {
 }
 
 export class TransitionPositionUpdateCommand extends AbstractCommand {
-	rawName = 'TrPs'
-	mixEffect: number
+	static readonly rawName = 'TrPs'
 
-	properties: {
-		readonly inTransition: boolean
-		readonly remainingFrames: number // 0...250
+	readonly mixEffect: number
+	readonly properties: Readonly<{
+		inTransition: boolean
+		remainingFrames: number // 0...250
 		handlePosition: number // 0...10000
+	}>
+
+	constructor (mixEffect: number, properties: TransitionPositionUpdateCommand['properties']) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.properties = properties
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
+	static deserialize (rawCommand: Buffer): TransitionPositionUpdateCommand {
+		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const properties = {
 			inTransition: rawCommand[1] === 1,
 			remainingFrames: Util.parseNumberBetween(rawCommand[2], 0, 250),
 			handlePosition: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 10000)
 		}
+
+		return new TransitionPositionUpdateCommand(mixEffect, properties)
 	}
 
 	applyToState (state: AtemState) {

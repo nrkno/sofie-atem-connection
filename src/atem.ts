@@ -4,7 +4,7 @@ import { AtemSocket } from './lib/atemSocket'
 import AbstractCommand from './commands/AbstractCommand'
 import * as Commands from './commands'
 import * as DataTransferCommands from './commands/DataTransfer'
-import { MediaPlayer } from './state/media'
+import { MediaPlayer, MediaPlayerSource } from './state/media'
 import { MultiViewerSourceState } from './state/settings'
 import {
 	DipTransitionSettings,
@@ -110,105 +110,89 @@ export class Atem extends EventEmitter {
 		})
 	}
 
-	changeProgramInput (input: number, me = 0) {
-		const command = new Commands.ProgramInputCommand()
-		command.mixEffect = me
-		command.updateProps({ source: input })
+	changeProgramInput (input: number, me: number = 0) {
+		const command = new Commands.ProgramInputCommand(me, input)
 		return this.sendCommand(command)
 	}
 
-	changePreviewInput (input: number, me = 0) {
-		const command = new Commands.PreviewInputCommand()
-		command.mixEffect = me
-		command.updateProps({ source: input })
+	changePreviewInput (input: number, me: number = 0) {
+		const command = new Commands.PreviewInputCommand(me, input)
 		return this.sendCommand(command)
 	}
 
-	cut (me = 0) {
+	cut (me: number = 0) {
 		const command = new Commands.CutCommand()
 		command.mixEffect = me
 		return this.sendCommand(command)
 	}
 
-	autoTransition (me = 0) {
+	autoTransition (me: number = 0) {
 		const command = new Commands.AutoTransitionCommand()
 		command.mixEffect = me
 		return this.sendCommand(command)
 	}
 
-	fadeToBlack (me = 0) {
+	fadeToBlack (me: number = 0) {
 		const command = new Commands.FadeToBlackAutoCommand()
 		command.mixEffect = me
 		return this.sendCommand(command)
 	}
 
-	autoDownstreamKey (key = 0, isTowardsOnAir?: boolean) {
+	autoDownstreamKey (key: number = 0, isTowardsOnAir?: boolean) {
 		const command = new Commands.DownstreamKeyAutoCommand()
 		command.downstreamKeyerId = key
 		command.updateProps({ isTowardsOnAir })
 		return this.sendCommand(command)
 	}
 
-	setDipTransitionSettings (newProps: Partial<DipTransitionSettings>, me = 0) {
-		const command = new Commands.TransitionDipCommand()
-		command.mixEffect = me
+	setDipTransitionSettings (newProps: Partial<DipTransitionSettings>, me: number = 0) {
+		const command = new Commands.TransitionDipCommand(me)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setDVETransitionSettings (newProps: Partial<DVETransitionSettings>, me = 1) {
-		const command = new Commands.TransitionDVECommand()
-		command.mixEffect = me
+	setDVETransitionSettings (newProps: Partial<DVETransitionSettings>, me: number = 0) {
+		const command = new Commands.TransitionDVECommand(me)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setMixTransitionSettings (newProps: Partial<MixTransitionSettings>, me = 0) {
-		const command = new Commands.TransitionMixCommand()
-		command.mixEffect = me
+	setMixTransitionSettings (newProps: Partial<MixTransitionSettings>, me: number = 0) {
+		const command = new Commands.TransitionMixCommand(me)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setTransitionPosition (position: number, me = 0) {
-		const command = new Commands.TransitionPositionCommand()
-		command.mixEffect = me
-		command.updateProps({ handlePosition: position })
+	setTransitionPosition (position: number, me: number = 0) {
+		const command = new Commands.TransitionPositionCommand(me, position)
 		return this.sendCommand(command)
 	}
 
-	previewTransition (on: boolean, me = 0) {
-		const command = new Commands.PreviewTransitionCommand()
-		command.mixEffect = me
-		command.updateProps({ preview: on })
+	previewTransition (on: boolean, me: number = 0) {
+		const command = new Commands.PreviewTransitionCommand(me, on)
 		return this.sendCommand(command)
 	}
 
-	setTransitionStyle (newProps: Partial<TransitionProperties>, me = 0) {
-		const command = new Commands.TransitionPropertiesCommand()
-		command.mixEffect = me
+	setTransitionStyle (newProps: Partial<TransitionProperties>, me: number = 0) {
+		const command = new Commands.TransitionPropertiesCommand(me)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setStingerTransitionSettings (newProps: Partial<StingerTransitionSettings>, me = 0) {
-		const command = new Commands.TransitionStingerCommand()
-		command.mixEffect = me
+	setStingerTransitionSettings (newProps: Partial<StingerTransitionSettings>, me: number = 0) {
+		const command = new Commands.TransitionStingerCommand(me)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setWipeTransitionSettings (newProps: Partial<WipeTransitionSettings>, me = 0) {
-		const command = new Commands.TransitionWipeCommand()
-		command.mixEffect = me
+	setWipeTransitionSettings (newProps: Partial<WipeTransitionSettings>, me: number = 0) {
+		const command = new Commands.TransitionWipeCommand(me)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setAuxSource (source: number, bus = 0) {
-		const command = new Commands.AuxSourceCommand()
-		command.auxBus = bus
-		command.updateProps({ source })
+	setAuxSource (source: number, bus: number = 0) {
+		const command = new Commands.AuxSourceCommand(bus, source)
 		return this.sendCommand(command)
 	}
 
@@ -304,22 +288,19 @@ export class Atem extends EventEmitter {
 	}
 
 	setMultiViewerSource (newProps: Partial<MultiViewerSourceState>, mv = 0) {
-		const command = new Commands.MultiViewerSourceCommand()
-		command.multiViewerId = mv
+		const command = new Commands.MultiViewerSourceCommand(mv)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setMediaPlayerSettings (newProps: Partial<MediaPlayer>, player = 0) {
-		const command = new Commands.MediaPlayerStatusCommand()
-		command.mediaPlayerId = player
+	setMediaPlayerSettings (newProps: Partial<MediaPlayer>, player: number = 0) {
+		const command = new Commands.MediaPlayerStatusCommand(player)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setMediaPlayerSource (newProps: Partial<{ sourceType: Enums.MediaSourceType, stillIndex: number, clipIndex: number }>, player = 0) {
-		const command = new Commands.MediaPlayerSourceCommand()
-		command.mediaPlayerId = player
+	setMediaPlayerSource (newProps: Partial<MediaPlayerSource>, player: number = 0) {
+		const command = new Commands.MediaPlayerSourceCommand(player)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
@@ -342,18 +323,15 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	setSuperSourceBoxSettings (newProps: Partial<SuperSourceBox>, box = 0, ssrcId = 0) {
-		const command = new Commands.SuperSourceBoxParametersCommand()
-		command.ssrcId = ssrcId
-		command.boxId = box
+	setSuperSourceBoxSettings (newProps: Partial<SuperSourceBox>, box: number = 0, ssrcId: number = 0) {
+		const command = new Commands.SuperSourceBoxParametersCommand(ssrcId, box)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setSuperSourceProperties (newProps: Partial<SuperSourceProperties>, ssrcId = 0) {
+	setSuperSourceProperties (newProps: Partial<SuperSourceProperties>, ssrcId: number = 0) {
 		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
-			const command = new Commands.SuperSourcePropertiesV8Command()
-			command.ssrcId = ssrcId
+			const command = new Commands.SuperSourcePropertiesV8Command(ssrcId)
 			command.updateProps(newProps)
 			return this.sendCommand(command)
 		} else {
@@ -363,10 +341,9 @@ export class Atem extends EventEmitter {
 		}
 	}
 
-	setSuperSourceBorder (newProps: Partial<SuperSourceBorder>, ssrcId = 0) {
+	setSuperSourceBorder (newProps: Partial<SuperSourceBorder>, ssrcId: number = 0) {
 		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
-			const command = new Commands.SuperSourceBorderCommand()
-			command.ssrcId = ssrcId
+			const command = new Commands.SuperSourceBorderCommand(ssrcId)
 			command.updateProps(newProps)
 			return this.sendCommand(command)
 		} else {
@@ -376,22 +353,19 @@ export class Atem extends EventEmitter {
 		}
 	}
 
-	setInputSettings (newProps: Partial<InputChannel>, input = 0) {
-		const command = new Commands.InputPropertiesCommand()
-		command.inputId = input
+	setInputSettings (newProps: Partial<InputChannel>, input: number = 0) {
+		const command = new Commands.InputPropertiesCommand(input)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setUpstreamKeyerChromaSettings (newProps: Partial<USK.UpstreamKeyerChromaSettings>, me = 0, keyer = 0) {
-		const command = new Commands.MixEffectKeyChromaCommand()
-		command.mixEffect = me
-		command.upstreamKeyerId = keyer
+	setUpstreamKeyerChromaSettings (newProps: Partial<USK.UpstreamKeyerChromaSettings>, me: number = 0, keyer: number = 0) {
+		const command = new Commands.MixEffectKeyChromaCommand(me, keyer)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setUpstreamKeyerCutSource (cutSource: number, me = 0, keyer = 0) {
+	setUpstreamKeyerCutSource (cutSource: number, me: number = 0, keyer: number = 0) {
 		const command = new Commands.MixEffectKeyCutSourceSetCommand()
 		command.mixEffect = me
 		command.upstreamKeyerId = keyer
@@ -399,7 +373,7 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	setUpstreamKeyerFillSource (fillSource: number, me = 0, keyer = 0) {
+	setUpstreamKeyerFillSource (fillSource: number, me: number = 0, keyer: number = 0) {
 		const command = new Commands.MixEffectKeyFillSourceSetCommand()
 		command.mixEffect = me
 		command.upstreamKeyerId = keyer
@@ -407,23 +381,19 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	setUpstreamKeyerDVESettings (newProps: Partial<USK.UpstreamKeyerDVESettings>, me = 0, keyer = 0) {
-		const command = new Commands.MixEffectKeyDVECommand()
-		command.mixEffect = me
-		command.upstreamKeyerId = keyer
+	setUpstreamKeyerDVESettings (newProps: Partial<USK.UpstreamKeyerDVESettings>, me: number = 0, keyer: number = 0) {
+		const command = new Commands.MixEffectKeyDVECommand(me, keyer)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setUpstreamKeyerLumaSettings (newProps: Partial<USK.UpstreamKeyerLumaSettings>, me = 0, keyer = 0) {
-		const command = new Commands.MixEffectKeyLumaCommand()
-		command.mixEffect = me
-		command.upstreamKeyerId = keyer
+	setUpstreamKeyerLumaSettings (newProps: Partial<USK.UpstreamKeyerLumaSettings>, me: number = 0, keyer: number = 0) {
+		const command = new Commands.MixEffectKeyLumaCommand(me, keyer)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setUpstreamKeyerMaskSettings (newProps: Partial<USK.UpstreamKeyerMaskSettings>, me = 0, keyer = 0) {
+	setUpstreamKeyerMaskSettings (newProps: Partial<USK.UpstreamKeyerMaskSettings>, me: number = 0, keyer: number = 0) {
 		const command = new Commands.MixEffectKeyMaskSetCommand()
 		command.mixEffect = me
 		command.upstreamKeyerId = keyer
@@ -431,23 +401,18 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	setUpstreamKeyerPatternSettings (newProps: Partial<USK.UpstreamKeyerPatternSettings>, me = 0, keyer = 0) {
-		const command = new Commands.MixEffectKeyPatternCommand()
-		command.mixEffect = me
-		command.upstreamKeyerId = keyer
+	setUpstreamKeyerPatternSettings (newProps: Partial<USK.UpstreamKeyerPatternSettings>, me: number = 0, keyer: number = 0) {
+		const command = new Commands.MixEffectKeyPatternCommand(me, keyer)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	setUpstreamKeyerOnAir (onAir: boolean, me = 0, keyer = 0) {
-		const command = new Commands.MixEffectKeyOnAirCommand()
-		command.mixEffect = me
-		command.upstreamKeyerId = keyer
-		command.updateProps({ onAir })
+	setUpstreamKeyerOnAir (onAir: boolean, me: number = 0, keyer: number = 0) {
+		const command = new Commands.MixEffectKeyOnAirCommand(me, keyer, onAir)
 		return this.sendCommand(command)
 	}
 
-	setUpstreamKeyerType (newProps: Partial<USK.UpstreamKeyerTypeSettings>, me = 0, keyer = 0) {
+	setUpstreamKeyerType (newProps: Partial<USK.UpstreamKeyerTypeSettings>, me: number = 0, keyer: number = 0) {
 		const command = new Commands.MixEffectKeyTypeSetCommand()
 		command.mixEffect = me
 		command.upstreamKeyerId = keyer
@@ -487,29 +452,25 @@ export class Atem extends EventEmitter {
 	}
 
 	setAudioMixerInputMixOption (index: number, mixOption: Enums.AudioMixOption) {
-		const command = new Commands.AudioMixerInputCommand()
-		command.index = index
+		const command = new Commands.AudioMixerInputCommand(index)
 		command.updateProps({ mixOption })
 		return this.sendCommand(command)
 	}
 
 	setAudioMixerInputGain (index: number, gain: number) {
-		const command = new Commands.AudioMixerInputCommand()
-		command.index = index
+		const command = new Commands.AudioMixerInputCommand(index)
 		command.updateProps({ gain })
 		return this.sendCommand(command)
 	}
 
 	setAudioMixerInputBalance (index: number, balance: number) {
-		const command = new Commands.AudioMixerInputCommand()
-		command.index = index
+		const command = new Commands.AudioMixerInputCommand(index)
 		command.updateProps({ balance })
 		return this.sendCommand(command)
 	}
 
 	setAudioMixerInputProps (index: number, props: Partial<AudioChannel>) {
-		const command = new Commands.AudioMixerInputCommand()
-		command.index = index
+		const command = new Commands.AudioMixerInputCommand(index)
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}

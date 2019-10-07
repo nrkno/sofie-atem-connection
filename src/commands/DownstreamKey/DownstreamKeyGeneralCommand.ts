@@ -9,7 +9,7 @@ export class DownstreamKeyGeneralCommand extends AbstractCommand {
 		invert: 1 << 3
 	}
 
-	rawName = 'CDsG'
+	static readonly rawName = 'CDsG'
 	downstreamKeyerId: number
 	properties: DownstreamKeyerGeneral
 

@@ -1,7 +1,7 @@
 import AbstractCommand from '../AbstractCommand'
 
 export class DataTransferFileDescriptionCommand extends AbstractCommand {
-	rawName = 'FTFD'
+	static readonly rawName = 'FTFD'
 
 	properties: {
 		transferId: number,

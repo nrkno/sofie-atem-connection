@@ -32,11 +32,19 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 		maskRight: 1 << 24,
 		rate: 1 << 25
 	}
+	static readonly rawName = 'CKDV'
 
-	rawName = 'CKDV'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: UpstreamKeyerDVESettings
+	readonly mixEffect: number
+	readonly upstreamKeyerId: number
+	properties: Partial<UpstreamKeyerDVESettings>
+
+	constructor (mixEffect: number, upstreamKeyerId: number) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.upstreamKeyerId = upstreamKeyerId
+		this.properties = {}
+	}
 
 	serialize () {
 		const buffer = Buffer.alloc(64)
@@ -44,52 +52,61 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 		buffer.writeUInt8(this.mixEffect, 4)
 		buffer.writeUInt8(this.upstreamKeyerId, 5)
 
-		buffer.writeUInt32BE(this.properties.sizeX, 8)
-		buffer.writeUInt32BE(this.properties.sizeY, 12)
-		buffer.writeInt32BE(this.properties.positionX, 16)
-		buffer.writeInt32BE(this.properties.positionY, 20)
-		buffer.writeInt32BE(this.properties.rotation, 24)
+		buffer.writeUInt32BE(this.properties.sizeX || 0, 8)
+		buffer.writeUInt32BE(this.properties.sizeY || 0, 12)
+		buffer.writeInt32BE(this.properties.positionX || 0, 16)
+		buffer.writeInt32BE(this.properties.positionY || 0, 20)
+		buffer.writeInt32BE(this.properties.rotation || 0, 24)
 
 		buffer[28] = this.properties.borderEnabled ? 1 : 0
 		buffer[29] = this.properties.shadowEnabled ? 1 : 0
-		buffer.writeUInt8(this.properties.borderBevel, 30)
-		buffer.writeUInt16BE(this.properties.borderOuterWidth, 32)
-		buffer.writeUInt16BE(this.properties.borderInnerWidth, 34)
-		buffer.writeUInt8(this.properties.borderOuterSoftness, 36)
-		buffer.writeUInt8(this.properties.borderInnerSoftness, 37)
-		buffer.writeUInt8(this.properties.borderBevelSoftness, 38)
-		buffer.writeUInt8(this.properties.borderBevelPosition, 39)
-		buffer.writeUInt8(this.properties.borderOpacity, 40)
+		buffer.writeUInt8(this.properties.borderBevel || 0, 30)
+		buffer.writeUInt16BE(this.properties.borderOuterWidth || 0, 32)
+		buffer.writeUInt16BE(this.properties.borderInnerWidth || 0, 34)
+		buffer.writeUInt8(this.properties.borderOuterSoftness || 0, 36)
+		buffer.writeUInt8(this.properties.borderInnerSoftness || 0, 37)
+		buffer.writeUInt8(this.properties.borderBevelSoftness || 0, 38)
+		buffer.writeUInt8(this.properties.borderBevelPosition || 0, 39)
+		buffer.writeUInt8(this.properties.borderOpacity || 0, 40)
 
-		buffer.writeUInt16BE(this.properties.borderHue, 42)
-		buffer.writeUInt16BE(this.properties.borderSaturation, 44)
-		buffer.writeUInt16BE(this.properties.borderLuma, 46)
+		buffer.writeUInt16BE(this.properties.borderHue || 0, 42)
+		buffer.writeUInt16BE(this.properties.borderSaturation || 0, 44)
+		buffer.writeUInt16BE(this.properties.borderLuma || 0, 46)
 
-		buffer.writeUInt16BE(this.properties.lightSourceDirection, 48)
-		buffer.writeUInt8(this.properties.lightSourceAltitude, 50)
+		buffer.writeUInt16BE(this.properties.lightSourceDirection || 0, 48)
+		buffer.writeUInt8(this.properties.lightSourceAltitude || 0, 50)
 
 		buffer[51] = this.properties.maskEnabled ? 1 : 0
-		buffer.writeUInt16BE(this.properties.maskTop, 52)
-		buffer.writeUInt16BE(this.properties.maskBottom, 54)
-		buffer.writeUInt16BE(this.properties.maskLeft, 56)
-		buffer.writeUInt16BE(this.properties.maskRight, 58)
+		buffer.writeUInt16BE(this.properties.maskTop || 0, 52)
+		buffer.writeUInt16BE(this.properties.maskBottom || 0, 54)
+		buffer.writeUInt16BE(this.properties.maskLeft || 0, 56)
+		buffer.writeUInt16BE(this.properties.maskRight || 0, 58)
 
-		buffer.writeUInt8(this.properties.rate, 60)
+		buffer.writeUInt8(this.properties.rate || 0, 60)
 
 		return buffer
 	}
 }
 
 export class MixEffectKeyDVEUpdateCommand extends AbstractCommand {
-	rawName = 'KeDV'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: UpstreamKeyerDVESettings
+	static readonly rawName = 'KeDV'
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
-		this.properties = {
+	readonly mixEffect: number
+	readonly upstreamKeyerId: number
+	readonly properties: Readonly<UpstreamKeyerDVESettings>
+
+	constructor (mixEffect: number, upstreamKeyerId: number, properties: UpstreamKeyerDVESettings) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.upstreamKeyerId = upstreamKeyerId
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer) {
+		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
+		const properties = {
 			// Note: these are higher than the ui shows, but are within the range the atem can be set to
 			sizeX: Util.parseNumberBetween(rawCommand.readUInt32BE(4), 0, Math.pow(2, 32) - 1),
 			sizeY: Util.parseNumberBetween(rawCommand.readUInt32BE(8), 0, Math.pow(2, 32) - 1),
@@ -124,6 +141,8 @@ export class MixEffectKeyDVEUpdateCommand extends AbstractCommand {
 
 			rate: Util.parseNumberBetween(rawCommand.readUInt8(56), 0, 250)
 		}
+
+		return new MixEffectKeyDVEUpdateCommand(mixEffect, upstreamKeyerId, properties)
 	}
 
 	applyToState (state: AtemState) {

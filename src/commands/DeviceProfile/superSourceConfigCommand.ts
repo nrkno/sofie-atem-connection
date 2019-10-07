@@ -3,16 +3,24 @@ import { AtemState } from '../../state'
 import { Util } from '../..'
 
 export class SuperSourceConfigCommand extends AbstractCommand {
-	rawName = '_SSC'
+	static readonly rawName = '_SSC'
 
-	properties: {
+	readonly properties: Readonly<{
 		superSourceBoxes: number
+	}>
+
+	constructor (properties: SuperSourceConfigCommand['properties']) {
+		super()
+
+		this.properties = properties
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.properties = {
+	static deserialize (rawCommand: Buffer) {
+		const properties = {
 			superSourceBoxes: Util.parseNumberBetween(rawCommand[0], 0, 4)
 		}
+
+		return new SuperSourceConfigCommand(properties)
 	}
 
 	applyToState (state: AtemState) {

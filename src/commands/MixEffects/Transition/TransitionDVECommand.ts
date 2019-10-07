@@ -1,9 +1,9 @@
-import AbstractCommand from '../../AbstractCommand'
+import AbstractCommand, { WritableCommand } from '../../AbstractCommand'
 import { AtemState } from '../../../state'
 import { DVETransitionSettings } from '../../../state/video'
 import { Util, Enums } from '../../..'
 
-export class TransitionDVECommand extends AbstractCommand {
+export class TransitionDVECommand extends WritableCommand<DVETransitionSettings> {
 	static MaskFlags = {
 		rate: 1 << 0,
 		logoRate: 1 << 1,
@@ -19,13 +19,14 @@ export class TransitionDVECommand extends AbstractCommand {
 		flipFlop: 1 << 11
 	}
 
-	rawName = 'CTDv'
-	mixEffect: number
+	static readonly rawName = 'CTDv'
 
-	properties: DVETransitionSettings
+	readonly mixEffect: number
 
-	updateProps (newProps: Partial<DVETransitionSettings>) {
-		this._updateProps(newProps)
+	constructor (mixEffect: number) {
+		super()
+
+		this.mixEffect = mixEffect
 	}
 
 	serialize () {
@@ -33,17 +34,17 @@ export class TransitionDVECommand extends AbstractCommand {
 		buffer.writeUInt16BE(this.flag, 0)
 
 		buffer.writeUInt8(this.mixEffect, 2)
-		buffer.writeUInt8(this.properties.rate, 3)
-		buffer.writeUInt8(this.properties.logoRate, 4)
-		buffer.writeUInt8(this.properties.style, 5)
+		buffer.writeUInt8(this.properties.rate || 0, 3)
+		buffer.writeUInt8(this.properties.logoRate || 0, 4)
+		buffer.writeUInt8(this.properties.style || 0, 5)
 
-		buffer.writeUInt16BE(this.properties.fillSource, 6)
-		buffer.writeUInt16BE(this.properties.keySource, 8)
+		buffer.writeUInt16BE(this.properties.fillSource || 0, 6)
+		buffer.writeUInt16BE(this.properties.keySource || 0, 8)
 
 		buffer.writeUInt8(this.properties.enableKey ? 1 : 0, 10)
 		buffer.writeUInt8(this.properties.preMultiplied ? 1 : 0, 11)
-		buffer.writeUInt16BE(this.properties.clip, 12)
-		buffer.writeUInt16BE(this.properties.gain, 14)
+		buffer.writeUInt16BE(this.properties.clip || 0, 12)
+		buffer.writeUInt16BE(this.properties.gain || 0, 14)
 		buffer.writeUInt8(this.properties.invertKey ? 1 : 0, 16)
 		buffer.writeUInt8(this.properties.reverse ? 1 : 0, 17)
 		buffer.writeUInt8(this.properties.flipFlop ? 1 : 0, 18)
@@ -53,14 +54,21 @@ export class TransitionDVECommand extends AbstractCommand {
 }
 
 export class TransitionDVEUpdateCommand extends AbstractCommand {
-	rawName = 'TDvP'
-	mixEffect: number
+	static readonly rawName = 'TDvP'
 
-	properties: DVETransitionSettings
+	readonly mixEffect: number
+	readonly properties: Readonly<DVETransitionSettings>
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
+	constructor (mixEffect: number, properties: DVETransitionSettings) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer): TransitionDVEUpdateCommand {
+		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const properties = {
 			rate: Util.parseNumberBetween(rawCommand[1], 1, 250),
 			logoRate: Util.parseNumberBetween(rawCommand[2], 1, 250),
 			style: Util.parseEnum<Enums.DVEEffect>(rawCommand[3], Enums.DVEEffect),
@@ -75,6 +83,8 @@ export class TransitionDVEUpdateCommand extends AbstractCommand {
 			reverse: rawCommand[15] === 1,
 			flipFlop: rawCommand[16] === 1
 		}
+
+		return new TransitionDVEUpdateCommand(mixEffect, properties)
 	}
 
 	applyToState (state: AtemState) {

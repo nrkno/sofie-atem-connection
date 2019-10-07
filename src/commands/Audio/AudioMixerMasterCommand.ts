@@ -9,9 +9,15 @@ export class AudioMixerMasterCommand extends AbstractCommand {
 		balance: 1 << 1,
 		followFadeToBlack: 1 << 2
 	}
-	rawName = 'CAMM'
+	static readonly rawName = 'CAMM'
 
 	properties: Partial<AudioMasterChannel>
+
+	constructor () {
+		super()
+
+		this.properties = {}
+	}
 
 	serialize () {
 		const buffer = Buffer.alloc(8)
@@ -24,16 +30,24 @@ export class AudioMixerMasterCommand extends AbstractCommand {
 }
 
 export class AudioMixerMasterUpdateCommand extends AbstractCommand {
-	rawName = 'AMMO'
+	static readonly rawName = 'AMMO'
 
-	properties: Partial<AudioMasterChannel>
+	readonly properties: Readonly<AudioMasterChannel>
 
-	deserialize (rawCommand: Buffer) {
-		this.properties = {
+	constructor (properties: AudioMasterChannel) {
+		super()
+
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer): AudioMixerMasterUpdateCommand {
+		const properties = {
 			gain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(0)),
 			balance: Util.IntToBalance(rawCommand.readInt16BE(2)),
 			followFadeToBlack: rawCommand.readInt8(4) === 1
 		}
+
+		return new AudioMixerMasterUpdateCommand(properties)
 	}
 
 	applyToState (state: AtemState) {

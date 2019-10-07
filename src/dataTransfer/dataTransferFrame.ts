@@ -4,12 +4,20 @@ import * as crypto from 'crypto'
 import DataTransfer from './dataTransfer'
 
 export default class DataTransferFrame extends DataTransfer {
-	frameId: number
-	hash: string
+	readonly frameId: number
+	readonly hash: string
+	readonly data: Buffer
 
-	lastSent: Date
-	data: Buffer
+	lastSent?: Date
 	_sent = 0
+
+	constructor (transferId: number, storeId: number, frameId: number, data: Buffer) {
+		super(transferId, storeId)
+
+		this.frameId = frameId
+		this.data = data
+		this.hash = this.data ? crypto.createHash('md5').update(this.data).digest().toString() : ''
+	}
 
 	start () {
 		const command = new Commands.DataTransferUploadRequestCommand()
@@ -18,15 +26,12 @@ export default class DataTransferFrame extends DataTransfer {
 			transferStoreId: this.storeId,
 			transferIndex: this.frameId,
 			size: this.data.length,
-			mode: Enums.TransferMode.Write
+			mode: Enums.TransferMode.TEST
 		})
 		this.commandQueue.push(command)
 	}
 
 	sendDescription () {
-		if (!this.hash) {
-			this.setHash()
-		}
 		const command = new Commands.DataTransferFileDescriptionCommand()
 		command.updateProps({ fileHash: this.hash, transferId: this.transferId })
 		this.commandQueue.push(command)
@@ -57,19 +62,12 @@ export default class DataTransferFrame extends DataTransfer {
 
 		for (let i = 0; i < chunkCount; i++) {
 			if (this._sent > this.data.length) return
-			const command = new Commands.DataTransferDataCommand()
-			command.updateProps({
+			const command = new Commands.DataTransferDataCommand({
 				transferId: this.transferId,
 				body: this.data.slice(this._sent, this._sent + chunkSize)
 			})
 			this.commandQueue.push(command)
 			this._sent += chunkSize
-		}
-	}
-
-	setHash () {
-		if (this.data) {
-			this.hash = crypto.createHash('md5').update(this.data).digest().toString()
 		}
 	}
 }

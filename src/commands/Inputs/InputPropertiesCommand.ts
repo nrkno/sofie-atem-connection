@@ -11,10 +11,17 @@ export class InputPropertiesCommand extends AbstractCommand {
 		isExternal: 1 << 2
 	}
 
-	rawName = 'CInL'
-	inputId: number
+	static readonly rawName = 'CInL'
 
-	properties: InputChannel
+	readonly inputId: number
+	properties: Partial<InputChannel>
+
+	constructor (inputId: number) {
+		super()
+
+		this.inputId = inputId
+		this.properties = {}
+	}
 
 	updateProps (newProps: Partial<InputChannel>) {
 		this._updateProps(newProps)
@@ -26,19 +33,26 @@ export class InputPropertiesCommand extends AbstractCommand {
 		buffer.writeUInt16BE(this.inputId, 2)
 		buffer.write(this.properties.longName || '', 4)
 		buffer.write(this.properties.shortName || '', 24)
-		buffer.writeUInt16BE(this.properties.externalPortType, 28)
+		buffer.writeUInt16BE(this.properties.externalPortType || 0, 28)
 		return buffer
 	}
 }
 
 export class InputPropertiesUpdateCommand extends AbstractCommand {
-	rawName = 'InPr'
-	inputId: number
+	static readonly rawName = 'InPr'
 
-	properties: InputChannel
+	readonly inputId: number
+	readonly properties: Readonly<InputChannel>
 
-	deserialize (rawCommand: Buffer) {
-		this.inputId = rawCommand.readUInt16BE(0)
+	constructor (inputId: number, properties: InputChannel) {
+		super()
+
+		this.inputId = inputId
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer) {
+		const inputId = rawCommand.readUInt16BE(0)
 
 		const externalPortsMask = rawCommand[29]
 		const externalPorts: ExternalPortType[] = []
@@ -58,7 +72,7 @@ export class InputPropertiesUpdateCommand extends AbstractCommand {
 			externalPorts.push(ExternalPortType.SVideo)
 		}
 
-		this.properties = {
+		const properties = {
 			inputId: rawCommand.readUInt16BE(0),
 			longName: Util.bufToNullTerminatedString(rawCommand, 2, 20),
 			shortName: Util.bufToNullTerminatedString(rawCommand, 22, 4),
@@ -69,6 +83,8 @@ export class InputPropertiesUpdateCommand extends AbstractCommand {
 			sourceAvailability: rawCommand.readUInt8(34),
 			meAvailability: rawCommand.readUInt8(35)
 		}
+
+		return new InputPropertiesUpdateCommand(inputId, properties)
 	}
 
 	applyToState (state: AtemState) {

@@ -11,11 +11,19 @@ export class MixEffectKeyChromaCommand extends AbstractCommand {
 		lift: 1 << 3,
 		narrow: 1 << 4
 	}
+	static readonly rawName = 'CKCk'
 
-	rawName = 'CKCk'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: UpstreamKeyerChromaSettings
+	readonly mixEffect: number
+	readonly upstreamKeyerId: number
+	properties: Partial<UpstreamKeyerChromaSettings>
+
+	constructor (mixEffect: number, upstreamKeyerId: number) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.upstreamKeyerId = upstreamKeyerId
+		this.properties = {}
+	}
 
 	serialize () {
 		const buffer = Buffer.alloc(16)
@@ -23,10 +31,10 @@ export class MixEffectKeyChromaCommand extends AbstractCommand {
 		buffer.writeUInt8(this.mixEffect, 1)
 		buffer.writeUInt8(this.upstreamKeyerId, 2)
 
-		buffer.writeUInt16BE(this.properties.hue, 4)
-		buffer.writeUInt16BE(this.properties.gain, 6)
-		buffer.writeUInt16BE(this.properties.ySuppress, 8)
-		buffer.writeUInt16BE(this.properties.lift, 10)
+		buffer.writeUInt16BE(this.properties.hue || 0, 4)
+		buffer.writeUInt16BE(this.properties.gain || 0, 6)
+		buffer.writeUInt16BE(this.properties.ySuppress || 0, 8)
+		buffer.writeUInt16BE(this.properties.lift || 0, 10)
 		buffer.writeUInt8(this.properties.narrow ? 1 : 0, 12)
 
 		return buffer
@@ -34,21 +42,32 @@ export class MixEffectKeyChromaCommand extends AbstractCommand {
 }
 
 export class MixEffectKeyChromaUpdateCommand extends AbstractCommand {
-	rawName = 'KeCk'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: UpstreamKeyerChromaSettings
+	static readonly rawName = 'KeCk'
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
-		this.properties = {
+	readonly mixEffect: number
+	readonly upstreamKeyerId: number
+	readonly properties: Readonly<UpstreamKeyerChromaSettings>
+
+	constructor (mixEffect: number, upstreamKeyerId: number, properties: UpstreamKeyerChromaSettings) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.upstreamKeyerId = upstreamKeyerId
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer) {
+		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
+		const properties = {
 			hue: Util.parseNumberBetween(rawCommand.readUInt16BE(2), 0, 3599),
 			gain: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 1000),
 			ySuppress: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 1000),
 			lift: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 1000),
 			narrow: rawCommand[10] === 1
 		}
+
+		return new MixEffectKeyChromaUpdateCommand(mixEffect, upstreamKeyerId, properties)
 	}
 
 	applyToState (state: AtemState) {

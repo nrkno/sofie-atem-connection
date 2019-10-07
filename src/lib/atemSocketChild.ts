@@ -13,7 +13,7 @@ export class AtemSocketChild extends EventEmitter {
 
 	private _localPacketId = 1
 	private _maxPacketID = (1 << 15) - 1 // Atem expects 15 not 16 bits before wrapping
-	private _sessionId: number
+	private _sessionId: number = 0
 
 	private _address: string
 	private _port: number = 9910
@@ -32,7 +32,7 @@ export class AtemSocketChild extends EventEmitter {
 
 	constructor (options: { address?: string, port?: number } = {}) {
 		super()
-		this._address = options.address || this._address
+		this._address = options.address || ''
 		this._port = options.port || this._port
 		this._createSocket()
 	}

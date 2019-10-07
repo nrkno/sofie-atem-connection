@@ -1,11 +1,17 @@
 import AbstractCommand from '../AbstractCommand'
 
 export class LockStateCommand extends AbstractCommand {
-	rawName = 'LOCK'
+	static readonly rawName = 'LOCK'
 
-	properties: {
+	readonly properties: Readonly<{
 		index: number,
 		locked: boolean
+	}>
+
+	constructor (index: number, locked: boolean) {
+		super()
+
+		this.properties = { index, locked }
 	}
 
 	serialize () {
@@ -17,17 +23,25 @@ export class LockStateCommand extends AbstractCommand {
 }
 
 export class LockStateUpdateCommand extends AbstractCommand {
-	rawName = 'LKST'
+	static readonly rawName = 'LKST'
 
-	properties: {
+	readonly properties: Readonly<{
 		index: number,
 		locked: boolean
+	}>
+
+	constructor (properties: LockStateUpdateCommand['properties']) {
+		super()
+
+		this.properties = properties
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.properties = {
+	static deserialize (rawCommand: Buffer) {
+		const properties = {
 			index: rawCommand.readUInt16BE(0),
 			locked: rawCommand[2] === 1
 		}
+
+		return new LockStateUpdateCommand(properties)
 	}
 }

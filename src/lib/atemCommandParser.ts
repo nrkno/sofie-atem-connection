@@ -1,8 +1,7 @@
 import * as Commands from '../commands'
-import AbstractCommand from '../commands/AbstractCommand'
 import { ProtocolVersion } from '../enums'
 
-type CommandConstructor = new () => AbstractCommand
+type CommandConstructor = any
 export class CommandParser {
 	commands: {[key: string]: Array<CommandConstructor>} = {}
 	version: ProtocolVersion = ProtocolVersion.V7_2 // Default to the minimum supported
@@ -10,8 +9,8 @@ export class CommandParser {
 	constructor () {
 		for (const cmd in Commands) {
 			try {
-				const cmdConstructor = (Commands as any)[cmd] as CommandConstructor
-				const rawName = new cmdConstructor().rawName
+				const cmdConstructor = (Commands as any)[cmd]
+				const rawName = cmdConstructor.rawName
 				if (rawName) {
 					if (!this.commands[rawName]) this.commands[rawName] = []
 					this.commands[rawName].push(cmdConstructor)
@@ -22,12 +21,9 @@ export class CommandParser {
 		}
 	}
 
-	commandFromRawName (name: string): AbstractCommand | undefined {
-		const commandsArray = this.commands[name]
-		if (commandsArray) {
-			// instantiate all commands in the array for access to the version prop:
-			const commands = commandsArray.map<AbstractCommand>(cmd => new (cmd as any)())
-
+	commandFromRawName (name: string): CommandConstructor | undefined {
+		const commands = this.commands[name]
+		if (commands) {
 			if (!this.version) { // edge case for the version command itself:
 				return commands[0]
 			} else { // now we should have a version defined

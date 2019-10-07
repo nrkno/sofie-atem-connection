@@ -85,32 +85,45 @@ export interface IMixEffect {
 
 export class MixEffect implements IMixEffect {
 	index: number
-	programInput: number
-	previewInput: number
-	inTransition: boolean
-	transitionPreview: boolean
-	transitionPosition: number
-	transitionFramesLeft: number
+	programInput: number = 0
+	previewInput: number = 0
+	inTransition: boolean = false
+	transitionPreview: boolean = false
+	transitionPosition: number = 0
+	transitionFramesLeft: number = 0
 	fadeToBlack: FadeToBlackProperties
-	numberOfKeyers: number
-	transitionProperties: TransitionProperties = {} as TransitionProperties
-	transitionSettings: TransitionSettings = {} as TransitionSettings
+	numberOfKeyers: number = 0
+	transitionProperties: TransitionProperties
+	transitionSettings: TransitionSettings = {}  as any
 	upstreamKeyers: { [index: number]: USK.UpstreamKeyer } = []
 
 	constructor (index: number) {
 		this.index = index
+
+		this.fadeToBlack = {
+			isFullyBlack: false,
+			rate: 0,
+			inTransition: false,
+			remainingFrames: 0
+		}
+		this.transitionProperties = {
+			style: Enum.TransitionStyle.MIX,
+			selection: 0,
+			nextStyle: Enum.TransitionStyle.MIX,
+			nextSelection: 0
+		}
 	}
 
 	getUpstreamKeyer (index: number) {
 		if (!this.upstreamKeyers[index]) {
 			this.upstreamKeyers[index] = {
-				dveSettings: {} as USK.UpstreamKeyerDVESettings,
-				chromaSettings: {} as USK.UpstreamKeyerChromaSettings,
-				lumaSettings: {} as USK.UpstreamKeyerLumaSettings,
-				patternSettings: {} as USK.UpstreamKeyerPatternSettings,
-				flyKeyframes: [] as { [index: number]: USK.UpstreamKeyerFlyKeyframe },
-				flyProperties: {} as USK.UpstreamKeyerFlySettings
-			} as USK.UpstreamKeyer
+				dveSettings: {} as any,
+				chromaSettings: {} as any,
+				lumaSettings: {} as any,
+				patternSettings: {} as any,
+				flyKeyframes: [],
+				flyProperties: {} as any
+			} as any
 		}
 
 		return this.upstreamKeyers[index]
@@ -158,12 +171,37 @@ export interface SuperSourceBorder {
 
 export class SuperSource {
 	index: number
-	boxes: { [index: string]: SuperSourceBox } = {}
+	boxes: { [index: string]: SuperSourceBox | undefined } = {}
 	properties: SuperSourceProperties
 	border: SuperSourceBorder
 
 	constructor (index: number) {
 		this.index = index
+
+		this.properties = {
+			artFillSource: 0,
+			artCutSource: 0,
+			artOption: Enum.SuperSourceArtOption.Background,
+			artPreMultiplied: false,
+			artClip: 0,
+			artGain: 0,
+			artInvertKey: false
+		}
+		this.border = {
+			borderEnabled: false,
+			borderBevel: Enum.BorderBevel.None,
+			borderOuterWidth: 0,
+			borderInnerWidth: 0,
+			borderOuterSoftness: 0,
+			borderInnerSoftness: 0,
+			borderBevelSoftness: 0,
+			borderBevelPosition: 0,
+			borderHue: 0,
+			borderSaturation: 0,
+			borderLuma: 0,
+			borderLightSourceDirection: 0,
+			borderLightSourceAltitude: 0
+		}
 	}
 }
 
@@ -175,32 +213,35 @@ export interface FadeToBlackProperties {
 }
 
 export class AtemVideoState {
-	ME: { [index: string]: MixEffect } = {}
-	downstreamKeyers: { [index: string]: DownstreamKeyer } = {}
-	auxilliaries: { [index: string]: number } = {}
-	superSources: { [index: string]: SuperSource } = {}
+	ME: { [index: string]: MixEffect | undefined } = {}
+	downstreamKeyers: { [index: string]: DownstreamKeyer | undefined } = {}
+	auxilliaries: { [index: string]: number | undefined } = {}
+	superSources: { [index: string]: SuperSource | undefined } = {}
 
-	getMe (index: number) {
-		if (!this.ME[index]) {
-			this.ME[index] = new MixEffect(index)
+	getMe (index: number): MixEffect {
+		let me = this.ME[index]
+		if (!me) {
+			me = this.ME[index] = new MixEffect(index)
 		}
 
-		return this.ME[index]
+		return me
 	}
 
-	getSuperSource (index: number) {
-		if (!this.superSources[index]) {
-			this.superSources[index] = new SuperSource(index)
+	getSuperSource (index: number): SuperSource {
+		let ssrc = this.superSources[index]
+		if (!ssrc) {
+			ssrc = this.superSources[index] = new SuperSource(index)
 		}
 
-		return this.superSources[index]
+		return ssrc
 	}
 
-	getDownstreamKeyer (index: number) {
-		if (!this.downstreamKeyers[index]) {
-			this.downstreamKeyers[index] = {} as DownstreamKeyer
+	getDownstreamKeyer (index: number): DownstreamKeyer {
+		let dsk = this.downstreamKeyers[index]
+		if (!dsk) {
+			dsk = this.downstreamKeyers[index] = {} as DownstreamKeyer
 		}
 
-		return this.downstreamKeyers[index]
+		return dsk
 	}
 }

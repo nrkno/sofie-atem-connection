@@ -1,17 +1,25 @@
 import AbstractCommand from '../AbstractCommand'
 
 export class DataTransferAckCommand extends AbstractCommand {
-	rawName = 'FTUA'
+	static readonly rawName = 'FTUA'
 
-	properties: {
+	readonly properties: Readonly<{
 		transferId: number,
 		transferIndex: number
+	}>
+
+	constructor (properties: DataTransferAckCommand['properties']) {
+		super()
+
+		this.properties = properties
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.properties = {
+	static deserialize (rawCommand: Buffer): DataTransferAckCommand {
+		const properties = {
 			transferId: rawCommand.readUInt16BE(0),
 			transferIndex: rawCommand.readUInt8(2)
 		}
+
+		return new DataTransferAckCommand(properties)
 	}
 }

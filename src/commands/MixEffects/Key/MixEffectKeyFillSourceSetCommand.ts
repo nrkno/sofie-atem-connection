@@ -1,7 +1,7 @@
 import AbstractCommand from '../../AbstractCommand'
 
 export class MixEffectKeyFillSourceSetCommand extends AbstractCommand {
-	rawName = 'CKeF'
+	static readonly rawName = 'CKeF'
 	mixEffect: number
 	upstreamKeyerId: number
 	properties: {

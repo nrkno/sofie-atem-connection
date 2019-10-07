@@ -1,37 +1,47 @@
-import AbstractCommand from '../../AbstractCommand'
+import AbstractCommand, { WritableCommand } from '../../AbstractCommand'
 import { AtemState } from '../../../state'
 import { MixTransitionSettings } from '../../../state/video'
 import { Util } from '../../..'
 
-export class TransitionMixCommand extends AbstractCommand {
-	rawName = 'CTMx'
-	mixEffect: number
+export class TransitionMixCommand extends WritableCommand<MixTransitionSettings> {
+	static readonly rawName = 'CTMx'
 
-	properties: MixTransitionSettings
+	readonly mixEffect: number
 
-	updateProps (newProps: Partial<MixTransitionSettings>) {
-		this._updateProps(newProps)
+	constructor (mixEffect: number) {
+		super()
+
+		this.mixEffect = mixEffect
 	}
 
 	serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
-		buffer.writeUInt8(this.properties.rate, 1)
+		buffer.writeUInt8(this.properties.rate || 0, 1)
 		return buffer
 	}
 }
 
 export class TransitionMixUpdateCommand extends AbstractCommand {
-	rawName = 'TMxP'
-	mixEffect: number
+	static readonly rawName = 'TMxP'
 
-	properties: MixTransitionSettings
+	readonly mixEffect: number
+	readonly properties: Readonly<MixTransitionSettings>
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
+	constructor (mixEffect: number, properties: MixTransitionSettings) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer): TransitionMixUpdateCommand {
+		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const properties = {
 			rate: Util.parseNumberBetween(rawCommand[1], 1, 250)
 		}
+
+		return new TransitionMixUpdateCommand(mixEffect, properties)
 	}
 
 	applyToState (state: AtemState) {

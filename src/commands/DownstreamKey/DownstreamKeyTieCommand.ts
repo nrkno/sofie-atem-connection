@@ -1,7 +1,7 @@
 import AbstractCommand from '../AbstractCommand'
 
 export class DownstreamKeyTieCommand extends AbstractCommand {
-	rawName = 'CDsT'
+	static readonly rawName = 'CDsT'
 	downstreamKeyerId: number
 
 	properties: {

@@ -2,7 +2,7 @@ import AbstractCommand from '../AbstractCommand'
 import { ProtocolVersion } from '../../enums'
 
 export class DownstreamKeyAutoCommand extends AbstractCommand {
-	rawName = 'DDsA'
+	static readonly rawName = 'DDsA'
 	downstreamKeyerId: number
 
 	MaskFlags = {

@@ -10,7 +10,7 @@ export class MixEffectKeyMaskSetCommand extends AbstractCommand {
 		maskRight: 1 << 4
 	}
 
-	rawName = 'CKMs'
+	static readonly rawName = 'CKMs'
 	mixEffect: number
 	upstreamKeyerId: number
 	properties: UpstreamKeyerMaskSettings

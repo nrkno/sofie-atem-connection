@@ -3,12 +3,18 @@ import { AtemState } from '../../state'
 import { AtemCapabilites } from '../../state/info'
 
 export class TopologyCommand extends AbstractCommand {
-	rawName = '_top'
+	static readonly rawName = '_top'
 
-	properties: AtemCapabilites
+	readonly properties: Readonly<AtemCapabilites>
 
-	deserialize (rawCommand: Buffer) {
-		this.properties = {
+	constructor (properties: AtemCapabilites) {
+		super()
+
+		this.properties = properties
+	}
+
+	static deserialize (rawCommand: Buffer) {
+		const properties = {
 			MEs: rawCommand[0],
 			sources: rawCommand[1],
 			colorGenerators: rawCommand[2],
@@ -23,6 +29,8 @@ export class TopologyCommand extends AbstractCommand {
 			superSources: rawCommand[10],
 			talkbackOverSDI: rawCommand[13]
 		}
+
+		return new TopologyCommand(properties)
 	}
 
 	applyToState (state: AtemState) {

@@ -1,15 +1,23 @@
 import AbstractCommand from '../AbstractCommand'
 
 export class LockObtainedCommand extends AbstractCommand {
-	rawName = 'LKOB'
+	static readonly rawName = 'LKOB'
 
-	properties: {
+	readonly properties: Readonly<{
 		index: number
+	}>
+
+	constructor (properties: LockObtainedCommand['properties']) {
+		super()
+
+		this.properties = properties
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.properties = {
+	static deserialize (rawCommand: Buffer) {
+		const properties = {
 			index: rawCommand.readUInt16BE(0)
 		}
+
+		return new LockObtainedCommand(properties)
 	}
 }

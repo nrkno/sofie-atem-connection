@@ -3,11 +3,18 @@ import { AtemState } from '../../../state'
 import { Util } from '../../..'
 
 export class FadeToBlackRateCommand extends AbstractCommand {
-	rawName = 'FtbC'
-	mixEffect: number
+	static readonly rawName = 'FtbC'
 
-	properties: {
+	readonly mixEffect: number
+	readonly properties: Readonly<{
 		rate: number
+	}>
+
+	constructor (mixEffect: number, rate: number) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.properties = { rate }
 	}
 
 	serialize () {
@@ -20,18 +27,27 @@ export class FadeToBlackRateCommand extends AbstractCommand {
 }
 
 export class FadeToBlackRateUpdateCommand extends AbstractCommand {
-	rawName = 'FtbP'
-	mixEffect: number
+	static readonly rawName = 'FtbP'
 
-	properties: {
+	readonly mixEffect: number
+	readonly properties: Readonly<{
 		rate: number
+	}>
+
+	constructor (mixEffect: number, properties: FadeToBlackRateUpdateCommand['properties']) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.properties = properties
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
+	static deserialize (rawCommand: Buffer) {
+		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const properties = {
 			rate: rawCommand.readUInt8(1)
 		}
+
+		return new FadeToBlackRateUpdateCommand(mixEffect, properties)
 	}
 
 	applyToState (state: AtemState) {

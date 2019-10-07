@@ -1,5 +1,4 @@
 import { Commands, Enums } from '..'
-import * as crypto from 'crypto'
 
 import DataLock from './dataLock'
 import DataTransferFrame from './dataTransferFrame'
@@ -89,46 +88,23 @@ export class DataTransferManager {
 	}
 
 	uploadStill (index: number, data: Buffer, name: string, description: string) {
-		const transfer = new DataTransferStill()
-		const ps = new Promise((resolve, reject) => {
-			transfer.finish = resolve
-			transfer.fail = reject
-		})
-
+		const transfer = new DataTransferStill(this.transferIndex++, index, data, name, description)
 		transfer.commandQueue = this.commandQueue
-		transfer.transferId = this.transferIndex++
-		transfer.storeId = 0
-		transfer.frameId = index
-		transfer.data = data
-		transfer.hash = crypto.createHash('md5').update(data).digest().toString()
-		transfer.description = { name, description }
 
 		this.stillsLock.enqueue(transfer)
 
-		return ps
+		return transfer.promise
 	}
 
 	uploadClip (index: number, data: Array<Buffer>, name: string) {
-		const transfer = new DataTransferClip()
-		const ps = new Promise((resolve, reject) => {
-			transfer.finish = resolve
-			transfer.fail = reject
-		})
-
+		const transfer = new DataTransferClip(1 + index, name)
 		transfer.commandQueue = this.commandQueue
-		transfer.storeId = 1 + index
-		transfer.clipIndex = index
-		transfer.description = { name }
 
 		for (const frameId in data) {
 			const frame = data[frameId]
-			const frameTransfer = new DataTransferFrame()
+			const frameTransfer = new DataTransferFrame(this.transferIndex++, 1 + index, Number(frameId), frame)
 
 			frameTransfer.commandQueue = this.commandQueue
-			frameTransfer.transferId = this.transferIndex++
-			frameTransfer.storeId = 1 + index
-			frameTransfer.frameId = Number(frameId)
-			frameTransfer.data = frame
 			// frameTransfer.hash = crypto.createHash('md5').update(frame).digest().toString()
 
 			transfer.frames.push(frameTransfer)
@@ -136,26 +112,16 @@ export class DataTransferManager {
 
 		[ this.clip1Lock, this.clip2Lock ][index].enqueue(transfer)
 
-		return ps
+		return transfer.promise
 	}
 
 	uploadAudio (index: number, data: Buffer, name: string) {
-		const transfer = new DataTransferAudio()
-		const ps = new Promise((resolve, reject) => {
-			transfer.finish = resolve
-			transfer.fail = reject
-		})
-
+		const transfer = new DataTransferAudio(this.transferIndex++, 1 + index, data, name)
 		transfer.commandQueue = this.commandQueue
-		transfer.transferId = this.transferIndex++
-		transfer.storeId = 1 + index
-		transfer.description = { name }
-		transfer.data = data
-		transfer.hash = crypto.createHash('md5').update(data).digest().toString()
 
 		;[ this.clip1Lock, this.clip2Lock ][index].enqueue(transfer)
 
-		return ps
+		return transfer.promise
 	}
 
 }
