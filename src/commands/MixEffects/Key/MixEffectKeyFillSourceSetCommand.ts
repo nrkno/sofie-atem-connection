@@ -1,11 +1,16 @@
-import AbstractCommand from '../../AbstractCommand'
+import { BasicWritableCommand } from '../../CommandBase'
 
-export class MixEffectKeyFillSourceSetCommand extends AbstractCommand {
+export class MixEffectKeyFillSourceSetCommand extends BasicWritableCommand<{ fillSource: number }> {
 	static readonly rawName = 'CKeF'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: {
-		fillSource: number
+
+	readonly mixEffect: number
+	readonly upstreamKeyerId: number
+
+	constructor (mixEffect: number, upstreamKeyerId: number, fillSource: number) {
+		super({ fillSource })
+
+		this.mixEffect = mixEffect
+		this.upstreamKeyerId = upstreamKeyerId
 	}
 
 	serialize () {

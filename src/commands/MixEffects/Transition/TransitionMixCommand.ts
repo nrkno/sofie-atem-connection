@@ -1,4 +1,4 @@
-import AbstractCommand, { WritableCommand } from '../../AbstractCommand'
+import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { MixTransitionSettings } from '../../../state/video'
 import { Util } from '../../..'
@@ -22,17 +22,15 @@ export class TransitionMixCommand extends WritableCommand<MixTransitionSettings>
 	}
 }
 
-export class TransitionMixUpdateCommand extends AbstractCommand {
+export class TransitionMixUpdateCommand extends DeserializedCommand<MixTransitionSettings> {
 	static readonly rawName = 'TMxP'
 
 	readonly mixEffect: number
-	readonly properties: Readonly<MixTransitionSettings>
 
 	constructor (mixEffect: number, properties: MixTransitionSettings) {
-		super()
+		super(properties)
 
 		this.mixEffect = mixEffect
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer): TransitionMixUpdateCommand {

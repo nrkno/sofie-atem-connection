@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events'
 import { AtemState } from './state'
 import { AtemSocket } from './lib/atemSocket'
-import AbstractCommand from './commands/AbstractCommand'
+import { ISerializableCommand, IDeserializedCommand } from './commands/CommandBase'
 import * as Commands from './commands'
 import * as DataTransferCommands from './commands/DataTransfer'
 import { MediaPlayer, MediaPlayerSource } from './state/media'
@@ -25,7 +25,7 @@ import { Util } from './lib/atemUtil'
 import * as Enums from './enums'
 import { AudioChannel, AudioMasterChannel } from './state/audio'
 import exitHook = require('exit-hook')
-import { isArray } from 'util'
+import { isArray, isFunction } from 'util'
 
 export interface AtemOptions {
 	address?: string,
@@ -41,12 +41,11 @@ export class Atem extends EventEmitter {
 
 	AUDIO_GAIN_RATE = 65381
 
-	event: EventEmitter
-	state: AtemState
+	private _state: AtemState
 	private socket: AtemSocket
 	private dataTransferManager: DT.DataTransferManager
 	private _log: (...args: any[]) => void
-	private _sentQueue: {[packetId: string]: AbstractCommand } = {}
+	private _sentQueue: {[packetId: string]: ISerializableCommand } = {}
 
 	on: ((event: 'error', listener: (message: any) => void) => this) &
 		((event: 'connected', listener: () => void) => this) &
@@ -57,12 +56,12 @@ export class Atem extends EventEmitter {
 		super()
 		if (options) {
 			this.DEBUG = options.debug === undefined ? false : options.debug
-			this._log = options.externalLog || function (...args: any[]): void {
-				console.log(...args)
-			}
+		}
+		this._log = (options && options.externalLog) || function (...args: any[]): void {
+			console.log(...args)
 		}
 
-		this.state = new AtemState()
+		this._state = new AtemState()
 		this.socket = new AtemSocket({
 			debug: this.DEBUG,
 			log: this._log,
@@ -70,7 +69,7 @@ export class Atem extends EventEmitter {
 			port: (options || {}).port
 		})
 		this.dataTransferManager = new DT.DataTransferManager(
-			(command: AbstractCommand) => this.sendCommand(command)
+			(command: ISerializableCommand) => this.sendCommand(command)
 		)
 
 		// When the parent process begins exiting, remove the listeners on our child process.
@@ -82,12 +81,16 @@ export class Atem extends EventEmitter {
 			}
 		})
 
-		this.socket.on('receivedStateChange', (command: AbstractCommand) => this._mutateState(command))
+		this.socket.on('receivedStateChange', (command: IDeserializedCommand) => this._mutateState(command))
 		this.socket.on(Enums.IPCMessageType.CommandAcknowledged, ({ trackingId }: {trackingId: number}) => this._resolveCommand(trackingId))
 		this.socket.on(Enums.IPCMessageType.CommandTimeout, ({ trackingId }: {trackingId: number}) => this._rejectCommand(trackingId))
 		this.socket.on('error', (e) => this.emit('error', e))
 		this.socket.on('connect', () => this.emit('connected'))
 		this.socket.on('disconnect', () => this.emit('disconnected'))
+	}
+
+	get state (): Readonly<AtemState> {
+		return this._state
 	}
 
 	connect (address: string, port?: number) {
@@ -100,7 +103,7 @@ export class Atem extends EventEmitter {
 		})
 	}
 
-	sendCommand (command: AbstractCommand): Promise<any> {
+	sendCommand (command: ISerializableCommand): Promise<any> {
 		const nextPacketId = this.socket.nextPacketId
 		this._sentQueue[nextPacketId] = command
 		return new Promise((resolve, reject) => {
@@ -121,26 +124,22 @@ export class Atem extends EventEmitter {
 	}
 
 	cut (me: number = 0) {
-		const command = new Commands.CutCommand()
-		command.mixEffect = me
+		const command = new Commands.CutCommand(me)
 		return this.sendCommand(command)
 	}
 
 	autoTransition (me: number = 0) {
-		const command = new Commands.AutoTransitionCommand()
-		command.mixEffect = me
+		const command = new Commands.AutoTransitionCommand(me)
 		return this.sendCommand(command)
 	}
 
 	fadeToBlack (me: number = 0) {
-		const command = new Commands.FadeToBlackAutoCommand()
-		command.mixEffect = me
+		const command = new Commands.FadeToBlackAutoCommand(me)
 		return this.sendCommand(command)
 	}
 
 	autoDownstreamKey (key: number = 0, isTowardsOnAir?: boolean) {
-		const command = new Commands.DownstreamKeyAutoCommand()
-		command.downstreamKeyerId = key
+		const command = new Commands.DownstreamKeyAutoCommand(key)
 		command.updateProps({ isTowardsOnAir })
 		return this.sendCommand(command)
 	}
@@ -196,94 +195,70 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	setDownstreamKeyTie (tie: boolean, key = 0) {
-		const command = new Commands.DownstreamKeyTieCommand()
-		command.downstreamKeyerId = key
-		command.updateProps({ tie })
+	setDownstreamKeyTie (tie: boolean, key: number = 0) {
+		const command = new Commands.DownstreamKeyTieCommand(key, tie)
 		return this.sendCommand(command)
 	}
 
-	setDownstreamKeyOnAir (onAir: boolean, key = 0) {
-		const command = new Commands.DownstreamKeyOnAirCommand()
-		command.downstreamKeyerId = key
-		command.updateProps({ onAir })
+	setDownstreamKeyOnAir (onAir: boolean, key: number = 0) {
+		const command = new Commands.DownstreamKeyOnAirCommand(key, onAir)
 		return this.sendCommand(command)
 	}
 
-	setDownstreamKeyCutSource (input: number, key = 0) {
-		const command = new Commands.DownstreamKeyCutSourceCommand()
-		command.downstreamKeyerId = key
-		command.updateProps({ input })
+	setDownstreamKeyCutSource (input: number, key: number = 0) {
+		const command = new Commands.DownstreamKeyCutSourceCommand(key, input)
 		return this.sendCommand(command)
 	}
 
-	setDownstreamKeyFillSource (input: number, key = 0) {
-		const command = new Commands.DownstreamKeyFillSourceCommand()
-		command.downstreamKeyerId = key
-		command.updateProps({ input })
+	setDownstreamKeyFillSource (input: number, key: number = 0) {
+		const command = new Commands.DownstreamKeyFillSourceCommand(key, input)
 		return this.sendCommand(command)
 	}
 
-	setDownstreamKeyGeneralProperties (props: Partial<DownstreamKeyerGeneral>, key = 0) {
-		const command = new Commands.DownstreamKeyGeneralCommand()
-		command.downstreamKeyerId = key
+	setDownstreamKeyGeneralProperties (props: Partial<DownstreamKeyerGeneral>, key: number = 0) {
+		const command = new Commands.DownstreamKeyGeneralCommand(key)
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
 
-	setDownstreamKeyMaskSettings (props: Partial<DownstreamKeyerMask>, key = 0) {
-		const command = new Commands.DownstreamKeyMaskCommand()
-		command.downstreamKeyerId = key
+	setDownstreamKeyMaskSettings (props: Partial<DownstreamKeyerMask>, key: number = 0) {
+		const command = new Commands.DownstreamKeyMaskCommand(key)
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
 
-	setDownstreamKeyRate (rate: number, key = 0) {
-		const command = new Commands.DownstreamKeyRateCommand()
-		command.downstreamKeyerId = key
-		command.updateProps({ rate })
+	setDownstreamKeyRate (rate: number, key: number = 0) {
+		const command = new Commands.DownstreamKeyRateCommand(key, rate)
 		return this.sendCommand(command)
 	}
 
 	macroContinue () {
-		const command = new Commands.MacroActionCommand()
-		command.index = 0
-		command.updateProps({ action: Enums.MacroAction.Continue })
+		const command = new Commands.MacroActionCommand(0, Enums.MacroAction.Continue)
 		return this.sendCommand(command)
 	}
 
 	macroDelete (index = 0) {
-		const command = new Commands.MacroActionCommand()
-		command.index = index
-		command.updateProps({ action: Enums.MacroAction.Delete })
+		const command = new Commands.MacroActionCommand(index, Enums.MacroAction.Delete)
 		return this.sendCommand(command)
 	}
 
 	macroInsertUserWait () {
-		const command = new Commands.MacroActionCommand()
-		command.index = 0
-		command.updateProps({ action: Enums.MacroAction.InsertUserWait })
+		const command = new Commands.MacroActionCommand(0, Enums.MacroAction.InsertUserWait)
 		return this.sendCommand(command)
 	}
 
-	macroRun (index = 0) {
-		const command = new Commands.MacroActionCommand()
-		command.index = index
-		command.updateProps({ action: Enums.MacroAction.Run })
+	macroRun (index: number = 0) {
+		const command = new Commands.MacroActionCommand(index, Enums.MacroAction.Run)
 		return this.sendCommand(command)
 	}
 
 	macroStop () {
-		const command = new Commands.MacroActionCommand()
-		command.index = 0
-		command.updateProps({ action: Enums.MacroAction.Stop })
+		const command = new Commands.MacroActionCommand(0, Enums.MacroAction.Stop)
 		return this.sendCommand(command)
 	}
 
 	macroStopRecord () {
-		const command = new Commands.MacroActionCommand()
-		command.index = 0
-		command.updateProps({ action: Enums.MacroAction.StopRecord })
+		const command = new Commands.MacroActionCommand(0, Enums.MacroAction.StopRecord)
 		return this.sendCommand(command)
 	}
 
@@ -305,21 +280,18 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	setMediaClip (index: number, name: string, frames = 1) {
-		const command = new Commands.MediaPoolSetClipCommand()
-		command.updateProps({ index, name, frames })
+	setMediaClip (index: number, name: string, frames: number = 1) {
+		const command = new Commands.MediaPoolSetClipCommand({ index, name, frames })
 		return this.sendCommand(command)
 	}
 
 	clearMediaPoolClip (clipId: number) {
-		const command = new Commands.MediaPoolClearClipCommand()
-		command.updateProps({ index: clipId })
+		const command = new Commands.MediaPoolClearClipCommand(clipId)
 		return this.sendCommand(command)
 	}
 
 	clearMediaPoolStill (stillId: number) {
-		const command = new Commands.MediaPoolClearStillCommand()
-		command.updateProps({ index: stillId })
+		const command = new Commands.MediaPoolClearStillCommand(stillId)
 		return this.sendCommand(command)
 	}
 
@@ -330,7 +302,7 @@ export class Atem extends EventEmitter {
 	}
 
 	setSuperSourceProperties (newProps: Partial<SuperSourceProperties>, ssrcId: number = 0) {
-		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
+		if (this._state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
 			const command = new Commands.SuperSourcePropertiesV8Command(ssrcId)
 			command.updateProps(newProps)
 			return this.sendCommand(command)
@@ -342,7 +314,7 @@ export class Atem extends EventEmitter {
 	}
 
 	setSuperSourceBorder (newProps: Partial<SuperSourceBorder>, ssrcId: number = 0) {
-		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
+		if (this._state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
 			const command = new Commands.SuperSourceBorderCommand(ssrcId)
 			command.updateProps(newProps)
 			return this.sendCommand(command)
@@ -366,18 +338,12 @@ export class Atem extends EventEmitter {
 	}
 
 	setUpstreamKeyerCutSource (cutSource: number, me: number = 0, keyer: number = 0) {
-		const command = new Commands.MixEffectKeyCutSourceSetCommand()
-		command.mixEffect = me
-		command.upstreamKeyerId = keyer
-		command.updateProps({ cutSource })
+		const command = new Commands.MixEffectKeyCutSourceSetCommand(me, keyer, cutSource)
 		return this.sendCommand(command)
 	}
 
 	setUpstreamKeyerFillSource (fillSource: number, me: number = 0, keyer: number = 0) {
-		const command = new Commands.MixEffectKeyFillSourceSetCommand()
-		command.mixEffect = me
-		command.upstreamKeyerId = keyer
-		command.updateProps({ fillSource })
+		const command = new Commands.MixEffectKeyFillSourceSetCommand(me, keyer, fillSource)
 		return this.sendCommand(command)
 	}
 
@@ -394,9 +360,7 @@ export class Atem extends EventEmitter {
 	}
 
 	setUpstreamKeyerMaskSettings (newProps: Partial<USK.UpstreamKeyerMaskSettings>, me: number = 0, keyer: number = 0) {
-		const command = new Commands.MixEffectKeyMaskSetCommand()
-		command.mixEffect = me
-		command.upstreamKeyerId = keyer
+		const command = new Commands.MixEffectKeyMaskSetCommand(me, keyer)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
@@ -413,15 +377,13 @@ export class Atem extends EventEmitter {
 	}
 
 	setUpstreamKeyerType (newProps: Partial<USK.UpstreamKeyerTypeSettings>, me: number = 0, keyer: number = 0) {
-		const command = new Commands.MixEffectKeyTypeSetCommand()
-		command.mixEffect = me
-		command.upstreamKeyerId = keyer
+		const command = new Commands.MixEffectKeyTypeSetCommand(me, keyer)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
 	uploadStill (index: number, data: Buffer, name: string, description: string) {
-		const resolution = Util.getResolution(this.state.settings.videoMode)
+		const resolution = Util.getResolution(this._state.settings.videoMode)
 		return this.dataTransferManager.uploadStill(
 			index,
 			Util.convertRGBAToYUV422(resolution[0], resolution[1], data),
@@ -431,7 +393,7 @@ export class Atem extends EventEmitter {
 	}
 
 	uploadClip (index: number, frames: Array<Buffer>, name: string) {
-		const resolution = Util.getResolution(this.state.settings.videoMode)
+		const resolution = Util.getResolution(this._state.settings.videoMode)
 		const data: Array<Buffer> = []
 		for (const frame of frames) {
 			data.push(Util.convertRGBAToYUV422(resolution[0], resolution[1], frame))
@@ -487,13 +449,13 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	private _mutateState (command: AbstractCommand) {
-		if (typeof command.applyToState === 'function') {
-			let changePaths = command.applyToState(this.state)
+	private _mutateState (command: IDeserializedCommand) {
+		if (isFunction(command.applyToState)) {
+			let changePaths = command.applyToState(this._state)
 			if (!isArray(changePaths)) {
 				changePaths = [ changePaths ]
 			}
-			changePaths.forEach(path => this.emit('stateChanged', this.state, path))
+			changePaths.forEach(path => this.emit('stateChanged', this._state, path))
 		}
 		for (const commandName in DataTransferCommands) {
 			if (command.constructor.name === commandName) {

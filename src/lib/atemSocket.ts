@@ -2,11 +2,11 @@ import { ChildProcess, fork } from 'child_process'
 import { EventEmitter } from 'events'
 import * as path from 'path'
 import { CommandParser } from './atemCommandParser'
-import AbstractCommand from '../commands/AbstractCommand'
 import { IPCMessageType } from '../enums'
 import exitHook = require('exit-hook')
 import { Util } from './atemUtil'
-import { VersionCommand } from '../commands'
+import { VersionCommand, ISerializableCommand, IDeserializedCommand } from '../commands'
+import { isFunction } from 'util'
 
 export class AtemSocket extends EventEmitter {
 	private _debug = false
@@ -75,8 +75,8 @@ export class AtemSocket extends EventEmitter {
 		return ++this._localPacketId
 	}
 
-	public _sendCommand (command: AbstractCommand, trackingId: number) {
-		if (typeof command.serialize !== 'function') {
+	public _sendCommand (command: ISerializableCommand, trackingId: number) {
+		if (isFunction(command.serialize)) {
 			return Promise.reject(new Error('Command is not serializable'))
 		}
 
@@ -180,7 +180,7 @@ export class AtemSocket extends EventEmitter {
 		const cmdConstructor = this._commandParser.commandFromRawName(name)
 		if (cmdConstructor && typeof cmdConstructor.deserialize === 'function') {
 			try {
-				const cmd: AbstractCommand = cmdConstructor.deserialize(buffer.slice(0, length).slice(8), this._commandParser.version)
+				const cmd: IDeserializedCommand = cmdConstructor.deserialize(buffer.slice(0, length).slice(8), this._commandParser.version)
 				cmd.packetId = packetId || -1
 
 				if (name === '_ver') { // init started

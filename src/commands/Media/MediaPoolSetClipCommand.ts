@@ -1,13 +1,13 @@
-import AbstractCommand from '../AbstractCommand'
+import { BasicWritableCommand } from '../CommandBase'
 
-export class MediaPoolSetClipCommand extends AbstractCommand {
+export interface MediaPoolSetClipProps {
+	index: number,
+	name: string,
+	frames: number
+}
+
+export class MediaPoolSetClipCommand extends BasicWritableCommand<MediaPoolSetClipProps> {
 	static readonly rawName = 'SMPC'
-
-	properties: {
-		index: number,
-		name: string,
-		frames: number
-	}
 
 	serialize () {
 		const buffer = Buffer.alloc(68)

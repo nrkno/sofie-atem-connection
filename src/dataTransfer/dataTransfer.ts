@@ -5,7 +5,7 @@ export default abstract class DataTransfer {
 	readonly transferId: number
 	readonly storeId: number
 
-	commandQueue: Array<Commands.AbstractCommand>
+	commandQueue: Array<Commands.ISerializableCommand>
 
 	private readonly completionPromise: Promise<DataTransfer>
 	resolvePromise: (value?: DataTransfer | PromiseLike<DataTransfer> | undefined) => void
@@ -31,10 +31,10 @@ export default abstract class DataTransfer {
 		return this.completionPromise
 	}
 
-	fail(..._args: any[]): void{} // TODO remove
+	fail (..._args: any[]): void {} // TODO remove
 
 	abstract start (): void
 
-	abstract handleCommand (command: Commands.AbstractCommand): void
+	abstract handleCommand (command: Commands.IDeserializedCommand): void
 	abstract gotLock (): void
 }

@@ -1,20 +1,18 @@
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { DownstreamKeyerBase } from '../../state/video/downstreamKeyers'
 import { Util } from '../..'
 import { ProtocolVersion } from '../../enums'
 
-export class DownstreamKeyStateCommand extends AbstractCommand {
+export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKeyerBase> {
 	static readonly rawName = 'DskS'
 
 	readonly downstreamKeyerId: number
-	readonly properties: Readonly<DownstreamKeyerBase>
 
 	constructor (downstreamKeyerId: number, properties: DownstreamKeyerBase) {
-		super()
+		super(properties)
 
 		this.downstreamKeyerId = downstreamKeyerId
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer) {
@@ -38,18 +36,16 @@ export class DownstreamKeyStateCommand extends AbstractCommand {
 	}
 }
 
-export class DownstreamKeyStateV8Command extends AbstractCommand {
+export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamKeyerBase> {
 	static readonly rawName = 'DskS'
 	static readonly minimumVersion = ProtocolVersion.V8_0_1
 
 	readonly downstreamKeyerId: number
-	readonly properties: Readonly<DownstreamKeyerBase>
 
 	constructor (downstreamKeyerId: number, properties: DownstreamKeyerBase) {
-		super()
+		super(properties)
 
 		this.downstreamKeyerId = downstreamKeyerId
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer) {

@@ -1,10 +1,15 @@
-import AbstractCommand from '../AbstractCommand'
+import { BasicWritableCommand } from '../CommandBase'
 
-export class CutCommand extends AbstractCommand {
+export class CutCommand extends BasicWritableCommand<null> {
 	static readonly rawName = 'DCut'
-	mixEffect: number
 
-	properties: null
+	readonly mixEffect: number
+
+	constructor (mixEffect: number) {
+		super(null)
+
+		this.mixEffect = mixEffect
+	}
 
 	serialize () {
 		const buffer = Buffer.alloc(4)

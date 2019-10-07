@@ -1,13 +1,13 @@
-import AbstractCommand from '../AbstractCommand'
+import { BasicWritableCommand } from '../CommandBase'
 
-export class DataTransferDownloadRequestCommand extends AbstractCommand {
+export interface DataTransferDownloadRequestProps {
+	transferId: number
+	transferStoreId: number
+	transferIndex: number
+}
+
+export class DataTransferDownloadRequestCommand extends BasicWritableCommand<DataTransferDownloadRequestProps> {
 	static readonly rawName = 'FTSU'
-
-	properties: {
-		transferId: number,
-		transferStoreId: number,
-		transferIndex: number
-	}
 
 	serialize () {
 		const buffer = Buffer.alloc(12)

@@ -1,9 +1,9 @@
-import AbstractCommand from '../../AbstractCommand'
+import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { UpstreamKeyerDVESettings } from '../../../state/video/upstreamKeyers'
 import { Util, Enums } from '../../..'
 
-export class MixEffectKeyDVECommand extends AbstractCommand {
+export class MixEffectKeyDVECommand extends WritableCommand<UpstreamKeyerDVESettings> {
 	static MaskFlags = {
 		sizeX: 1 << 0,
 		sizeY: 1 << 1,
@@ -36,7 +36,6 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 
 	readonly mixEffect: number
 	readonly upstreamKeyerId: number
-	properties: Partial<UpstreamKeyerDVESettings>
 
 	constructor (mixEffect: number, upstreamKeyerId: number) {
 		super()
@@ -88,19 +87,17 @@ export class MixEffectKeyDVECommand extends AbstractCommand {
 	}
 }
 
-export class MixEffectKeyDVEUpdateCommand extends AbstractCommand {
+export class MixEffectKeyDVEUpdateCommand extends DeserializedCommand<UpstreamKeyerDVESettings> {
 	static readonly rawName = 'KeDV'
 
 	readonly mixEffect: number
 	readonly upstreamKeyerId: number
-	readonly properties: Readonly<UpstreamKeyerDVESettings>
 
 	constructor (mixEffect: number, upstreamKeyerId: number, properties: UpstreamKeyerDVESettings) {
-		super()
+		super(properties)
 
 		this.mixEffect = mixEffect
 		this.upstreamKeyerId = upstreamKeyerId
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer) {

@@ -1,23 +1,21 @@
-import AbstractCommand from '../../AbstractCommand'
+import { DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { UpstreamKeyerFlyKeyframe } from '../../../state/video/upstreamKeyers'
 import { Util } from '../../..'
 
-export class MixEffectKeyFlyKeyframeGetCommand extends AbstractCommand {
+export class MixEffectKeyFlyKeyframeGetCommand extends DeserializedCommand<UpstreamKeyerFlyKeyframe> {
 	static readonly rawName = 'KKFP'
 
 	readonly mixEffect: number
 	readonly upstreamKeyerId: number
 	readonly keyFrameId: number
-	readonly properties: Readonly<UpstreamKeyerFlyKeyframe>
 
 	constructor (mixEffect: number, upstreamKeyerId: number, keyFrameId: number, properties: UpstreamKeyerFlyKeyframe) {
-		super()
+		super(properties)
 
 		this.mixEffect = mixEffect
 		this.upstreamKeyerId = upstreamKeyerId
 		this.keyFrameId = keyFrameId
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer) {

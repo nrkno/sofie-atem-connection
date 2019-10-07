@@ -1,19 +1,17 @@
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { MacroPropertiesState } from '../../state/macro'
 import { Util } from '../../lib/atemUtil'
 
-export class MacroPropertiesCommand extends AbstractCommand {
+export class MacroPropertiesCommand extends DeserializedCommand<MacroPropertiesState> {
 	static readonly rawName = 'MPrp'
 
 	readonly macroIndexID: number
-	readonly properties: MacroPropertiesState
 
 	constructor (macroIndexID: number, properties: MacroPropertiesState) {
-		super()
+		super(properties)
 
 		this.macroIndexID = macroIndexID
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer): MacroPropertiesCommand {

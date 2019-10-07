@@ -1,18 +1,12 @@
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { Util } from '../..'
 
-export class SuperSourceConfigCommand extends AbstractCommand {
+export class SuperSourceConfigCommand extends DeserializedCommand<{ superSourceBoxes: number }> {
 	static readonly rawName = '_SSC'
 
-	readonly properties: Readonly<{
-		superSourceBoxes: number
-	}>
-
 	constructor (properties: SuperSourceConfigCommand['properties']) {
-		super()
-
-		this.properties = properties
+		super(properties)
 	}
 
 	static deserialize (rawCommand: Buffer) {

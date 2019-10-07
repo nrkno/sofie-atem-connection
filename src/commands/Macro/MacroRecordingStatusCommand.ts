@@ -1,17 +1,9 @@
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { MacroRecorderState } from '../../state/macro'
 
-export class MacroRecordingStatusCommand extends AbstractCommand {
+export class MacroRecordingStatusCommand extends DeserializedCommand<MacroRecorderState> {
 	static readonly rawName = 'MRcS'
-
-	readonly properties: Readonly<MacroRecorderState>
-
-	constructor (properties: MacroRecorderState) {
-		super()
-
-		this.properties = properties
-	}
 
 	static deserialize (rawCommand: Buffer) {
 		const properties = {

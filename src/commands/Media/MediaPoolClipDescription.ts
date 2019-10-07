@@ -1,19 +1,17 @@
 import { AtemState } from '../../state'
 import { ClipBank } from '../../state/media'
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 import { Util } from '../../lib/atemUtil'
 
-export class MediaPoolClipDescriptionCommand extends AbstractCommand {
+export class MediaPoolClipDescriptionCommand extends DeserializedCommand<ClipBank> {
 	static readonly rawName = 'MPCS'
 
 	readonly mediaPool: number
-	readonly properties: Readonly<ClipBank>
 
 	constructor (mediaPool: number, properties: ClipBank) {
-		super()
+		super(properties)
 
 		this.mediaPool = mediaPool
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer) {

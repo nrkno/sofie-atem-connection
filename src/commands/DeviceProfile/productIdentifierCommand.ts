@@ -1,25 +1,15 @@
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { Util } from '../../lib/atemUtil'
 import { Enums } from '../..'
+import { DeviceInfo } from '../../state/info'
 
-export class ProductIdentifierCommand extends AbstractCommand {
+export class ProductIdentifierCommand extends DeserializedCommand<Pick<DeviceInfo, 'model' | 'productIdentifier'>> {
 	static readonly rawName = '_pin'
-
-	readonly properties: Readonly<{
-		deviceName: string
-		model: number
-	}>
-
-	constructor (properties: ProductIdentifierCommand['properties']) {
-		super()
-
-		this.properties = properties
-	}
 
 	static deserialize (rawCommand: Buffer) {
 		const properties = {
-			deviceName: Util.bufToNullTerminatedString(rawCommand, 0, 40),
+			productIdentifier: Util.bufToNullTerminatedString(rawCommand, 0, 40),
 			model: Util.parseEnum<Enums.Model>(rawCommand[40], Enums.Model)
 		}
 
@@ -27,7 +17,7 @@ export class ProductIdentifierCommand extends AbstractCommand {
 	}
 
 	applyToState (state: AtemState) {
-		state.info.productIdentifier = this.properties.deviceName
+		state.info.productIdentifier = this.properties.productIdentifier
 		state.info.model = this.properties.model
 
 		// Model specific features that aren't specified by the protocol

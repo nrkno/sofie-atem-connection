@@ -1,10 +1,14 @@
-import AbstractCommand from '../AbstractCommand'
+import { BasicWritableCommand } from '../CommandBase'
 
-export class DownstreamKeyFillSourceCommand extends AbstractCommand {
+export class DownstreamKeyFillSourceCommand extends BasicWritableCommand<{ input: number }> {
 	static readonly rawName = 'CDsF'
-	downstreamKeyerId: number
-	properties: {
-		input: number
+
+	readonly downstreamKeyerId: number
+
+	constructor (downstreamKeyerId: number, input: number) {
+		super({ input })
+
+		this.downstreamKeyerId = downstreamKeyerId
 	}
 
 	serialize () {
@@ -12,9 +16,5 @@ export class DownstreamKeyFillSourceCommand extends AbstractCommand {
 		buffer.writeUInt8(this.downstreamKeyerId, 0)
 		buffer.writeUInt16BE(this.properties.input, 2)
 		return buffer
-	}
-
-	updateProps (newProps: { input: number }) {
-		this._updateProps(newProps)
 	}
 }

@@ -94,7 +94,7 @@ export class MixEffect implements IMixEffect {
 	fadeToBlack: FadeToBlackProperties
 	numberOfKeyers: number = 0
 	transitionProperties: TransitionProperties
-	transitionSettings: TransitionSettings = {}  as any
+	transitionSettings: TransitionSettings = {} as any
 	upstreamKeyers: { [index: number]: USK.UpstreamKeyer } = []
 
 	constructor (index: number) {

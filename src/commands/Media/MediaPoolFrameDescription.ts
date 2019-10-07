@@ -1,21 +1,19 @@
 import { AtemState } from '../../state'
 import { StillFrame } from '../../state/media'
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 import { Util } from '../../lib/atemUtil'
 
-export class MediaPoolFrameDescriptionCommand extends AbstractCommand {
+export class MediaPoolFrameDescriptionCommand extends DeserializedCommand<StillFrame> {
 	static readonly rawName = 'MPfe'
 
 	readonly mediaPool: number
 	readonly frameIndex: number
-	readonly properties: Readonly<StillFrame>
 
-	constructor (mediaPool: number, frameIndex: number,properties: StillFrame) {
-		super()
+	constructor (mediaPool: number, frameIndex: number, properties: StillFrame) {
+		super(properties)
 
 		this.mediaPool = mediaPool
 		this.frameIndex = frameIndex
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer) {

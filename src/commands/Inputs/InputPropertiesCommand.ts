@@ -1,10 +1,10 @@
-import AbstractCommand from '../AbstractCommand'
+import { WritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { InputChannel } from '../../state/input'
 import { ExternalPorts, ExternalPortType } from '../../enums'
 import { Util } from '../../lib/atemUtil'
 
-export class InputPropertiesCommand extends AbstractCommand {
+export class InputPropertiesCommand extends WritableCommand<InputChannel> {
 	static MaskFlags = {
 		longName: 1 << 0,
 		shortName: 1 << 1,
@@ -14,17 +14,12 @@ export class InputPropertiesCommand extends AbstractCommand {
 	static readonly rawName = 'CInL'
 
 	readonly inputId: number
-	properties: Partial<InputChannel>
 
 	constructor (inputId: number) {
 		super()
 
 		this.inputId = inputId
 		this.properties = {}
-	}
-
-	updateProps (newProps: Partial<InputChannel>) {
-		this._updateProps(newProps)
 	}
 
 	serialize () {
@@ -38,17 +33,15 @@ export class InputPropertiesCommand extends AbstractCommand {
 	}
 }
 
-export class InputPropertiesUpdateCommand extends AbstractCommand {
+export class InputPropertiesUpdateCommand extends DeserializedCommand<InputChannel> {
 	static readonly rawName = 'InPr'
 
 	readonly inputId: number
-	readonly properties: Readonly<InputChannel>
 
 	constructor (inputId: number, properties: InputChannel) {
-		super()
+		super(properties)
 
 		this.inputId = inputId
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer) {

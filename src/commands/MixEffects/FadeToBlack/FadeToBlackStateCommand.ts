@@ -1,22 +1,22 @@
-import AbstractCommand from '../../AbstractCommand'
+import { DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { Util } from '../../..'
 
-export class FadeToBlackStateCommand extends AbstractCommand {
+export interface FadeToBlackProps {
+	isFullyBlack: boolean
+	inTransition: boolean
+	remainingFrames: number
+}
+
+export class FadeToBlackStateCommand extends DeserializedCommand<FadeToBlackProps> {
 	static readonly rawName = 'FtbS'
 
 	readonly mixEffect: number
-	readonly properties: Readonly<{
-		isFullyBlack: boolean
-		inTransition: boolean
-		remainingFrames: number
-	}>
 
-	constructor (mixEffect: number, properties: FadeToBlackStateCommand['properties']) {
-		super()
+	constructor (mixEffect: number, properties: FadeToBlackProps) {
+		super(properties)
 
 		this.mixEffect = mixEffect
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer) {

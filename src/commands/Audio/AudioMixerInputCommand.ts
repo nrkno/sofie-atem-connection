@@ -1,9 +1,9 @@
-import AbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
 import { Util } from '../..'
 import { AudioChannel } from '../../state/audio'
+import { WritableCommand, DeserializedCommand } from '../CommandBase'
 
-export class AudioMixerInputCommand extends AbstractCommand {
+export class AudioMixerInputCommand extends WritableCommand<AudioChannel> {
 	static MaskFlags = {
 		mixOption: 1 << 0,
 		gain: 1 << 1,
@@ -12,7 +12,6 @@ export class AudioMixerInputCommand extends AbstractCommand {
 	static readonly rawName = 'CAMI'
 
 	readonly index: number
-	properties: Partial<AudioChannel>
 
 	constructor (index: number) {
 		super()
@@ -32,17 +31,15 @@ export class AudioMixerInputCommand extends AbstractCommand {
 	}
 }
 
-export class AudioMixerInputUpdateCommand extends AbstractCommand {
+export class AudioMixerInputUpdateCommand extends DeserializedCommand<AudioChannel> {
 	static readonly rawName = 'AMIP'
 
 	readonly index: number
-	readonly properties: Readonly<AudioChannel>
 
 	constructor (index: number, properties: AudioChannel) {
-		super()
+		super(properties)
 
 		this.index = index
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer): AudioMixerInputUpdateCommand {

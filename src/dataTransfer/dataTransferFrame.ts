@@ -20,8 +20,7 @@ export default class DataTransferFrame extends DataTransfer {
 	}
 
 	start () {
-		const command = new Commands.DataTransferUploadRequestCommand()
-		command.updateProps({
+		const command = new Commands.DataTransferUploadRequestCommand({
 			transferId: this.transferId,
 			transferStoreId: this.storeId,
 			transferIndex: this.frameId,
@@ -32,12 +31,11 @@ export default class DataTransferFrame extends DataTransfer {
 	}
 
 	sendDescription () {
-		const command = new Commands.DataTransferFileDescriptionCommand()
-		command.updateProps({ fileHash: this.hash, transferId: this.transferId })
+		const command = new Commands.DataTransferFileDescriptionCommand({ fileHash: this.hash, transferId: this.transferId })
 		this.commandQueue.push(command)
 	}
 
-	handleCommand (command: Commands.AbstractCommand) {
+	handleCommand (command: Commands.IDeserializedCommand) {
 		if (command.constructor.name === Commands.DataTransferUploadContinueCommand.name) {
 			if (this.state === Enums.TransferState.Locked) {
 				this.state = Enums.TransferState.Transferring

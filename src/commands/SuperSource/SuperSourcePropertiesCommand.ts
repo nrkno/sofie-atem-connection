@@ -1,4 +1,4 @@
-import AbstractCommand, { WritableCommand } from '../AbstractCommand'
+import { WritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { SuperSourceProperties, SuperSourceBorder, SuperSource } from '../../state/video'
 import { Util, Enums } from '../..'
@@ -156,16 +156,8 @@ export class SuperSourceBorderCommand extends WritableCommand<SuperSourceBorder>
 	}
 }
 
-export class SuperSourcePropertiesUpdateCommand extends AbstractCommand {
+export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<Pick<SuperSource, 'properties' | 'border'>> {
 	static readonly rawName = 'SSrc'
-
-	properties: Pick<SuperSource, 'properties' | 'border'>
-
-	constructor (properties: SuperSourcePropertiesUpdateCommand['properties']) {
-		super()
-
-		this.properties = properties
-	}
 
 	static deserialize (rawCommand: Buffer): SuperSourcePropertiesUpdateCommand {
 		const properties = {
@@ -214,18 +206,16 @@ export class SuperSourcePropertiesUpdateCommand extends AbstractCommand {
 	}
 }
 
-export class SuperSourcePropertiesUpdateV8Command extends AbstractCommand {
+export class SuperSourcePropertiesUpdateV8Command extends DeserializedCommand<SuperSourceProperties> {
 	static readonly rawName = 'SSrc'
 	static readonly minimumVersion = ProtocolVersion.V8_0
 
 	readonly ssrcId: number
-	readonly properties: Readonly<SuperSourceProperties>
 
 	constructor (ssrcId: number, properties: SuperSourceProperties) {
-		super()
+		super(properties)
 
 		this.ssrcId = ssrcId
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer): SuperSourcePropertiesUpdateV8Command {
@@ -252,18 +242,16 @@ export class SuperSourcePropertiesUpdateV8Command extends AbstractCommand {
 	}
 }
 
-export class SuperSourceBorderUpdateCommand extends AbstractCommand {
+export class SuperSourceBorderUpdateCommand extends DeserializedCommand<SuperSourceBorder> {
 	static readonly rawName = 'SSBd'
 	static readonly minimumVersion = ProtocolVersion.V8_0
 
 	readonly ssrcId: number
-	readonly properties: Readonly<SuperSourceBorder>
 
 	constructor (ssrcId: number, properties: SuperSourceBorder) {
-		super()
+		super(properties)
 
 		this.ssrcId = ssrcId
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer) {

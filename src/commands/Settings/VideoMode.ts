@@ -1,4 +1,4 @@
-import AbstractCommand, { BasicWritableCommand } from '../AbstractCommand'
+import { BasicWritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { Enums } from '../..'
 
@@ -10,11 +10,7 @@ export class VideoModeCommand extends BasicWritableCommand<VideoModeProps> {
 	static readonly rawName = 'CVdM'
 
 	constructor (mode: Enums.VideoMode) {
-		super()
-
-		this.properties = {
-			mode
-		}
+		super({ mode })
 	}
 
 	serialize () {
@@ -24,17 +20,11 @@ export class VideoModeCommand extends BasicWritableCommand<VideoModeProps> {
 	}
 }
 
-export class VideoModeUpdateCommand extends AbstractCommand {
+export class VideoModeUpdateCommand extends DeserializedCommand<VideoModeProps> {
 	static readonly rawName = 'VidM'
 
-	readonly properties: Readonly<VideoModeProps>
-
 	constructor (mode: Enums.VideoMode) {
-		super()
-
-		this.properties = {
-			mode
-		}
+		super({ mode })
 	}
 
 	static deserialize (rawCommand: Buffer): VideoModeUpdateCommand {

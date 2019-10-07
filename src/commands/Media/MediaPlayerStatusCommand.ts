@@ -1,9 +1,9 @@
 import { AtemState } from '../../state'
 import { MediaPlayer } from '../../state/media'
-import AbstractCommand from '../AbstractCommand'
+import { WritableCommand, DeserializedCommand } from '../CommandBase'
 import { Util } from '../../lib/atemUtil'
 
-export class MediaPlayerStatusCommand extends AbstractCommand {
+export class MediaPlayerStatusCommand extends WritableCommand<MediaPlayer> {
 	static MaskFlags = {
 		playing: 1 << 0,
 		loop: 1 << 1,
@@ -13,17 +13,11 @@ export class MediaPlayerStatusCommand extends AbstractCommand {
 	static readonly rawName = 'SCPS'
 
 	readonly mediaPlayerId: number
-	properties: Partial<MediaPlayer>
 
 	constructor (mediaPlayerId: number) {
 		super()
 
 		this.mediaPlayerId = mediaPlayerId
-		this.properties = {}
-	}
-
-	updateProps (newProps: Partial<MediaPlayer>) {
-		this._updateProps(newProps)
 	}
 
 	serialize () {
@@ -38,17 +32,15 @@ export class MediaPlayerStatusCommand extends AbstractCommand {
 	}
 }
 
-export class MediaPlayerStatusUpdateCommand extends AbstractCommand {
+export class MediaPlayerStatusUpdateCommand extends DeserializedCommand<MediaPlayer> {
 	static readonly rawName = 'RCPS'
 
 	readonly mediaPlayerId: number
-	readonly properties: Readonly<MediaPlayer>
 
 	constructor (mediaPlayerId: number, properties: MediaPlayer) {
-		super()
+		super(properties)
 
 		this.mediaPlayerId = mediaPlayerId
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer) {

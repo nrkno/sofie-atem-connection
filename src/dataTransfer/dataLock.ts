@@ -9,9 +9,9 @@ export default class DataLock {
 	transfer: DataTransfer | undefined
 	queue: Array<DataTransfer> = []
 
-	commandQueue: Array<Commands.AbstractCommand> = []
+	commandQueue: Array<Commands.ISerializableCommand> = []
 
-	constructor (storeId: number, commandQueue: Array<Commands.AbstractCommand>) {
+	constructor (storeId: number, commandQueue: Array<Commands.ISerializableCommand>) {
 		this.storeId = storeId
 		this.commandQueue = commandQueue
 	}

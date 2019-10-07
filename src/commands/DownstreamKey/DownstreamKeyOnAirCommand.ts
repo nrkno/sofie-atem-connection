@@ -1,11 +1,14 @@
-import AbstractCommand from '../AbstractCommand'
+import { BasicWritableCommand } from '../CommandBase'
 
-export class DownstreamKeyOnAirCommand extends AbstractCommand {
+export class DownstreamKeyOnAirCommand extends BasicWritableCommand<{ onAir: boolean }> {
 	static readonly rawName = 'CDsL'
-	downstreamKeyerId: number
 
-	properties: {
-		onAir: boolean
+	readonly downstreamKeyerId: number
+
+	constructor (downstreamKeyerId: number, onAir: boolean) {
+		super({ onAir })
+
+		this.downstreamKeyerId = downstreamKeyerId
 	}
 
 	serialize () {

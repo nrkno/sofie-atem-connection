@@ -1,4 +1,4 @@
-import AbstractCommand, { WritableCommand } from '../AbstractCommand'
+import { WritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { MultiViewerSourceState } from '../../state/settings'
 
@@ -22,17 +22,15 @@ export class MultiViewerSourceCommand extends WritableCommand<MultiViewerSourceS
 	}
 }
 
-export class MultiViewerSourceUpdateCommand extends AbstractCommand {
+export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiViewerSourceState> {
 	static readonly rawName = 'MvIn'
 
 	readonly multiViewerId: number
-	readonly properties: Readonly<MultiViewerSourceState>
 
 	constructor (multiviewerId: number, properties: MultiViewerSourceState) {
-		super()
+		super(properties)
 
 		this.multiViewerId = multiviewerId
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer): MultiViewerSourceUpdateCommand {

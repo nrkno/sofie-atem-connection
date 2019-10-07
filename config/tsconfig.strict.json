@@ -2,8 +2,7 @@
 	"compilerOptions": {
 		"strict": true,
 		"alwaysStrict": false,
-		"strictNullChecks": true,
-		"strictPropertyInitialization": false,
+		"strictPropertyInitialization": true,
 		"strictFunctionTypes": true,
 		"forceConsistentCasingInFileNames": true,
 		"noFallthroughCasesInSwitch": true,

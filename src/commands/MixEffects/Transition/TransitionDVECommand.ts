@@ -1,4 +1,4 @@
-import AbstractCommand, { WritableCommand } from '../../AbstractCommand'
+import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { DVETransitionSettings } from '../../../state/video'
 import { Util, Enums } from '../../..'
@@ -53,17 +53,15 @@ export class TransitionDVECommand extends WritableCommand<DVETransitionSettings>
 	}
 }
 
-export class TransitionDVEUpdateCommand extends AbstractCommand {
+export class TransitionDVEUpdateCommand extends DeserializedCommand<DVETransitionSettings> {
 	static readonly rawName = 'TDvP'
 
 	readonly mixEffect: number
-	readonly properties: Readonly<DVETransitionSettings>
 
 	constructor (mixEffect: number, properties: DVETransitionSettings) {
-		super()
+		super(properties)
 
 		this.mixEffect = mixEffect
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer): TransitionDVEUpdateCommand {

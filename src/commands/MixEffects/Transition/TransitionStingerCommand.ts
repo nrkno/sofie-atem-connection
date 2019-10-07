@@ -1,4 +1,4 @@
-import AbstractCommand, { WritableCommand } from '../../AbstractCommand'
+import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { StingerTransitionSettings } from '../../../state/video'
 import { Util } from '../../..'
@@ -47,17 +47,15 @@ export class TransitionStingerCommand extends WritableCommand<StingerTransitionS
 	}
 }
 
-export class TransitionStingerUpdateCommand extends AbstractCommand {
+export class TransitionStingerUpdateCommand extends DeserializedCommand<StingerTransitionSettings> {
 	static readonly rawName = 'TStP'
 
 	readonly mixEffect: number
-	readonly properties: Readonly<StingerTransitionSettings>
 
 	constructor (mixEffect: number, properties: StingerTransitionSettings) {
-		super()
+		super(properties)
 
 		this.mixEffect = mixEffect
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer): TransitionStingerUpdateCommand {

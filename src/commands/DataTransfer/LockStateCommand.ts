@@ -1,17 +1,15 @@
-import AbstractCommand from '../AbstractCommand'
+import { BasicWritableCommand, DeserializedCommand } from '../CommandBase'
 
-export class LockStateCommand extends AbstractCommand {
+export interface LockStateProps {
+	index: number
+	locked: boolean
+}
+
+export class LockStateCommand extends BasicWritableCommand<LockStateProps> {
 	static readonly rawName = 'LOCK'
 
-	readonly properties: Readonly<{
-		index: number,
-		locked: boolean
-	}>
-
 	constructor (index: number, locked: boolean) {
-		super()
-
-		this.properties = { index, locked }
+		super({ index, locked })
 	}
 
 	serialize () {
@@ -22,19 +20,8 @@ export class LockStateCommand extends AbstractCommand {
 	}
 }
 
-export class LockStateUpdateCommand extends AbstractCommand {
+export class LockStateUpdateCommand extends DeserializedCommand<LockStateProps> {
 	static readonly rawName = 'LKST'
-
-	readonly properties: Readonly<{
-		index: number,
-		locked: boolean
-	}>
-
-	constructor (properties: LockStateUpdateCommand['properties']) {
-		super()
-
-		this.properties = properties
-	}
 
 	static deserialize (rawCommand: Buffer) {
 		const properties = {
@@ -43,5 +30,10 @@ export class LockStateUpdateCommand extends AbstractCommand {
 		}
 
 		return new LockStateUpdateCommand(properties)
+	}
+
+	applyToState (): string | string[] {
+		// Nothing to do
+		return []
 	}
 }

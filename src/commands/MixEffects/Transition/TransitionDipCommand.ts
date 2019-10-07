@@ -1,4 +1,4 @@
-import AbstractCommand, { WritableCommand } from '../../AbstractCommand'
+import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { DipTransitionSettings } from '../../../state/video'
 import { Util } from '../../..'
@@ -28,17 +28,15 @@ export class TransitionDipCommand extends WritableCommand<DipTransitionSettings>
 	}
 }
 
-export class TransitionDipUpdateCommand extends AbstractCommand {
+export class TransitionDipUpdateCommand extends DeserializedCommand<DipTransitionSettings> {
 	static readonly rawName = 'TDpP'
 
 	readonly mixEffect: number
-	readonly properties: Readonly<DipTransitionSettings>
 
 	constructor (mixEffect: number, properties: DipTransitionSettings) {
-		super()
+		super(properties)
 
 		this.mixEffect = mixEffect
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer): TransitionDipUpdateCommand {

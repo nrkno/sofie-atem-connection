@@ -1,26 +1,18 @@
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { ProtocolVersion } from '../../enums'
 
-export class VersionCommand extends AbstractCommand {
+export class VersionCommand extends DeserializedCommand<{ version: ProtocolVersion }> {
 	static readonly rawName = '_ver'
 
-	readonly properties: Readonly<{
-		version: ProtocolVersion
-	}>
-
-	constructor (properties: VersionCommand['properties']) {
-		super()
-
-		this.properties = properties
+	constructor (version: ProtocolVersion) {
+		super({ version })
 	}
 
 	static deserialize (rawCommand: Buffer) {
-		const properties = {
-			version: rawCommand.readUInt32BE(0)
-		}
+		const version = rawCommand.readUInt32BE(0)
 
-		return new VersionCommand(properties)
+		return new VersionCommand(version)
 	}
 
 	applyToState (state: AtemState) {

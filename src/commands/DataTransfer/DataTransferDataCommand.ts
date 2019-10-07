@@ -1,18 +1,12 @@
-import AbstractCommand from '../AbstractCommand'
+import { BasicWritableCommand, IDeserializedCommand } from '../CommandBase'
 
-export class DataTransferDataCommand extends AbstractCommand {
+export interface DataTransferDataProps {
+	transferId: number
+	body: Buffer
+}
+
+export class DataTransferDataCommand extends BasicWritableCommand<DataTransferDataProps> implements IDeserializedCommand {
 	static readonly rawName = 'FTDa'
-
-	readonly properties: Readonly<{
-		transferId: number,
-		body: Buffer
-	}>
-
-	constructor (properties: DataTransferDataCommand['properties']) {
-		super()
-
-		this.properties = properties
-	}
 
 	serialize () {
 		const buffer = Buffer.alloc(4)
@@ -30,5 +24,10 @@ export class DataTransferDataCommand extends AbstractCommand {
 		}
 
 		return new DataTransferDataCommand(properties)
+	}
+
+	applyToState (): string[] {
+		// Nothing to do
+		return []
 	}
 }

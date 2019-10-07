@@ -1,22 +1,18 @@
-import AbstractCommand from '../../AbstractCommand'
+import { BasicWritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { Util } from '../../..'
 
-export class MixEffectKeyOnAirCommand extends AbstractCommand {
+export class MixEffectKeyOnAirCommand extends BasicWritableCommand<{ onAir: boolean}> {
 	static readonly rawName = 'CKOn'
 
 	readonly mixEffect: number
 	readonly upstreamKeyerId: number
-	readonly properties: Readonly<{
-		onAir: boolean
-	}>
 
 	constructor (mixEffect: number, upstreamKeyerId: number, onAir: boolean) {
-		super()
+		super({ onAir })
 
 		this.mixEffect = mixEffect
 		this.upstreamKeyerId = upstreamKeyerId
-		this.properties = { onAir }
 	}
 
 	serialize () {
@@ -28,21 +24,17 @@ export class MixEffectKeyOnAirCommand extends AbstractCommand {
 	}
 }
 
-export class MixEffectKeyOnAirUpdateCommand extends AbstractCommand {
+export class MixEffectKeyOnAirUpdateCommand extends DeserializedCommand<{onAir: boolean}> {
 	static readonly rawName = 'KeOn'
 
 	readonly mixEffect: number
 	readonly upstreamKeyerId: number
-	readonly properties: Readonly<{
-		onAir: boolean
-	}>
 
 	constructor (mixEffect: number, upstreamKeyerId: number, properties: MixEffectKeyOnAirUpdateCommand['properties']) {
-		super()
+		super(properties)
 
 		this.mixEffect = mixEffect
 		this.upstreamKeyerId = upstreamKeyerId
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer) {

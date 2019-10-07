@@ -1,18 +1,12 @@
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 
-export class DataTransferErrorCommand extends AbstractCommand {
+export interface DataTransferErrorProps {
+	transferId: number
+	errorCode: number
+}
+
+export class DataTransferErrorCommand extends DeserializedCommand<DataTransferErrorProps> {
 	static readonly rawName = 'FTDE'
-
-	readonly properties: Readonly<{
-		transferId: number
-		errorCode: number
-	}>
-
-	constructor (properties: DataTransferErrorCommand['properties']) {
-		super()
-
-		this.properties = properties
-	}
 
 	static deserialize (rawCommand: Buffer): DataTransferErrorCommand {
 		const properties = {
@@ -21,5 +15,10 @@ export class DataTransferErrorCommand extends AbstractCommand {
 		}
 
 		return new DataTransferErrorCommand(properties)
+	}
+
+	applyToState (): string[] {
+		// Nothing to do
+		return []
 	}
 }

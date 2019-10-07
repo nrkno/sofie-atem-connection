@@ -1,9 +1,9 @@
-import AbstractCommand from '../../AbstractCommand'
+import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { UpstreamKeyerChromaSettings } from '../../../state/video/upstreamKeyers'
 import { Util } from '../../..'
 
-export class MixEffectKeyChromaCommand extends AbstractCommand {
+export class MixEffectKeyChromaCommand extends WritableCommand<UpstreamKeyerChromaSettings> {
 	static MaskFlags = {
 		hue: 1 << 0,
 		gain: 1 << 1,
@@ -15,14 +15,12 @@ export class MixEffectKeyChromaCommand extends AbstractCommand {
 
 	readonly mixEffect: number
 	readonly upstreamKeyerId: number
-	properties: Partial<UpstreamKeyerChromaSettings>
 
 	constructor (mixEffect: number, upstreamKeyerId: number) {
 		super()
 
 		this.mixEffect = mixEffect
 		this.upstreamKeyerId = upstreamKeyerId
-		this.properties = {}
 	}
 
 	serialize () {
@@ -41,19 +39,17 @@ export class MixEffectKeyChromaCommand extends AbstractCommand {
 	}
 }
 
-export class MixEffectKeyChromaUpdateCommand extends AbstractCommand {
+export class MixEffectKeyChromaUpdateCommand extends DeserializedCommand<UpstreamKeyerChromaSettings> {
 	static readonly rawName = 'KeCk'
 
 	readonly mixEffect: number
 	readonly upstreamKeyerId: number
-	readonly properties: Readonly<UpstreamKeyerChromaSettings>
 
 	constructor (mixEffect: number, upstreamKeyerId: number, properties: UpstreamKeyerChromaSettings) {
-		super()
+		super(properties)
 
 		this.mixEffect = mixEffect
 		this.upstreamKeyerId = upstreamKeyerId
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer) {

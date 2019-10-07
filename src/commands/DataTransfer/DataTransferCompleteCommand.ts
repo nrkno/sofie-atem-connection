@@ -1,17 +1,7 @@
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 
-export class DataTransferCompleteCommand extends AbstractCommand {
+export class DataTransferCompleteCommand extends DeserializedCommand<{ transferId: number }> {
 	static readonly rawName = 'FTDC'
-
-	readonly properties: Readonly<{
-		transferId: number
-	}>
-
-	constructor (properties: DataTransferCompleteCommand['properties']) {
-		super()
-
-		this.properties = properties
-	}
 
 	static deserialize (rawCommand: Buffer): DataTransferCompleteCommand {
 		const properties = {
@@ -19,5 +9,10 @@ export class DataTransferCompleteCommand extends AbstractCommand {
 		}
 
 		return new DataTransferCompleteCommand(properties)
+	}
+
+	applyToState (): string[] {
+		// Nothing to do
+		return []
 	}
 }

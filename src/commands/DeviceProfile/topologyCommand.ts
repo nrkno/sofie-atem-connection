@@ -1,17 +1,9 @@
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { AtemCapabilites } from '../../state/info'
 
-export class TopologyCommand extends AbstractCommand {
+export class TopologyCommand extends DeserializedCommand<AtemCapabilites> {
 	static readonly rawName = '_top'
-
-	readonly properties: Readonly<AtemCapabilites>
-
-	constructor (properties: AtemCapabilites) {
-		super()
-
-		this.properties = properties
-	}
 
 	static deserialize (rawCommand: Buffer) {
 		const properties = {

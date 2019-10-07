@@ -1,4 +1,4 @@
-import AbstractCommand, { BasicWritableCommand } from '../../AbstractCommand'
+import { BasicWritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { Util } from '../../..'
 
@@ -12,10 +12,9 @@ export class TransitionPositionCommand extends BasicWritableCommand<HandlePositi
 	readonly mixEffect: number
 
 	constructor (mixEffect: number, handlePosition: number) {
-		super()
+		super({ handlePosition })
 
 		this.mixEffect = mixEffect
-		this.properties = { handlePosition }
 	}
 
 	serialize () {
@@ -26,21 +25,20 @@ export class TransitionPositionCommand extends BasicWritableCommand<HandlePositi
 	}
 }
 
-export class TransitionPositionUpdateCommand extends AbstractCommand {
+export interface TransitionPositionProps extends HandlePositionProps {
+	inTransition: boolean
+	remainingFrames: number // 0...250
+}
+
+export class TransitionPositionUpdateCommand extends DeserializedCommand<TransitionPositionProps> {
 	static readonly rawName = 'TrPs'
 
 	readonly mixEffect: number
-	readonly properties: Readonly<{
-		inTransition: boolean
-		remainingFrames: number // 0...250
-		handlePosition: number // 0...10000
-	}>
 
-	constructor (mixEffect: number, properties: TransitionPositionUpdateCommand['properties']) {
-		super()
+	constructor (mixEffect: number, properties: TransitionPositionProps) {
+		super(properties)
 
 		this.mixEffect = mixEffect
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer): TransitionPositionUpdateCommand {

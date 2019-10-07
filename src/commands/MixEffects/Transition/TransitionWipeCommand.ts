@@ -1,4 +1,4 @@
-import AbstractCommand, { WritableCommand } from '../../AbstractCommand'
+import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { WipeTransitionSettings } from '../../../state/video'
 import { Util, Enums } from '../../..'
@@ -49,17 +49,15 @@ export class TransitionWipeCommand extends WritableCommand<WipeTransitionSetting
 	}
 }
 
-export class TransitionWipeUpdateCommand extends AbstractCommand {
+export class TransitionWipeUpdateCommand extends DeserializedCommand<WipeTransitionSettings> {
 	static readonly rawName = 'TWpP'
 
 	readonly mixEffect: number
-	readonly properties: Readonly<WipeTransitionSettings>
 
 	constructor (mixEffect: number, properties: WipeTransitionSettings) {
-		super()
+		super(properties)
 
 		this.mixEffect = mixEffect
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer): TransitionWipeUpdateCommand {

@@ -1,4 +1,4 @@
-import AbstractCommand, { WritableCommand } from '../../AbstractCommand'
+import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { UpstreamKeyerPatternSettings } from '../../../state/video/upstreamKeyers'
 import { Util, Enums } from '../../..'
@@ -44,19 +44,17 @@ export class MixEffectKeyPatternCommand extends WritableCommand<UpstreamKeyerPat
 	}
 }
 
-export class MixEffectKeyUpdateCommand extends AbstractCommand {
+export class MixEffectKeyUpdateCommand extends DeserializedCommand<UpstreamKeyerPatternSettings> {
 	static readonly rawName = 'KePt'
 
 	readonly mixEffect: number
 	readonly upstreamKeyerId: number
-	readonly properties: Readonly<UpstreamKeyerPatternSettings>
 
 	constructor (mixEffect: number, upstreamKeyerId: number, properties: UpstreamKeyerPatternSettings) {
-		super()
+		super(properties)
 
 		this.mixEffect = mixEffect
 		this.upstreamKeyerId = upstreamKeyerId
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer): MixEffectKeyUpdateCommand {

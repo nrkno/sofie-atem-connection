@@ -1,11 +1,14 @@
-import AbstractCommand from '../AbstractCommand'
+import { BasicWritableCommand } from '../CommandBase'
 
-export class DownstreamKeyTieCommand extends AbstractCommand {
+export class DownstreamKeyTieCommand extends BasicWritableCommand<{ tie: boolean }> {
 	static readonly rawName = 'CDsT'
-	downstreamKeyerId: number
 
-	properties: {
-		tie: boolean
+	readonly downstreamKeyerId: number
+
+	constructor (downstreamKeyerId: number, tie: boolean) {
+		super({ tie })
+
+		this.downstreamKeyerId = downstreamKeyerId
 	}
 
 	serialize () {

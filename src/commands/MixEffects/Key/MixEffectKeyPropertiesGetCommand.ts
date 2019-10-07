@@ -1,19 +1,17 @@
-import AbstractCommand from '../../AbstractCommand'
+import { DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { UpstreamKeyerBase } from '../../../state/video/upstreamKeyers'
 import { Util, Enums } from '../../..'
 
-export class MixEffectKeyPropertiesGetCommand extends AbstractCommand {
+export class MixEffectKeyPropertiesGetCommand extends DeserializedCommand<UpstreamKeyerBase> {
 	static readonly rawName = 'KeBP'
 
 	readonly mixEffect: number
-	readonly properties: Readonly<UpstreamKeyerBase>
 
 	constructor (mixEffect: number, properties: UpstreamKeyerBase) {
-		super()
+		super(properties)
 
 		this.mixEffect = mixEffect
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer): MixEffectKeyPropertiesGetCommand {

@@ -1,4 +1,4 @@
-import AbstractCommand, { BasicWritableCommand } from '../AbstractCommand'
+import { BasicWritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { Util } from '../..'
 
@@ -12,12 +12,9 @@ export class ProgramInputCommand extends BasicWritableCommand<InputSource> {
 	readonly mixEffect: number
 
 	constructor (mixEffect: number, source: number) {
-		super()
+		super({ source })
 
 		this.mixEffect = mixEffect
-		this.properties = {
-			source
-		}
 	}
 
 	serialize () {
@@ -28,19 +25,16 @@ export class ProgramInputCommand extends BasicWritableCommand<InputSource> {
 	}
 }
 
-export class ProgramInputUpdateCommand extends AbstractCommand {
+export class ProgramInputUpdateCommand extends DeserializedCommand<InputSource> {
 	static readonly rawName = 'PrgI'
+
 	readonly mixEffect: number
 
-	readonly properties: Readonly<InputSource>
-
 	constructor (mixEffect: number, properties: InputSource) {
-		super()
+		super(properties)
 
 		this.mixEffect = mixEffect
-		this.properties = properties
 	}
-
 
 	static deserialize (rawCommand: Buffer): ProgramInputUpdateCommand {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)

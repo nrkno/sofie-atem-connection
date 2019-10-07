@@ -1,19 +1,17 @@
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { DownstreamKeyerProperties } from '../../state/video/downstreamKeyers'
 import { Util } from '../..'
 
-export class DownstreamKeyPropertiesCommand extends AbstractCommand {
+export class DownstreamKeyPropertiesCommand extends DeserializedCommand<DownstreamKeyerProperties> {
 	static readonly rawName = 'DskP'
 
 	readonly downstreamKeyerId: number
-	readonly properties: Readonly<DownstreamKeyerProperties>
 
 	constructor (downstreamKeyerId: number, properties: DownstreamKeyerProperties) {
-		super()
+		super(properties)
 
 		this.downstreamKeyerId = downstreamKeyerId
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer) {

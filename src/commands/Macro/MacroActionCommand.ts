@@ -1,12 +1,15 @@
-import AbstractCommand from '../AbstractCommand'
+import { BasicWritableCommand } from '../CommandBase'
 import { MacroAction } from '../../enums'
 
-export class MacroActionCommand extends AbstractCommand {
+export class MacroActionCommand extends BasicWritableCommand<{ action: MacroAction }> {
 	static readonly rawName = 'MAct'
-	index: number
 
-	properties: {
-		action: MacroAction
+	readonly index: number
+
+	constructor (index: number, action: MacroAction) {
+		super({ action })
+
+		this.index = index
 	}
 
 	serialize () {

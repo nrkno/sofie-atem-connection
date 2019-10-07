@@ -1,6 +1,7 @@
 import { CommandParser } from '../../lib/atemCommandParser'
 import { ProtocolVersion } from '../../enums'
-import { AbstractCommand } from '..';
+import { IDeserializedCommand, ISerializableCommand } from '../CommandBase'
+import { isFunction } from 'util'
 
 export type CommandTestConverterSet = { [key: string]: CommandTestConverter }
 export interface CommandTestConverter {
@@ -42,9 +43,9 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 		if (typeof cmdConstructor.deserialize === 'function') {
 			matchedCase = true
 			test(`Test #${i}: ${testCase.name} - Deserialize`, () => {
-				const cmd: AbstractCommand = cmdConstructor.deserialize!(buffer.slice(0, length).slice(8), commandParser.version)
+				const cmd: IDeserializedCommand = cmdConstructor.deserialize(buffer.slice(0, length).slice(8), commandParser.version)
 
-				delete cmd.flag // Anything deserialized will never have flags
+				// delete cmd.flag // Anything deserialized will never have flags
 				// delete (cmd as any).rawCommand
 
 				if (converter) {
@@ -61,8 +62,8 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 			})
 		}
 
-		const cmd: AbstractCommand = new cmdConstructor() // TODO - params
-		if (typeof cmd.serialize === 'function') {
+		const cmd: ISerializableCommand = new cmdConstructor() // TODO - params
+		if (isFunction(cmd.serialize)) {
 			matchedCase = true
 			test(`Test #${i}: ${testCase.name} - Serialize`, () => {
 				if (converter) {
@@ -74,11 +75,11 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 				}
 
 				if (mutatedCommand.mask !== undefined) {
-					cmd.flag = mutatedCommand.mask
+					(cmd as any).flag = mutatedCommand.mask
 					delete mutatedCommand.mask
 				}
 
-				cmd.properties = mutatedCommand
+				(cmd as any).properties = mutatedCommand
 
 				const hexStr = (buf: Buffer) => {
 					const str = buf.toString('hex')
@@ -90,7 +91,7 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 					return str2.substring(0, str2.length - 1)
 				}
 
-				const encodedBytes = cmd.serialize!(commandParser.version)
+				const encodedBytes = cmd.serialize(commandParser.version)
 				// console.log(hexStr(buffer.slice(4)))
 				expect(length).toEqual(encodedBytes.length + 8)
 				expect(hexStr(buffer.slice(8))).toEqual(hexStr(encodedBytes))

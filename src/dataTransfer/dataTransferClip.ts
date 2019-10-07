@@ -17,7 +17,7 @@ export default class DataTransferClip extends DataTransfer {
 	}
 
 	start () {
-		const clearMediaCommand = new Commands.MediaPoolClearClipCommand()
+		const clearMediaCommand = new Commands.MediaPoolClearClipCommand(this.clipIndex)
 		clearMediaCommand.updateProps({
 			index: this.clipIndex
 		})
@@ -26,7 +26,7 @@ export default class DataTransferClip extends DataTransfer {
 		this.frames[this.curFrame].start()
 	}
 
-	handleCommand (command: Commands.AbstractCommand) {
+	handleCommand (command: Commands.IDeserializedCommand) {
 		this.frames[this.curFrame].handleCommand(command)
 		if (this.state !== Enums.TransferState.Transferring) this.state = Enums.TransferState.Transferring
 		if (this.frames[this.curFrame].state === Enums.TransferState.Finished) {

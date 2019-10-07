@@ -1,20 +1,19 @@
-import AbstractCommand from './AbstractCommand'
+import { BasicWritableCommand, DeserializedCommand } from './CommandBase'
 import { AtemState } from '../state'
 
-export class AuxSourceCommand extends AbstractCommand {
+export interface AuxSourceProps {
+	source: number
+}
+
+export class AuxSourceCommand extends BasicWritableCommand<AuxSourceProps> {
 	static readonly rawName = 'CAuS'
 
 	readonly auxBus: number
 
-	readonly properties: Readonly<{
-		source: number
-	}>
-
 	constructor (auxBus: number, source: number) {
-		super()
+		super({ source })
 
 		this.auxBus = auxBus
-		this.properties = { source }
 	}
 
 	serialize () {
@@ -26,20 +25,15 @@ export class AuxSourceCommand extends AbstractCommand {
 	}
 }
 
-export class AuxSourceUpdateCommand extends AbstractCommand {
+export class AuxSourceUpdateCommand extends DeserializedCommand<AuxSourceProps> {
 	static readonly rawName = 'AuxS'
 
 	readonly auxBus: number
 
-	readonly properties: Readonly<{
-		source: number
-	}>
-
-	constructor (auxBus: number, properties: AuxSourceUpdateCommand['properties']) {
-		super()
+	constructor (auxBus: number, properties: AuxSourceProps) {
+		super(properties)
 
 		this.auxBus = auxBus
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer): AuxSourceUpdateCommand {

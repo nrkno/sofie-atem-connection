@@ -1,20 +1,18 @@
-import AbstractCommand from '../AbstractCommand'
+import { WritableCommand } from '../CommandBase'
 import { ProtocolVersion } from '../../enums'
 
-export class DownstreamKeyAutoCommand extends AbstractCommand {
-	static readonly rawName = 'DDsA'
-	downstreamKeyerId: number
-
-	MaskFlags = {
+export class DownstreamKeyAutoCommand extends WritableCommand<{ isTowardsOnAir: boolean }> {
+	static readonly MaskFlags = {
 		isTowardsOnAir: 1
 	}
+	static readonly rawName = 'DDsA'
 
-	properties: {
-		isTowardsOnAir?: boolean
-	}
+	readonly downstreamKeyerId: number
 
-	updateProps (newProps: Partial<DownstreamKeyAutoCommand['properties']>) {
-		this._updateProps(newProps)
+	constructor (downstreamKeyerId: number) {
+		super()
+
+		this.downstreamKeyerId = downstreamKeyerId
 	}
 
 	serialize (version: ProtocolVersion) {

@@ -5,11 +5,12 @@ import DataTransferFrame from './dataTransferFrame'
 import DataTransferStill from './dataTransferStill'
 import DataTransferClip from './dataTransferClip'
 import DataTransferAudio from './dataTransferAudio'
+import { ISerializableCommand } from '../commands/CommandBase'
 
 const MAX_PACKETS_TO_SEND_PER_TICK = 10
 
 export class DataTransferManager {
-	readonly commandQueue: Array<Commands.AbstractCommand> = []
+	readonly commandQueue: Array<ISerializableCommand> = []
 
 	readonly stillsLock = new DataLock(0, this.commandQueue)
 	readonly clip1Lock = new DataLock(1, this.commandQueue)
@@ -19,7 +20,7 @@ export class DataTransferManager {
 
 	transferIndex = 0
 
-	constructor (sendCommand: (command: Commands.AbstractCommand) => Promise<Commands.AbstractCommand>) {
+	constructor (sendCommand: (command: ISerializableCommand) => Promise<ISerializableCommand>) {
 		this.interval = setInterval(() => {
 			if (this.commandQueue.length <= 0) {
 				return
@@ -36,7 +37,7 @@ export class DataTransferManager {
 		clearInterval(this.interval)
 	}
 
-	handleCommand (command: Commands.AbstractCommand) {
+	handleCommand (command: Commands.IDeserializedCommand) {
 		const allLocks = [ this.stillsLock, this.clip1Lock, this.clip2Lock ]
 
 		// try to establish the associated DataLock:

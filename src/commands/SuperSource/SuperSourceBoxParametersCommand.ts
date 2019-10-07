@@ -1,10 +1,10 @@
-import AbstractCommand from '../AbstractCommand'
+import { WritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { SuperSourceBox } from '../../state/video'
 import { Util } from '../..'
 import { ProtocolVersion } from '../../enums'
 
-export class SuperSourceBoxParametersCommand extends AbstractCommand {
+export class SuperSourceBoxParametersCommand extends WritableCommand<SuperSourceBox> {
 	static MaskFlags = {
 		enabled: 1 << 0,
 		source: 1 << 1,
@@ -22,18 +22,12 @@ export class SuperSourceBoxParametersCommand extends AbstractCommand {
 
 	readonly ssrcId: number
 	readonly boxId: number
-	properties: Partial<SuperSourceBox>
 
 	constructor (ssrcId: number, boxId: number) {
 		super()
 
 		this.ssrcId = ssrcId
 		this.boxId = boxId
-		this.properties = {}
-	}
-
-	updateProps (newProps: Partial<SuperSourceBox>) {
-		this._updateProps(newProps)
 	}
 
 	serialize (version: ProtocolVersion) {
@@ -62,19 +56,17 @@ export class SuperSourceBoxParametersCommand extends AbstractCommand {
 	}
 }
 
-export class SuperSourceBoxParametersUpdateCommand extends AbstractCommand {
+export class SuperSourceBoxParametersUpdateCommand extends DeserializedCommand<SuperSourceBox> {
 	static readonly rawName = 'SSBP'
 
 	readonly ssrcId: number
 	readonly boxId: number
-	readonly properties: Readonly<SuperSourceBox>
 
 	constructor (ssrcId: number, boxId: number, properties: SuperSourceBox) {
-		super()
+		super(properties)
 
 		this.ssrcId = ssrcId
 		this.boxId = boxId
-		this.properties = properties
 	}
 
 	static deserialize (rawCommand: Buffer, version: ProtocolVersion): SuperSourceBoxParametersUpdateCommand {
