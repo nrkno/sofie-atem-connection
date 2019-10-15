@@ -1,6 +1,6 @@
 defaults: &defaults
   docker:
-    - image: circleci/node:8
+    - image: circleci/node:12
   working_directory: ~/project
 
 version: 2
@@ -13,12 +13,12 @@ jobs:
           at: ~/project
       - restore_cache:
           keys:
-            - yarn-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - yarn-cache-{{ .Branch }}
-            - yarn-cache-
+            - yarn-cache-12-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-cache-12-{{ .Branch }}
+            - yarn-cache-12-
       - run: yarn install
       - save_cache:
-          key: yarn-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: yarn-cache-12-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths: [node_modules]
       - persist_to_workspace:
           root: .
@@ -31,6 +31,38 @@ jobs:
       - run: yarn install
       - run: yarn validate:dependencies
   Test node-8:
+    <<: *defaults
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-cache-8-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-cache-8-{{ .Branch }}
+            - yarn-cache-8-
+      - run: yarn install
+      - save_cache:
+          key: yarn-cache-8-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths: [node_modules]
+      - run: yarn ci
+  Test node-10:
+    <<: *defaults
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-cache-10-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-cache-10-{{ .Branch }}
+            - yarn-cache-10-
+      - run: yarn install
+      - save_cache:
+          key: yarn-cache-10-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths: [node_modules]
+      - run: yarn ci
+  Test node-12:
     <<: *defaults
     steps:
       - attach_workspace:
@@ -111,10 +143,18 @@ workflows:
       - Test node-8:
           requires:
             - Checkout Code
+      - Test node-10:
+          requires:
+            - Checkout Code
+      - Test node-12:
+          requires:
+            - Checkout Code
       - Send Coverage:
           requires:
             - Check for vulnerabilities
             - Test node-8
+            - Test node-10
+            - Test node-12
           filters:
             branches:
               only:
