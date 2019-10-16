@@ -1,0 +1,150 @@
+{
+	"0": {
+		"program": false,
+		"preview": false
+	},
+	"1": {
+		"program": false,
+		"preview": false
+	},
+	"2": {
+		"program": false,
+		"preview": false
+	},
+	"3": {
+		"program": false,
+		"preview": false
+	},
+	"4": {
+		"program": false,
+		"preview": false
+	},
+	"5": {
+		"program": false,
+		"preview": false
+	},
+	"6": {
+		"program": false,
+		"preview": false
+	},
+	"7": {
+		"program": true,
+		"preview": true
+	},
+	"8": {
+		"program": false,
+		"preview": false
+	},
+	"9": {
+		"program": true,
+		"preview": false
+	},
+	"10": {
+		"program": false,
+		"preview": false
+	},
+	"11": {
+		"program": false,
+		"preview": false
+	},
+	"12": {
+		"program": false,
+		"preview": false
+	},
+	"13": {
+		"program": false,
+		"preview": false
+	},
+	"14": {
+		"program": false,
+		"preview": false
+	},
+	"15": {
+		"program": false,
+		"preview": false
+	},
+	"16": {
+		"program": false,
+		"preview": false
+	},
+	"1000": {
+		"program": false,
+		"preview": false
+	},
+	"2001": {
+		"program": false,
+		"preview": false
+	},
+	"2002": {
+		"program": false,
+		"preview": false
+	},
+	"3010": {
+		"program": false,
+		"preview": false
+	},
+	"3011": {
+		"program": false,
+		"preview": false
+	},
+	"3020": {
+		"program": true,
+		"preview": false
+	},
+	"3021": {
+		"program": true,
+		"preview": false
+	},
+	"6000": {
+		"program": false,
+		"preview": false
+	},
+	"7001": {
+		"program": false,
+		"preview": false
+	},
+	"7002": {
+		"program": false,
+		"preview": false
+	},
+	"8001": {
+		"program": false,
+		"preview": false
+	},
+	"8002": {
+		"program": false,
+		"preview": false
+	},
+	"8003": {
+		"program": false,
+		"preview": false
+	},
+	"8004": {
+		"program": false,
+		"preview": false
+	},
+	"8005": {
+		"program": false,
+		"preview": false
+	},
+	"8006": {
+		"program": false,
+		"preview": false
+	},
+	"10010": {
+		"program": false,
+		"preview": false
+	},
+	"10011": {
+		"program": false,
+		"preview": false
+	},
+	"10020": {
+		"program": false,
+		"preview": false
+	},
+	"10021": {
+		"program": false,
+		"preview": false
+	}
+}

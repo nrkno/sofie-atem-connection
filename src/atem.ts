@@ -51,7 +51,8 @@ export class Atem extends EventEmitter {
 	on: ((event: 'error', listener: (message: any) => void) => this) &
 		((event: 'connected', listener: () => void) => this) &
 		((event: 'disconnected', listener: () => void) => this) &
-		((event: 'stateChanged', listener: (state: AtemState, path: string) => void) => this)
+		((event: 'stateChanged', listener: (state: AtemState, path: string) => void) => this) &
+		((event: 'receivedCommand', listener: (cmd: AbstractCommand) => void) => this)
 
 	constructor (options?: AtemOptions) {
 		super()
@@ -82,7 +83,10 @@ export class Atem extends EventEmitter {
 			}
 		})
 
-		this.socket.on('receivedStateChange', (command: AbstractCommand) => this._mutateState(command))
+		this.socket.on('receivedStateChange', (command: AbstractCommand) => {
+			this.emit('receivedCommand', command)
+			this._mutateState(command)
+		})
 		this.socket.on(Enums.IPCMessageType.CommandAcknowledged, ({ trackingId }: {trackingId: number}) => this._resolveCommand(trackingId))
 		this.socket.on(Enums.IPCMessageType.CommandTimeout, ({ trackingId }: {trackingId: number}) => this._rejectCommand(trackingId))
 		this.socket.on('error', (e) => this.emit('error', e))

@@ -41,6 +41,11 @@ export function listVisibleInputs (mode: 'program' | 'preview', state: AtemState
 							inputs.add(box.source)
 						}
 					})
+
+					inputs.add(ssrc.properties.artFillSource)
+					if (ssrc.properties.artOption === Enums.SuperSourceArtOption.Foreground) {
+						inputs.add(ssrc.properties.artCutSource)
+					}
 					break
 				case Enums.InternalPortType.MEOutput:
 					const nestedMeId = ((inputId - (inputId % 10)) - 10000) / 10 - 1
@@ -81,7 +86,7 @@ function _calcActiveMeInputs (mode: 'program' | 'preview', state: AtemState, meI
 	Object.values(meRef.upstreamKeyers).filter(usk => {
 		const keyerMask = 1 << (usk.upstreamKeyerId + 1)
 		const isPartOfTransition = meRef.transitionProperties.selection & keyerMask
-		if (mode === 'program') {
+		if (mode === 'program') { // TODO - verify these conditions
 			if (meRef.inTransition) {
 				return usk.onAir || isPartOfTransition
 			}
@@ -89,7 +94,7 @@ function _calcActiveMeInputs (mode: 'program' | 'preview', state: AtemState, meI
 			return usk.onAir
 		}
 
-		return isPartOfTransition
+		return (isPartOfTransition && !usk.onAir) || (usk.onAir && !isPartOfTransition)
 	}).forEach(usk => {
 		inputs.add(usk.fillSource)
 
