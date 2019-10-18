@@ -3,14 +3,10 @@ import { Atem, Enums } from '../index'
 function cleanupAtem (atem: Atem) {
 	const atem2 = atem as any
 	atem2.dataTransferManager.stopCommandSending()
-
-	const sock = atem2.socket._socketProcess
-	sock.removeAllListeners()
-	sock.kill()
 }
 
 test('Simple test', async () => {
-	const nb = new Atem()
+	const nb = new Atem({ disableMultithreaded: true })
 	try {
 		nb.on('error', () => null)
 
@@ -21,7 +17,7 @@ test('Simple test', async () => {
 })
 
 function createConnection (apiVersion: Enums.ProtocolVersion) {
-	const conn = new Atem({ debug: true })
+	const conn = new Atem({ debug: true, disableMultithreaded: true })
 	// conn.on('error', () => null)
 	conn.sendCommand = jest.fn()
 	conn.state.info.apiVersion = apiVersion

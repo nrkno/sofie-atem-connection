@@ -112,9 +112,10 @@
     "video"
   ],
   "dependencies": {
+    "emittery": "^0.5.1",
     "exit-hook": "^2.0.0",
     "nanotimer": "^0.3.15",
-    "p-retry": "^4.1.0",
+    "threadedclass": "^0.6.8",
     "tslib": "^1.9.0",
     "wavefile": "^8.4.4"
   },

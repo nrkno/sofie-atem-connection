@@ -30,7 +30,9 @@ export interface AtemOptions {
 	address?: string,
 	port?: number,
 	debug?: boolean,
-	externalLog?: (arg0?: any,arg1?: any,arg2?: any,arg3?: any) => void
+	disableMultithreaded?: boolean
+
+	externalLog?: (arg0?: any, arg1?: any, arg2?: any, arg3?: any) => void
 }
 
 interface SentCommand {
@@ -62,10 +64,11 @@ export class Atem extends EventEmitter {
 
 		this._state = new AtemState()
 		this.socket = new AtemSocket({
-			debug: (options || {}).debug,
+			debug: (options || {}).debug || false,
 			log: this._log,
-			address: (options || {}).address,
-			port: (options || {}).port
+			address: (options || {}).address || '',
+			port: (options || {}).port || DEFAULT_PORT,
+			disableMultithreaded: (options || {}).disableMultithreaded || false
 		})
 		this.dataTransferManager = new DT.DataTransferManager()
 		this.socket.on('connect', () => this.dataTransferManager.startCommandSending((command: ISerializableCommand) => this.sendCommand(command)))
@@ -79,6 +82,10 @@ export class Atem extends EventEmitter {
 		this.socket.on('error', (e) => this.emit('error', e))
 		this.socket.on('connect', () => this.emit('connected'))
 		this.socket.on('disconnect', () => {
+			this._rejectAllCommands()
+			this.emit('disconnected')
+		})
+		this.socket.on('restarted', () => {
 			this._rejectAllCommands()
 			this.emit('disconnected')
 		})
