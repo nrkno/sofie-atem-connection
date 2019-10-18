@@ -15,7 +15,7 @@ jobs:
       - save_cache:
           key: yarn-cache-8-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths: [node_modules]
-      - run: yarn ci
+      - run: yarn test
 
   test-node-10:
     docker:
@@ -32,7 +32,7 @@ jobs:
       - save_cache:
           key: yarn-cache-10-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths: [node_modules]
-      - run: yarn ci
+      - run: yarn test
 
   test-latest(node-12):
     docker:
@@ -54,8 +54,9 @@ jobs:
           key: yarn-cache-12-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths: [node_modules]
 
-      - run: yarn ci
+      - run: yarn test
       - run: yarn send-coverage
+      - run: yarn docs:test
 
       - persist_to_workspace:
           root: .
