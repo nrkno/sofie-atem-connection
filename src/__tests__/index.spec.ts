@@ -1,9 +1,5 @@
 import { Atem, Enums } from '../index'
-
-function cleanupAtem (atem: Atem) {
-	const atem2 = atem as any
-	atem2.dataTransferManager.stopCommandSending()
-}
+import { cleanupAtem } from './lib'
 
 test('Simple test', async () => {
 	const nb = new Atem({ disableMultithreaded: true })

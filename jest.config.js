@@ -27,10 +27,10 @@ module.exports = {
 	coverageDirectory: "./coverage/",
 	collectCoverage: true,
 	collectCoverageFrom: [
-		"**/src/**",
+		"**/src/**/**",
 		"!**/src/@types/**",
 		"!**/__tests__/**",
-		"!**/__mocks__/**", 
+		"!**/__mocks__/**",
 		'!**/node_modules/**',
 		'!**/dist/**'
 	]

@@ -100,20 +100,19 @@ export class Atem extends EventEmitter {
 	}
 
 	public disconnect (): Promise<void> {
-		return new Promise((resolve, reject) => {
-			this.socket.disconnect().then(() => resolve()).catch(reject)
-		})
+		return this.socket.disconnect()
 	}
 
 	public sendCommand (command: ISerializableCommand): Promise<ISerializableCommand> {
 		const commandTrackingId = this.socket.nextCommandTrackingId
 		return new Promise((resolve, reject) => {
-			this._sentQueue[commandTrackingId] = {
-				command,
-				resolve,
-				reject
-			}
-			this.socket._sendCommand(command, commandTrackingId).catch(reject)
+			this.socket._sendCommand(command, commandTrackingId).then(() => {
+				this._sentQueue[commandTrackingId] = {
+					command,
+					resolve,
+					reject
+				}
+			}).catch(reject)
 		})
 	}
 
