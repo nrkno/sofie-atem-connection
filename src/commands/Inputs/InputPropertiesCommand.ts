@@ -8,7 +8,7 @@ export class InputPropertiesCommand extends WritableCommand<InputChannel> {
 	static MaskFlags = {
 		longName: 1 << 0,
 		shortName: 1 << 1,
-		isExternal: 1 << 2
+		externalPortType: 1 << 2
 	}
 
 	static readonly rawName = 'CInL'

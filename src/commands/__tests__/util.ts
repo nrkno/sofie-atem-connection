@@ -79,7 +79,16 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 					delete mutatedCommand.mask
 				}
 
-				(cmd as any).properties = mutatedCommand
+				(cmd as any)._properties = mutatedCommand
+
+				// Ensure all properties appear in the mask
+				const maskProps = (cmd as any).constructor.MaskFlags
+				if (maskProps) {
+					for (const key of Object.keys(mutatedCommand)) {
+						expect(maskProps).toHaveProperty(key)
+						// expect(maskProps[key]).not.toBeUndefined()
+					}
+				}
 
 				const hexStr = (buf: Buffer) => {
 					const str = buf.toString('hex')
