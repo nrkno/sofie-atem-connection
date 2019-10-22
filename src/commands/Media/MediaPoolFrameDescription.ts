@@ -30,10 +30,12 @@ export class MediaPoolFrameDescriptionCommand extends DeserializedCommand<StillF
 
 	applyToState (state: AtemState) {
 		if (this.mediaPool === 0) {
+			// This is a still
 			state.media.stillPool[this.frameIndex] = this.properties
 			return `media.stillPool.${this.frameIndex}`
 		} else if (this.mediaPool < 3) {
-			state.media.clipPool[this.mediaPool - 1].frames[this.frameIndex] = this.properties
+			// This is a clip
+			state.media.getClip(this.mediaPool - 1).frames[this.frameIndex] = this.properties
 			return `media.clipPool.${this.mediaPool - 1}.${this.frameIndex}`
 		}
 		return `media`

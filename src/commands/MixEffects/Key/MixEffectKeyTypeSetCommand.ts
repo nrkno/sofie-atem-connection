@@ -25,7 +25,7 @@ export class MixEffectKeyTypeSetCommand extends WritableCommand<UpstreamKeyerTyp
 		buffer.writeUInt8(this.mixEffect, 1)
 		buffer.writeUInt8(this.upstreamKeyerId, 2)
 
-		buffer.writeUInt8(this.properties.keyType || 0, 3)
+		buffer.writeUInt8(this.properties.mixEffectKeyType || 0, 3)
 		buffer.writeUInt8(this.properties.flyEnabled ? 1 : 0, 4)
 
 		return buffer

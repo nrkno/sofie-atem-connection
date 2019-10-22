@@ -1,6 +1,6 @@
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
-import { SuperSourceProperties, SuperSourceBorder, SuperSource } from '../../state/video'
+import { SuperSourceProperties, SuperSourceBorder } from '../../state/video'
 import { Util, Enums } from '../..'
 import { ProtocolVersion } from '../../enums'
 
@@ -156,7 +156,7 @@ export class SuperSourceBorderCommand extends WritableCommand<SuperSourceBorder>
 	}
 }
 
-export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<Pick<SuperSource, 'properties' | 'border'>> {
+export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{ properties: SuperSourceProperties, border: SuperSourceBorder }> {
 	static readonly rawName = 'SSrc'
 
 	static deserialize (rawCommand: Buffer): SuperSourcePropertiesUpdateCommand {
@@ -193,12 +193,8 @@ export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<Pick
 
 	applyToState (state: AtemState) {
 		const supersource = state.video.getSuperSource(0)
-		supersource.properties = {
-			...this.properties.properties
-		}
-		supersource.border = {
-			...this.properties.border
-		}
+		supersource.properties = this.properties.properties
+		supersource.border = this.properties.border
 		return [
 			`video.superSources.0.properties`,
 			`video.superSources.0.border`
@@ -277,9 +273,8 @@ export class SuperSourceBorderUpdateCommand extends DeserializedCommand<SuperSou
 
 	applyToState (state: AtemState) {
 		const supersource = state.video.getSuperSource(this.ssrcId)
-		supersource.border = {
-			...this.properties
-		}
+		supersource.border = this.properties
+
 		return `video.superSources.${this.ssrcId}.border`
 	}
 }

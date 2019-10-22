@@ -6,11 +6,7 @@ import WaveFile = require('wavefile')
 
 export namespace Util {
 	export function stringToBytes (str: string): Array<number> {
-		const array = []
-		for (const val of Buffer.from(str).values()) {
-			array.push(val)
-		}
-		return array
+		return Array.from(Buffer.from(str).values())
 	}
 
 	export function bufToBase64String (buffer: Buffer, start: number, length: number): string {
@@ -24,13 +20,18 @@ export namespace Util {
 	}
 
 	export function parseNumberBetween (num: number, min: number, max: number): number {
-		if (num > max) throw Error(`Number too big: ${num} > ${max}`)
-		else if (num < min) throw Error(`Number too small: ${num} < ${min}`)
+		if (num > max) {
+			throw Error(`Number too big: ${num} > ${max}`)
+		} else if (num < min) {
+			throw Error(`Number too small: ${num} < ${min}`)
+		}
 		return num
 	}
 
 	export function parseEnum<G> (value: G, type: any): G {
-		if (!type[value]) throw Error(`Value ${value} is not a valid option in enum`)
+		if (!type[value]) {
+			throw Error(`Value ${value} is not a valid option in enum`)
+		}
 		return value
 	}
 
@@ -128,8 +129,7 @@ export namespace Util {
 		const KGoKRi = KG / KRi * HalfCbCrRange
 
 		const buffer = Buffer.alloc(width * height * 4)
-		let i = 0
-		while (i < width * height * 4) {
+		for (let i = 0; i < width * height * 4; i += 8) {
 			const r1 = data[i + 0]
 			const g1 = data[i + 1]
 			const b1 = data[i + 2]
@@ -151,6 +151,7 @@ export namespace Util {
 			const y2 = Math.round(y16b) >> 6
 			const v2 = Math.round(cr16) >> 6
 
+			// TODO - rewrite using buffer.writeUIntLE/writeUIntBE?
 			buffer[i + 0] = a1 >> 4
 			buffer[i + 1] = ((a1 & 0x0f) << 4) | (u1 >> 6)
 			buffer[i + 2] = ((u1 & 0x3f) << 2) | (y1 >> 8)
@@ -159,7 +160,6 @@ export namespace Util {
 			buffer[i + 5] = ((a2 & 0x0f) << 4) | (v2 >> 6)
 			buffer[i + 6] = ((v2 & 0x3f) << 2) | (y2 >> 8)
 			buffer[i + 7] = y2 & 0xff
-			i = i + 8
 		}
 		return buffer
 	}
@@ -197,10 +197,9 @@ export namespace Util {
 		const buffer = Buffer.from(wav.data.samples)
 		const buffer2 = Buffer.alloc(buffer.length)
 		for (let i = 0; i < buffer.length; i += 3) {
+			// TODO - is this the correct way around? (only matters for readability)
 			// 24bit samples, change endian
-			buffer2[i] = buffer[i + 2]
-			buffer2[i + 1] = buffer[i + 1]
-			buffer2[i + 2] = buffer[i]
+			buffer2.writeUIntLE(buffer.readUIntBE(i, 3), i, 3)
 		}
 
 		return buffer2

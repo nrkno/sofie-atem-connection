@@ -54,7 +54,7 @@ export class MediaPlayerSourceUpdateCommand extends DeserializedCommand<MediaPla
 
 	applyToState (state: AtemState) {
 		state.media.players[this.mediaPlayerId] = {
-			...state.media.players[this.mediaPlayerId],
+			...state.media.getMediaPlayer(this.mediaPlayerId),
 			...this.properties
 		}
 		return `media.players.${this.mediaPlayerId}`

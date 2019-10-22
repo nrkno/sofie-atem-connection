@@ -1,11 +1,14 @@
 import * as Enum from '../../enums'
 
-export interface UpstreamKeyerBase {
+export interface UpstreamKeyerBase extends UpstreamKeyerTypeSettings {
 	readonly upstreamKeyerId: number,
-	mixEffectKeyType: number,
-	flyEnabled: boolean,
 	fillSource: number,
 	cutSource: number,
+}
+
+export interface UpstreamKeyerTypeSettings {
+	mixEffectKeyType: Enum.MixEffectKeyType,
+	flyEnabled: boolean
 }
 
 export interface UpstreamKeyerMaskSettings {
@@ -80,11 +83,6 @@ export interface UpstreamKeyerFlySettings {
 	readonly isBSet: Boolean,
 	readonly isAtKeyFrame: Enum.IsAtKeyFrame,
 	readonly runToInfiniteIndex: number
-}
-
-export interface UpstreamKeyerTypeSettings {
-	keyType: Enum.MixEffectKeyType,
-	flyEnabled: boolean
 }
 
 export interface UpstreamKeyer extends UpstreamKeyerBase {

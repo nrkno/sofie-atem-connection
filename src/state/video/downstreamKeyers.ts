@@ -7,10 +7,7 @@ export interface DownstreamKeyerBase {
 }
 
 export interface DownstreamKeyer extends DownstreamKeyerBase {
-	sources?: {
-		fillSource: number,
-		cutSource: number
-	}
+	sources?: DownstreamKeyerSources
 	properties?: DownstreamKeyerProperties
 }
 
@@ -33,4 +30,9 @@ export interface DownstreamKeyerProperties extends DownstreamKeyerGeneral {
 	tie: boolean
 	rate: number
 	mask: DownstreamKeyerMask
+}
+
+export interface DownstreamKeyerSources {
+	fillSource: number
+	cutSource: number
 }

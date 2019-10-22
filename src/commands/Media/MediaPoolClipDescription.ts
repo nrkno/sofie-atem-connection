@@ -3,12 +3,12 @@ import { ClipBank } from '../../state/media'
 import { DeserializedCommand } from '../CommandBase'
 import { Util } from '../../lib/atemUtil'
 
-export class MediaPoolClipDescriptionCommand extends DeserializedCommand<ClipBank> {
+export class MediaPoolClipDescriptionCommand extends DeserializedCommand<Omit<ClipBank, 'frames'>> {
 	static readonly rawName = 'MPCS'
 
 	readonly mediaPool: number
 
-	constructor (mediaPool: number, properties: ClipBank) {
+	constructor (mediaPool: number, properties: Omit<ClipBank, 'frames'>) {
 		super(properties)
 
 		this.mediaPool = mediaPool
@@ -19,19 +19,17 @@ export class MediaPoolClipDescriptionCommand extends DeserializedCommand<ClipBan
 		const properties = {
 			isUsed: rawCommand[1] === 1,
 			name: Util.bufToNullTerminatedString(rawCommand, 2, 64),
-			frameCount: rawCommand.readUInt16BE(66),
-			frames: []
+			frameCount: rawCommand.readUInt16BE(66)
 		}
 
 		return new MediaPoolClipDescriptionCommand(mediaPool, properties)
 	}
 
 	applyToState (state: AtemState) {
-		const newProps = { ...this.properties }
-		if (state.media.clipPool[this.mediaPool]) {
-			newProps.frames = state.media.clipPool[this.mediaPool].frames
+		state.media.clipPool[this.mediaPool] = {
+			...this.properties,
+			frames: state.media.getClip(this.mediaPool).frames // TODO - lengthen/shorten array of frames?
 		}
-		state.media.clipPool[this.mediaPool] = newProps
 		return `media.clipPool.${this.mediaPool}`
 	}
 }

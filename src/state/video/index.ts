@@ -80,7 +80,7 @@ export interface IMixEffect {
 	numberOfKeyers: number
 	transitionProperties: TransitionProperties
 	transitionSettings: TransitionSettings
-	upstreamKeyers: { [index: number]: USK.UpstreamKeyer | undefined }
+	upstreamKeyers: Array<USK.UpstreamKeyer | undefined>
 }
 
 export class MixEffect implements IMixEffect {
@@ -95,7 +95,7 @@ export class MixEffect implements IMixEffect {
 	numberOfKeyers: number = 0
 	transitionProperties: TransitionProperties
 	transitionSettings: TransitionSettings = {}
-	upstreamKeyers: { [index: number]: USK.UpstreamKeyer | undefined } = []
+	upstreamKeyers: Array<USK.UpstreamKeyer | undefined> = []
 
 	constructor (index: number) {
 		this.index = index
@@ -108,10 +108,10 @@ export class MixEffect implements IMixEffect {
 		}
 	}
 
-	getUpstreamKeyer (index: number): USK.UpstreamKeyer {
-		const usk = this.upstreamKeyers[index]
+	getUpstreamKeyer (index: number, dontCreate?: boolean): USK.UpstreamKeyer {
+		let usk = this.upstreamKeyers[index]
 		if (!usk) {
-			return this.upstreamKeyers[index] = {
+			usk = {
 				upstreamKeyerId: index,
 				mixEffectKeyType: 0,
 				cutSource: 0,
@@ -119,6 +119,10 @@ export class MixEffect implements IMixEffect {
 				onAir: false,
 				flyEnabled: false,
 				flyKeyframes: []
+			}
+
+			if (!dontCreate) {
+				this.upstreamKeyers[index] = usk
 			}
 		}
 
@@ -167,37 +171,16 @@ export interface SuperSourceBorder {
 
 export class SuperSource {
 	index: number
-	boxes: { [index: string]: SuperSourceBox | undefined } = {}
-	properties: SuperSourceProperties
-	border: SuperSourceBorder
+	boxes: [SuperSourceBox | undefined, SuperSourceBox | undefined, SuperSourceBox | undefined, SuperSourceBox | undefined]
+	properties?: SuperSourceProperties
+	border?: SuperSourceBorder
 
 	constructor (index: number) {
 		this.index = index
 
-		this.properties = {
-			artFillSource: 0,
-			artCutSource: 0,
-			artOption: Enum.SuperSourceArtOption.Background,
-			artPreMultiplied: false,
-			artClip: 0,
-			artGain: 0,
-			artInvertKey: false
-		}
-		this.border = {
-			borderEnabled: false,
-			borderBevel: Enum.BorderBevel.None,
-			borderOuterWidth: 0,
-			borderInnerWidth: 0,
-			borderOuterSoftness: 0,
-			borderInnerSoftness: 0,
-			borderBevelSoftness: 0,
-			borderBevelPosition: 0,
-			borderHue: 0,
-			borderSaturation: 0,
-			borderLuma: 0,
-			borderLightSourceDirection: 0,
-			borderLightSourceAltitude: 0
-		}
+		this.boxes = [
+			undefined, undefined, undefined, undefined
+		]
 	}
 }
 
@@ -209,37 +192,49 @@ export interface FadeToBlackProperties {
 }
 
 export class AtemVideoState {
-	ME: { [index: string]: MixEffect | undefined } = {}
-	downstreamKeyers: { [index: string]: DownstreamKeyer | undefined } = {}
-	auxilliaries: { [index: string]: number | undefined } = {}
-	superSources: { [index: string]: SuperSource | undefined } = {}
+	ME: Array<MixEffect | undefined> = []
+	downstreamKeyers: Array<DownstreamKeyer | undefined> = []
+	auxilliaries: Array<number | undefined> = []
+	superSources: Array<SuperSource | undefined> = []
 
-	getMe (index: number): MixEffect {
-		const me = this.ME[index]
+	getMe (index: number, dontCreate?: boolean): MixEffect {
+		let me = this.ME[index]
 		if (!me) {
-			return this.ME[index] = new MixEffect(index)
+			me = new MixEffect(index)
+
+			if (!dontCreate) {
+				this.ME[index] = me
+			}
 		}
 
 		return me
 	}
 
-	getSuperSource (index: number): SuperSource {
-		const ssrc = this.superSources[index]
+	getSuperSource (index: number, dontCreate?: boolean): SuperSource {
+		let ssrc = this.superSources[index]
 		if (!ssrc) {
-			return this.superSources[index] = new SuperSource(index)
+			ssrc = new SuperSource(index)
+
+			if (!dontCreate) {
+				this.superSources[index] = ssrc
+			}
 		}
 
 		return ssrc
 	}
 
-	getDownstreamKeyer (index: number): DownstreamKeyer {
-		const dsk = this.downstreamKeyers[index]
+	getDownstreamKeyer (index: number, dontCreate?: boolean): DownstreamKeyer {
+		let dsk = this.downstreamKeyers[index]
 		if (!dsk) {
-			return this.downstreamKeyers[index] = {
+			dsk = {
 				isAuto: false,
 				remainingFrames: 0,
 				onAir: false,
 				inTransition: false
+			}
+
+			if (!dontCreate) {
+				this.downstreamKeyers[index] = dsk
 			}
 		}
 

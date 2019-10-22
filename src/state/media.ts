@@ -13,10 +13,47 @@ export interface MediaPlayerSource {
 	stillIndex: number
 }
 
+export type MediaPlayerState = MediaPlayer & MediaPlayerSource
+
 export class MediaState {
-	stillPool: Array<StillFrame> = []
-	clipPool: Array<ClipBank> = []
-	players: Array<MediaPlayer & MediaPlayerSource> = []
+	stillPool: Array<StillFrame | undefined> = []
+	clipPool: Array<ClipBank | undefined> = []
+	players: Array<MediaPlayerState | undefined> = []
+
+	getMediaPlayer (index: number, dontCreate?: boolean): MediaPlayerState {
+		let player = this.players[index]
+		if (!player) {
+			player = {
+				playing: false,
+				loop: false,
+				atBeginning: false,
+				clipFrame: 0,
+				sourceType: Enums.MediaSourceType.Clip,
+				clipIndex: 0,
+				stillIndex: 0
+			}
+
+			if (!dontCreate) {
+				this.players[index] = player
+			}
+		}
+
+		return player
+	}
+
+	getClip (index: number): ClipBank {
+		const clip = this.clipPool[index]
+		if (!clip) {
+			return this.clipPool[index] = {
+				isUsed: false,
+				name: '',
+				frameCount: 0,
+				frames: []
+			}
+		}
+
+		return clip
+	}
 }
 
 export interface StillFrame {
@@ -29,5 +66,5 @@ export interface ClipBank {
 	isUsed: boolean
 	name: string
 	frameCount: number
-	frames: Array<StillFrame>
+	frames: Array<StillFrame | undefined>
 }
