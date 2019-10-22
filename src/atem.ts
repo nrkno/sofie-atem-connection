@@ -161,9 +161,8 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
-	setMixTransitionSettings (newProps: Partial<MixTransitionSettings>, me: number = 0) {
-		const command = new Commands.TransitionMixCommand(me)
-		command.updateProps(newProps)
+	setMixTransitionSettings (newProps: Pick<MixTransitionSettings, 'rate'>, me: number = 0) {
+		const command = new Commands.TransitionMixCommand(me, newProps.rate)
 		return this.sendCommand(command)
 	}
 
