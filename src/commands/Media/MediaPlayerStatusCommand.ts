@@ -8,7 +8,7 @@ export class MediaPlayerStatusCommand extends WritableCommand<MediaPlayer> {
 		playing: 1 << 0,
 		loop: 1 << 1,
 		atBeginning: 1 << 2,
-		frame: 1 << 3
+		clipFrame: 1 << 3
 	}
 	static readonly rawName = 'SCPS'
 

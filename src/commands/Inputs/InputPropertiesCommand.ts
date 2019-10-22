@@ -19,7 +19,6 @@ export class InputPropertiesCommand extends WritableCommand<InputChannel> {
 		super()
 
 		this.inputId = inputId
-		this.properties = {}
 	}
 
 	serialize () {

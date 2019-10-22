@@ -340,7 +340,9 @@ const commandConverters: CommandTestConverterSet = {
 			'mixEffect': 'mixEffectIndex',
 			'upstreamKeyerId': 'keyerIndex'
 		},
-		propertyAliases: {}
+		propertyAliases: {
+			'keyType': (v: number) => ({ val: v, name: 'mixEffectKeyType' })
+		}
 	},
 	'KeOn': {
 		idAliases: {
@@ -644,11 +646,7 @@ const commandConverters: CommandTestConverterSet = {
 		idAliases: {
 			'mediaPool': 'index'
 		},
-		propertyAliases: {},
-		customMutate: (obj: any) => {
-			obj.frames = []
-			return obj
-		}
+		propertyAliases: {}
 	},
 	'SMPC': {
 		idAliases: {

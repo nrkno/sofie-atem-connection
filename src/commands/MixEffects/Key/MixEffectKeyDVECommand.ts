@@ -42,7 +42,6 @@ export class MixEffectKeyDVECommand extends WritableCommand<UpstreamKeyerDVESett
 
 		this.mixEffect = mixEffect
 		this.upstreamKeyerId = upstreamKeyerId
-		this.properties = {}
 	}
 
 	serialize () {

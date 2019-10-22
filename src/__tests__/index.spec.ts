@@ -41,7 +41,7 @@ test('setSuperSourceProperties - 7.2', async () => {
 		expect(conn.sendCommand).toHaveBeenCalledTimes(1)
 		expect(conn.sendCommand).toHaveBeenNthCalledWith(1, {
 			flag: 12,
-			properties: {
+			_properties: {
 				artOption: 0,
 				artPreMultiplied: true
 			}
@@ -64,7 +64,7 @@ test('setSuperSourceProperties - 8.0', async () => {
 		expect(conn.sendCommand).toHaveBeenNthCalledWith(1, {
 			ssrcId: 2,
 			flag: 12,
-			properties: {
+			_properties: {
 				artOption: 0,
 				artPreMultiplied: true
 			}
@@ -86,7 +86,7 @@ test('setSuperSourceBorder - 7.2', async () => {
 		expect(conn.sendCommand).toHaveBeenCalledTimes(1)
 		expect(conn.sendCommand).toHaveBeenNthCalledWith(1, {
 			flag: 139264,
-			properties: {
+			_properties: {
 				borderBevelSoftness: 12,
 				borderLuma: 3
 			}
@@ -109,7 +109,7 @@ test('setSuperSourceBorder - 8.0', async () => {
 		expect(conn.sendCommand).toHaveBeenNthCalledWith(1, {
 			ssrcId: 2,
 			flag: 1088,
-			properties: {
+			_properties: {
 				borderBevelSoftness: 12,
 				borderLuma: 3
 			}

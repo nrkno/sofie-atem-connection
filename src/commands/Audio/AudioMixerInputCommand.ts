@@ -17,7 +17,6 @@ export class AudioMixerInputCommand extends WritableCommand<AudioChannel> {
 		super()
 
 		this.index = index
-		this.properties = {}
 	}
 
 	serialize () {

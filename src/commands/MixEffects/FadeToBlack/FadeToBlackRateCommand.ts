@@ -11,7 +11,6 @@ export class FadeToBlackRateCommand extends BasicWritableCommand<{ rate: number 
 		super({ rate })
 
 		this.mixEffect = mixEffect
-		this.properties = { rate }
 	}
 
 	serialize () {
