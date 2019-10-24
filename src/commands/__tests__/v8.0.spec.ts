@@ -14,6 +14,14 @@ const commandConverters: CommandTestConverterSet = {
 			'gain': (v: number) => ({ val: Math.round(v * 100) / 100 })
 		}
 	},
+	'_SSC': {
+		idAliases: {
+			'ssrcId': 'sSrcId'
+		},
+		propertyAliases: {
+			'boxes': (val: any) => ({ val, name: 'boxCount' })
+		}
+	},
 	'_top': {
 		idAliases: {},
 		propertyAliases: {

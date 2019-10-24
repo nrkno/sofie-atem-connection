@@ -21,11 +21,15 @@ export interface AtemCapabilites {
 	readonly talkbackOverSDI: number
 }
 
+export interface SuperSourceInfo {
+	boxCount: number
+}
+
 export class DeviceInfo {
 	apiVersion: ProtocolVersion
 	capabilities: AtemCapabilites
 	model: Model
 	productIdentifier: string
-	superSourceBoxes: number
+	superSources: SuperSourceInfo[] = []
 	power: boolean[]
 }
