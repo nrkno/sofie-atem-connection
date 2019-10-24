@@ -7,7 +7,7 @@
 __tests__
 /integrationTests
 tsconfig.json
-tsconfig.jest.json
+tsconfig.*.json
 tslint.json
 .github
 .editorconfig
