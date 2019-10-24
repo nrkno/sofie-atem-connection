@@ -95,16 +95,18 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "8d:f8:a8:b0:86:33:58:1c:fb:24:53:2b:03:73:9c:34"
-      - run: yarn install
-      - run: yarn build
       - run: mkdir -p ~/.ssh
       - run:
           name: Keyscan Github
           command: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+      # Clean working tree, tag, and push
       - run: git config --global user.email "info@superfly.tv"
       - run: git config --global user.name "superflytvab"
       - run: yarn release
       - run: git push --follow-tags origin HEAD
+      # Build and deploy
+      - run: yarn install
+      - run: yarn build
       - run:
           name: Write NPM Token to ~/.npmrc
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
