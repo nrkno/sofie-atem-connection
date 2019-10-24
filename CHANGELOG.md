@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/nrkno/tv-automation-atem-connection/compare/1.0.2...1.1.0) (2019-10-24)
+
+
+### Features
+
+* refactor circleci config ([a7b0ca2](https://github.com/nrkno/tv-automation-atem-connection/commit/a7b0ca249b9e104833e8abde6d97e82934c8a14d))
+* update ci to run for node 8,10,12 ([25f1fb1](https://github.com/nrkno/tv-automation-atem-connection/commit/25f1fb13d6c3d551ecc5f35ad05375858d18dcc7))
+
+
+### Bug Fixes
+
+* incorrect order in ci release step ([ca0d207](https://github.com/nrkno/tv-automation-atem-connection/commit/ca0d207a04d8a19cd53308d83e05e12c2808f852))
+* parse productIdentifierCommand successfully even for unknown models ([d991fdd](https://github.com/nrkno/tv-automation-atem-connection/commit/d991fddabf84e977c7a53197a4208e717d68e782))
+* SuperSourceConfigCommand broken ([ccc7d33](https://github.com/nrkno/tv-automation-atem-connection/commit/ccc7d333e226ec0e7f9c09f640789d5520d7061a))
+
 ### [1.0.2](https://github.com/nrkno/tv-automation-atem-connection/compare/1.0.1...1.0.2) (2019-10-09)
 
 
