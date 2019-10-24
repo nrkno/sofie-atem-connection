@@ -20,21 +20,21 @@
       "url": "http://balte.nl"
     },
     {
-      "name": "Stephan Nordnes Eriksen",
-      "email": "Stephanruler@gmail.com"
+      "name": "Julian Waller",
+      "email": "git@julusian.co.uk"
     }
   ],
   "scripts": {
     "info": "npm-scripts-info",
     "build": "trash dist && yarn build:main",
-    "build:main": "tsc -p tsconfig.json",
-    "lint": "tslint --project tsconfig.jest.json --config tslint.json",
+    "build:main": "tsc -p tsconfig.build.json",
+    "lint": "tslint --project tsconfig.json --config tslint.json",
     "unit": "jest",
     "test": "yarn lint && yarn unit",
     "watch": "jest --watch",
     "cov": "jest --coverage; open-cli coverage/lcov-report/index.html",
     "cov-open": "open-cli coverage/lcov-report/index.html",
-    "send-coverage": "jest && codecov",
+    "send-coverage": "codecov",
     "docs": "yarn docs:html && open-cli docs/index.html",
     "docs:test": "yarn docs:html",
     "docs:html": "typedoc src/index.ts --excludePrivate --mode file --theme minimal --out docs",
@@ -43,7 +43,6 @@
     "changelog": "standard-version",
     "release": "yarn reset && yarn docs:publish && yarn changelog",
     "reset": "git clean -dfx && git reset --hard && yarn",
-    "ci": "yarn test && yarn docs:test",
     "validate:dependencies": "yarn audit && yarn license-validate",
     "license-validate": "node-license-validator -p -d --allow-licenses MIT BSD BSD-3-Clause ISC Apache"
   },
@@ -66,16 +65,15 @@
     "changelog": "Bump package.json version, update CHANGELOG.md, tag a release",
     "release": "Clean, build, test, publish docs, and prepare release (a one-step publish process). Updates versions and creates git commits.",
     "reset": "Delete all untracked files and reset the repo to the last commit",
-    "ci": "Test script for running by the CI (CircleCI)",
     "validate:dependencies": "Scan dependencies for vulnerabilities and check licenses",
     "license-validate": "Validate licenses for dependencies."
   },
   "engines": {
-    "node": ">=4.5"
+    "node": ">=8.0"
   },
   "devDependencies": {
     "@types/jest": "^24.0.11",
-    "@types/node": "^8.0.4",
+    "@types/node": "^12.7.12",
     "codecov": "^3.2.0",
     "gh-pages": "^2.0.1",
     "jest": "^24.8.0",
