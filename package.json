@@ -91,7 +91,7 @@
     "tslint-config-security": "^1.16.0",
     "tslint-config-standard": "8.0.1",
     "typedoc": "^0.15.0",
-    "typescript": "^3.3.4000"
+    "typescript": "~3.6.4"
   },
   "keywords": [
     "atem",
