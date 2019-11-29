@@ -25,7 +25,7 @@ export default class DataTransferFrame extends DataTransfer {
 			transferStoreId: this.storeId,
 			transferIndex: this.frameId,
 			size: this.data.length,
-			mode: Enums.TransferMode.TEST
+			mode: Enums.TransferMode.Write
 		})
 		return [ command ]
 	}

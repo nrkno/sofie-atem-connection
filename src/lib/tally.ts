@@ -36,15 +36,17 @@ export function listVisibleInputs (mode: 'program' | 'preview', state: AtemState
 				case Enums.InternalPortType.SuperSource:
 					const ssrcId = inputId - 6000
 					const ssrc = state.video.getSuperSource(ssrcId)
-					Object.values(ssrc.boxes).forEach(box => {
-						if (box.enabled) {
+					ssrc.boxes.forEach(box => {
+						if (box && box.enabled) {
 							inputs.add(box.source)
 						}
 					})
 
-					inputs.add(ssrc.properties.artFillSource)
-					if (ssrc.properties.artOption === Enums.SuperSourceArtOption.Foreground) {
-						inputs.add(ssrc.properties.artCutSource)
+					if (ssrc.properties) {
+						inputs.add(ssrc.properties.artFillSource)
+						if (ssrc.properties.artOption === Enums.SuperSourceArtOption.Foreground) {
+							inputs.add(ssrc.properties.artCutSource)
+						}
 					}
 					break
 				case Enums.InternalPortType.MEOutput:
@@ -83,49 +85,63 @@ function _calcActiveMeInputs (mode: 'program' | 'preview', state: AtemState, meI
 	}
 
 	// Upstream Keyers
-	Object.values(meRef.upstreamKeyers).filter(usk => {
-		const keyerMask = 1 << (usk.upstreamKeyerId + 1)
-		const isPartOfTransition = meRef.transitionProperties.selection & keyerMask
-		if (mode === 'program') { // TODO - verify these conditions
-			if (meRef.inTransition) {
-				return usk.onAir || isPartOfTransition
+	meRef.upstreamKeyers.filter(usk => {
+		if (usk) {
+			const keyerMask = 1 << (usk.upstreamKeyerId + 1)
+			const isPartOfTransition = meRef.transitionProperties.selection & keyerMask
+			if (mode === 'program') { // TODO - verify these conditions
+				if (meRef.inTransition) {
+					return usk.onAir || isPartOfTransition
+				}
+
+				return usk.onAir
 			}
 
-			return usk.onAir
+			return (isPartOfTransition && !usk.onAir) || (usk.onAir && !isPartOfTransition)
+		} else {
+			return false
 		}
-
-		return (isPartOfTransition && !usk.onAir) || (usk.onAir && !isPartOfTransition)
 	}).forEach(usk => {
-		inputs.add(usk.fillSource)
+		if (usk) {
+			inputs.add(usk.fillSource)
 
-		// This is the only USK type that actually uses the cutSource.
-		if (usk.mixEffectKeyType === Enums.MixEffectKeyType.Luma) {
-			inputs.add(usk.cutSource)
+			// This is the only USK type that actually uses the cutSource.
+			if (usk.mixEffectKeyType === Enums.MixEffectKeyType.Luma) {
+				inputs.add(usk.cutSource)
+			}
 		}
 	})
 
 	// DSKs only show up on ME 1,
 	// so we only add them if that's the ME we are currently processing.
 	if (meId === 0) {
-		Object.values(state.video.downstreamKeyers).filter(dsk => {
-			if (mode === 'program') {
-				return dsk.onAir || dsk.inTransition
-			}
+		state.video.downstreamKeyers.filter(dsk => {
+			if (dsk) {
+				if (mode === 'program') {
+					return dsk.onAir || dsk.inTransition
+				}
 
-			if (!dsk.properties) {
-				// Data isn't hydrated yet, we'll get 'em next time.
+				if (!dsk.properties) {
+					// Data isn't hydrated yet, we'll get 'em next time.
+					return false
+				}
+
+				return dsk.properties.tie && !dsk.onAir
+			} else {
 				return false
 			}
-
-			return dsk.properties.tie && !dsk.onAir
 		}).forEach(dsk => {
-			inputs.add(dsk.sources.fillSource)
-			inputs.add(dsk.sources.cutSource)
+			if (dsk && dsk.sources) {
+				inputs.add(dsk.sources.fillSource)
+				inputs.add(dsk.sources.cutSource)
+			}
 		})
 	}
 
 	// Compute what sources are currently participating in a transition.
-	if ((meRef.inTransition && mode === 'program') || (mode === 'preview' && meRef.transitionPreview && meRef.transitionPosition > 0)) {
+	const isTransitionInProgram = mode === 'program' && meRef.inTransition
+	const isTransitionInPreview = mode === 'preview' && meRef.transitionPreview && meRef.transitionPosition > 0
+	if (isTransitionInProgram || isTransitionInPreview) {
 		if (meRef.transitionProperties.selection & 1) { // Includes background
 			inputs.add(meRef.previewInput)
 		}
@@ -134,33 +150,39 @@ function _calcActiveMeInputs (mode: 'program' | 'preview', state: AtemState, meI
 		// on the transition style being used, so we handle each separately.
 		switch (meRef.transitionProperties.style) {
 			case Enums.TransitionStyle.DIP:
-				inputs.add(meRef.transitionSettings.dip.input)
+				if (meRef.transitionSettings.dip) {
+					inputs.add(meRef.transitionSettings.dip.input)
+				}
 				break
 			case Enums.TransitionStyle.DVE:
-				switch (meRef.transitionSettings.DVE.style) {
-					case Enums.DVEEffect.GraphicCCWSpin:
-					case Enums.DVEEffect.GraphicCWSpin:
-					case Enums.DVEEffect.GraphicLogoWipe: {
-						inputs.add(meRef.transitionSettings.DVE.fillSource)
-						if (meRef.transitionSettings.DVE.enableKey) {
-							inputs.add(meRef.transitionSettings.DVE.keySource)
+				if (meRef.transitionSettings.DVE) {
+					switch (meRef.transitionSettings.DVE.style) {
+						case Enums.DVEEffect.GraphicCCWSpin:
+						case Enums.DVEEffect.GraphicCWSpin:
+						case Enums.DVEEffect.GraphicLogoWipe: {
+							inputs.add(meRef.transitionSettings.DVE.fillSource)
+							if (meRef.transitionSettings.DVE.enableKey) {
+								inputs.add(meRef.transitionSettings.DVE.keySource)
+							}
+							break
+							// Anything not Graphic* do not use the sources
 						}
-						break
-						// Anything not Graphic* do not use the sources
 					}
 				}
 				break
 			case Enums.TransitionStyle.WIPE:
-				if (meRef.transitionSettings.wipe.borderWidth > 0) {
+				if (meRef.transitionSettings.wipe && meRef.transitionSettings.wipe.borderWidth > 0) {
 					inputs.add(meRef.transitionSettings.wipe.borderInput)
 				}
 				break
 			case Enums.TransitionStyle.STING:
-				const mediaPlayerIndex = meRef.transitionSettings.stinger.source
-				const fillInputId = 3000 + (mediaPlayerIndex * 10)
-				const keyInputId = fillInputId + 1
-				inputs.add(fillInputId)
-				inputs.add(keyInputId)
+				if (meRef.transitionSettings.stinger) {
+					const mediaPlayerIndex = meRef.transitionSettings.stinger.source
+					const fillInputId = 3000 + (mediaPlayerIndex * 10)
+					const keyInputId = fillInputId + 1
+					inputs.add(fillInputId)
+					inputs.add(keyInputId)
+				}
 				break
 			default:
 				// Do nothing.

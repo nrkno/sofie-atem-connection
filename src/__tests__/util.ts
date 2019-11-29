@@ -1,25 +1,20 @@
 import { plainToClass } from 'class-transformer'
 import { AtemState } from '..'
-import { AtemAudioState, AudioChannel, AudioMasterChannel } from '../state/audio'
+import { AtemAudioState } from '../state/audio'
 import { AtemVideoState, MixEffect, SuperSource } from '../state/video'
 
 function parseAudio (rawState: AtemAudioState) {
 	const state = plainToClass(AtemAudioState, rawState)
-	state.master = plainToClass(AudioMasterChannel, state.master)
-	state.channels = state.channels.map(ch => plainToClass(AudioChannel, ch))
+	state.master = state.master
+	state.channels = state.channels.map(ch => ch)
 
 	return state
 }
 
 function parseVideo (rawState: AtemVideoState) {
 	const state = plainToClass(AtemVideoState, rawState)
-	Object.keys(state.ME).map(id => {
-		state.ME[id] = plainToClass(MixEffect, state.ME[id])
-	})
-	Object.keys(state.superSources).map(id => {
-		state.superSources[id] = plainToClass(SuperSource, state.superSources[id])
-	})
-
+	state.ME = state.ME.map(me => plainToClass(MixEffect, me))
+	state.superSources = state.superSources.map(ssrc => plainToClass(SuperSource, ssrc))
 	return state
 }
 

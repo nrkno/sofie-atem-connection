@@ -6,7 +6,6 @@ import { IPCMessageType } from '../enums'
 import exitHook = require('exit-hook')
 import { Util } from './atemUtil'
 import { VersionCommand, ISerializableCommand, IDeserializedCommand } from '../commands'
-import { isFunction } from 'util'
 
 export class AtemSocket extends EventEmitter {
 	private _debug = false
@@ -77,7 +76,7 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	public _sendCommand (command: ISerializableCommand, trackingId: number) {
-		if (isFunction(command.serialize)) {
+		if (typeof (command as any).serialize !== 'function') {
 			return Promise.reject(new Error('Command is not serializable'))
 		}
 

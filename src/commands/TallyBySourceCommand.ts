@@ -1,18 +1,17 @@
-import AbstractCommand from './AbstractCommand'
+import { DeserializedCommand } from './CommandBase'
 import { AtemState } from '../state'
 
-export class TallyBySourceCommand extends AbstractCommand {
-	rawName = 'TlSr'
-	auxBus: number
+export interface TallyBySourceProps {
+	[source: number]: { program: boolean, preview: boolean } | undefined
+}
 
-	properties: {
-		[source: number]: { program: boolean, preview: boolean } | undefined
-	}
+export class TallyBySourceCommand extends DeserializedCommand<TallyBySourceProps> {
+	static readonly rawName = 'TlSr'
 
-	deserialize (rawCommand: Buffer) {
+	static deserialize (rawCommand: Buffer) {
 		const sourceCount = rawCommand.readUInt16BE(0)
 
-		const sources: TallyBySourceCommand['properties'] = {}
+		const sources: TallyBySourceProps = {}
 		for (let i = 0; i < sourceCount; i++) {
 			const source = rawCommand.readUInt16BE(2 + (i * 3))
 			const value = rawCommand.readUInt8(4 + (i * 3))
@@ -22,7 +21,7 @@ export class TallyBySourceCommand extends AbstractCommand {
 			}
 		}
 
-		this.properties = sources
+		return new TallyBySourceCommand(sources)
 	}
 
 	applyToState (_state: AtemState) {

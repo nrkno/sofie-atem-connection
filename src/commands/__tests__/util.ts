@@ -1,7 +1,6 @@
 import { CommandParser } from '../../lib/atemCommandParser'
 import { ProtocolVersion } from '../../enums'
 import { IDeserializedCommand, ISerializableCommand } from '../CommandBase'
-import { isFunction } from 'util'
 
 export type CommandTestConverterSet = { [key: string]: CommandTestConverter }
 export interface CommandTestConverter {
@@ -63,7 +62,7 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 		}
 
 		const cmd: ISerializableCommand = new cmdConstructor() // TODO - params
-		if (isFunction(cmd.serialize)) {
+		if (typeof (cmd as any).serialize === 'function') {
 			matchedCase = true
 			test(`Test #${i}: ${testCase.name} - Serialize`, () => {
 				if (converter) {

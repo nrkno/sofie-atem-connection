@@ -213,8 +213,7 @@ export enum TransferMode {
 	NoOp,
 	Write,
 	Clear,
-	WriteAudio = 256,
-	TEST = 0x0201
+	WriteAudio = 256
 }
 
 export enum StoragePool {
