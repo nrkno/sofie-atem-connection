@@ -125,8 +125,8 @@ function _calcActiveMeInputs (mode: 'program' | 'preview', state: AtemState, meI
 	}
 
 	// Compute what sources are currently participating in a transition.
-	if ((meRef.inTransition && mode === 'program') || (mode === 'preview' && meRef.transitionPosition > 0)) {
-		if (meRef.transitionProperties.selection & 1) {
+	if ((meRef.inTransition && mode === 'program') || (mode === 'preview' && meRef.transitionPreview && meRef.transitionPosition > 0)) {
+		if (meRef.transitionProperties.selection & 1) { // Includes background
 			inputs.add(meRef.previewInput)
 		}
 
@@ -137,9 +137,17 @@ function _calcActiveMeInputs (mode: 'program' | 'preview', state: AtemState, meI
 				inputs.add(meRef.transitionSettings.dip.input)
 				break
 			case Enums.TransitionStyle.DVE:
-				inputs.add(meRef.transitionSettings.DVE.fillSource)
-				if (meRef.transitionSettings.DVE.enableKey) {
-					inputs.add(meRef.transitionSettings.DVE.keySource)
+				switch (meRef.transitionSettings.DVE.style) {
+					case Enums.DVEEffect.GraphicCCWSpin:
+					case Enums.DVEEffect.GraphicCWSpin:
+					case Enums.DVEEffect.GraphicLogoWipe: {
+						inputs.add(meRef.transitionSettings.DVE.fillSource)
+						if (meRef.transitionSettings.DVE.enableKey) {
+							inputs.add(meRef.transitionSettings.DVE.keySource)
+						}
+						break
+						// Anything not Graphic* do not use the sources
+					}
 				}
 				break
 			case Enums.TransitionStyle.WIPE:
