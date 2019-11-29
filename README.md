@@ -71,6 +71,10 @@ Whenever the connection to the ATEM fails and does not recover within 5 seconds 
 Whenever a packet from the ATEM is received that changes the state, this event will be fired.
 The path parameter is a path into the state that represents the change, to allow for filtering of events. eg video.ME.0.programInput
 
+- `receivedCommand(command)`
+Whenever a packet from the ATEM is received that contains a command, this event will be fired.
+This should not be relied on in most usage, as the commands can and will have breaking changes in patch releases. This event is needed for some use cases, so if this is used you should likely pin the version down to a specific patch release to ensure nothing breaks.
+
 ## Debug
 
 Set `debug=true` config option in order to see raw packets. This is especially useful for library developers.
