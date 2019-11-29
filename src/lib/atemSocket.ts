@@ -86,7 +86,7 @@ export class AtemSocket extends EventEmitter {
 		fullPayload.write((command.constructor as any).rawName, 4, 4)
 		payload.copy(fullPayload, 8, 0)
 
-		if (this._debug) this.log('PAYLOAD', fullPayload)
+		if (this._debug) this.log('PAYLOAD', command.constructor.name, fullPayload)
 
 		return this._sendSubprocessMessage({
 			cmd: IPCMessageType.OutboundCommand,

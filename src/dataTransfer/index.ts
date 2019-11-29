@@ -10,53 +10,50 @@ import { ISerializableCommand } from '../commands/CommandBase'
 const MAX_PACKETS_TO_SEND_PER_TICK = 10
 
 export class DataTransferManager {
-	readonly commandQueue: Array<ISerializableCommand> = []
+	private readonly commandQueue: Array<ISerializableCommand> = []
 
-	readonly stillsLock = new DataLock(0, cmd => this.commandQueue.push(cmd))
-	readonly clipLocks = [
+	private readonly stillsLock = new DataLock(0, cmd => this.commandQueue.push(cmd))
+	private readonly clipLocks = [
 		new DataLock(1, cmd => this.commandQueue.push(cmd)),
 		new DataLock(2, cmd => this.commandQueue.push(cmd))
 	]
 
-	readonly interval: NodeJS.Timer
+	private interval: NodeJS.Timer | undefined
 
-	transferIndex = 0
+	private transferIndex: number = 0
 
-	constructor (sendCommand: (command: ISerializableCommand) => Promise<ISerializableCommand>) {
-		this.interval = setInterval(() => {
-			if (this.commandQueue.length <= 0) {
-				return
-			}
+	public startCommandSending (sendCommand: (command: ISerializableCommand) => Promise<ISerializableCommand>) {
+		if (!this.interval) {
+			// New connection means a new queue
+			this.commandQueue.splice(0, this.commandQueue.length)
 
-			const commandsToSend = this.commandQueue.splice(0, MAX_PACKETS_TO_SEND_PER_TICK)
-			commandsToSend.forEach(command => {
-				sendCommand(command).catch(() => { /* discard error */ })
-			})
-		}, 0)
+			this.interval = setInterval(() => {
+				if (this.commandQueue.length <= 0) {
+					return
+				}
+
+				const commandsToSend = this.commandQueue.splice(0, MAX_PACKETS_TO_SEND_PER_TICK)
+				commandsToSend.forEach(command => {
+					sendCommand(command).catch(() => { /* discard error */ })
+				})
+			}, 0) // TODO - should this be done slower?
+		}
+	}
+	public stopCommandSending () {
+		if (this.interval) {
+			clearInterval(this.interval)
+			this.interval = undefined
+		}
 	}
 
-	stop () {
-		clearInterval(this.interval)
-	}
-
-	handleCommand (command: Commands.IDeserializedCommand) {
+	public handleCommand (command: Commands.IDeserializedCommand) {
 		const allLocks = [ this.stillsLock, ...this.clipLocks ]
 
 		// try to establish the associated DataLock:
 		let lock: DataLock | undefined
 		if (command.constructor.name === Commands.LockObtainedCommand.name || command.constructor.name === Commands.LockStateUpdateCommand.name) {
-			switch (command.properties.index) {
-				case 0 :
-					lock = this.stillsLock
-					break
-				case 1 :
-					lock = this.clipLocks[0]
-					break
-				case 2 :
-					lock = this.clipLocks[1]
-					break
-			}
-		} else if (command.properties.storeId) {
+			lock = allLocks[command.properties.index]
+		} else if (typeof command.properties.storeId === 'number') {
 			lock = allLocks[command.properties.storeId]
 		} else if (command.properties.transferId !== undefined || command.properties.transferIndex !== undefined) {
 			for (const _lock of allLocks) {
@@ -69,6 +66,8 @@ export class DataTransferManager {
 			console.log('UNKNOWN COMMAND:', command)
 			return
 		}
+
+		// console.log('CMD', command.constructor.name)
 		if (!lock) return
 
 		// handle actual command
@@ -90,35 +89,30 @@ export class DataTransferManager {
 		}
 	}
 
-	uploadStill (index: number, data: Buffer, name: string, description: string) {
+	public uploadStill (index: number, data: Buffer, name: string, description: string) {
 		const transfer = new DataTransferStill(this.transferIndex++, index, data, name, description)
-		// transfer.commandQueue = this.commandQueue
-
-		this.stillsLock.enqueue(transfer)
-
-		return transfer.promise
+		return this.stillsLock.enqueue(transfer)
 	}
 
-	uploadClip (index: number, data: Array<Buffer>, name: string) {
-		const transfer = new DataTransferClip(1 + index, name)
-
-		for (const frameId in data) {
-			const frameTransfer = new DataTransferFrame(this.transferIndex++, 1 + index, Number(frameId), data[frameId])
-
-			transfer.frames.push(frameTransfer)
-		}
-
-		this.clipLocks[index].enqueue(transfer)
-
-		return transfer.promise
+	public async uploadClip (index: number, data: Array<Buffer>, name: string) {
+		const frames = data.map((frame, id) => new DataTransferFrame(this.transferIndex++, 1 + index, id, frame))
+		const transfer = new DataTransferClip(1 + index, name, frames)
+		const lock = await this.getClipLock(index)
+		return lock.enqueue(transfer)
 	}
 
-	uploadAudio (index: number, data: Buffer, name: string) {
+	public async uploadAudio (index: number, data: Buffer, name: string) {
 		const transfer = new DataTransferAudio(this.transferIndex++, 1 + index, data, name)
-
-		this.clipLocks[index].enqueue(transfer)
-
-		return transfer.promise
+		const lock = await this.getClipLock(index)
+		return lock.enqueue(transfer)
 	}
 
+	private async getClipLock (index: number) {
+		const lock = this.clipLocks[index]
+		if (lock) {
+			return lock
+		} else {
+			throw new Error('Invalid clip id')
+		}
+	}
 }

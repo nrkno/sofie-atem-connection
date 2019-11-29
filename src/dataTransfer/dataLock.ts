@@ -23,6 +23,8 @@ export default class DataLock {
 		if (!this.activeTransfer) {
 			this.dequeueAndRun()
 		}
+
+		return transfer.promise
 	}
 
 	private dequeueAndRun () {
