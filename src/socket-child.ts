@@ -21,7 +21,7 @@ process.on('message', message => {
 			singleton.disconnect().catch(() => { /* discard error */ })
 			break
 		case IPCMessageType.OutboundCommand:
-			singleton._sendCommand(Buffer.from(payload.data.data), payload.trackingId)
+			singleton.sendCommand(Buffer.from(payload.data.data), payload.trackingId)
 			break
 	}
 })

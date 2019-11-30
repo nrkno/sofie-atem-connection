@@ -9,7 +9,7 @@ import { VersionCommand, ISerializableCommand, IDeserializedCommand } from '../c
 
 export class AtemSocket extends EventEmitter {
 	private _debug = false
-	private _localPacketId = 0
+	private _nextCommandTrackingId = 0
 	private _address: string
 	private _port: number = 9910
 	private _shouldConnect = false
@@ -68,11 +68,11 @@ export class AtemSocket extends EventEmitter {
 		// Will be re-assigned by the top-level ATEM class.
 	}
 
-	get nextPacketId (): number {
-		if (this._localPacketId >= Number.MAX_SAFE_INTEGER) {
-			this._localPacketId = 0
+	get nextCommandTrackingId (): number {
+		if (this._nextCommandTrackingId >= Number.MAX_SAFE_INTEGER) {
+			this._nextCommandTrackingId = 0
 		}
-		return ++this._localPacketId
+		return ++this._nextCommandTrackingId
 	}
 
 	public _sendCommand (command: ISerializableCommand, trackingId: number) {

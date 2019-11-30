@@ -97,12 +97,6 @@ export namespace Util {
 		0x00, 0x00, 0x00, 0x00
 	])
 
-	export const COMMAND_CONNECT_HELLO_ANSWER = Buffer.from([
-		0x80, 0x0C, 0x53, 0xAB,
-		0x00, 0x00, 0x00, 0x00,
-		0x00, 0x03, 0x00, 0x00
-	])
-
 	/**
 	 * @todo: BALTE - 2018-5-24:
 	 * Create util functions that handle proper colour spaces in UHD.

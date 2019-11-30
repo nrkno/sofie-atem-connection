@@ -42,8 +42,8 @@ export enum ConnectionState {
 export enum PacketFlag {
 	AckRequest = 0x01,
 	Connect = 0x02,
-	Repeat = 0x04,
-	Error = 0x08,
+	IsRetransmit = 0x04,
+	RetransmitRequest = 0x08,
 	AckReply = 0x10
 }
 

@@ -114,14 +114,14 @@ export class Atem extends EventEmitter {
 	}
 
 	sendCommand (command: ISerializableCommand): Promise<ISerializableCommand> {
-		const nextPacketId = this.socket.nextPacketId
+		const commandTrackingId = this.socket.nextCommandTrackingId
 		return new Promise((resolve, reject) => {
-			this._sentQueue[nextPacketId] = {
+			this._sentQueue[commandTrackingId] = {
 				command,
 				resolve,
 				reject
 			}
-			this.socket._sendCommand(command, nextPacketId).catch(reject)
+			this.socket._sendCommand(command, commandTrackingId).catch(reject)
 		})
 	}
 

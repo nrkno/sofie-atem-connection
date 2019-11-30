@@ -2,6 +2,7 @@
 	"extends": "./config/tsconfig.base",
 	"exclude": [
 		"node_modules/**",
-		"src/**/__tests__/*"
+		"src/**/__tests__/*",
+		"src/**/__mocks__/*"
 	]
 }

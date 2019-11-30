@@ -10,9 +10,12 @@ if (process.argv.length < 3) {
 }
 const IP = process.argv[2]
 
-const MAX_POOL = 20
 let upload = 0
 let t = Date.now()
+
+const conn = new Atem({ debug: false })
+
+let stuckTimeout: any = null
 
 async function uploadNext () {
 	// if (upload >= MAX_POOL) {
@@ -20,7 +23,7 @@ async function uploadNext () {
 	// }
 	// console.log('item ', upload)
 	t = Date.now()
-	conn.uploadStill(upload % MAX_POOL, file, 'contemplation..', '')
+	conn.uploadStill(upload % conn.state.media.stillPool.length, file, 'contemplation..', '')
 	// conn.uploadStill(upload, file, 'TEST FRAME', '')
 	.then(async (_res) => {
 		console.log(`Uploaded still #${upload} in ${Date.now() - t}ms at 1080p`)
@@ -31,10 +34,33 @@ async function uploadNext () {
 		//     await reconnect()
 		//     console.log('reconnected')
 		// }
+
+		if (stuckTimeout) {
+			clearTimeout(stuckTimeout)
+		}
+		stuckTimeout = setTimeout(() => {
+			console.log('')
+			console.log('UPLOAD GOT STUCK')
+			console.log('')
+			console.log('')
+			// console.log(JSON.stringify(conn.state, undefined, 4))
+			console.log('')
+			const dt = (conn as any).dataTransferManager
+			// console.log(JSON.stringify({
+			// 	stills: dt.stillsLock,
+			// 	clips: dt.clipLocks
+			// }, undefined, 4))
+			fs.writeFileSync('upload-stuck', JSON.stringify({
+				stills: dt.stillsLock,
+				clips: dt.clipLocks
+			}, undefined, 4))
+		}, 20000)
+
 		setTimeout(() => uploadNext(), 0)
 		// uploadNext()
 	}, (e) => {
 		console.log('e', e)
+		setTimeout(() => uploadNext(), 500)
 		// console.log('retry')
 		// setTimeout(() => uploadNext(), 0)
 	})
@@ -48,7 +74,6 @@ async function uploadNext () {
 //     }
 // }
 
-let conn = new Atem({ debug: false })
 conn.on('error', console.log)
 conn.on('disconnected', () => {
 	console.log('Connection lost')
