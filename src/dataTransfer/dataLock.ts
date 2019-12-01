@@ -32,6 +32,7 @@ export default class DataLock {
 			this.activeTransfer = this.taskQueue.shift()
 
 			if (this.isLocked) {
+				// TODO - this flow should never be hit
 				this.lockObtained()
 			} else {
 				this.queueCommand(new Commands.LockStateCommand(this.storeId, true))

@@ -12,10 +12,11 @@ function parseAudio (rawState: AtemAudioState) {
 }
 
 function parseVideo (rawState: AtemVideoState) {
-	const state = plainToClass(AtemVideoState, rawState)
-	state.ME = state.ME.map(me => plainToClass(MixEffect, me))
-	state.superSources = state.superSources.map(ssrc => plainToClass(SuperSource, ssrc))
-	return state
+	return plainToClass(AtemVideoState, {
+		...rawState,
+		ME: rawState.ME.map(me => plainToClass(MixEffect, me)),
+		superSources: rawState.superSources.map(ssrc => plainToClass(SuperSource, ssrc))
+	})
 }
 
 /** Note: This is incomplete, and should be filled in as needed */

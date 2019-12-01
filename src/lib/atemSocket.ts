@@ -6,12 +6,13 @@ import { IPCMessageType } from '../enums'
 import exitHook = require('exit-hook')
 import { Util } from './atemUtil'
 import { VersionCommand, ISerializableCommand, IDeserializedCommand } from '../commands'
+import { DEFAULT_PORT } from '../atem'
 
 export class AtemSocket extends EventEmitter {
 	private _debug = false
 	private _nextCommandTrackingId = 0
 	private _address: string
-	private _port: number = 9910
+	private _port: number = DEFAULT_PORT
 	private _shouldConnect = false
 	private _socketProcess: ChildProcess | null
 	private _commandParser: CommandParser = new CommandParser()

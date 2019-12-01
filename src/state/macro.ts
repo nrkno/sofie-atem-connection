@@ -18,8 +18,8 @@ export interface MacroPropertiesState {
 }
 
 export class MacroState {
-	public readonly macroPlayer: MacroPlayerState
-	public readonly macroRecorder: MacroRecorderState
+	public macroPlayer: MacroPlayerState
+	public macroRecorder: MacroRecorderState
 	public readonly macroProperties: Array<MacroPropertiesState> = []
 
 	constructor () {

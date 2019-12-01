@@ -8,7 +8,6 @@ export default class DataTransferFrame extends DataTransfer {
 	public readonly hash: string
 	public readonly data: Buffer
 
-	private lastSent?: Date
 	private _sent = 0
 
 	constructor (transferId: number, storeId: number, frameId: number, data: Buffer) {
@@ -60,7 +59,6 @@ export default class DataTransferFrame extends DataTransfer {
 		const commands: Commands.ISerializableCommand[] = []
 
 		chunkSize += -4
-		this.lastSent = new Date()
 
 		for (let i = 0; i < chunkCount; i++) {
 			if (this._sent > this.data.length) break

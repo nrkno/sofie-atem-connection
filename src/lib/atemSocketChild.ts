@@ -3,9 +3,11 @@ import { EventEmitter } from 'events'
 import { Util } from './atemUtil'
 import { ConnectionState, IPCMessageType, PacketFlag } from '../enums'
 import * as NanoTimer from 'nanotimer'
+import { DEFAULT_PORT } from '../atem'
 
 const IN_FLIGHT_TIMEOUT = 30 // ms
-const RECONNECT_INTERVAL = 5000 // ms
+const CONNECTION_TIMEOUT = 5000 // ms
+const CONNECTION_RETRY_INTERVAL = 1000 // ms
 const MAX_PACKET_RETRIES = 5
 const MAX_PACKET_ID = (1 << 15) // Atem expects 15 not 16 bits before wrapping
 const MAX_PACKET_PER_ACK = 16
@@ -29,7 +31,7 @@ export class AtemSocketChild extends EventEmitter {
 	private _sessionId: number = 0
 
 	private _address: string
-	private _port: number = 9910
+	private _port: number = DEFAULT_PORT
 	private _socket: Socket
 
 	private _lastReceivedAt: number = Date.now()
@@ -61,19 +63,28 @@ export class AtemSocketChild extends EventEmitter {
 	public connect (address?: string, port?: number): void {
 		if (!this._reconnectTimer) {
 			this._reconnectTimer = setInterval(() => {
-				if (this._lastReceivedAt + RECONNECT_INTERVAL > Date.now()) return
+				if (this._lastReceivedAt + CONNECTION_TIMEOUT > Date.now()) {
+					// We heard from the atem recently
+					return
+				}
+
+				// This includes a 'disconnect'
 				if (this._connectionState === ConnectionState.Established) {
 					this._connectionState = ConnectionState.Closed
 					this.emit(IPCMessageType.Disconnect)
 				}
+
+				// Reset connection
 				this._nextSendPacketId = 1
 				this._sessionId = 0
 				this.log('reconnect')
+
+				// Try doing reconnect
 				if (this._address && this._port) {
 					this._sendPacket(Util.COMMAND_CONNECT_HELLO)
 					this._connectionState = ConnectionState.SynSent
 				}
-			}, RECONNECT_INTERVAL)
+			}, CONNECTION_RETRY_INTERVAL)
 		}
 		// Check for retransmits every 10 milliseconds
 		if (!this._retransmitTimer) {
@@ -183,7 +194,8 @@ export class AtemSocketChild extends EventEmitter {
 				const fromPacketId = packet.readUInt16BE(6)
 				this.log(`Retransmit request: ${fromPacketId}`)
 
-				// TODO
+				// TODO - enable and test this
+				// this._checkForRetransmit(fromPacketId)
 			}
 
 			// Got a packet that needs an ack
@@ -252,8 +264,7 @@ export class AtemSocketChild extends EventEmitter {
 		this._sendPacket(buffer)
 	}
 
-	private _checkForRetransmit () {
-		let retransmitFromPacketId: number | undefined
+	private _checkForRetransmit (retransmitFromPacketId?: number) {
 		for (const sentPacket of this._inFlight) {
 			if (retransmitFromPacketId && sentPacket.packetId > retransmitFromPacketId) {
 				sentPacket.lastSent = Date.now()

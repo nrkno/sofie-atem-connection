@@ -93,8 +93,8 @@ export class MixEffect implements IMixEffect {
 	public transitionFramesLeft: number = 0
 	public fadeToBlack?: FadeToBlackProperties
 	public numberOfKeyers: number = 0
-	public readonly transitionProperties: TransitionProperties
-	public readonly transitionSettings: TransitionSettings = {}
+	public transitionProperties: TransitionProperties
+	public transitionSettings: TransitionSettings = {}
 	public readonly upstreamKeyers: Array<USK.UpstreamKeyer | undefined> = []
 
 	constructor (index: number) {

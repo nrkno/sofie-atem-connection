@@ -40,18 +40,14 @@ interface SentCommand {
 	reject: (cmd: ISerializableCommand) => void
 }
 
+export const DEFAULT_PORT = 9910
+
 export class Atem extends EventEmitter {
-	public DEFAULT_PORT = 9910
-	public RECONNECT_INTERVAL = 5000
-	public DEBUG = false
-
-	public AUDIO_GAIN_RATE = 65381
-
-	private _state: AtemState
-	private socket: AtemSocket
-	private dataTransferManager: DT.DataTransferManager
-	private _log: (...args: any[]) => void
-	private _sentQueue: {[packetId: string]: SentCommand } = {}
+	private readonly socket: AtemSocket
+	private readonly _state: AtemState
+	private readonly dataTransferManager: DT.DataTransferManager
+	private readonly _log: (...args: any[]) => void
+	private readonly _sentQueue: {[packetId: string]: SentCommand } = {}
 
 	public on!: ((event: 'error', listener: (message: any) => void) => this) &
 		((event: 'connected', listener: () => void) => this) &
@@ -61,16 +57,13 @@ export class Atem extends EventEmitter {
 
 	constructor (options?: AtemOptions) {
 		super()
-		if (options) {
-			this.DEBUG = options.debug === undefined ? false : options.debug
-		}
 		this._log = (options && options.externalLog) || function (...args: any[]): void {
 			console.log(...args)
 		}
 
 		this._state = new AtemState()
 		this.socket = new AtemSocket({
-			debug: this.DEBUG,
+			debug: (options || {}).debug,
 			log: this._log,
 			address: (options || {}).address,
 			port: (options || {}).port

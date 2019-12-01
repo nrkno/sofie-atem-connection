@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events'
 import { SocketType, RemoteInfo } from 'dgram'
 import 'jest-extended'
+import { DEFAULT_PORT } from '../../atem'
 
 export class Socket extends EventEmitter {
 	public isOpen: boolean = false
@@ -19,7 +20,7 @@ export class Socket extends EventEmitter {
 
 		const rinfo: RemoteInfo = {
 			address: this.expectedAddress || '127.0.0.1',
-			port: this.expectedPort || 9910,
+			port: this.expectedPort || DEFAULT_PORT,
 			family: 'IPv4',
 			size: msg.length
 		}

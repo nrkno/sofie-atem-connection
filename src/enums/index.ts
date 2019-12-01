@@ -33,10 +33,9 @@ export enum TallyState {
 }
 
 export enum ConnectionState {
-	None = 0x00,
+	Closed = 0x00,
 	SynSent = 0x01,
-	Established = 0x02,
-	Closed = 0x03
+	Established = 0x02
 }
 
 export enum PacketFlag {
