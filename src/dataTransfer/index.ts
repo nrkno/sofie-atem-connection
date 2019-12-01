@@ -12,7 +12,10 @@ const MAX_PACKETS_TO_SEND_PER_TICK = 10
 export class DataTransferManager {
 	private readonly commandQueue: Array<ISerializableCommand> = []
 
-	private readonly stillsLock = new DataLock(0, cmd => this.commandQueue.push(cmd))
+	private readonly stillsLock = new DataLock(0, cmd => {
+		// console.log('SEND', cmd.constructor.name)
+		this.commandQueue.push(cmd)
+	})
 	private readonly clipLocks = [
 		new DataLock(1, cmd => this.commandQueue.push(cmd)),
 		new DataLock(2, cmd => this.commandQueue.push(cmd))
@@ -75,8 +78,12 @@ export class DataTransferManager {
 			lock.lockObtained()
 		}
 		if (command.constructor.name === Commands.LockStateUpdateCommand.name) {
-			if (!command.properties.locked) lock.lostLock()
-			else lock.updateLock(command.properties.locked)
+			const transferFinished = lock.activeTransfer && lock.activeTransfer.state === Enums.TransferState.Finished
+			if (!command.properties.locked || transferFinished) {
+				lock.lostLock()
+			} else {
+				lock.updateLock(command.properties.locked)
+			}
 		}
 		if (command.constructor.name === Commands.DataTransferErrorCommand.name) {
 			lock.transferErrored(command.properties.errorCode)

@@ -48,10 +48,15 @@ export default class DataLock {
 
 	lostLock () {
 		this.isLocked = false
-		if (this.activeTransfer && this.activeTransfer.state !== Enums.TransferState.Finished) {
-			// @todo: dequeue any old commands
-			this.activeTransfer.rejectPromise(new Error('Lost lock mid-transfer'))
+		if (this.activeTransfer) {
+			if (this.activeTransfer.state === Enums.TransferState.Finished) {
+				this.activeTransfer.resolvePromise(this.activeTransfer)
+			} else {
+				// @todo: dequeue any old commands
+				this.activeTransfer.rejectPromise(new Error('Lost lock mid-transfer'))
+			}
 		}
+
 		this.activeTransfer = undefined
 		this.dequeueAndRun()
 	}
@@ -61,16 +66,7 @@ export default class DataLock {
 	}
 
 	transferFinished () {
-		if (this.activeTransfer && this.activeTransfer.state === Enums.TransferState.Finished) {
-			this.activeTransfer.resolvePromise(this.activeTransfer)
-			this.activeTransfer = undefined
-		}
-
-		if (this.taskQueue.length > 0) {
-			this.dequeueAndRun()
-		} else { // unlock
-			this.queueCommand(new Commands.LockStateCommand(this.storeId, false))
-		}
+		this.queueCommand(new Commands.LockStateCommand(this.storeId, false))
 	}
 
 	transferErrored (code: number) {
