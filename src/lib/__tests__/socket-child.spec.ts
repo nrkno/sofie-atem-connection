@@ -19,6 +19,9 @@ function getSocket (child: AtemSocketChild) {
 function getState (child: AtemSocketChild) {
 	return (child as any)._connectionState as ConnectionState
 }
+function getInflightIds (child: AtemSocketChild) {
+	return (child as any)._inFlight.map((p: any) => p.packetId)
+}
 function fakeConnect (child: AtemSocketChild) {
 	const child2 = child as any
 	child2._connectionState = ConnectionState.Established
@@ -322,6 +325,182 @@ describe('SocketChild', () => {
 			expect(gotCmds).toEqual([])
 			expect(gotUnknown).toBeFalse()
 			gotCmds = []
+
+		} finally {
+			if (child) {
+				// Try and cleanup any timers
+				await child.disconnect()
+			}
+		}
+	})
+
+	test('SendCommand', async () => {
+		const child = new AtemSocketChild()
+		try {
+			fakeConnect(child)
+			const socket = getSocket(child)
+
+			;(child as any)._nextSendPacketId = 123
+
+			let received: Array<{id: number, payload: Buffer}> = []
+			socket.sendImpl = (msg: Buffer) => {
+				const opcode = msg.readUInt8(0) >> 3
+				expect(opcode).toEqual(PacketFlag.AckRequest)
+
+				received.push({
+					id: msg.readUInt16BE(10),
+					payload: msg.slice(12)
+				})
+			}
+
+			// Send something
+			const buf1 = Buffer.from([0, 1, 2])
+			child.sendCommand(buf1, 1)
+			expect(received).toEqual([{
+				id: 123,
+				payload: buf1
+			}])
+			received = []
+			expect(getInflightIds(child)).toEqual([123])
+
+			// Send another
+			child.sendCommand(buf1, 1)
+			expect(received).toEqual([{
+				id: 124,
+				payload: buf1
+			}])
+			received = []
+			expect(getInflightIds(child)).toEqual([123, 124	])
+
+		} finally {
+			if (child) {
+				// Try and cleanup any timers
+				await child.disconnect()
+			}
+		}
+	})
+
+	function genAckCommandMessage (pktId: number) {
+		const buffer = Buffer.from([
+			0x80, 0x0c, // Length & Type
+			0x53, 0x1b, // Session Id
+			0x00, 0x00, // Acking - set after
+			0x00, 0x00, // Not asking for retransmit
+			0x00, 0x00, // 'Client pkt id' Not needed
+			0x00, 0x00  // No Packet Id
+		])
+		buffer.writeUInt16BE(pktId, 4) // Acked Id
+
+		return buffer
+	}
+
+	test('SendCommand - acks', async () => {
+		const child = new AtemSocketChild()
+		try {
+			fakeConnect(child)
+			const socket = getSocket(child)
+
+			;(child as any)._nextSendPacketId = 123
+
+			let received: number[] = []
+			socket.sendImpl = (msg: Buffer) => {
+				const opcode = msg.readUInt8(0) >> 3
+				expect(opcode).toEqual(PacketFlag.AckRequest)
+
+				received.push(msg.readUInt16BE(10))
+			}
+
+			let acked: Array<{packetId: number, trackingId: number}> = []
+			child.on(IPCMessageType.CommandAcknowledged, (packetId, trackingId) => acked.push({ packetId, trackingId }))
+
+			// Send some stuff
+			const buf1 = Buffer.from([0, 1, 2])
+			child.sendCommand(buf1, 5)
+			child.sendCommand(buf1, 6)
+			child.sendCommand(buf1, 7)
+			child.sendCommand(buf1, 8)
+			child.sendCommand(buf1, 9)
+			child.sendCommand(buf1, 10)
+			expect(received).toEqual([123, 124, 125, 126, 127, 128])
+			received = []
+			expect(getInflightIds(child)).toEqual([123, 124, 125, 126, 127, 128])
+			expect(acked).toEqual([])
+
+			// Ack a couple
+			socket.emitMessage(genAckCommandMessage(125))
+			expect(getInflightIds(child)).toEqual([126, 127, 128])
+			expect(acked).toEqual([
+				{ packetId: 123, trackingId: 5 },
+				{ packetId: 124, trackingId: 6 },
+				{ packetId: 125, trackingId: 7 }
+			])
+			acked = []
+
+			// Another ack
+			socket.emitMessage(genAckCommandMessage(126))
+			expect(getInflightIds(child)).toEqual([127, 128])
+			expect(acked).toEqual([
+				{ packetId: 126, trackingId: 8 }
+			])
+
+		} finally {
+			if (child) {
+				// Try and cleanup any timers
+				await child.disconnect()
+			}
+		}
+	})
+
+	test('SendCommand - acks wrap', async () => {
+		const child = new AtemSocketChild()
+		try {
+			fakeConnect(child)
+			const socket = getSocket(child)
+
+			;(child as any)._nextSendPacketId = 32764 // 32767 is max
+
+			let received: number[] = []
+			socket.sendImpl = (msg: Buffer) => {
+				const opcode = msg.readUInt8(0) >> 3
+				expect(opcode).toEqual(PacketFlag.AckRequest)
+
+				received.push(msg.readUInt16BE(10))
+			}
+
+			let acked: Array<{packetId: number, trackingId: number}> = []
+			child.on(IPCMessageType.CommandAcknowledged, (packetId, trackingId) => acked.push({ packetId, trackingId }))
+
+			// Send some stuff
+			const buf1 = Buffer.from([0, 1, 2])
+			child.sendCommand(buf1, 5) // 32764
+			child.sendCommand(buf1, 6) // 32765
+			child.sendCommand(buf1, 7) // 32766
+			child.sendCommand(buf1, 8) // 32767
+			child.sendCommand(buf1, 9) // 0
+			child.sendCommand(buf1, 10)// 1
+			expect(received).toEqual([32764, 32765, 32766, 32767, 0, 1])
+			received = []
+			expect(getInflightIds(child)).toEqual([32764, 32765, 32766, 32767, 0, 1])
+			expect(acked).toEqual([])
+
+			// TODO - and the remainder of this is very very broken..
+			// Ack a couple
+			socket.emitMessage(genAckCommandMessage(32766))
+			expect(getInflightIds(child)).toEqual([32767, 0, 1])
+			expect(acked).toEqual([
+				{ packetId: 32764, trackingId: 5 },
+				{ packetId: 32765, trackingId: 6 },
+				{ packetId: 32766, trackingId: 7 }
+			])
+			acked = []
+
+			// Another ack
+			socket.emitMessage(genAckCommandMessage(0))
+			expect(getInflightIds(child)).toEqual([1])
+			expect(acked).toEqual([
+				{ packetId: 32767, trackingId: 8 },
+				{ packetId: 0, trackingId: 9 }
+			])
 
 		} finally {
 			if (child) {

@@ -7,7 +7,7 @@ import * as NanoTimer from 'nanotimer'
 const IN_FLIGHT_TIMEOUT = 30 // ms
 const RECONNECT_INTERVAL = 5000 // ms
 const MAX_PACKET_RETRIES = 5
-const MAX_PACKET_ID = (1 << 15) - 1 // Atem expects 15 not 16 bits before wrapping
+const MAX_PACKET_ID = (1 << 15) // Atem expects 15 not 16 bits before wrapping
 const MAX_PACKET_PER_ACK = 16
 
 interface InFlightPacket {
@@ -34,11 +34,10 @@ export class AtemSocketChild extends EventEmitter {
 
 	private _lastReceivedAt: number = Date.now()
 	private _lastReceivedPacketId: number = 0
-	private readonly _inFlight: InFlightPacket[] = []
+	private _inFlight: InFlightPacket[] = []
 	private readonly _ackTimer = new NanoTimer()
 	private _ackTimerRunning = false
 	private _receivedWithoutAck: number = 0
-	private _lastAcked = 0
 
 	public on!: ((event: IPCMessageType.Disconnect, listener: () => void) => this) &
 		((event: IPCMessageType.Log, listener: (payload: string) => void) => this) &
@@ -122,7 +121,7 @@ export class AtemSocketChild extends EventEmitter {
 
 	public sendCommand (payload: Buffer, trackingId: number): void {
 		const packetId = this._nextSendPacketId++
-		if (this._nextSendPacketId > MAX_PACKET_ID) this._nextSendPacketId = 0
+		if (this._nextSendPacketId >= MAX_PACKET_ID) this._nextSendPacketId = 0
 
 		const opcode = PacketFlag.AckRequest << 11
 
@@ -152,6 +151,14 @@ export class AtemSocketChild extends EventEmitter {
 		return this._socket
 	}
 
+	private _isPacketCoveredByAck (ackId: number, packetId: number) {
+		const tolerance = MAX_PACKET_ID / 2
+		const pktIsShortlyBefore = packetId < ackId && packetId + tolerance > ackId
+		const pktIsShortlyAfter = packetId > ackId && packetId < ackId + tolerance
+		const pktIsBeforeWrap = packetId > ackId + tolerance
+		return packetId === ackId || ((pktIsShortlyBefore || pktIsBeforeWrap) && !pktIsShortlyAfter)
+	}
+
 	private _receivePacket (packet: Buffer, rinfo: RemoteInfo) {
 		if (this._debug) this.log(`RECV ${packet}`)
 		this._lastReceivedAt = Date.now()
@@ -165,8 +172,8 @@ export class AtemSocketChild extends EventEmitter {
 		// Send hello answer packet when receive connect flags
 		if (flags & PacketFlag.Connect) {
 			this._connectionState = ConnectionState.Established
-			this._sendAck(remotePacketId)
 			this._lastReceivedPacketId = remotePacketId
+			this._sendAck(remotePacketId)
 			return
 		}
 
@@ -182,28 +189,32 @@ export class AtemSocketChild extends EventEmitter {
 			// Got a packet that needs an ack
 			if (flags & PacketFlag.AckRequest) {
 				// Check if it next in the sequence
-				if (remotePacketId === (this._lastReceivedPacketId + 1) % (MAX_PACKET_ID + 1)) { // TODO - tidy this
-					this._sendOrQueueAck(remotePacketId)
+				if (remotePacketId === (this._lastReceivedPacketId + 1) % MAX_PACKET_ID) {
 					this._lastReceivedPacketId = remotePacketId
+					this._sendOrQueueAck()
 
 					// It might have commands
 					if (length > 12) {
 						this.emit(IPCMessageType.InboundCommand, packet.slice(12), remotePacketId)
 					}
+				} else if (this._isPacketCoveredByAck(this._lastReceivedPacketId, remotePacketId)) {
+					// We got a retransmit of something we have already acked, so reack it
+					this._sendOrQueueAck()
 				}
 			}
 
 			// Device ack'ed our packet
 			if (flags & PacketFlag.AckReply) {
 				const ackPacketId = packet.readUInt16BE(4)
-				this._lastAcked = ackPacketId
-				for (const i in this._inFlight) {
-					// TODO - this doesnt wrap well...
-					if (ackPacketId >= this._inFlight[i].packetId || this._nextSendPacketId < this._inFlight[i].packetId) {
-						this.emit(IPCMessageType.CommandAcknowledged, this._inFlight[i].packetId, this._inFlight[i].trackingId)
-						this._inFlight.splice(Number(i), 1)
+				this._inFlight = this._inFlight.filter(pkt => {
+					if (this._isPacketCoveredByAck(ackPacketId, pkt.packetId)) {
+						this.emit(IPCMessageType.CommandAcknowledged, pkt.packetId, pkt.trackingId)
+						return false
+					} else {
+						// Not acked yet
+						return true
 					}
-				}
+				})
 			}
 		}
 	}
@@ -213,8 +224,7 @@ export class AtemSocketChild extends EventEmitter {
 		this._socket.send(packet, 0, packet.length, this._port, this._address)
 	}
 
-	private _sendOrQueueAck (packetId: number) {
-		this._lastReceivedPacketId = packetId
+	private _sendOrQueueAck () {
 		this._receivedWithoutAck++
 		if (this._receivedWithoutAck >= MAX_PACKET_PER_ACK) {
 			this._receivedWithoutAck = 0
@@ -245,11 +255,6 @@ export class AtemSocketChild extends EventEmitter {
 	private _checkForRetransmit () {
 		let retransmitFromPacketId: number | undefined
 		for (const sentPacket of this._inFlight) {
-			if (sentPacket.packetId <= this._lastAcked || sentPacket.packetId > this._nextSendPacketId) {
-				this.emit(IPCMessageType.CommandAcknowledged, sentPacket.packetId, sentPacket.trackingId)
-				this._inFlight.splice(this._inFlight.indexOf(sentPacket), 1)
-				continue
-			}
 			if (retransmitFromPacketId && sentPacket.packetId > retransmitFromPacketId) {
 				sentPacket.lastSent = Date.now()
 				sentPacket.resent++
