@@ -5,10 +5,6 @@ import { Enums } from '..'
 import WaveFile = require('wavefile')
 
 export namespace Util {
-	export function stringToBytes (str: string): Array<number> {
-		return Array.from(Buffer.from(str).values())
-	}
-
 	export function bufToBase64String (buffer: Buffer, start: number, length: number): string {
 		return buffer.toString('base64', start, start + length)
 	}

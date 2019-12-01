@@ -265,7 +265,7 @@ export class AtemSocketChild extends EventEmitter {
 	}
 
 	private _checkForRetransmit (retransmitFromPacketId?: number) {
-		for (const sentPacket of this._inFlight) {
+		this._inFlight = this._inFlight.filter(sentPacket => {
 			if (retransmitFromPacketId && sentPacket.packetId > retransmitFromPacketId) {
 				sentPacket.lastSent = Date.now()
 				sentPacket.resent++
@@ -283,15 +283,19 @@ export class AtemSocketChild extends EventEmitter {
 					retransmitFromPacketId = sentPacket.packetId
 				} else {
 					this.emit(IPCMessageType.CommandTimeout, sentPacket.packetId, sentPacket.trackingId)
-					this._inFlight.splice(this._inFlight.indexOf(sentPacket), 1)
 
 					this.log(`Timed out: ${sentPacket.packetId}`)
 					if (this._debug) {
 						this.log(`TIMED OUT: ${sentPacket}`)
 					}
 					// @todo: we should probably break up the connection here.
+
+					// Discard
+					return false
 				}
 			}
-		}
+
+			return true
+		})
 	}
 }
