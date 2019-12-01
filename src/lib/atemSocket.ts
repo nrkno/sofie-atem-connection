@@ -75,7 +75,7 @@ export class AtemSocket extends EventEmitter {
 		return ++this._nextCommandTrackingId
 	}
 
-	public async _sendCommand (command: ISerializableCommand, trackingId: number) {
+	public async sendCommand (command: ISerializableCommand, trackingId: number): Promise<void> {
 		if (this._socketProcess) {
 			if (typeof (command as any).serialize !== 'function') {
 				throw new Error('Command is not serializable')
@@ -95,21 +95,33 @@ export class AtemSocket extends EventEmitter {
 		}
 	}
 
-	private async _createSocketProcess (address?: string, port?: number) {
-		const socketProcess = await threadedClass<AtemSocketChild>('./atemSocketChild.js', AtemSocketChild, [{
-			address,
-			port
-		}], {
+	private async _createSocketProcess () {
+		const socketProcess = await threadedClass<AtemSocketChild>('./atemSocketChild', AtemSocketChild, [
+			{
+				address: this._address,
+				port: this._port,
+				debug: this._debug
+			},
+			null,
+			null,
+			null,
+			null
+			// () => this.emit(IPCMessageType.Disconnect), // onDisconnect
+			// (message: string) => this.log(message), // onLog
+			// (payload: Buffer) => this._parseCommand(Buffer.from(payload)), // onCommandReceived
+			// (packetId: number, trackingId: number) => this.emit(IPCMessageType.CommandAcknowledged, { packetId, trackingId }) // onCommandAcknowledged
+		], {
 			instanceName: 'atem-connection',
 			freezeLimit: 200,
 			autoRestart: true,
 			disableMultithreading: this._disableMultithreaded
 		})
-		// await socketProcess.on(IPCMessageType.Disconnect, () => this.emit(IPCMessageType.Disconnect))
-		// await socketProcess.on(IPCMessageType.Log, (payload: string) => this.log(payload))
-		// await socketProcess.on(IPCMessageType.CommandAcknowledged, (packetId: number, trackingId: number) => this.emit(IPCMessageType.CommandAcknowledged, { packetId, trackingId }))
-		// await socketProcess.on(IPCMessageType.CommandTimeout, (packetId: number, trackingId: number) => this.emit(IPCMessageType.CommandTimeout, { packetId, trackingId }))
-		// await socketProcess.on(IPCMessageType.InboundCommand, (payload: Buffer) => this._parseCommand(Buffer.from(payload)))
+		await socketProcess.hackSetFuncs(
+			() => this.emit(IPCMessageType.Disconnect), // onDisconnect
+			(message: string) => this.log(message), // onLog
+			(payload: Buffer) => this._parseCommand(Buffer.from(payload)), // onCommandReceived
+			(packetId: number, trackingId: number) => this.emit(IPCMessageType.CommandAcknowledged, { packetId, trackingId }) // onCommandAcknowledged
+		)
 
 		ThreadedClassManager.onEvent(socketProcess, 'restarted', () => {
 			this.emit('restarted')
@@ -120,12 +132,24 @@ export class AtemSocket extends EventEmitter {
 			})
 		})
 
+		await socketProcess.connect(this._address, this._port)
+
 		return socketProcess
 	}
 
 	private _parseCommand (buffer: Buffer) {
+		if (buffer.length < 8) {
+			// Commands are never less than 8, as that is the header
+			return
+		}
+
 		const length = buffer.readUInt16BE(0)
 		const name = buffer.toString('ascii', 4, 8)
+
+		if (length < 8) {
+			// Commands are never less than 8, as that is the header
+			return
+		}
 
 		if (name === 'InCm') {
 			this.emit('connect')
@@ -146,7 +170,7 @@ export class AtemSocket extends EventEmitter {
 			} catch (e) {
 				this.emit('error', e)
 			}
-		}
+		} // TODO - log the unknown command?
 
 		if (buffer.length > length) {
 			this._parseCommand(buffer.slice(length))

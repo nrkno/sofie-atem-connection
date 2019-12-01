@@ -106,7 +106,7 @@ export class Atem extends EventEmitter {
 	public sendCommand (command: ISerializableCommand): Promise<ISerializableCommand> {
 		const commandTrackingId = this.socket.nextCommandTrackingId
 		return new Promise((resolve, reject) => {
-			this.socket._sendCommand(command, commandTrackingId).then(() => {
+			this.socket.sendCommand(command, commandTrackingId).then(() => {
 				this._sentQueue[commandTrackingId] = {
 					command,
 					resolve,

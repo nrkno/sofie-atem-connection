@@ -2,7 +2,6 @@ import { createSocket, Socket, RemoteInfo } from 'dgram'
 import { Util } from './atemUtil'
 import { ConnectionState, PacketFlag } from '../enums'
 import * as NanoTimer from 'nanotimer'
-import { DEFAULT_PORT } from '../atem'
 
 const IN_FLIGHT_TIMEOUT = 60 // ms
 const CONNECTION_TIMEOUT = 5000 // ms
@@ -20,7 +19,7 @@ interface InFlightPacket {
 }
 
 export class AtemSocketChild {
-	private readonly _debug = false
+	private readonly _debug: boolean
 
 	private _connectionState = ConnectionState.Closed
 	private _reconnectTimer: NodeJS.Timer | undefined
@@ -29,8 +28,8 @@ export class AtemSocketChild {
 	private _nextSendPacketId = 1
 	private _sessionId: number = 0
 
-	private _address: string = ''
-	private _port: number = DEFAULT_PORT
+	private _address: string
+	private _port: number
 	private _socket: Socket
 
 	private _lastReceivedAt: number = Date.now()
@@ -40,12 +39,16 @@ export class AtemSocketChild {
 	private _ackTimerRunning = false
 	private _receivedWithoutAck: number = 0
 
-	private readonly onDisconnect: () => void
-	private readonly onLog: (message: string) => void
-	private readonly onCommandReceived: (payload: Buffer, packetId: number) => void
-	private readonly onCommandAcknowledged: (packetId: number, trackingId: number) => void
+	private onDisconnect: () => Promise<void>
+	private onLog: (message: string) => Promise<void>
+	private onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>
+	private onCommandAcknowledged: (packetId: number, trackingId: number) => Promise<void>
 
-	constructor (onDisconnect: () => void, onLog: (message: string) => void, onCommandReceived: (payload: Buffer, packetId: number) => void, onCommandAcknowledged: (packetId: number, trackingId: number) => void) {
+	constructor (options: { address: string, port: number, debug: boolean }, onDisconnect: () => Promise<void>, onLog: (message: string) => Promise<void>, onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>, onCommandAcknowledged: (packetId: number, trackingId: number) => Promise<void>) {
+		this._debug = options.debug
+		this._address = options.address
+		this._port = options.port
+
 		this.onDisconnect = onDisconnect
 		this.onLog = onLog
 		this.onCommandReceived = onCommandReceived
@@ -54,15 +57,26 @@ export class AtemSocketChild {
 		this._socket = this._createSocket()
 	}
 
-	public connect (address?: string, port?: number): void {
+	public hackSetFuncs (onDisconnect: () => Promise<void>, onLog: (message: string) => Promise<void>, onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>, onCommandAcknowledged: (packetId: number, trackingId: number) => Promise<void>) {
+		this.onDisconnect = onDisconnect
+		this.onLog = onLog
+		this.onCommandReceived = onCommandReceived
+		this.onCommandAcknowledged = onCommandAcknowledged
+	}
+
+	public connect (address: string, port: number): Promise<void> {
 		if (!this._reconnectTimer) {
-			this._reconnectTimer = setInterval(() => {
+			this._reconnectTimer = setInterval(async () => {
 				if (this._lastReceivedAt + CONNECTION_TIMEOUT > Date.now()) {
 					// We heard from the atem recently
 					return
 				}
 
-				this.restartConnection()
+				try {
+					await this.restartConnection()
+				} catch (e) {
+					this.log(`Reconnect failed: ${e}`)
+				}
 			}, CONNECTION_RETRY_INTERVAL)
 		}
 		// Check for retransmits every 10 milliseconds
@@ -70,14 +84,10 @@ export class AtemSocketChild {
 			this._retransmitTimer = setInterval(() => this._checkForRetransmit(), 10)
 		}
 
-		if (address !== undefined) {
-			this._address = address
-		}
-		if (port !== undefined) {
-			this._port = port
-		}
+		this._address = address
+		this._port = port
 
-		this.restartConnection()
+		return this.restartConnection()
 	}
 
 	public disconnect (): Promise<void> {
@@ -100,16 +110,16 @@ export class AtemSocketChild {
 		}).then(() => {
 			this._connectionState = ConnectionState.Closed
 			this._createSocket()
-			this.onDisconnect()
+			return this.onDisconnect()
 		})
 	}
 
-	public restartConnection (): void {
+	public async restartConnection (): Promise<void> {
 		// This includes a 'disconnect'
 		if (this._connectionState === ConnectionState.Established) {
 			this._connectionState = ConnectionState.Closed
 			this._createSocket()
-			this.onDisconnect()
+			await this.onDisconnect()
 		}
 
 		// Reset connection
@@ -119,13 +129,12 @@ export class AtemSocketChild {
 		this.log('reconnect')
 
 		// Try doing reconnect
-		if (this._address && this._port) {
-			this._sendPacket(Util.COMMAND_CONNECT_HELLO)
-			this._connectionState = ConnectionState.SynSent
-		}
+		this._sendPacket(Util.COMMAND_CONNECT_HELLO)
+		this._connectionState = ConnectionState.SynSent
 	}
 
 	public log (message: string): void {
+		// tslint:disable-next-line: no-floating-promises
 		this.onLog(message)
 	}
 
@@ -157,12 +166,12 @@ export class AtemSocketChild {
 		this._socket = createSocket('udp4')
 		this._socket.bind()
 		this._socket.on('message', (packet, rinfo) => this._receivePacket(packet, rinfo))
-		this._socket.on('error', err => {
+		this._socket.on('error', async err => {
 			this.log(`Connection error: ${err}`)
 
 			if (this._connectionState === ConnectionState.Established) {
 				// If connection is open, then restart. Otherwise the reconnectTimer will handle it
-				this.restartConnection()
+				await this.restartConnection()
 			}
 		})
 
@@ -195,13 +204,15 @@ export class AtemSocketChild {
 			return
 		}
 
+		const ps: Array<Promise<void>> = []
+
 		if (this._connectionState === ConnectionState.Established) {
 			// Device asked for retransmit
 			if (flags & PacketFlag.RetransmitRequest) {
 				const fromPacketId = packet.readUInt16BE(6)
 				this.log(`Retransmit request: ${fromPacketId}`)
 
-				this._retransmitFrom(fromPacketId)
+				ps.push(this._retransmitFrom(fromPacketId))
 			}
 
 			// Got a packet that needs an ack
@@ -213,7 +224,7 @@ export class AtemSocketChild {
 
 					// It might have commands
 					if (length > 12) {
-						this.onCommandReceived(packet.slice(12), remotePacketId)
+						ps.push(this.onCommandReceived(packet.slice(12), remotePacketId))
 					}
 				} else if (this._isPacketCoveredByAck(this._lastReceivedPacketId, remotePacketId)) {
 					// We got a retransmit of something we have already acked, so reack it
@@ -226,7 +237,7 @@ export class AtemSocketChild {
 				const ackPacketId = packet.readUInt16BE(4)
 				this._inFlight = this._inFlight.filter(pkt => {
 					if (this._isPacketCoveredByAck(ackPacketId, pkt.packetId)) {
-						this.onCommandAcknowledged(pkt.packetId, pkt.trackingId)
+						ps.push(this.onCommandAcknowledged(pkt.packetId, pkt.trackingId))
 						return false
 					} else {
 						// Not acked yet
@@ -236,6 +247,8 @@ export class AtemSocketChild {
 				// this.log(`${Date.now()} Got ack ${ackPacketId} Remaining=${this._inFlight.length}`)
 			}
 		}
+
+		return Promise.all(ps)
 	}
 
 	private _sendPacket (packet: Buffer) {
@@ -271,7 +284,7 @@ export class AtemSocketChild {
 		this._sendPacket(buffer)
 	}
 
-	private _retransmitFrom (fromId: number) {
+	private async _retransmitFrom (fromId: number) {
 		// this.log(`Resending from ${fromId} to ${this._inFlight.length > 0 ? this._inFlight[this._inFlight.length - 1].packetId : '-'}`)
 
 		// The atem will ask for MAX_PACKET_ID to be retransmitted when it really wants 0
@@ -281,7 +294,7 @@ export class AtemSocketChild {
 		if (fromIndex === -1) {
 			// fromId is not inflight, so we cannot resend. only fix is to abort
 			this.log(`Unable to resend: ${fromId}`)
-			this.restartConnection()
+			await this.restartConnection()
 		} else {
 			this.log(`Resending from ${fromId} to ${this._inFlight[this._inFlight.length - 1].packetId}`)
 			// Resend from the requested
@@ -298,20 +311,21 @@ export class AtemSocketChild {
 		}
 	}
 
-	private _checkForRetransmit () {
+	private _checkForRetransmit (): Promise<void> {
 		for (const sentPacket of this._inFlight) {
 			if (sentPacket.lastSent + IN_FLIGHT_TIMEOUT < Date.now()) {
 				if (sentPacket.resent <= MAX_PACKET_RETRIES && this._isPacketCoveredByAck(this._nextSendPacketId, sentPacket.packetId)) {
 					this.log(`Retransmit from timeout: ${sentPacket.packetId}`)
 					// Retransmit the packet and anything after it
-					this._retransmitFrom(sentPacket.packetId)
+					return this._retransmitFrom(sentPacket.packetId)
 				} else {
 					// A command has timed out, so we need to reset to avoid getting stuck
 					this.log(`Packet timed out: ${sentPacket.packetId}`)
-					this.restartConnection()
+					return this.restartConnection()
 				}
-				return
 			}
 		}
+
+		return Promise.resolve()
 	}
 }

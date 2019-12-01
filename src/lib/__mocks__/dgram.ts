@@ -2,6 +2,7 @@ import { EventEmitter } from 'events'
 import { SocketType, RemoteInfo } from 'dgram'
 import 'jest-extended'
 import { DEFAULT_PORT } from '../../atem'
+import { InstalledClock } from 'lolex'
 
 export class Socket extends EventEmitter {
 	public isOpen: boolean = false
@@ -15,7 +16,7 @@ export class Socket extends EventEmitter {
 
 	public sendImpl?: (msg: Buffer) => void
 
-	public emitMessage (msg: Buffer) {
+	public async emitMessage (clock: InstalledClock, msg: Buffer) {
 		expect(Buffer.isBuffer(msg)).toBeTruthy()
 
 		const rinfo: RemoteInfo = {
@@ -25,6 +26,8 @@ export class Socket extends EventEmitter {
 			size: msg.length
 		}
 		this.emit('message', msg, rinfo)
+
+		await clock.tickAsync(0)
 	}
 
 	public bind (port?: number, address?: string, callback?: () => void): void {

@@ -27,8 +27,8 @@ module.exports = {
 	coverageDirectory: "./coverage/",
 	collectCoverage: true,
 	collectCoverageFrom: [
-		"**/src/**/**",
-		"!**/src/@types/**",
+		"src/**/*.{js,ts}",
+		"!**/@types/**",
 		"!**/__tests__/**",
 		"!**/__mocks__/**",
 		'!**/node_modules/**',

@@ -29,8 +29,18 @@ function fakeConnect (child: AtemSocketChild) {
 	child2._address = '127.0.0.1'
 }
 
-function createSocketChild (onCommandReceived?: (payload: Buffer, packetId: number) => void, onCommandAcknowledged?: (packetId: number, trackingId: number) => void) {
-	return new AtemSocketChild(() => null, () => null, onCommandReceived || (() => null), onCommandAcknowledged || (() => null))
+function createSocketChild (onCommandReceived?: (payload: Buffer, packetId: number) => Promise<void>, onCommandAcknowledged?: (packetId: number, trackingId: number) => Promise<void>) {
+	return new AtemSocketChild(
+		{
+			address: ADDRESS,
+			port: DEFAULT_PORT,
+			debug: false
+		},
+		() => Promise.resolve(),
+		() => Promise.resolve(),
+		onCommandReceived || (() => Promise.resolve()),
+		onCommandAcknowledged || (() => Promise.resolve())
+	)
 }
 
 describe('SocketChild', () => {
@@ -59,7 +69,7 @@ describe('SocketChild', () => {
 			}
 
 			expect(getState(child)).toEqual(ConnectionState.Closed)
-			child.connect(ADDRESS)
+			await child.connect(ADDRESS, DEFAULT_PORT)
 
 			// Ensure everything has ticked through
 			clock.tick(20)
@@ -84,7 +94,7 @@ describe('SocketChild', () => {
 			}
 
 			// Now get the connection established
-			socket.emitMessage(Buffer.from([
+			await socket.emitMessage(clock, Buffer.from([
 				0x10, 0x14, // Length & Type
 				0x53, 0x1b, // Session Id
 				0x00, 0x00, // Not acking
@@ -95,7 +105,7 @@ describe('SocketChild', () => {
 			]))
 
 			// Ensure everything has ticked through
-			clock.tick(20)
+			await clock.tickAsync(20)
 
 			// Confirm something was sent
 			expect(receivedPacket).toBeTruthy()
@@ -142,7 +152,7 @@ describe('SocketChild', () => {
 				}
 			}
 
-			socket.emitMessage(genAckRequestMessage(1))
+			await socket.emitMessage(clock, genAckRequestMessage(1))
 
 			// Nothing should have been sent immediately
 			expect(acked).toEqual([])
@@ -186,16 +196,16 @@ describe('SocketChild', () => {
 			}
 
 			for (let i = 1; i <= 15; i++) {
-				socket.emitMessage(genAckRequestMessage(i))
+				await socket.emitMessage(clock, genAckRequestMessage(i))
 			}
 
 			// Nothing should have been sent yet
-			clock.tick(4)
+			await clock.tickAsync(4)
 			expect(acked).toEqual([])
 			expect(gotUnknown).toBeFalse()
 
 			// One more will trigger an ack
-			socket.emitMessage(genAckRequestMessage(16))
+			await socket.emitMessage(clock, genAckRequestMessage(16))
 			expect(acked).toEqual([16])
 			expect(gotUnknown).toBeFalse()
 			acked = []
@@ -215,7 +225,10 @@ describe('SocketChild', () => {
 
 	test('Inbound commands', async () => {
 		let gotCmds: number[] = []
-		const child = createSocketChild(buf => gotCmds.push(buf.length))
+		const child = createSocketChild(buf => {
+			gotCmds.push(buf.length)
+			return Promise.resolve()
+		})
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -230,29 +243,29 @@ describe('SocketChild', () => {
 			gotCmds = []
 
 			// Nothing
-			socket.emitMessage(genAckRequestMessage(1))
+			await socket.emitMessage(clock, genAckRequestMessage(1))
 			expect(gotCmds).toEqual([])
 			expect(gotUnknown).toBeFalse()
 
 			// Some payload
 			const buffer = Buffer.concat([genAckRequestMessage(2, 1), Buffer.from([0])])
-			socket.emitMessage(buffer)
+			await socket.emitMessage(clock, buffer)
 			expect(gotCmds).toEqual([1])
 			expect(gotUnknown).toBeFalse()
 			gotCmds = []
 
 			// Repeated should not re-emit
-			socket.emitMessage(buffer)
+			await socket.emitMessage(clock, buffer)
 			expect(gotCmds).toEqual([])
 			expect(gotUnknown).toBeFalse()
 
 			// Previous should not re-emit
-			socket.emitMessage(Buffer.concat([genAckRequestMessage(1, 1), Buffer.from([0])]))
+			await socket.emitMessage(clock, Buffer.concat([genAckRequestMessage(1, 1), Buffer.from([0])]))
 			expect(gotCmds).toEqual([])
 			expect(gotUnknown).toBeFalse()
 
 			// Another payload
-			socket.emitMessage(Buffer.concat([genAckRequestMessage(3, 1), Buffer.from([0])]))
+			await socket.emitMessage(clock, Buffer.concat([genAckRequestMessage(3, 1), Buffer.from([0])]))
 			expect(gotCmds).toEqual([1])
 			expect(gotUnknown).toBeFalse()
 			gotCmds = []
@@ -267,7 +280,10 @@ describe('SocketChild', () => {
 
 	test('Inbound commands - around wrap', async () => {
 		let gotCmds: number[] = []
-		const child = createSocketChild(buf => gotCmds.push(buf.length))
+		const child = createSocketChild(buf => {
+			gotCmds.push(buf.length)
+			return Promise.resolve()
+		})
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -283,50 +299,50 @@ describe('SocketChild', () => {
 			gotCmds = []
 
 			// Nothing
-			socket.emitMessage(Buffer.concat([genAckRequestMessage(32766, 1), Buffer.from([0])]))
+			await socket.emitMessage(clock, Buffer.concat([genAckRequestMessage(32766, 1), Buffer.from([0])]))
 			expect(gotCmds).toEqual([])
 			expect(gotUnknown).toBeFalse()
 
 			// Some payload
 			const lastBuffer = Buffer.concat([genAckRequestMessage(32767, 1), Buffer.from([0])])
-			socket.emitMessage(lastBuffer)
+			await socket.emitMessage(clock, lastBuffer)
 			expect(gotCmds).toEqual([1])
 			expect(gotUnknown).toBeFalse()
 			gotCmds = []
 
 			// Should not re-emit
-			socket.emitMessage(lastBuffer)
+			await socket.emitMessage(clock, lastBuffer)
 			expect(gotCmds).toEqual([])
 			expect(gotUnknown).toBeFalse()
 			gotCmds = []
 
 			// Now it has wrapped
 			const firstBuffer = Buffer.concat([genAckRequestMessage(0, 1), Buffer.from([0])])
-			socket.emitMessage(firstBuffer)
+			await socket.emitMessage(clock, firstBuffer)
 			expect(gotCmds).toEqual([1])
 			expect(gotUnknown).toBeFalse()
 			gotCmds = []
 
 			// Next buffer
-			socket.emitMessage(Buffer.concat([genAckRequestMessage(1, 1), Buffer.from([0])]))
+			await socket.emitMessage(clock, Buffer.concat([genAckRequestMessage(1, 1), Buffer.from([0])]))
 			expect(gotCmds).toEqual([1])
 			expect(gotUnknown).toBeFalse()
 			gotCmds = []
 
 			// Should not re-emit
-			socket.emitMessage(firstBuffer)
+			await socket.emitMessage(clock, firstBuffer)
 			expect(gotCmds).toEqual([])
 			expect(gotUnknown).toBeFalse()
 			gotCmds = []
 
 			// Retransmit of lastBuffer is not uncommon, it should not re-emit
-			socket.emitMessage(lastBuffer)
+			await socket.emitMessage(clock, lastBuffer)
 			expect(gotCmds).toEqual([])
 			expect(gotUnknown).toBeFalse()
 			gotCmds = []
 
 			// Ensure that the first buffer still does not re-emit
-			socket.emitMessage(firstBuffer)
+			await socket.emitMessage(clock, firstBuffer)
 			expect(gotCmds).toEqual([])
 			expect(gotUnknown).toBeFalse()
 			gotCmds = []
@@ -401,7 +417,10 @@ describe('SocketChild', () => {
 
 	test('SendCommand - acks', async () => {
 		let acked: Array<{packetId: number, trackingId: number}> = []
-		const child = createSocketChild(undefined, (packetId, trackingId) => acked.push({ packetId, trackingId }))
+		const child = createSocketChild(undefined, (packetId, trackingId) => {
+			acked.push({ packetId, trackingId })
+			return Promise.resolve()
+		})
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -432,7 +451,7 @@ describe('SocketChild', () => {
 			expect(acked).toEqual([])
 
 			// Ack a couple
-			socket.emitMessage(genAckCommandMessage(125))
+			await socket.emitMessage(clock, genAckCommandMessage(125))
 			expect(getInflightIds(child)).toEqual([126, 127, 128])
 			expect(acked).toEqual([
 				{ packetId: 123, trackingId: 5 },
@@ -442,7 +461,7 @@ describe('SocketChild', () => {
 			acked = []
 
 			// Another ack
-			socket.emitMessage(genAckCommandMessage(126))
+			await socket.emitMessage(clock, genAckCommandMessage(126))
 			expect(getInflightIds(child)).toEqual([127, 128])
 			expect(acked).toEqual([
 				{ packetId: 126, trackingId: 8 }
@@ -458,7 +477,10 @@ describe('SocketChild', () => {
 
 	test('SendCommand - acks wrap', async () => {
 		let acked: Array<{packetId: number, trackingId: number}> = []
-		const child = createSocketChild(undefined, (packetId, trackingId) => acked.push({ packetId, trackingId }))
+		const child = createSocketChild(undefined, (packetId, trackingId) => {
+			acked.push({ packetId, trackingId })
+			return Promise.resolve()
+		})
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -489,7 +511,7 @@ describe('SocketChild', () => {
 			expect(acked).toEqual([])
 
 			// Ack a couple
-			socket.emitMessage(genAckCommandMessage(32766))
+			await socket.emitMessage(clock, genAckCommandMessage(32766))
 			expect(getInflightIds(child)).toEqual([32767, 0, 1])
 			expect(acked).toEqual([
 				{ packetId: 32764, trackingId: 5 },
@@ -499,7 +521,7 @@ describe('SocketChild', () => {
 			acked = []
 
 			// Another ack
-			socket.emitMessage(genAckCommandMessage(0))
+			await socket.emitMessage(clock, genAckCommandMessage(0))
 			expect(getInflightIds(child)).toEqual([1])
 			expect(acked).toEqual([
 				{ packetId: 32767, trackingId: 8 },
