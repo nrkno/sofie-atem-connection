@@ -5,7 +5,7 @@ import { Util } from '../..'
 import { ProtocolVersion } from '../../enums'
 
 export class SuperSourceBoxParametersCommand extends WritableCommand<SuperSourceBox> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		enabled: 1 << 0,
 		source: 1 << 1,
 		x: 1 << 2,
@@ -18,10 +18,10 @@ export class SuperSourceBoxParametersCommand extends WritableCommand<SuperSource
 		cropRight: 1 << 9
 	}
 
-	static readonly rawName = 'CSBP'
+	public static readonly rawName = 'CSBP'
 
-	readonly ssrcId: number
-	readonly boxId: number
+	public readonly ssrcId: number
+	public readonly boxId: number
 
 	constructor (ssrcId: number, boxId: number) {
 		super()
@@ -30,7 +30,7 @@ export class SuperSourceBoxParametersCommand extends WritableCommand<SuperSource
 		this.boxId = boxId
 	}
 
-	serialize (version: ProtocolVersion) {
+	public serialize (version: ProtocolVersion) {
 		const buffer = Buffer.alloc(24)
 		let i = 0
 		if (version >= ProtocolVersion.V8_0) {
@@ -57,10 +57,10 @@ export class SuperSourceBoxParametersCommand extends WritableCommand<SuperSource
 }
 
 export class SuperSourceBoxParametersUpdateCommand extends DeserializedCommand<SuperSourceBox> {
-	static readonly rawName = 'SSBP'
+	public static readonly rawName = 'SSBP'
 
-	readonly ssrcId: number
-	readonly boxId: number
+	public readonly ssrcId: number
+	public readonly boxId: number
 
 	constructor (ssrcId: number, boxId: number, properties: SuperSourceBox) {
 		super(properties)
@@ -69,7 +69,7 @@ export class SuperSourceBoxParametersUpdateCommand extends DeserializedCommand<S
 		this.boxId = boxId
 	}
 
-	static deserialize (rawCommand: Buffer, version: ProtocolVersion): SuperSourceBoxParametersUpdateCommand {
+	public static deserialize (rawCommand: Buffer, version: ProtocolVersion): SuperSourceBoxParametersUpdateCommand {
 		let ssrcId = 0
 		let i = 0
 		if (version >= ProtocolVersion.V8_0) {
@@ -94,7 +94,7 @@ export class SuperSourceBoxParametersUpdateCommand extends DeserializedCommand<S
 		return new SuperSourceBoxParametersUpdateCommand(ssrcId, boxId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const supersource = state.video.getSuperSource(this.ssrcId)
 		supersource.boxes[this.boxId] = {
 			...this.properties

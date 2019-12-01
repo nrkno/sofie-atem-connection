@@ -7,9 +7,9 @@ export interface HandlePositionProps {
 }
 
 export class TransitionPositionCommand extends BasicWritableCommand<HandlePositionProps> {
-	static readonly rawName = 'CTPs'
+	public static readonly rawName = 'CTPs'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number, handlePosition: number) {
 		super({ handlePosition })
@@ -17,7 +17,7 @@ export class TransitionPositionCommand extends BasicWritableCommand<HandlePositi
 		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		buffer.writeUInt16BE(this.properties.handlePosition, 2)
@@ -31,9 +31,9 @@ export interface TransitionPositionProps extends HandlePositionProps {
 }
 
 export class TransitionPositionUpdateCommand extends DeserializedCommand<TransitionPositionProps> {
-	static readonly rawName = 'TrPs'
+	public static readonly rawName = 'TrPs'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number, properties: TransitionPositionProps) {
 		super(properties)
@@ -41,7 +41,7 @@ export class TransitionPositionUpdateCommand extends DeserializedCommand<Transit
 		this.mixEffect = mixEffect
 	}
 
-	static deserialize (rawCommand: Buffer): TransitionPositionUpdateCommand {
+	public static deserialize (rawCommand: Buffer): TransitionPositionUpdateCommand {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const properties = {
 			inTransition: rawCommand[1] === 1,
@@ -52,7 +52,7 @@ export class TransitionPositionUpdateCommand extends DeserializedCommand<Transit
 		return new TransitionPositionUpdateCommand(mixEffect, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionFramesLeft = this.properties.remainingFrames
 		mixEffect.transitionPosition = this.properties.handlePosition

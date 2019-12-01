@@ -4,10 +4,10 @@ import DataTransfer from './dataTransfer'
 import DataTransferFrame from './dataTransferFrame'
 
 export default class DataTransferClip extends DataTransfer {
-	readonly clipIndex: number // 0 or 1
-	readonly frames: Array<DataTransferFrame>
-	curFrame = 0
-	readonly name: string
+	public readonly clipIndex: number // 0 or 1
+	public readonly frames: Array<DataTransferFrame>
+	public readonly name: string
+	public curFrame = 0
 
 	constructor (clipIndex: number, name: string, frames: Array<DataTransferFrame>) {
 		super(0, 1 + clipIndex)

@@ -6,9 +6,9 @@ export interface AuxSourceProps {
 }
 
 export class AuxSourceCommand extends BasicWritableCommand<AuxSourceProps> {
-	static readonly rawName = 'CAuS'
+	public static readonly rawName = 'CAuS'
 
-	readonly auxBus: number
+	public readonly auxBus: number
 
 	constructor (auxBus: number, source: number) {
 		super({ source })
@@ -16,7 +16,7 @@ export class AuxSourceCommand extends BasicWritableCommand<AuxSourceProps> {
 		this.auxBus = auxBus
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(0x01, 0)
 		buffer.writeUInt8(this.auxBus, 1)
@@ -26,9 +26,9 @@ export class AuxSourceCommand extends BasicWritableCommand<AuxSourceProps> {
 }
 
 export class AuxSourceUpdateCommand extends DeserializedCommand<AuxSourceProps> {
-	static readonly rawName = 'AuxS'
+	public static readonly rawName = 'AuxS'
 
-	readonly auxBus: number
+	public readonly auxBus: number
 
 	constructor (auxBus: number, properties: AuxSourceProps) {
 		super(properties)
@@ -36,7 +36,7 @@ export class AuxSourceUpdateCommand extends DeserializedCommand<AuxSourceProps> 
 		this.auxBus = auxBus
 	}
 
-	static deserialize (rawCommand: Buffer): AuxSourceUpdateCommand {
+	public static deserialize (rawCommand: Buffer): AuxSourceUpdateCommand {
 		const auxBus = rawCommand[0]
 		const properties = {
 			source: rawCommand.readUInt16BE(2)
@@ -45,7 +45,7 @@ export class AuxSourceUpdateCommand extends DeserializedCommand<AuxSourceProps> 
 		return new AuxSourceUpdateCommand(auxBus, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.video.auxilliaries[this.auxBus] = this.properties.source
 		return `video.auxilliaries.${this.auxBus}`
 	}

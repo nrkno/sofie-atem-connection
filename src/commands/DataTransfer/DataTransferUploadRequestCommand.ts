@@ -10,9 +10,9 @@ export interface DataTransferUploadRequestProps {
 }
 
 export class DataTransferUploadRequestCommand extends BasicWritableCommand<DataTransferUploadRequestProps> {
-	static readonly rawName = 'FTSD'
+	public static readonly rawName = 'FTSD'
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(16)
 		buffer.writeUInt16BE(this.properties.transferId, 0)
 		buffer.writeUInt16BE(this.properties.transferStoreId, 2)

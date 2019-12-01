@@ -4,7 +4,7 @@ import { WipeTransitionSettings } from '../../../state/video'
 import { Util, Enums } from '../../..'
 
 export class TransitionWipeCommand extends WritableCommand<WipeTransitionSettings> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		rate: 1 << 0,
 		pattern: 1 << 1,
 		borderWidth: 1 << 2,
@@ -17,9 +17,9 @@ export class TransitionWipeCommand extends WritableCommand<WipeTransitionSetting
 		flipFlop: 1 << 9
 	}
 
-	static readonly rawName = 'CTWp'
+	public static readonly rawName = 'CTWp'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number) {
 		super()
@@ -27,7 +27,7 @@ export class TransitionWipeCommand extends WritableCommand<WipeTransitionSetting
 		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(20)
 		buffer.writeUInt16BE(this.flag, 0)
 
@@ -50,9 +50,9 @@ export class TransitionWipeCommand extends WritableCommand<WipeTransitionSetting
 }
 
 export class TransitionWipeUpdateCommand extends DeserializedCommand<WipeTransitionSettings> {
-	static readonly rawName = 'TWpP'
+	public static readonly rawName = 'TWpP'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number, properties: WipeTransitionSettings) {
 		super(properties)
@@ -60,7 +60,7 @@ export class TransitionWipeUpdateCommand extends DeserializedCommand<WipeTransit
 		this.mixEffect = mixEffect
 	}
 
-	static deserialize (rawCommand: Buffer): TransitionWipeUpdateCommand {
+	public static deserialize (rawCommand: Buffer): TransitionWipeUpdateCommand {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const properties = {
 			rate: Util.parseNumberBetween(rawCommand[1], 1, 250),
@@ -78,7 +78,7 @@ export class TransitionWipeUpdateCommand extends DeserializedCommand<WipeTransit
 		return new TransitionWipeUpdateCommand(mixEffect, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionSettings.wipe = {
 			...this.properties

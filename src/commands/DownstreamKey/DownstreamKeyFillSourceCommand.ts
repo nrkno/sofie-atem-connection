@@ -1,9 +1,9 @@
 import { BasicWritableCommand } from '../CommandBase'
 
 export class DownstreamKeyFillSourceCommand extends BasicWritableCommand<{ input: number }> {
-	static readonly rawName = 'CDsF'
+	public static readonly rawName = 'CDsF'
 
-	readonly downstreamKeyerId: number
+	public readonly downstreamKeyerId: number
 
 	constructor (downstreamKeyerId: number, input: number) {
 		super({ input })
@@ -11,7 +11,7 @@ export class DownstreamKeyFillSourceCommand extends BasicWritableCommand<{ input
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.downstreamKeyerId, 0)
 		buffer.writeUInt16BE(this.properties.input, 2)

@@ -4,7 +4,7 @@ import { UpstreamKeyerDVESettings } from '../../../state/video/upstreamKeyers'
 import { Util, Enums } from '../../..'
 
 export class MixEffectKeyDVECommand extends WritableCommand<UpstreamKeyerDVESettings> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		sizeX: 1 << 0,
 		sizeY: 1 << 1,
 		positionX: 1 << 2,
@@ -32,10 +32,10 @@ export class MixEffectKeyDVECommand extends WritableCommand<UpstreamKeyerDVESett
 		maskRight: 1 << 24,
 		rate: 1 << 25
 	}
-	static readonly rawName = 'CKDV'
+	public static readonly rawName = 'CKDV'
 
-	readonly mixEffect: number
-	readonly upstreamKeyerId: number
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
 
 	constructor (mixEffect: number, upstreamKeyerId: number) {
 		super()
@@ -44,7 +44,7 @@ export class MixEffectKeyDVECommand extends WritableCommand<UpstreamKeyerDVESett
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(64)
 		buffer.writeUInt32BE(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 4)
@@ -87,10 +87,10 @@ export class MixEffectKeyDVECommand extends WritableCommand<UpstreamKeyerDVESett
 }
 
 export class MixEffectKeyDVEUpdateCommand extends DeserializedCommand<UpstreamKeyerDVESettings> {
-	static readonly rawName = 'KeDV'
+	public static readonly rawName = 'KeDV'
 
-	readonly mixEffect: number
-	readonly upstreamKeyerId: number
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
 
 	constructor (mixEffect: number, upstreamKeyerId: number, properties: UpstreamKeyerDVESettings) {
 		super(properties)
@@ -99,7 +99,7 @@ export class MixEffectKeyDVEUpdateCommand extends DeserializedCommand<UpstreamKe
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
 		const properties = {
@@ -141,7 +141,7 @@ export class MixEffectKeyDVEUpdateCommand extends DeserializedCommand<UpstreamKe
 		return new MixEffectKeyDVEUpdateCommand(mixEffect, upstreamKeyerId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		const upstreamKeyer = mixEffect.getUpstreamKeyer(this.upstreamKeyerId)
 		upstreamKeyer.dveSettings = {

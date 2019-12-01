@@ -21,10 +21,10 @@ export interface SuperSourceInfo {
 }
 
 export class DeviceInfo {
-	apiVersion: ProtocolVersion = 0
-	capabilities?: AtemCapabilites
-	model: Model = Model.Unknown
-	productIdentifier?: string
-	superSources: SuperSourceInfo[] = []
-	power: boolean[] = []
+	public apiVersion: ProtocolVersion = 0
+	public capabilities?: AtemCapabilites
+	public model: Model = Model.Unknown
+	public productIdentifier?: string
+	public superSources: SuperSourceInfo[] = []
+	public power: boolean[] = []
 }

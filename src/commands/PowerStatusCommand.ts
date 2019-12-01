@@ -7,9 +7,9 @@ import { AtemState } from '../state'
  * Broadcast Studio have 2 power supplies. All other models have 1.
  */
 export class PowerStatusCommand extends DeserializedCommand<boolean[]> {
-	static readonly rawName = 'Powr'
+	public static readonly rawName = 'Powr'
 
-	static deserialize (rawCommand: Buffer): PowerStatusCommand {
+	public static deserialize (rawCommand: Buffer): PowerStatusCommand {
 		const properties = [
 			Boolean(rawCommand[0] & 1 << 0),
 			Boolean(rawCommand[0] & 1 << 1)
@@ -18,7 +18,7 @@ export class PowerStatusCommand extends DeserializedCommand<boolean[]> {
 		return new PowerStatusCommand(properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const count = state.info.power.length
 		state.info.power = this.properties.slice(0, count)
 		return `info.power`

@@ -4,7 +4,7 @@ import { DVETransitionSettings } from '../../../state/video'
 import { Util, Enums } from '../../..'
 
 export class TransitionDVECommand extends WritableCommand<DVETransitionSettings> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		rate: 1 << 0,
 		logoRate: 1 << 1,
 		style: 1 << 2,
@@ -19,9 +19,9 @@ export class TransitionDVECommand extends WritableCommand<DVETransitionSettings>
 		flipFlop: 1 << 11
 	}
 
-	static readonly rawName = 'CTDv'
+	public static readonly rawName = 'CTDv'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number) {
 		super()
@@ -29,7 +29,7 @@ export class TransitionDVECommand extends WritableCommand<DVETransitionSettings>
 		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(20, 0)
 		buffer.writeUInt16BE(this.flag, 0)
 
@@ -54,9 +54,9 @@ export class TransitionDVECommand extends WritableCommand<DVETransitionSettings>
 }
 
 export class TransitionDVEUpdateCommand extends DeserializedCommand<DVETransitionSettings> {
-	static readonly rawName = 'TDvP'
+	public static readonly rawName = 'TDvP'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number, properties: DVETransitionSettings) {
 		super(properties)
@@ -64,7 +64,7 @@ export class TransitionDVEUpdateCommand extends DeserializedCommand<DVETransitio
 		this.mixEffect = mixEffect
 	}
 
-	static deserialize (rawCommand: Buffer): TransitionDVEUpdateCommand {
+	public static deserialize (rawCommand: Buffer): TransitionDVEUpdateCommand {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const properties = {
 			rate: Util.parseNumberBetween(rawCommand[1], 1, 250),
@@ -85,7 +85,7 @@ export class TransitionDVEUpdateCommand extends DeserializedCommand<DVETransitio
 		return new TransitionDVEUpdateCommand(mixEffect, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionSettings.DVE = {
 			...this.properties

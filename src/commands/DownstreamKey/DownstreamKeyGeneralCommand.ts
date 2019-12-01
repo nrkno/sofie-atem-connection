@@ -2,16 +2,16 @@ import { WritableCommand } from '../CommandBase'
 import { DownstreamKeyerGeneral } from '../../state/video/downstreamKeyers'
 
 export class DownstreamKeyGeneralCommand extends WritableCommand<DownstreamKeyerGeneral> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		preMultiply: 1 << 0,
 		clip: 1 << 1,
 		gain: 1 << 2,
 		invert: 1 << 3
 	}
 
-	static readonly rawName = 'CDsG'
+	public static readonly rawName = 'CDsG'
 
-	readonly downstreamKeyerId: number
+	public readonly downstreamKeyerId: number
 
 	constructor (downstreamKeyerId: number) {
 		super()
@@ -19,7 +19,7 @@ export class DownstreamKeyGeneralCommand extends WritableCommand<DownstreamKeyer
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.downstreamKeyerId, 1)

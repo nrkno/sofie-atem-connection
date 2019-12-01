@@ -7,9 +7,9 @@ export interface PreviewProps {
 }
 
 export class PreviewTransitionCommand extends BasicWritableCommand<PreviewProps> {
-	static readonly rawName = 'CTPr'
+	public static readonly rawName = 'CTPr'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number, preview: boolean) {
 		super({ preview })
@@ -17,7 +17,7 @@ export class PreviewTransitionCommand extends BasicWritableCommand<PreviewProps>
 		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		buffer.writeUInt8(this.properties.preview ? 1 : 0, 1)
@@ -26,9 +26,9 @@ export class PreviewTransitionCommand extends BasicWritableCommand<PreviewProps>
 }
 
 export class PreviewTransitionUpdateCommand extends DeserializedCommand<PreviewProps> {
-	static readonly rawName = 'TrPr'
+	public static readonly rawName = 'TrPr'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number, properties: PreviewProps) {
 		super(properties)
@@ -36,7 +36,7 @@ export class PreviewTransitionUpdateCommand extends DeserializedCommand<PreviewP
 		this.mixEffect = mixEffect
 	}
 
-	static deserialize (rawCommand: Buffer): PreviewTransitionUpdateCommand {
+	public static deserialize (rawCommand: Buffer): PreviewTransitionUpdateCommand {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const properties = {
 			preview: rawCommand[1] === 1
@@ -45,7 +45,7 @@ export class PreviewTransitionUpdateCommand extends DeserializedCommand<PreviewP
 		return new PreviewTransitionUpdateCommand(mixEffect, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionPreview = this.properties.preview
 		return `video.ME.${this.mixEffect}.transitionPreview`

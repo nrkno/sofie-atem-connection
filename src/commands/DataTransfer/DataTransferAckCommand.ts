@@ -6,9 +6,9 @@ export interface DataTransferAckProps {
 }
 
 export class DataTransferAckCommand extends DeserializedCommand<DataTransferAckProps> {
-	static readonly rawName = 'FTUA'
+	public static readonly rawName = 'FTUA'
 
-	static deserialize (rawCommand: Buffer): DataTransferAckCommand {
+	public static deserialize (rawCommand: Buffer): DataTransferAckCommand {
 		const properties = {
 			transferId: rawCommand.readUInt16BE(0),
 			transferIndex: rawCommand.readUInt8(2)
@@ -17,7 +17,7 @@ export class DataTransferAckCommand extends DeserializedCommand<DataTransferAckP
 		return new DataTransferAckCommand(properties)
 	}
 
-	applyToState (): string[] {
+	public applyToState (): string[] {
 		// Nothing to do
 		return []
 	}

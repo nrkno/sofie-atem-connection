@@ -4,16 +4,16 @@ import { UpstreamKeyerLumaSettings } from '../../../state/video/upstreamKeyers'
 import { Util } from '../../..'
 
 export class MixEffectKeyLumaCommand extends WritableCommand<UpstreamKeyerLumaSettings> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		preMultiplied: 1 << 0,
 		clip: 1 << 1,
 		gain: 1 << 2,
 		invert: 1 << 3
 	}
-	static readonly rawName = 'CKLm'
+	public static readonly rawName = 'CKLm'
 
-	readonly mixEffect: number
-	readonly upstreamKeyerId: number
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
 
 	constructor (mixEffect: number, upstreamKeyerId: number) {
 		super()
@@ -22,7 +22,7 @@ export class MixEffectKeyLumaCommand extends WritableCommand<UpstreamKeyerLumaSe
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 1)
@@ -38,10 +38,10 @@ export class MixEffectKeyLumaCommand extends WritableCommand<UpstreamKeyerLumaSe
 }
 
 export class MixEffectKeyLumaUpdateCommand extends DeserializedCommand<UpstreamKeyerLumaSettings> {
-	static readonly rawName = 'KeLm'
+	public static readonly rawName = 'KeLm'
 
-	readonly mixEffect: number
-	readonly upstreamKeyerId: number
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
 
 	constructor (mixEffect: number, upstreamKeyerId: number, properties: UpstreamKeyerLumaSettings) {
 		super(properties)
@@ -50,7 +50,7 @@ export class MixEffectKeyLumaUpdateCommand extends DeserializedCommand<UpstreamK
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
 		const properties = {
@@ -63,7 +63,7 @@ export class MixEffectKeyLumaUpdateCommand extends DeserializedCommand<UpstreamK
 		return new MixEffectKeyLumaUpdateCommand(mixEffect, upstreamKeyerId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		const upstreamKeyer = mixEffect.getUpstreamKeyer(this.upstreamKeyerId)
 		upstreamKeyer.lumaSettings = {

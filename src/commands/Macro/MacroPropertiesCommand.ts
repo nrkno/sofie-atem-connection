@@ -4,9 +4,9 @@ import { MacroPropertiesState } from '../../state/macro'
 import { Util } from '../../lib/atemUtil'
 
 export class MacroPropertiesCommand extends DeserializedCommand<MacroPropertiesState> {
-	static readonly rawName = 'MPrp'
+	public static readonly rawName = 'MPrp'
 
-	readonly macroIndexID: number
+	public readonly macroIndexID: number
 
 	constructor (macroIndexID: number, properties: MacroPropertiesState) {
 		super(properties)
@@ -14,7 +14,7 @@ export class MacroPropertiesCommand extends DeserializedCommand<MacroPropertiesS
 		this.macroIndexID = macroIndexID
 	}
 
-	static deserialize (rawCommand: Buffer): MacroPropertiesCommand {
+	public static deserialize (rawCommand: Buffer): MacroPropertiesCommand {
 		const macroIndexID = rawCommand.readUInt16BE(0)
 		const nameLen = rawCommand.readUInt16BE(4)
 		const descLen = rawCommand.readUInt16BE(6)
@@ -37,7 +37,7 @@ export class MacroPropertiesCommand extends DeserializedCommand<MacroPropertiesS
 		return new MacroPropertiesCommand(macroIndexID, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.macro.macroProperties[this.macroIndexID] = {
 			...state.macro.macroProperties[this.macroIndexID],
 			...this.properties

@@ -2,7 +2,7 @@ import { WritableCommand } from '../../CommandBase'
 import { UpstreamKeyerMaskSettings } from '../../../state/video/upstreamKeyers'
 
 export class MixEffectKeyMaskSetCommand extends WritableCommand<UpstreamKeyerMaskSettings> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		maskEnabled: 1 << 0,
 		maskTop: 1 << 1,
 		maskBottom: 1 << 2,
@@ -10,10 +10,10 @@ export class MixEffectKeyMaskSetCommand extends WritableCommand<UpstreamKeyerMas
 		maskRight: 1 << 4
 	}
 
-	static readonly rawName = 'CKMs'
+	public static readonly rawName = 'CKMs'
 
-	readonly mixEffect: number
-	readonly upstreamKeyerId: number
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
 
 	constructor (mixEffect: number, upstreamKeyerId: number) {
 		super()
@@ -22,7 +22,7 @@ export class MixEffectKeyMaskSetCommand extends WritableCommand<UpstreamKeyerMas
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 1)

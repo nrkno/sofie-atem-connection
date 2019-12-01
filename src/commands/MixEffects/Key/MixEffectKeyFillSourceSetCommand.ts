@@ -1,10 +1,10 @@
 import { BasicWritableCommand } from '../../CommandBase'
 
 export class MixEffectKeyFillSourceSetCommand extends BasicWritableCommand<{ fillSource: number }> {
-	static readonly rawName = 'CKeF'
+	public static readonly rawName = 'CKeF'
 
-	readonly mixEffect: number
-	readonly upstreamKeyerId: number
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
 
 	constructor (mixEffect: number, upstreamKeyerId: number, fillSource: number) {
 		super({ fillSource })
@@ -13,7 +13,7 @@ export class MixEffectKeyFillSourceSetCommand extends BasicWritableCommand<{ fil
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		buffer.writeUInt8(this.upstreamKeyerId, 1)

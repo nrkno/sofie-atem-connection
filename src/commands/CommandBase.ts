@@ -8,15 +8,15 @@ export interface IDeserializedCommand {
 }
 
 export abstract class DeserializedCommand<T> implements IDeserializedCommand {
-	static readonly minimumVersion?: ProtocolVersion
+	public static readonly minimumVersion?: ProtocolVersion
 
-	readonly properties: Readonly<T>
+	public readonly properties: Readonly<T>
 
 	constructor (properties: T) {
 		this.properties = properties
 	}
 
-	abstract applyToState (state: AtemState): string | string[]
+	public abstract applyToState (state: AtemState): string | string[]
 }
 
 export interface ISerializableCommand {
@@ -24,8 +24,8 @@ export interface ISerializableCommand {
 }
 
 export abstract class BasicWritableCommand<T> implements ISerializableCommand {
-	static readonly MaskFlags?: { [key: string]: number }
-	static readonly minimumVersion?: ProtocolVersion
+	public static readonly MaskFlags?: { [key: string]: number }
+	public static readonly minimumVersion?: ProtocolVersion
 
 	protected _properties: T
 
@@ -37,13 +37,13 @@ export abstract class BasicWritableCommand<T> implements ISerializableCommand {
 		this._properties = properties
 	}
 
-	abstract serialize (version: ProtocolVersion): Buffer
+	public abstract serialize (version: ProtocolVersion): Buffer
 }
 
 export abstract class WritableCommand<T> extends BasicWritableCommand<Partial<T>> {
-	static readonly MaskFlags?: { [key: string]: number }
+	public static readonly MaskFlags?: { [key: string]: number }
 
-	flag: number
+	public flag: number
 
 	constructor () {
 		super({})

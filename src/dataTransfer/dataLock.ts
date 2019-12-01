@@ -18,7 +18,7 @@ export default class DataLock {
 		this.isLocked = false
 	}
 
-	enqueue (transfer: DataTransfer) {
+	public enqueue (transfer: DataTransfer) {
 		this.taskQueue.push(transfer)
 		if (!this.activeTransfer) {
 			this.dequeueAndRun()
@@ -39,14 +39,14 @@ export default class DataLock {
 		}
 	}
 
-	lockObtained () {
+	public lockObtained () {
 		this.isLocked = true
 		if (this.activeTransfer && this.activeTransfer.state === Enums.TransferState.Queued) {
 			this.activeTransfer.gotLock().forEach(cmd => this.queueCommand(cmd))
 		}
 	}
 
-	lostLock () {
+	public lostLock () {
 		this.isLocked = false
 		if (this.activeTransfer) {
 			if (this.activeTransfer.state === Enums.TransferState.Finished) {
@@ -61,15 +61,15 @@ export default class DataLock {
 		this.dequeueAndRun()
 	}
 
-	updateLock (locked: boolean) {
+	public updateLock (locked: boolean) {
 		this.isLocked = locked
 	}
 
-	transferFinished () {
+	public transferFinished () {
 		this.queueCommand(new Commands.LockStateCommand(this.storeId, false))
 	}
 
-	transferErrored (code: number) {
+	public transferErrored (code: number) {
 		if (this.activeTransfer) {
 			switch (code) {
 				case 1: // Probably means "retry".

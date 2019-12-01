@@ -3,10 +3,10 @@ import { AtemState } from '../../../state'
 import { Util } from '../../..'
 
 export class MixEffectKeyOnAirCommand extends BasicWritableCommand<{ onAir: boolean}> {
-	static readonly rawName = 'CKOn'
+	public static readonly rawName = 'CKOn'
 
-	readonly mixEffect: number
-	readonly upstreamKeyerId: number
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
 
 	constructor (mixEffect: number, upstreamKeyerId: number, onAir: boolean) {
 		super({ onAir })
@@ -15,7 +15,7 @@ export class MixEffectKeyOnAirCommand extends BasicWritableCommand<{ onAir: bool
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		buffer.writeUInt8(this.upstreamKeyerId, 1)
@@ -25,10 +25,10 @@ export class MixEffectKeyOnAirCommand extends BasicWritableCommand<{ onAir: bool
 }
 
 export class MixEffectKeyOnAirUpdateCommand extends DeserializedCommand<{onAir: boolean}> {
-	static readonly rawName = 'KeOn'
+	public static readonly rawName = 'KeOn'
 
-	readonly mixEffect: number
-	readonly upstreamKeyerId: number
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
 
 	constructor (mixEffect: number, upstreamKeyerId: number, properties: MixEffectKeyOnAirUpdateCommand['properties']) {
 		super(properties)
@@ -37,7 +37,7 @@ export class MixEffectKeyOnAirUpdateCommand extends DeserializedCommand<{onAir: 
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
 		const properties = {
@@ -46,7 +46,7 @@ export class MixEffectKeyOnAirUpdateCommand extends DeserializedCommand<{onAir: 
 		return new MixEffectKeyOnAirUpdateCommand(mixEffect, upstreamKeyerId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		const upstreamKeyer = mixEffect.getUpstreamKeyer(this.upstreamKeyerId)
 		upstreamKeyer.onAir = this.properties.onAir

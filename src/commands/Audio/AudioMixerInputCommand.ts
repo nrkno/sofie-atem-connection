@@ -4,14 +4,14 @@ import { AudioChannel } from '../../state/audio'
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
 
 export class AudioMixerInputCommand extends WritableCommand<AudioChannel> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		mixOption: 1 << 0,
 		gain: 1 << 1,
 		balance: 1 << 2
 	}
-	static readonly rawName = 'CAMI'
+	public static readonly rawName = 'CAMI'
 
-	readonly index: number
+	public readonly index: number
 
 	constructor (index: number) {
 		super()
@@ -19,7 +19,7 @@ export class AudioMixerInputCommand extends WritableCommand<AudioChannel> {
 		this.index = index
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(this.index, 2)
@@ -31,9 +31,9 @@ export class AudioMixerInputCommand extends WritableCommand<AudioChannel> {
 }
 
 export class AudioMixerInputUpdateCommand extends DeserializedCommand<AudioChannel> {
-	static readonly rawName = 'AMIP'
+	public static readonly rawName = 'AMIP'
 
-	readonly index: number
+	public readonly index: number
 
 	constructor (index: number, properties: AudioChannel) {
 		super(properties)
@@ -41,7 +41,7 @@ export class AudioMixerInputUpdateCommand extends DeserializedCommand<AudioChann
 		this.index = index
 	}
 
-	static deserialize (rawCommand: Buffer): AudioMixerInputUpdateCommand {
+	public static deserialize (rawCommand: Buffer): AudioMixerInputUpdateCommand {
 		const index = rawCommand.readUInt16BE(0)
 		const properties = {
 			sourceType: rawCommand.readUInt8(2),
@@ -54,7 +54,7 @@ export class AudioMixerInputUpdateCommand extends DeserializedCommand<AudioChann
 		return new AudioMixerInputUpdateCommand(index, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.audio.channels[this.index] = {
 			...state.audio.channels[this.index],
 			...this.properties

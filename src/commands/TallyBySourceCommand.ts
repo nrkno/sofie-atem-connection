@@ -6,9 +6,9 @@ export interface TallyBySourceProps {
 }
 
 export class TallyBySourceCommand extends DeserializedCommand<TallyBySourceProps> {
-	static readonly rawName = 'TlSr'
+	public static readonly rawName = 'TlSr'
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const sourceCount = rawCommand.readUInt16BE(0)
 
 		const sources: TallyBySourceProps = {}
@@ -24,7 +24,7 @@ export class TallyBySourceCommand extends DeserializedCommand<TallyBySourceProps
 		return new TallyBySourceCommand(sources)
 	}
 
-	applyToState (_state: AtemState) {
+	public applyToState (_state: AtemState) {
 		return []
 	}
 }

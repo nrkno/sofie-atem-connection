@@ -1,9 +1,9 @@
 import { BasicWritableCommand } from '../CommandBase'
 
 export class DownstreamKeyTieCommand extends BasicWritableCommand<{ tie: boolean }> {
-	static readonly rawName = 'CDsT'
+	public static readonly rawName = 'CDsT'
 
-	readonly downstreamKeyerId: number
+	public readonly downstreamKeyerId: number
 
 	constructor (downstreamKeyerId: number, tie: boolean) {
 		super({ tie })
@@ -11,7 +11,7 @@ export class DownstreamKeyTieCommand extends BasicWritableCommand<{ tie: boolean
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.downstreamKeyerId, 0)
 		buffer.writeUInt8(this.properties.tie ? 1 : 0, 1)

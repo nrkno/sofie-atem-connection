@@ -3,7 +3,7 @@ import { Commands, Enums } from '..'
 import DataTransferFrame from './dataTransferFrame'
 
 export default class DataTransferAudio extends DataTransferFrame {
-	readonly name: string
+	public readonly name: string
 
 	constructor (transferId: number, storeId: number, data: Buffer, name: string) {
 		super(transferId, storeId, 0, data)

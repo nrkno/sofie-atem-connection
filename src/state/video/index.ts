@@ -84,18 +84,18 @@ export interface IMixEffect {
 }
 
 export class MixEffect implements IMixEffect {
-	index: number
-	programInput: number = 0
-	previewInput: number = 0
-	inTransition: boolean = false
-	transitionPreview: boolean = false
-	transitionPosition: number = 0
-	transitionFramesLeft: number = 0
-	fadeToBlack?: FadeToBlackProperties
-	numberOfKeyers: number = 0
-	transitionProperties: TransitionProperties
-	transitionSettings: TransitionSettings = {}
-	upstreamKeyers: Array<USK.UpstreamKeyer | undefined> = []
+	public readonly index: number
+	public programInput: number = 0
+	public previewInput: number = 0
+	public inTransition: boolean = false
+	public transitionPreview: boolean = false
+	public transitionPosition: number = 0
+	public transitionFramesLeft: number = 0
+	public fadeToBlack?: FadeToBlackProperties
+	public numberOfKeyers: number = 0
+	public readonly transitionProperties: TransitionProperties
+	public readonly transitionSettings: TransitionSettings = {}
+	public readonly upstreamKeyers: Array<USK.UpstreamKeyer | undefined> = []
 
 	constructor (index: number) {
 		this.index = index
@@ -108,7 +108,7 @@ export class MixEffect implements IMixEffect {
 		}
 	}
 
-	getUpstreamKeyer (index: number, dontCreate?: boolean): USK.UpstreamKeyer {
+	public getUpstreamKeyer (index: number, dontCreate?: boolean): USK.UpstreamKeyer {
 		let usk = this.upstreamKeyers[index]
 		if (!usk) {
 			usk = {
@@ -170,10 +170,10 @@ export interface SuperSourceBorder {
 }
 
 export class SuperSource {
-	index: number
-	boxes: [SuperSourceBox | undefined, SuperSourceBox | undefined, SuperSourceBox | undefined, SuperSourceBox | undefined]
-	properties?: SuperSourceProperties
-	border?: SuperSourceBorder
+	public readonly index: number
+	public readonly boxes: [SuperSourceBox | undefined, SuperSourceBox | undefined, SuperSourceBox | undefined, SuperSourceBox | undefined]
+	public properties?: SuperSourceProperties
+	public border?: SuperSourceBorder
 
 	constructor (index: number) {
 		this.index = index
@@ -192,12 +192,12 @@ export interface FadeToBlackProperties {
 }
 
 export class AtemVideoState {
-	ME: Array<MixEffect | undefined> = []
-	downstreamKeyers: Array<DownstreamKeyer | undefined> = []
-	auxilliaries: Array<number | undefined> = []
-	superSources: Array<SuperSource | undefined> = []
+	public readonly ME: Array<MixEffect | undefined> = []
+	public readonly downstreamKeyers: Array<DownstreamKeyer | undefined> = []
+	public readonly auxilliaries: Array<number | undefined> = []
+	public readonly superSources: Array<SuperSource | undefined> = []
 
-	getMe (index: number, dontCreate?: boolean): MixEffect {
+	public getMe (index: number, dontCreate?: boolean): MixEffect {
 		let me = this.ME[index]
 		if (!me) {
 			me = new MixEffect(index)
@@ -210,7 +210,7 @@ export class AtemVideoState {
 		return me
 	}
 
-	getSuperSource (index: number, dontCreate?: boolean): SuperSource {
+	public getSuperSource (index: number, dontCreate?: boolean): SuperSource {
 		let ssrc = this.superSources[index]
 		if (!ssrc) {
 			ssrc = new SuperSource(index)
@@ -223,7 +223,7 @@ export class AtemVideoState {
 		return ssrc
 	}
 
-	getDownstreamKeyer (index: number, dontCreate?: boolean): DownstreamKeyer {
+	public getDownstreamKeyer (index: number, dontCreate?: boolean): DownstreamKeyer {
 		let dsk = this.downstreamKeyers[index]
 		if (!dsk) {
 			dsk = {

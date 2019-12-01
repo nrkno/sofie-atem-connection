@@ -3,9 +3,9 @@ import { AtemState } from '../../state'
 import { AtemCapabilites } from '../../state/info'
 
 export class TopologyCommand extends DeserializedCommand<AtemCapabilites> {
-	static readonly rawName = '_top'
+	public static readonly rawName = '_top'
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const properties = {
 			MEs: rawCommand[0],
 			sources: rawCommand[1],
@@ -25,7 +25,7 @@ export class TopologyCommand extends DeserializedCommand<AtemCapabilites> {
 		return new TopologyCommand(properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.info.capabilities = {
 			...state.info.capabilities,
 			...this.properties

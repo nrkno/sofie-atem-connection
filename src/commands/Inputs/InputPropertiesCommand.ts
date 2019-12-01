@@ -5,15 +5,15 @@ import { ExternalPorts, ExternalPortType } from '../../enums'
 import { Util } from '../../lib/atemUtil'
 
 export class InputPropertiesCommand extends WritableCommand<InputChannel> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		longName: 1 << 0,
 		shortName: 1 << 1,
 		externalPortType: 1 << 2
 	}
 
-	static readonly rawName = 'CInL'
+	public static readonly rawName = 'CInL'
 
-	readonly inputId: number
+	public readonly inputId: number
 
 	constructor (inputId: number) {
 		super()
@@ -21,7 +21,7 @@ export class InputPropertiesCommand extends WritableCommand<InputChannel> {
 		this.inputId = inputId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(32)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(this.inputId, 2)
@@ -33,9 +33,9 @@ export class InputPropertiesCommand extends WritableCommand<InputChannel> {
 }
 
 export class InputPropertiesUpdateCommand extends DeserializedCommand<InputChannel> {
-	static readonly rawName = 'InPr'
+	public static readonly rawName = 'InPr'
 
-	readonly inputId: number
+	public readonly inputId: number
 
 	constructor (inputId: number, properties: InputChannel) {
 		super(properties)
@@ -43,7 +43,7 @@ export class InputPropertiesUpdateCommand extends DeserializedCommand<InputChann
 		this.inputId = inputId
 	}
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const inputId = rawCommand.readUInt16BE(0)
 
 		const externalPortsMask = rawCommand[29]
@@ -79,7 +79,7 @@ export class InputPropertiesUpdateCommand extends DeserializedCommand<InputChann
 		return new InputPropertiesUpdateCommand(inputId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		// @TODO(Lange - 04/30/2018): We may need something to clean up inputs which
 		// don't exist anymore, which can happen when switching the connection from
 		// one model of ATEM to another.

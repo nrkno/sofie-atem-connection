@@ -5,7 +5,7 @@ import { Util, Enums } from '../..'
 import { ProtocolVersion } from '../../enums'
 
 export class SuperSourcePropertiesCommand extends WritableCommand<SuperSourceProperties & SuperSourceBorder> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		artFillSource: 1 << 0,
 		artCutSource: 1 << 1,
 		artOption: 1 << 2,
@@ -28,13 +28,13 @@ export class SuperSourcePropertiesCommand extends WritableCommand<SuperSourcePro
 		borderLightSourceDirection: 1 << 18,
 		borderLightSourceAltitude: 1 << 19
 	}
-	static readonly rawName = 'CSSc'
+	public static readonly rawName = 'CSSc'
 
 	constructor () {
 		super()
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(36)
 
 		buffer.writeUInt32BE(this.flag, 0)
@@ -65,7 +65,7 @@ export class SuperSourcePropertiesCommand extends WritableCommand<SuperSourcePro
 }
 
 export class SuperSourcePropertiesV8Command extends WritableCommand<SuperSourceProperties> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		artFillSource: 1 << 0,
 		artCutSource: 1 << 1,
 		artOption: 1 << 2,
@@ -75,10 +75,10 @@ export class SuperSourcePropertiesV8Command extends WritableCommand<SuperSourceP
 		artInvertKey: 1 << 6
 	}
 
-	static readonly rawName = 'CSSc'
-	static readonly minimumVersion = ProtocolVersion.V8_0
+	public static readonly rawName = 'CSSc'
+	public static readonly minimumVersion = ProtocolVersion.V8_0
 
-	readonly ssrcId: number
+	public readonly ssrcId: number
 
 	constructor (ssrcId: number) {
 		super()
@@ -86,7 +86,7 @@ export class SuperSourcePropertiesV8Command extends WritableCommand<SuperSourceP
 		this.ssrcId = ssrcId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(16)
 
 		buffer.writeUInt8(this.flag, 0)
@@ -105,7 +105,7 @@ export class SuperSourcePropertiesV8Command extends WritableCommand<SuperSourceP
 }
 
 export class SuperSourceBorderCommand extends WritableCommand<SuperSourceBorder> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		borderEnabled: 1 << 0,
 		borderBevel: 1 << 1,
 		borderOuterWidth: 1 << 2,
@@ -121,10 +121,10 @@ export class SuperSourceBorderCommand extends WritableCommand<SuperSourceBorder>
 		borderLightSourceAltitude: 1 << 12
 	}
 
-	static readonly rawName = 'CSBd'
-	static readonly minimumVersion = ProtocolVersion.V8_0
+	public static readonly rawName = 'CSBd'
+	public static readonly minimumVersion = ProtocolVersion.V8_0
 
-	readonly ssrcId: number
+	public readonly ssrcId: number
 
 	constructor (ssrcId: number) {
 		super()
@@ -132,7 +132,7 @@ export class SuperSourceBorderCommand extends WritableCommand<SuperSourceBorder>
 		this.ssrcId = ssrcId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(24)
 
 		buffer.writeUInt16BE(this.flag, 0)
@@ -157,9 +157,9 @@ export class SuperSourceBorderCommand extends WritableCommand<SuperSourceBorder>
 }
 
 export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{ properties: SuperSourceProperties, border: SuperSourceBorder }> {
-	static readonly rawName = 'SSrc'
+	public static readonly rawName = 'SSrc'
 
-	static deserialize (rawCommand: Buffer): SuperSourcePropertiesUpdateCommand {
+	public static deserialize (rawCommand: Buffer): SuperSourcePropertiesUpdateCommand {
 		const properties = {
 			properties: {
 				artFillSource: rawCommand.readUInt16BE(0),
@@ -191,7 +191,7 @@ export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{ pr
 		return new SuperSourcePropertiesUpdateCommand(properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const supersource = state.video.getSuperSource(0)
 		supersource.properties = this.properties.properties
 		supersource.border = this.properties.border
@@ -203,10 +203,10 @@ export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{ pr
 }
 
 export class SuperSourcePropertiesUpdateV8Command extends DeserializedCommand<SuperSourceProperties> {
-	static readonly rawName = 'SSrc'
-	static readonly minimumVersion = ProtocolVersion.V8_0
+	public static readonly rawName = 'SSrc'
+	public static readonly minimumVersion = ProtocolVersion.V8_0
 
-	readonly ssrcId: number
+	public readonly ssrcId: number
 
 	constructor (ssrcId: number, properties: SuperSourceProperties) {
 		super(properties)
@@ -214,7 +214,7 @@ export class SuperSourcePropertiesUpdateV8Command extends DeserializedCommand<Su
 		this.ssrcId = ssrcId
 	}
 
-	static deserialize (rawCommand: Buffer): SuperSourcePropertiesUpdateV8Command {
+	public static deserialize (rawCommand: Buffer): SuperSourcePropertiesUpdateV8Command {
 		const ssrcId = rawCommand.readUInt8(0)
 		const properties = {
 			artFillSource: rawCommand.readUInt16BE(2),
@@ -229,7 +229,7 @@ export class SuperSourcePropertiesUpdateV8Command extends DeserializedCommand<Su
 		return new SuperSourcePropertiesUpdateV8Command(ssrcId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const supersource = state.video.getSuperSource(this.ssrcId)
 		supersource.properties = {
 			...this.properties
@@ -239,10 +239,10 @@ export class SuperSourcePropertiesUpdateV8Command extends DeserializedCommand<Su
 }
 
 export class SuperSourceBorderUpdateCommand extends DeserializedCommand<SuperSourceBorder> {
-	static readonly rawName = 'SSBd'
-	static readonly minimumVersion = ProtocolVersion.V8_0
+	public static readonly rawName = 'SSBd'
+	public static readonly minimumVersion = ProtocolVersion.V8_0
 
-	readonly ssrcId: number
+	public readonly ssrcId: number
 
 	constructor (ssrcId: number, properties: SuperSourceBorder) {
 		super(properties)
@@ -250,7 +250,7 @@ export class SuperSourceBorderUpdateCommand extends DeserializedCommand<SuperSou
 		this.ssrcId = ssrcId
 	}
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const ssrcId = rawCommand.readUInt8(0)
 		const properties = {
 			borderEnabled: rawCommand[1] === 1,
@@ -271,7 +271,7 @@ export class SuperSourceBorderUpdateCommand extends DeserializedCommand<SuperSou
 		return new SuperSourceBorderUpdateCommand(ssrcId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const supersource = state.video.getSuperSource(this.ssrcId)
 		supersource.border = this.properties
 

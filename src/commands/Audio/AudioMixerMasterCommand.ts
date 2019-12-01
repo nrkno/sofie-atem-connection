@@ -4,14 +4,14 @@ import { Util } from '../..'
 import { AudioMasterChannel } from '../../state/audio'
 
 export class AudioMixerMasterCommand extends WritableCommand<AudioMasterChannel> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		gain: 1 << 0,
 		balance: 1 << 1,
 		followFadeToBlack: 1 << 2
 	}
-	static readonly rawName = 'CAMM'
+	public static readonly rawName = 'CAMM'
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(8)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(Util.DecibelToUInt16BE(this.properties.gain || 0), 2)
@@ -22,9 +22,9 @@ export class AudioMixerMasterCommand extends WritableCommand<AudioMasterChannel>
 }
 
 export class AudioMixerMasterUpdateCommand extends DeserializedCommand<AudioMasterChannel> {
-	static readonly rawName = 'AMMO'
+	public static readonly rawName = 'AMMO'
 
-	static deserialize (rawCommand: Buffer): AudioMixerMasterUpdateCommand {
+	public static deserialize (rawCommand: Buffer): AudioMixerMasterUpdateCommand {
 		const properties = {
 			gain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(0)),
 			balance: Util.IntToBalance(rawCommand.readInt16BE(2)),
@@ -34,7 +34,7 @@ export class AudioMixerMasterUpdateCommand extends DeserializedCommand<AudioMast
 		return new AudioMixerMasterUpdateCommand(properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.audio.master = {
 			...state.audio.master,
 			...this.properties

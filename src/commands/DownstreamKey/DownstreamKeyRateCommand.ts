@@ -1,9 +1,9 @@
 import { BasicWritableCommand } from '../CommandBase'
 
 export class DownstreamKeyRateCommand extends BasicWritableCommand<{ rate: number }> {
-	static readonly rawName = 'CDsR'
+	public static readonly rawName = 'CDsR'
 
-	readonly downstreamKeyerId: number
+	public readonly downstreamKeyerId: number
 
 	constructor (downstreamKeyerId: number, rate: number) {
 		super({ rate })
@@ -11,7 +11,7 @@ export class DownstreamKeyRateCommand extends BasicWritableCommand<{ rate: numbe
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.downstreamKeyerId, 0)
 		buffer.writeUInt8(this.properties.rate, 1)

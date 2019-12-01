@@ -1,9 +1,9 @@
 import { BasicWritableCommand } from '../CommandBase'
 
 export class AutoTransitionCommand extends BasicWritableCommand<null> {
-	static readonly rawName = 'DAut'
+	public static readonly rawName = 'DAut'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number) {
 		super(null)
@@ -11,7 +11,7 @@ export class AutoTransitionCommand extends BasicWritableCommand<null> {
 		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		return buffer

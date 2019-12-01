@@ -3,15 +3,15 @@ import { MediaPlayerSource } from '../../state/media'
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
 
 export class MediaPlayerSourceCommand extends WritableCommand<MediaPlayerSource> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		sourceType: 1 << 0,
 		stillIndex: 1 << 1,
 		clipIndex: 1 << 2
 	}
 
-	static readonly rawName = 'MPSS'
+	public static readonly rawName = 'MPSS'
 
-	readonly mediaPlayerId: number
+	public readonly mediaPlayerId: number
 
 	constructor (mediaPlayerId: number) {
 		super()
@@ -19,7 +19,7 @@ export class MediaPlayerSourceCommand extends WritableCommand<MediaPlayerSource>
 		this.mediaPlayerId = mediaPlayerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(8)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mediaPlayerId, 1)
@@ -31,9 +31,9 @@ export class MediaPlayerSourceCommand extends WritableCommand<MediaPlayerSource>
 }
 
 export class MediaPlayerSourceUpdateCommand extends DeserializedCommand<MediaPlayerSource> {
-	static readonly rawName = 'MPCE'
+	public static readonly rawName = 'MPCE'
 
-	readonly mediaPlayerId: number
+	public readonly mediaPlayerId: number
 
 	constructor (mediaPlayerId: number, properties: MediaPlayerSource) {
 		super(properties)
@@ -41,7 +41,7 @@ export class MediaPlayerSourceUpdateCommand extends DeserializedCommand<MediaPla
 		this.mediaPlayerId = mediaPlayerId
 	}
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const mediaPlayerId = rawCommand[0]
 		const properties = {
 			sourceType: rawCommand[1],
@@ -52,7 +52,7 @@ export class MediaPlayerSourceUpdateCommand extends DeserializedCommand<MediaPla
 		return new MediaPlayerSourceUpdateCommand(mediaPlayerId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.media.players[this.mediaPlayerId] = {
 			...state.media.getMediaPlayer(this.mediaPlayerId),
 			...this.properties

@@ -3,8 +3,8 @@ import { ProtocolVersion } from '../enums'
 
 type CommandConstructor = any
 export class CommandParser {
-	commands: {[key: string]: Array<CommandConstructor>} = {}
-	version: ProtocolVersion = ProtocolVersion.V7_2 // Default to the minimum supported
+	public readonly commands: {[key: string]: Array<CommandConstructor>} = {}
+	public version: ProtocolVersion = ProtocolVersion.V7_2 // Default to the minimum supported
 
 	constructor () {
 		for (const cmd in Commands) {
@@ -21,7 +21,7 @@ export class CommandParser {
 		}
 	}
 
-	commandFromRawName (name: string): CommandConstructor | undefined {
+	public commandFromRawName (name: string): CommandConstructor | undefined {
 		const commands = this.commands[name]
 		if (commands) {
 			if (!this.version) { // edge case for the version command itself:

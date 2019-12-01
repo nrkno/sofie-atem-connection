@@ -2,12 +2,12 @@ import { WritableCommand } from '../CommandBase'
 import { ProtocolVersion } from '../../enums'
 
 export class DownstreamKeyAutoCommand extends WritableCommand<{ isTowardsOnAir: boolean }> {
-	static readonly MaskFlags = {
+	public static readonly MaskFlags = {
 		isTowardsOnAir: 1
 	}
-	static readonly rawName = 'DDsA'
+	public static readonly rawName = 'DDsA'
 
-	readonly downstreamKeyerId: number
+	public readonly downstreamKeyerId: number
 
 	constructor (downstreamKeyerId: number) {
 		super()
@@ -15,7 +15,7 @@ export class DownstreamKeyAutoCommand extends WritableCommand<{ isTowardsOnAir: 
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	serialize (version: ProtocolVersion) {
+	public serialize (version: ProtocolVersion) {
 		const buffer = Buffer.alloc(4)
 
 		if (version >= ProtocolVersion.V8_0_1) {

@@ -4,17 +4,17 @@ import { UpstreamKeyerChromaSettings } from '../../../state/video/upstreamKeyers
 import { Util } from '../../..'
 
 export class MixEffectKeyChromaCommand extends WritableCommand<UpstreamKeyerChromaSettings> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		hue: 1 << 0,
 		gain: 1 << 1,
 		ySuppress: 1 << 2,
 		lift: 1 << 3,
 		narrow: 1 << 4
 	}
-	static readonly rawName = 'CKCk'
+	public static readonly rawName = 'CKCk'
 
-	readonly mixEffect: number
-	readonly upstreamKeyerId: number
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
 
 	constructor (mixEffect: number, upstreamKeyerId: number) {
 		super()
@@ -23,7 +23,7 @@ export class MixEffectKeyChromaCommand extends WritableCommand<UpstreamKeyerChro
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(16)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 1)
@@ -40,10 +40,10 @@ export class MixEffectKeyChromaCommand extends WritableCommand<UpstreamKeyerChro
 }
 
 export class MixEffectKeyChromaUpdateCommand extends DeserializedCommand<UpstreamKeyerChromaSettings> {
-	static readonly rawName = 'KeCk'
+	public static readonly rawName = 'KeCk'
 
-	readonly mixEffect: number
-	readonly upstreamKeyerId: number
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
 
 	constructor (mixEffect: number, upstreamKeyerId: number, properties: UpstreamKeyerChromaSettings) {
 		super(properties)
@@ -52,7 +52,7 @@ export class MixEffectKeyChromaUpdateCommand extends DeserializedCommand<Upstrea
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
 		const properties = {
@@ -66,7 +66,7 @@ export class MixEffectKeyChromaUpdateCommand extends DeserializedCommand<Upstrea
 		return new MixEffectKeyChromaUpdateCommand(mixEffect, upstreamKeyerId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		const upstreamKeyer = mixEffect.getUpstreamKeyer(this.upstreamKeyerId)
 		upstreamKeyer.chromaSettings = {

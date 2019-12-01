@@ -8,9 +8,9 @@ export interface DataTransferFileDescriptionProps {
 }
 
 export class DataTransferFileDescriptionCommand extends BasicWritableCommand<DataTransferFileDescriptionProps> {
-	static readonly rawName = 'FTFD'
+	public static readonly rawName = 'FTFD'
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(212)
 		buffer.writeUInt16BE(this.properties.transferId, 0)
 		if (this.properties.name) buffer.write(this.properties.name, 2, 64)

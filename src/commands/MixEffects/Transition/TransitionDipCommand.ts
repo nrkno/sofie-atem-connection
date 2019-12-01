@@ -4,13 +4,13 @@ import { DipTransitionSettings } from '../../../state/video'
 import { Util } from '../../..'
 
 export class TransitionDipCommand extends WritableCommand<DipTransitionSettings> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		rate: 1 << 0,
 		input: 1 << 1
 	}
-	static readonly rawName = 'CTDp'
+	public static readonly rawName = 'CTDp'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number) {
 		super()
@@ -18,7 +18,7 @@ export class TransitionDipCommand extends WritableCommand<DipTransitionSettings>
 		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(8)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 1)
@@ -29,9 +29,9 @@ export class TransitionDipCommand extends WritableCommand<DipTransitionSettings>
 }
 
 export class TransitionDipUpdateCommand extends DeserializedCommand<DipTransitionSettings> {
-	static readonly rawName = 'TDpP'
+	public static readonly rawName = 'TDpP'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number, properties: DipTransitionSettings) {
 		super(properties)
@@ -39,7 +39,7 @@ export class TransitionDipUpdateCommand extends DeserializedCommand<DipTransitio
 		this.mixEffect = mixEffect
 	}
 
-	static deserialize (rawCommand: Buffer): TransitionDipUpdateCommand {
+	public static deserialize (rawCommand: Buffer): TransitionDipUpdateCommand {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const properties = {
 			rate: Util.parseNumberBetween(rawCommand[1], 0, 250),
@@ -49,7 +49,7 @@ export class TransitionDipUpdateCommand extends DeserializedCommand<DipTransitio
 		return new TransitionDipUpdateCommand(mixEffect, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionSettings.dip = {
 			...this.properties

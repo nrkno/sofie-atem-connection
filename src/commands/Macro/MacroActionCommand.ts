@@ -2,9 +2,9 @@ import { BasicWritableCommand } from '../CommandBase'
 import { MacroAction } from '../../enums'
 
 export class MacroActionCommand extends BasicWritableCommand<{ action: MacroAction }> {
-	static readonly rawName = 'MAct'
+	public static readonly rawName = 'MAct'
 
-	readonly index: number
+	public readonly index: number
 
 	constructor (index: number, action: MacroAction) {
 		super({ action })
@@ -12,7 +12,7 @@ export class MacroActionCommand extends BasicWritableCommand<{ action: MacroActi
 		this.index = index
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.properties.action, 2)
 		switch (this.properties.action) {

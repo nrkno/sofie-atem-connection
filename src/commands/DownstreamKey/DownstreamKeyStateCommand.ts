@@ -5,9 +5,9 @@ import { Util } from '../..'
 import { ProtocolVersion } from '../../enums'
 
 export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKeyerBase> {
-	static readonly rawName = 'DskS'
+	public static readonly rawName = 'DskS'
 
-	readonly downstreamKeyerId: number
+	public readonly downstreamKeyerId: number
 
 	constructor (downstreamKeyerId: number, properties: DownstreamKeyerBase) {
 		super(properties)
@@ -15,7 +15,7 @@ export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKey
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const downstreamKeyerId = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const properties = {
 			onAir: rawCommand[1] === 1,
@@ -27,7 +27,7 @@ export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKey
 		return new DownstreamKeyStateCommand(downstreamKeyerId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.video.downstreamKeyers[this.downstreamKeyerId] = {
 			...state.video.getDownstreamKeyer(this.downstreamKeyerId),
 			...this.properties
@@ -37,10 +37,10 @@ export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKey
 }
 
 export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamKeyerBase> {
-	static readonly rawName = 'DskS'
-	static readonly minimumVersion = ProtocolVersion.V8_0_1
+	public static readonly rawName = 'DskS'
+	public static readonly minimumVersion = ProtocolVersion.V8_0_1
 
-	readonly downstreamKeyerId: number
+	public readonly downstreamKeyerId: number
 
 	constructor (downstreamKeyerId: number, properties: DownstreamKeyerBase) {
 		super(properties)
@@ -48,7 +48,7 @@ export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamK
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const downstreamKeyerId = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const properties = {
 			onAir: rawCommand[1] === 1,
@@ -61,7 +61,7 @@ export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamK
 		return new DownstreamKeyStateV8Command(downstreamKeyerId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.video.downstreamKeyers[this.downstreamKeyerId] = {
 			...state.video.getDownstreamKeyer(this.downstreamKeyerId),
 			...this.properties

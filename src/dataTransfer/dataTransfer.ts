@@ -1,15 +1,15 @@
 import { Commands, Enums } from '..'
 
 export default abstract class DataTransfer {
-	state: Enums.TransferState = Enums.TransferState.Queued
-	readonly transferId: number
-	readonly storeId: number
+	public state: Enums.TransferState = Enums.TransferState.Queued
+	public readonly transferId: number
+	public readonly storeId: number
 
 	// commandQueue: Array<Commands.ISerializableCommand>
 
 	private readonly completionPromise: Promise<DataTransfer>
-	resolvePromise: (value?: DataTransfer | PromiseLike<DataTransfer> | undefined) => void
-	rejectPromise: (reason?: any) => void
+	public resolvePromise: (value?: DataTransfer | PromiseLike<DataTransfer> | undefined) => void
+	public rejectPromise: (reason?: any) => void
 
 	constructor (transferId: number, storeId: number) {
 		this.transferId = transferId
@@ -31,8 +31,8 @@ export default abstract class DataTransfer {
 		return this.completionPromise
 	}
 
-	abstract start (): Commands.ISerializableCommand[]
+	public abstract start (): Commands.ISerializableCommand[]
 
-	abstract handleCommand (command: Commands.IDeserializedCommand): Commands.ISerializableCommand[]
-	abstract gotLock (): Commands.ISerializableCommand[]
+	public abstract handleCommand (command: Commands.IDeserializedCommand): Commands.ISerializableCommand[]
+	public abstract gotLock (): Commands.ISerializableCommand[]
 }

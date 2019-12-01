@@ -10,8 +10,8 @@ export interface MultiViewerWindowState extends MultiViewerSourceState {
 }
 
 export class MultiViewer {
-	index: number
-	windows: { [index: string]: MultiViewerWindowState | undefined } = {}
+	public readonly index: number
+	public readonly windows: { [index: string]: MultiViewerWindowState | undefined } = {}
 
 	constructor (index: number) {
 		this.index = index
@@ -19,14 +19,14 @@ export class MultiViewer {
 }
 
 export class SettingsState {
-	multiViewers: { [index: string]: MultiViewer | undefined } = {}
-	videoMode: number
+	public readonly multiViewers: { [index: string]: MultiViewer | undefined } = {}
+	public videoMode: number
 
 	constructor () {
 		this.videoMode = 0
 	}
 
-	getMultiViewer (index: number): MultiViewer {
+	public getMultiViewer (index: number): MultiViewer {
 		const multiViewer = this.multiViewers[index]
 		if (!multiViewer) {
 			return this.multiViewers[index] = new MultiViewer(index)

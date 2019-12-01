@@ -4,12 +4,12 @@ import * as crypto from 'crypto'
 import DataTransfer from './dataTransfer'
 
 export default class DataTransferFrame extends DataTransfer {
-	readonly frameId: number
-	readonly hash: string
-	readonly data: Buffer
+	public readonly frameId: number
+	public readonly hash: string
+	public readonly data: Buffer
 
-	lastSent?: Date
-	_sent = 0
+	private lastSent?: Date
+	private _sent = 0
 
 	constructor (transferId: number, storeId: number, frameId: number, data: Buffer) {
 		super(transferId, storeId)

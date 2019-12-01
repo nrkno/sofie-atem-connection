@@ -4,7 +4,7 @@ import { StingerTransitionSettings } from '../../../state/video'
 import { Util } from '../../..'
 
 export class TransitionStingerCommand extends WritableCommand<StingerTransitionSettings> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		source: 1 << 0,
 		preMultipliedKey: 1 << 1,
 		clip: 1 << 2,
@@ -16,9 +16,9 @@ export class TransitionStingerCommand extends WritableCommand<StingerTransitionS
 		mixRate: 1 << 8
 	}
 
-	static readonly rawName = 'CTSt'
+	public static readonly rawName = 'CTSt'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number) {
 		super()
@@ -26,7 +26,7 @@ export class TransitionStingerCommand extends WritableCommand<StingerTransitionS
 		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(20)
 		buffer.writeUInt16BE(this.flag, 0)
 
@@ -48,9 +48,9 @@ export class TransitionStingerCommand extends WritableCommand<StingerTransitionS
 }
 
 export class TransitionStingerUpdateCommand extends DeserializedCommand<StingerTransitionSettings> {
-	static readonly rawName = 'TStP'
+	public static readonly rawName = 'TStP'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number, properties: StingerTransitionSettings) {
 		super(properties)
@@ -58,7 +58,7 @@ export class TransitionStingerUpdateCommand extends DeserializedCommand<StingerT
 		this.mixEffect = mixEffect
 	}
 
-	static deserialize (rawCommand: Buffer): TransitionStingerUpdateCommand {
+	public static deserialize (rawCommand: Buffer): TransitionStingerUpdateCommand {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const properties = {
 			source: rawCommand[1],
@@ -77,7 +77,7 @@ export class TransitionStingerUpdateCommand extends DeserializedCommand<StingerT
 		return new TransitionStingerUpdateCommand(mixEffect, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionSettings.stinger = {
 			...this.properties

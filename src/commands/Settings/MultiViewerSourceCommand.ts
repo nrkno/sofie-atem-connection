@@ -3,9 +3,9 @@ import { AtemState } from '../../state'
 import { MultiViewerSourceState } from '../../state/settings'
 
 export class MultiViewerSourceCommand extends WritableCommand<MultiViewerSourceState> {
-	static readonly rawName = 'CMvI'
+	public static readonly rawName = 'CMvI'
 
-	readonly multiViewerId: number
+	public readonly multiViewerId: number
 
 	constructor (multiviewerId: number) {
 		super()
@@ -13,7 +13,7 @@ export class MultiViewerSourceCommand extends WritableCommand<MultiViewerSourceS
 		this.multiViewerId = multiviewerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.multiViewerId, 0)
 		buffer.writeUInt8(this.properties.windowIndex || 0, 1)
@@ -23,9 +23,9 @@ export class MultiViewerSourceCommand extends WritableCommand<MultiViewerSourceS
 }
 
 export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiViewerSourceState> {
-	static readonly rawName = 'MvIn'
+	public static readonly rawName = 'MvIn'
 
-	readonly multiViewerId: number
+	public readonly multiViewerId: number
 
 	constructor (multiviewerId: number, properties: MultiViewerSourceState) {
 		super(properties)
@@ -33,7 +33,7 @@ export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiVie
 		this.multiViewerId = multiviewerId
 	}
 
-	static deserialize (rawCommand: Buffer): MultiViewerSourceUpdateCommand {
+	public static deserialize (rawCommand: Buffer): MultiViewerSourceUpdateCommand {
 		const multiViewerId = rawCommand.readUInt8(0)
 		const properties = {
 			source: rawCommand.readUInt16BE(2),
@@ -43,7 +43,7 @@ export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiVie
 		return new MultiViewerSourceUpdateCommand(multiViewerId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const multiviewer = state.settings.getMultiViewer(this.multiViewerId)
 		multiviewer.windows[this.properties.windowIndex] = {
 			...multiviewer.windows[this.properties.windowIndex],

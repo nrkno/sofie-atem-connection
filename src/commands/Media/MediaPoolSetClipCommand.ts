@@ -7,9 +7,9 @@ export interface MediaPoolSetClipProps {
 }
 
 export class MediaPoolSetClipCommand extends BasicWritableCommand<MediaPoolSetClipProps> {
-	static readonly rawName = 'SMPC'
+	public static readonly rawName = 'SMPC'
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(68)
 		buffer.writeUInt8(3, 0)
 		buffer.writeUInt8(this.properties.index, 1)

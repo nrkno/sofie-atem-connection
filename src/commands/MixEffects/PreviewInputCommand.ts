@@ -7,9 +7,9 @@ export interface InputSource {
 }
 
 export class PreviewInputCommand extends BasicWritableCommand<InputSource> {
-	static readonly rawName = 'CPvI'
+	public static readonly rawName = 'CPvI'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number, source: number) {
 		super({ source })
@@ -17,7 +17,7 @@ export class PreviewInputCommand extends BasicWritableCommand<InputSource> {
 		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		buffer.writeUInt16BE(this.properties.source, 2)
@@ -26,9 +26,9 @@ export class PreviewInputCommand extends BasicWritableCommand<InputSource> {
 }
 
 export class PreviewInputUpdateCommand extends DeserializedCommand<InputSource> {
-	static readonly rawName = 'PrvI'
+	public static readonly rawName = 'PrvI'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number, properties: InputSource) {
 		super(properties)
@@ -36,7 +36,7 @@ export class PreviewInputUpdateCommand extends DeserializedCommand<InputSource> 
 		this.mixEffect = mixEffect
 	}
 
-	static deserialize (rawCommand: Buffer): PreviewInputUpdateCommand {
+	public static deserialize (rawCommand: Buffer): PreviewInputUpdateCommand {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const properties = {
 			source: rawCommand.readUInt16BE(2)
@@ -45,7 +45,7 @@ export class PreviewInputUpdateCommand extends DeserializedCommand<InputSource> 
 		return new PreviewInputUpdateCommand(mixEffect, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.previewInput = this.properties.source
 		return `video.ME.${this.mixEffect}.previewInput`

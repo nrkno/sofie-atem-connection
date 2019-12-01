@@ -4,9 +4,9 @@ import { Util } from '../..'
 import { DownstreamKeyer } from '../../state/video/downstreamKeyers'
 
 export class DownstreamKeySourcesCommand extends DeserializedCommand<DownstreamKeyer['sources']> {
-	static readonly rawName = 'DskB'
+	public static readonly rawName = 'DskB'
 
-	readonly downstreamKeyerId: number
+	public readonly downstreamKeyerId: number
 
 	constructor (downstreamKeyerId: number, properties: DownstreamKeyer['sources']) {
 		super(properties)
@@ -14,7 +14,7 @@ export class DownstreamKeySourcesCommand extends DeserializedCommand<DownstreamK
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const downstreamKeyerId = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const properties = {
 			fillSource: rawCommand.readUInt16BE(2),
@@ -24,7 +24,7 @@ export class DownstreamKeySourcesCommand extends DeserializedCommand<DownstreamK
 		return new DownstreamKeySourcesCommand(downstreamKeyerId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.video.getDownstreamKeyer(this.downstreamKeyerId).sources = this.properties
 		return `video.downstreamKeyers.${this.downstreamKeyerId}`
 	}

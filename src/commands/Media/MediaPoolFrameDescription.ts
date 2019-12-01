@@ -4,10 +4,10 @@ import { DeserializedCommand } from '../CommandBase'
 import { Util } from '../../lib/atemUtil'
 
 export class MediaPoolFrameDescriptionCommand extends DeserializedCommand<StillFrame> {
-	static readonly rawName = 'MPfe'
+	public static readonly rawName = 'MPfe'
 
-	readonly mediaPool: number
-	readonly frameIndex: number
+	public readonly mediaPool: number
+	public readonly frameIndex: number
 
 	constructor (mediaPool: number, frameIndex: number, properties: StillFrame) {
 		super(properties)
@@ -16,7 +16,7 @@ export class MediaPoolFrameDescriptionCommand extends DeserializedCommand<StillF
 		this.frameIndex = frameIndex
 	}
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const mediaPool = rawCommand[0]
 		const frameIndex = rawCommand.readUInt16BE(2)
 		const properties = {
@@ -28,7 +28,7 @@ export class MediaPoolFrameDescriptionCommand extends DeserializedCommand<StillF
 		return new MediaPoolFrameDescriptionCommand(mediaPool, frameIndex, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		if (this.mediaPool === 0) {
 			// This is a still
 			state.media.stillPool[this.frameIndex] = this.properties

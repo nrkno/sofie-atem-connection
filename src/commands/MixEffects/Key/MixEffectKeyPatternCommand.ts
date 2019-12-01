@@ -4,7 +4,7 @@ import { UpstreamKeyerPatternSettings } from '../../../state/video/upstreamKeyer
 import { Util, Enums } from '../../..'
 
 export class MixEffectKeyPatternCommand extends WritableCommand<UpstreamKeyerPatternSettings> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		style: 1 << 0,
 		size: 1 << 1,
 		symmetry: 1 << 2,
@@ -14,10 +14,10 @@ export class MixEffectKeyPatternCommand extends WritableCommand<UpstreamKeyerPat
 		invert: 1 << 6
 	}
 
-	static readonly rawName = 'CKPt'
+	public static readonly rawName = 'CKPt'
 
-	readonly mixEffect: number
-	readonly upstreamKeyerId: number
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
 
 	constructor (mixEffect: number, upstreamKeyerId: number) {
 		super()
@@ -26,7 +26,7 @@ export class MixEffectKeyPatternCommand extends WritableCommand<UpstreamKeyerPat
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(16)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 1)
@@ -45,10 +45,10 @@ export class MixEffectKeyPatternCommand extends WritableCommand<UpstreamKeyerPat
 }
 
 export class MixEffectKeyUpdateCommand extends DeserializedCommand<UpstreamKeyerPatternSettings> {
-	static readonly rawName = 'KePt'
+	public static readonly rawName = 'KePt'
 
-	readonly mixEffect: number
-	readonly upstreamKeyerId: number
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
 
 	constructor (mixEffect: number, upstreamKeyerId: number, properties: UpstreamKeyerPatternSettings) {
 		super(properties)
@@ -57,7 +57,7 @@ export class MixEffectKeyUpdateCommand extends DeserializedCommand<UpstreamKeyer
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	static deserialize (rawCommand: Buffer): MixEffectKeyUpdateCommand {
+	public static deserialize (rawCommand: Buffer): MixEffectKeyUpdateCommand {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
 		const properties = {
@@ -73,7 +73,7 @@ export class MixEffectKeyUpdateCommand extends DeserializedCommand<UpstreamKeyer
 		return new MixEffectKeyUpdateCommand(mixEffect, upstreamKeyerId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		const upstreamKeyer = mixEffect.getUpstreamKeyer(this.upstreamKeyerId)
 		upstreamKeyer.patternSettings = {

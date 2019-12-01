@@ -50,7 +50,7 @@ export interface UpstreamKeyerDVESettings extends UpstreamKeyerDVEBase {
 }
 
 export interface UpstreamKeyerFlyKeyframe extends UpstreamKeyerDVEBase {
-	keyFrameId: number
+	readonly keyFrameId: number
 }
 
 export interface UpstreamKeyerChromaSettings {

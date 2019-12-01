@@ -4,14 +4,14 @@ import { TransitionProperties } from '../../../state/video'
 import { Util, Enums } from '../../..'
 
 export class TransitionPropertiesCommand extends WritableCommand<TransitionProperties> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		style: 1 << 0,
 		selection: 1 << 1
 	}
 
-	static readonly rawName = 'CTTp'
+	public static readonly rawName = 'CTTp'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number) {
 		super()
@@ -19,7 +19,7 @@ export class TransitionPropertiesCommand extends WritableCommand<TransitionPrope
 		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.flag, 0)
 
@@ -32,9 +32,9 @@ export class TransitionPropertiesCommand extends WritableCommand<TransitionPrope
 }
 
 export class TransitionPropertiesUpdateCommand extends DeserializedCommand<TransitionProperties> {
-	static readonly rawName = 'TrSS'
+	public static readonly rawName = 'TrSS'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number, properties: TransitionProperties) {
 		super(properties)
@@ -42,7 +42,7 @@ export class TransitionPropertiesUpdateCommand extends DeserializedCommand<Trans
 		this.mixEffect = mixEffect
 	}
 
-	static deserialize (rawCommand: Buffer): TransitionPropertiesUpdateCommand {
+	public static deserialize (rawCommand: Buffer): TransitionPropertiesUpdateCommand {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const properties = {
 			style: Util.parseEnum<Enums.TransitionStyle>(rawCommand[1], Enums.TransitionStyle),// rawCommand[1],
@@ -54,7 +54,7 @@ export class TransitionPropertiesUpdateCommand extends DeserializedCommand<Trans
 		return new TransitionPropertiesUpdateCommand(mixEffect, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionProperties = {
 			...this.properties

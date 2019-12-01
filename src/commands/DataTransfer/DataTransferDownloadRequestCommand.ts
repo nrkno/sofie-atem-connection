@@ -7,9 +7,9 @@ export interface DataTransferDownloadRequestProps {
 }
 
 export class DataTransferDownloadRequestCommand extends BasicWritableCommand<DataTransferDownloadRequestProps> {
-	static readonly rawName = 'FTSU'
+	public static readonly rawName = 'FTSU'
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt16BE(this.properties.transferId, 0)
 		buffer.writeUInt16BE(this.properties.transferStoreId, 2)

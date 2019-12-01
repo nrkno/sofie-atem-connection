@@ -4,10 +4,10 @@ import { UpstreamKeyerFlySettings } from '../../../state/video/upstreamKeyers'
 import { Util } from '../../..'
 
 export class MixEffectKeyFlyPropertiesGetCommand extends DeserializedCommand<UpstreamKeyerFlySettings> {
-	static readonly rawName = 'KeFS'
+	public static readonly rawName = 'KeFS'
 
-	readonly mixEffect: number
-	readonly upstreamKeyerId: number
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
 
 	constructor (mixEffect: number, upstreamKeyerId: number, properties: UpstreamKeyerFlySettings) {
 		super(properties)
@@ -16,7 +16,7 @@ export class MixEffectKeyFlyPropertiesGetCommand extends DeserializedCommand<Ups
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
 		const properties = {
@@ -28,7 +28,7 @@ export class MixEffectKeyFlyPropertiesGetCommand extends DeserializedCommand<Ups
 		return new MixEffectKeyFlyPropertiesGetCommand(mixEffect, upstreamKeyerId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		const upstreamKeyer = mixEffect.getUpstreamKeyer(this.upstreamKeyerId)
 		upstreamKeyer.flyProperties = {

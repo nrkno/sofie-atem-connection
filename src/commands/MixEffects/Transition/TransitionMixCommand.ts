@@ -4,9 +4,9 @@ import { MixTransitionSettings } from '../../../state/video'
 import { Util } from '../../..'
 
 export class TransitionMixCommand extends BasicWritableCommand<MixTransitionSettings> {
-	static readonly rawName = 'CTMx'
+	public static readonly rawName = 'CTMx'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number, rate: number) {
 		super({ rate })
@@ -14,7 +14,7 @@ export class TransitionMixCommand extends BasicWritableCommand<MixTransitionSett
 		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		buffer.writeUInt8(this.properties.rate || 0, 1)
@@ -23,9 +23,9 @@ export class TransitionMixCommand extends BasicWritableCommand<MixTransitionSett
 }
 
 export class TransitionMixUpdateCommand extends DeserializedCommand<MixTransitionSettings> {
-	static readonly rawName = 'TMxP'
+	public static readonly rawName = 'TMxP'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number, properties: MixTransitionSettings) {
 		super(properties)
@@ -33,7 +33,7 @@ export class TransitionMixUpdateCommand extends DeserializedCommand<MixTransitio
 		this.mixEffect = mixEffect
 	}
 
-	static deserialize (rawCommand: Buffer): TransitionMixUpdateCommand {
+	public static deserialize (rawCommand: Buffer): TransitionMixUpdateCommand {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const properties = {
 			rate: Util.parseNumberBetween(rawCommand[1], 1, 250)
@@ -42,7 +42,7 @@ export class TransitionMixUpdateCommand extends DeserializedCommand<MixTransitio
 		return new TransitionMixUpdateCommand(mixEffect, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionSettings.mix = {
 			...this.properties

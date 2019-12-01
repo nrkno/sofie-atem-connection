@@ -4,15 +4,15 @@ import { WritableCommand, DeserializedCommand } from '../CommandBase'
 import { Util } from '../../lib/atemUtil'
 
 export class MediaPlayerStatusCommand extends WritableCommand<MediaPlayer> {
-	static MaskFlags = {
+	public static MaskFlags = {
 		playing: 1 << 0,
 		loop: 1 << 1,
 		atBeginning: 1 << 2,
 		clipFrame: 1 << 3
 	}
-	static readonly rawName = 'SCPS'
+	public static readonly rawName = 'SCPS'
 
-	readonly mediaPlayerId: number
+	public readonly mediaPlayerId: number
 
 	constructor (mediaPlayerId: number) {
 		super()
@@ -20,7 +20,7 @@ export class MediaPlayerStatusCommand extends WritableCommand<MediaPlayer> {
 		this.mediaPlayerId = mediaPlayerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(8)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mediaPlayerId, 1)
@@ -33,9 +33,9 @@ export class MediaPlayerStatusCommand extends WritableCommand<MediaPlayer> {
 }
 
 export class MediaPlayerStatusUpdateCommand extends DeserializedCommand<MediaPlayer> {
-	static readonly rawName = 'RCPS'
+	public static readonly rawName = 'RCPS'
 
-	readonly mediaPlayerId: number
+	public readonly mediaPlayerId: number
 
 	constructor (mediaPlayerId: number, properties: MediaPlayer) {
 		super(properties)
@@ -43,7 +43,7 @@ export class MediaPlayerStatusUpdateCommand extends DeserializedCommand<MediaPla
 		this.mediaPlayerId = mediaPlayerId
 	}
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const mediaPlayerId = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const properties = {
 			playing: rawCommand[1] === 1,
@@ -55,7 +55,7 @@ export class MediaPlayerStatusUpdateCommand extends DeserializedCommand<MediaPla
 		return new MediaPlayerStatusUpdateCommand(mediaPlayerId, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.media.players[this.mediaPlayerId] = {
 			...state.media.getMediaPlayer(this.mediaPlayerId),
 			...this.properties

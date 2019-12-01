@@ -3,9 +3,9 @@ import { AtemState } from '../../../state'
 import { Util } from '../../..'
 
 export class FadeToBlackRateCommand extends BasicWritableCommand<{ rate: number }> {
-	static readonly rawName = 'FtbC'
+	public static readonly rawName = 'FtbC'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number, rate: number) {
 		super({ rate })
@@ -13,7 +13,7 @@ export class FadeToBlackRateCommand extends BasicWritableCommand<{ rate: number 
 		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(1, 0)
 		buffer.writeUInt8(this.mixEffect, 1)
@@ -23,9 +23,9 @@ export class FadeToBlackRateCommand extends BasicWritableCommand<{ rate: number 
 }
 
 export class FadeToBlackRateUpdateCommand extends DeserializedCommand<{ rate: number }> {
-	static readonly rawName = 'FtbP'
+	public static readonly rawName = 'FtbP'
 
-	readonly mixEffect: number
+	public readonly mixEffect: number
 
 	constructor (mixEffect: number, rate: number) {
 		super({ rate })
@@ -33,14 +33,14 @@ export class FadeToBlackRateUpdateCommand extends DeserializedCommand<{ rate: nu
 		this.mixEffect = mixEffect
 	}
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
 		const rate = rawCommand.readUInt8(1)
 
 		return new FadeToBlackRateUpdateCommand(mixEffect, rate)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.fadeToBlack = {
 			isFullyBlack: false,

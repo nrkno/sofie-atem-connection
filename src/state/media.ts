@@ -16,11 +16,11 @@ export interface MediaPlayerSource {
 export type MediaPlayerState = MediaPlayer & MediaPlayerSource
 
 export class MediaState {
-	stillPool: Array<StillFrame | undefined> = []
-	clipPool: Array<ClipBank | undefined> = []
-	players: Array<MediaPlayerState | undefined> = []
+	public readonly stillPool: Array<StillFrame | undefined> = []
+	public readonly clipPool: Array<ClipBank | undefined> = []
+	public readonly players: Array<MediaPlayerState | undefined> = []
 
-	getMediaPlayer (index: number, dontCreate?: boolean): MediaPlayerState {
+	public getMediaPlayer (index: number, dontCreate?: boolean): MediaPlayerState {
 		let player = this.players[index]
 		if (!player) {
 			player = {
@@ -41,7 +41,7 @@ export class MediaState {
 		return player
 	}
 
-	getClip (index: number): ClipBank {
+	public getClip (index: number): ClipBank {
 		const clip = this.clipPool[index]
 		if (!clip) {
 			return this.clipPool[index] = {

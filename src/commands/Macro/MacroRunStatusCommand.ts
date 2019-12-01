@@ -3,9 +3,9 @@ import { AtemState } from '../../state'
 import { MacroPlayerState } from '../../state/macro'
 
 export class MacroRunStatusCommand extends DeserializedCommand<MacroPlayerState> {
-	static readonly rawName = 'MRPr'
+	public static readonly rawName = 'MRPr'
 
-	static deserialize (rawCommand: Buffer) {
+	public static deserialize (rawCommand: Buffer) {
 		const properties = {
 			isRunning: Boolean(rawCommand[0] & 1 << 0),
 			isWaiting: Boolean(rawCommand[0] & 1 << 1),
@@ -16,7 +16,7 @@ export class MacroRunStatusCommand extends DeserializedCommand<MacroPlayerState>
 		return new MacroRunStatusCommand(properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.macro.macroPlayer = {
 			...state.macro.macroPlayer,
 			...this.properties
