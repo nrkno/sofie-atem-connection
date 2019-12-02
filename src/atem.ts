@@ -36,8 +36,8 @@ export interface AtemOptions {
 
 interface SentCommand {
 	command: ISerializableCommand
-	resolve: (cmd: ISerializableCommand) => void
-	reject: (cmd: ISerializableCommand) => void
+	resolve: () => void
+	reject: () => void
 }
 
 export const DEFAULT_PORT = 9910
@@ -47,7 +47,7 @@ export class Atem extends EventEmitter {
 	private readonly _state: AtemState
 	private readonly dataTransferManager: DT.DataTransferManager
 	private readonly _log: (...args: any[]) => void
-	private readonly _sentQueue: {[packetId: string]: SentCommand } = {}
+	private _sentQueue: {[packetId: string]: SentCommand } = {}
 
 	public on!: ((event: 'error', listener: (message: any) => void) => this) &
 		((event: 'connected', listener: () => void) => this) &
@@ -86,10 +86,12 @@ export class Atem extends EventEmitter {
 			this._mutateState(command)
 		})
 		this.socket.on(Enums.IPCMessageType.CommandAcknowledged, (trackingId: number) => this._resolveCommand(trackingId))
-		this.socket.on(Enums.IPCMessageType.CommandReject, (trackingId: number) => this._rejectCommand(trackingId))
 		this.socket.on('error', (e) => this.emit('error', e))
 		this.socket.on('connect', () => this.emit('connected'))
-		this.socket.on('disconnect', () => this.emit('disconnected'))
+		this.socket.on('disconnect', () => {
+			this._rejectAllCommands()
+			this.emit('disconnected')
+		})
 	}
 
 	get state (): Readonly<AtemState> {
@@ -479,16 +481,16 @@ export class Atem extends EventEmitter {
 	private _resolveCommand (trackingId: number) {
 		const sent = this._sentQueue[trackingId]
 		if (sent) {
-			sent.resolve(sent.command)
+			sent.resolve()
 			delete this._sentQueue[trackingId]
 		}
 	}
 
-	private _rejectCommand (trackingId: number) {
-		const sent = this._sentQueue[trackingId]
-		if (sent) {
-			sent.reject(sent.command)
-			delete this._sentQueue[trackingId]
-		}
+	private _rejectAllCommands () {
+		// Take a copy in case the promises cause more mutations
+		const sentQueue = this._sentQueue
+		this._sentQueue = {}
+
+		Object.values(sentQueue).forEach(sent => sent.reject())
 	}
 }

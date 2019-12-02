@@ -73,16 +73,6 @@ singleton.on(IPCMessageType.CommandAcknowledged, (commandId: number, trackingId:
 	})
 })
 
-singleton.on(IPCMessageType.CommandReject, (commandId: number, trackingId: number) => {
-	sendParentMessage({
-		cmd: IPCMessageType.CommandReject,
-		payload: {
-			commandId,
-			trackingId
-		}
-	})
-})
-
 function sendParentMessage (message: {cmd: IPCMessageType; payload?: any}) {
 	Util.sendIPCMessage(global, 'process', message, singleton.log.bind(singleton)).catch(() => { /* Discard errors. */ })
 }

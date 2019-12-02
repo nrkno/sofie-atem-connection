@@ -282,6 +282,7 @@ export class AtemSocketChild extends EventEmitter {
 		const fromIndex = this._inFlight.findIndex(pkt => pkt.packetId === fromId)
 		if (fromIndex === -1) {
 			// fromId is not inflight, so we cannot resend. only fix is to abort
+			this.log(`Unable to resend: ${fromId}`)
 			this.restartConnection()
 		} else {
 			this.log(`Resending from ${fromId} to ${this._inFlight[this._inFlight.length - 1].packetId}`)
@@ -308,6 +309,7 @@ export class AtemSocketChild extends EventEmitter {
 					this._retransmitFrom(sentPacket.packetId)
 				} else {
 					// A command has timed out, so we need to reset to avoid getting stuck
+					this.log(`Packet timed out: ${sentPacket.packetId}`)
 					this.restartConnection()
 				}
 				return

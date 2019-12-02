@@ -157,9 +157,6 @@ export class AtemSocket extends EventEmitter {
 			case IPCMessageType.CommandAcknowledged:
 				this.emit(IPCMessageType.CommandAcknowledged, message.payload.trackingId)
 				break
-			case IPCMessageType.CommandReject:
-				this.emit(IPCMessageType.CommandReject, message.payload.trackingId)
-				break
 			case IPCMessageType.InboundCommand:
 				this._parseCommand(Buffer.from(payload.packet.data))
 				break
