@@ -2,7 +2,44 @@ import { IPCMessageType } from './enums'
 import { Util } from './lib/atemUtil'
 import { AtemSocketChild } from './lib/atemSocketChild'
 
-const singleton = new AtemSocketChild()
+function sendParentMessage (message: {cmd: IPCMessageType; payload?: any}) {
+	Util.sendIPCMessage(global, 'process', message, singleton.log.bind(singleton)).catch(() => { /* Discard errors. */ })
+}
+
+function onDisconnect () {
+	sendParentMessage({
+		cmd: IPCMessageType.Disconnect
+	})
+}
+
+function onLog (message: string) {
+	sendParentMessage({
+		cmd: IPCMessageType.Log,
+		payload: message
+	})
+}
+
+function onCommandReceived (packet: Buffer, remotePacketId: number) {
+	sendParentMessage({
+		cmd: IPCMessageType.InboundCommand,
+		payload: {
+			packet,
+			remotePacketId
+		}
+	})
+}
+
+function onCommandAcknowledged (packetId: number, trackingId: number) {
+	sendParentMessage({
+		cmd: IPCMessageType.CommandAcknowledged,
+		payload: {
+			packetId,
+			trackingId
+		}
+	})
+}
+
+const singleton = new AtemSocketChild(onDisconnect, onLog, onCommandReceived, onCommandAcknowledged)
 process.on('message', message => {
 	if (typeof message !== 'object') {
 		return
@@ -39,40 +76,3 @@ process.on('unhandledRejection', reason => {
 		process.exit(1)
 	}, 10)
 })
-
-singleton.on(IPCMessageType.Disconnect, () => {
-	sendParentMessage({
-		cmd: IPCMessageType.Disconnect
-	})
-})
-
-singleton.on(IPCMessageType.Log, (message: string) => {
-	sendParentMessage({
-		cmd: IPCMessageType.Log,
-		payload: message
-	})
-})
-
-singleton.on(IPCMessageType.InboundCommand, (packet: Buffer, remotePacketId: number) => {
-	sendParentMessage({
-		cmd: IPCMessageType.InboundCommand,
-		payload: {
-			packet,
-			remotePacketId
-		}
-	})
-})
-
-singleton.on(IPCMessageType.CommandAcknowledged, (commandId: number, trackingId: number) => {
-	sendParentMessage({
-		cmd: IPCMessageType.CommandAcknowledged,
-		payload: {
-			commandId,
-			trackingId
-		}
-	})
-})
-
-function sendParentMessage (message: {cmd: IPCMessageType; payload?: any}) {
-	Util.sendIPCMessage(global, 'process', message, singleton.log.bind(singleton)).catch(() => { /* Discard errors. */ })
-}

@@ -1,7 +1,6 @@
 import { createSocket, Socket, RemoteInfo } from 'dgram'
-import { EventEmitter } from 'events'
 import { Util } from './atemUtil'
-import { ConnectionState, IPCMessageType, PacketFlag } from '../enums'
+import { ConnectionState, PacketFlag } from '../enums'
 import * as NanoTimer from 'nanotimer'
 import { DEFAULT_PORT } from '../atem'
 
@@ -20,7 +19,7 @@ interface InFlightPacket {
 	resent: number
 }
 
-export class AtemSocketChild extends EventEmitter {
+export class AtemSocketChild {
 	private readonly _debug = false
 
 	private _connectionState = ConnectionState.Closed
@@ -30,7 +29,7 @@ export class AtemSocketChild extends EventEmitter {
 	private _nextSendPacketId = 1
 	private _sessionId: number = 0
 
-	private _address: string
+	private _address: string = ''
 	private _port: number = DEFAULT_PORT
 	private _socket: Socket
 
@@ -41,20 +40,17 @@ export class AtemSocketChild extends EventEmitter {
 	private _ackTimerRunning = false
 	private _receivedWithoutAck: number = 0
 
-	public on!: ((event: IPCMessageType.Disconnect, listener: () => void) => this) &
-		((event: IPCMessageType.Log, listener: (payload: string) => void) => this) &
-		((event: IPCMessageType.InboundCommand, listener: (payload: Buffer, packetId: number) => void) => this) &
-		((event: IPCMessageType.CommandAcknowledged, listener: (packetId: number, trackingId: number) => void) => this)
+	private readonly onDisconnect: () => void
+	private readonly onLog: (message: string) => void
+	private readonly onCommandReceived: (payload: Buffer, packetId: number) => void
+	private readonly onCommandAcknowledged: (packetId: number, trackingId: number) => void
 
-	public emit!: ((event: IPCMessageType.Disconnect) => boolean) &
-		  ((event: IPCMessageType.Log, payload: string) => boolean) &
-		  ((event: IPCMessageType.InboundCommand, payload: Buffer, packetId: number) => boolean) &
-		  ((event: IPCMessageType.CommandAcknowledged, packetId: number, trackingId: number) => boolean)
+	constructor (onDisconnect: () => void, onLog: (message: string) => void, onCommandReceived: (payload: Buffer, packetId: number) => void, onCommandAcknowledged: (packetId: number, trackingId: number) => void) {
+		this.onDisconnect = onDisconnect
+		this.onLog = onLog
+		this.onCommandReceived = onCommandReceived
+		this.onCommandAcknowledged = onCommandAcknowledged
 
-	constructor (options: { address?: string, port?: number } = {}) {
-		super()
-		this._address = options.address || ''
-		this._port = options.port || this._port
 		this._socket = this._createSocket()
 	}
 
@@ -104,7 +100,7 @@ export class AtemSocketChild extends EventEmitter {
 		}).then(() => {
 			this._connectionState = ConnectionState.Closed
 			this._createSocket()
-			this.emit(IPCMessageType.Disconnect)
+			this.onDisconnect()
 		})
 	}
 
@@ -113,7 +109,7 @@ export class AtemSocketChild extends EventEmitter {
 		if (this._connectionState === ConnectionState.Established) {
 			this._connectionState = ConnectionState.Closed
 			this._createSocket()
-			this.emit(IPCMessageType.Disconnect)
+			this.onDisconnect()
 		}
 
 		// Reset connection
@@ -129,8 +125,8 @@ export class AtemSocketChild extends EventEmitter {
 		}
 	}
 
-	public log (payload: string): void {
-		this.emit(IPCMessageType.Log, payload)
+	public log (message: string): void {
+		this.onLog(message)
 	}
 
 	public sendCommand (payload: Buffer, trackingId: number): void {
@@ -217,7 +213,7 @@ export class AtemSocketChild extends EventEmitter {
 
 					// It might have commands
 					if (length > 12) {
-						this.emit(IPCMessageType.InboundCommand, packet.slice(12), remotePacketId)
+						this.onCommandReceived(packet.slice(12), remotePacketId)
 					}
 				} else if (this._isPacketCoveredByAck(this._lastReceivedPacketId, remotePacketId)) {
 					// We got a retransmit of something we have already acked, so reack it
@@ -230,7 +226,7 @@ export class AtemSocketChild extends EventEmitter {
 				const ackPacketId = packet.readUInt16BE(4)
 				this._inFlight = this._inFlight.filter(pkt => {
 					if (this._isPacketCoveredByAck(ackPacketId, pkt.packetId)) {
-						this.emit(IPCMessageType.CommandAcknowledged, pkt.packetId, pkt.trackingId)
+						this.onCommandAcknowledged(pkt.packetId, pkt.trackingId)
 						return false
 					} else {
 						// Not acked yet

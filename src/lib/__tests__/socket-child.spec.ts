@@ -3,7 +3,7 @@ import { Socket } from '../__mocks__/dgram'
 import { AtemSocketChild } from '../atemSocketChild'
 import { Util } from '../..'
 import * as lolex from 'lolex'
-import { ConnectionState, PacketFlag, IPCMessageType } from '../../enums'
+import { ConnectionState, PacketFlag } from '../../enums'
 import { DEFAULT_PORT } from '../../atem'
 
 const ADDRESS = '127.0.0.1'
@@ -29,6 +29,10 @@ function fakeConnect (child: AtemSocketChild) {
 	child2._address = '127.0.0.1'
 }
 
+function createSocketChild (onCommandReceived?: (payload: Buffer, packetId: number) => void, onCommandAcknowledged?: (packetId: number, trackingId: number) => void) {
+	return new AtemSocketChild(() => null, () => null, onCommandReceived || (() => null), onCommandAcknowledged || (() => null))
+}
+
 describe('SocketChild', () => {
 	let clock: lolex.InstalledClock
 	beforeEach(() => {
@@ -39,7 +43,7 @@ describe('SocketChild', () => {
 	})
 
 	test('Establish connection', async () => {
-		const child = new AtemSocketChild()
+		const child = createSocketChild()
 		try {
 			const socket = getSocket(child)
 
@@ -120,7 +124,7 @@ describe('SocketChild', () => {
 	}
 
 	test('Ack - delayed', async () => {
-		const child = new AtemSocketChild()
+		const child = createSocketChild()
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -163,7 +167,7 @@ describe('SocketChild', () => {
 	})
 
 	test('Ack - bulk', async () => {
-		const child = new AtemSocketChild()
+		const child = createSocketChild()
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -210,7 +214,8 @@ describe('SocketChild', () => {
 	})
 
 	test('Inbound commands', async () => {
-		const child = new AtemSocketChild()
+		let gotCmds: number[] = []
+		const child = createSocketChild(buf => gotCmds.push(buf.length))
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -222,8 +227,7 @@ describe('SocketChild', () => {
 				expect(false).toBeTruthy()
 			}
 
-			let gotCmds: number[] = []
-			child.on(IPCMessageType.InboundCommand, buf => gotCmds.push(buf.length))
+			gotCmds = []
 
 			// Nothing
 			socket.emitMessage(genAckRequestMessage(1))
@@ -262,7 +266,8 @@ describe('SocketChild', () => {
 	})
 
 	test('Inbound commands - around wrap', async () => {
-		const child = new AtemSocketChild()
+		let gotCmds: number[] = []
+		const child = createSocketChild(buf => gotCmds.push(buf.length))
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -275,8 +280,7 @@ describe('SocketChild', () => {
 				expect(false).toBeTruthy()
 			}
 
-			let gotCmds: number[] = []
-			child.on(IPCMessageType.InboundCommand, buf => gotCmds.push(buf.length))
+			gotCmds = []
 
 			// Nothing
 			socket.emitMessage(Buffer.concat([genAckRequestMessage(32766, 1), Buffer.from([0])]))
@@ -336,7 +340,7 @@ describe('SocketChild', () => {
 	})
 
 	test('SendCommand', async () => {
-		const child = new AtemSocketChild()
+		const child = createSocketChild()
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -396,7 +400,8 @@ describe('SocketChild', () => {
 	}
 
 	test('SendCommand - acks', async () => {
-		const child = new AtemSocketChild()
+		let acked: Array<{packetId: number, trackingId: number}> = []
+		const child = createSocketChild(undefined, (packetId, trackingId) => acked.push({ packetId, trackingId }))
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -411,8 +416,7 @@ describe('SocketChild', () => {
 				received.push(msg.readUInt16BE(10))
 			}
 
-			let acked: Array<{packetId: number, trackingId: number}> = []
-			child.on(IPCMessageType.CommandAcknowledged, (packetId, trackingId) => acked.push({ packetId, trackingId }))
+			acked = []
 
 			// Send some stuff
 			const buf1 = Buffer.from([0, 1, 2])
@@ -453,7 +457,8 @@ describe('SocketChild', () => {
 	})
 
 	test('SendCommand - acks wrap', async () => {
-		const child = new AtemSocketChild()
+		let acked: Array<{packetId: number, trackingId: number}> = []
+		const child = createSocketChild(undefined, (packetId, trackingId) => acked.push({ packetId, trackingId }))
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -468,8 +473,7 @@ describe('SocketChild', () => {
 				received.push(msg.readUInt16BE(10))
 			}
 
-			let acked: Array<{packetId: number, trackingId: number}> = []
-			child.on(IPCMessageType.CommandAcknowledged, (packetId, trackingId) => acked.push({ packetId, trackingId }))
+			acked = []
 
 			// Send some stuff
 			const buf1 = Buffer.from([0, 1, 2])
