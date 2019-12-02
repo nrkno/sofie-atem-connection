@@ -68,22 +68,7 @@ export class AtemSocketChild extends EventEmitter {
 					return
 				}
 
-				// This includes a 'disconnect'
-				if (this._connectionState === ConnectionState.Established) {
-					this._connectionState = ConnectionState.Closed
-					this.emit(IPCMessageType.Disconnect)
-				}
-
-				// Reset connection
-				this._nextSendPacketId = 1
-				this._sessionId = 0
-				this.log('reconnect')
-
-				// Try doing reconnect
-				if (this._address && this._port) {
-					this._sendPacket(Util.COMMAND_CONNECT_HELLO)
-					this._connectionState = ConnectionState.SynSent
-				}
+				this.restartConnection()
 			}, CONNECTION_RETRY_INTERVAL)
 		}
 		// Check for retransmits every 10 milliseconds
@@ -98,8 +83,7 @@ export class AtemSocketChild extends EventEmitter {
 			this._port = port
 		}
 
-		this._sendPacket(Util.COMMAND_CONNECT_HELLO)
-		this._connectionState = ConnectionState.SynSent
+		this.restartConnection()
 	}
 
 	public disconnect (): Promise<void> {
@@ -124,6 +108,26 @@ export class AtemSocketChild extends EventEmitter {
 			this._createSocket()
 			this.emit(IPCMessageType.Disconnect)
 		})
+	}
+
+	public restartConnection (): void {
+		// This includes a 'disconnect'
+		if (this._connectionState === ConnectionState.Established) {
+			this._connectionState = ConnectionState.Closed
+			this.emit(IPCMessageType.Disconnect)
+		}
+
+		// Reset connection
+		this._nextSendPacketId = 1
+		this._sessionId = 0
+		this._inFlight = []
+		this.log('reconnect')
+
+		// Try doing reconnect
+		if (this._address && this._port) {
+			this._sendPacket(Util.COMMAND_CONNECT_HELLO)
+			this._connectionState = ConnectionState.SynSent
+		}
 	}
 
 	public log (payload: string): void {
@@ -158,6 +162,14 @@ export class AtemSocketChild extends EventEmitter {
 		this._socket = createSocket('udp4')
 		this._socket.bind()
 		this._socket.on('message', (packet, rinfo) => this._receivePacket(packet, rinfo))
+		this._socket.on('error', err => {
+			this.log(`Connection error: ${err}`)
+
+			if (this._connectionState === ConnectionState.Established) {
+				// If connection is open, then restart. Otherwise the reconnectTimer will handle it
+				this.restartConnection()
+			}
+		})
 
 		return this._socket
 	}
