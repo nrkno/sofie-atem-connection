@@ -271,7 +271,7 @@ export class AtemSocketChild extends EventEmitter {
 				sentPacket.resent++
 				this._sendPacket(sentPacket.payload)
 			} else if (sentPacket && sentPacket.lastSent + IN_FLIGHT_TIMEOUT < Date.now()) {
-				if (sentPacket.resent <= MAX_PACKET_RETRIES && sentPacket.packetId < this._nextSendPacketId) {
+				if (sentPacket.resent <= MAX_PACKET_RETRIES && this._isPacketCoveredByAck(this._nextSendPacketId, sentPacket.packetId)) {
 					sentPacket.lastSent = Date.now()
 					sentPacket.resent++
 
