@@ -45,13 +45,13 @@ export class AtemSocketChild extends EventEmitter {
 		((event: IPCMessageType.Log, listener: (payload: string) => void) => this) &
 		((event: IPCMessageType.InboundCommand, listener: (payload: Buffer, packetId: number) => void) => this) &
 		((event: IPCMessageType.CommandAcknowledged, listener: (packetId: number, trackingId: number) => void) => this) &
-		((event: IPCMessageType.CommandTimeout, listener: (packetId: number, trackingId: number) => void) => this)
+		((event: IPCMessageType.CommandReject, listener: (packetId: number, trackingId: number) => void) => this)
 
 	public emit!: ((event: IPCMessageType.Disconnect) => boolean) &
 		  ((event: IPCMessageType.Log, payload: string) => boolean) &
 		  ((event: IPCMessageType.InboundCommand, payload: Buffer, packetId: number) => boolean) &
 		  ((event: IPCMessageType.CommandAcknowledged, packetId: number, trackingId: number) => boolean) &
-		  ((event: IPCMessageType.CommandTimeout, packetId: number, trackingId: number) => boolean)
+		  ((event: IPCMessageType.CommandReject, packetId: number, trackingId: number) => boolean)
 
 	constructor (options: { address?: string, port?: number } = {}) {
 		super()
@@ -294,7 +294,7 @@ export class AtemSocketChild extends EventEmitter {
 					this._sendPacket(sentPacket.payload)
 					retransmitFromPacketId = sentPacket.packetId
 				} else {
-					this.emit(IPCMessageType.CommandTimeout, sentPacket.packetId, sentPacket.trackingId)
+					this.emit(IPCMessageType.CommandReject, sentPacket.packetId, sentPacket.trackingId)
 
 					this.log(`Timed out: ${sentPacket.packetId}`)
 					if (this._debug) {

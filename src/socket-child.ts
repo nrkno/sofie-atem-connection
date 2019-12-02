@@ -73,9 +73,9 @@ singleton.on(IPCMessageType.CommandAcknowledged, (commandId: number, trackingId:
 	})
 })
 
-singleton.on(IPCMessageType.CommandTimeout, (commandId: number, trackingId: number) => {
+singleton.on(IPCMessageType.CommandReject, (commandId: number, trackingId: number) => {
 	sendParentMessage({
-		cmd: IPCMessageType.CommandTimeout,
+		cmd: IPCMessageType.CommandReject,
 		payload: {
 			commandId,
 			trackingId

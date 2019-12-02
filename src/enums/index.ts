@@ -205,7 +205,7 @@ export enum IPCMessageType {
 	InboundCommand = 'inboundCommand',
 	OutboundCommand = 'outboundCommand',
 	CommandAcknowledged = 'commandAcknowledged',
-	CommandTimeout = 'commandTimeout'
+	CommandReject = 'commandReject'
 }
 
 export enum TransferMode {
