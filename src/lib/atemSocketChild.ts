@@ -112,6 +112,7 @@ export class AtemSocketChild extends EventEmitter {
 		// This includes a 'disconnect'
 		if (this._connectionState === ConnectionState.Established) {
 			this._connectionState = ConnectionState.Closed
+			this._createSocket()
 			this.emit(IPCMessageType.Disconnect)
 		}
 
@@ -243,9 +244,7 @@ export class AtemSocketChild extends EventEmitter {
 
 	private _sendPacket (packet: Buffer) {
 		if (this._debug) this.log(`SEND ${packet}`)
-		if (Math.random() > 0.25) {
 		this._socket.send(packet, 0, packet.length, this._port, this._address)
-		}
 	}
 
 	private _sendOrQueueAck () {
@@ -278,6 +277,9 @@ export class AtemSocketChild extends EventEmitter {
 
 	private _retransmitFrom (fromId: number) {
 		// this.log(`Resending from ${fromId} to ${this._inFlight.length > 0 ? this._inFlight[this._inFlight.length - 1].packetId : '-'}`)
+
+		// The atem will ask for MAX_PACKET_ID to be retransmitted when it really wants 0
+		fromId = fromId % MAX_PACKET_ID
 
 		const fromIndex = this._inFlight.findIndex(pkt => pkt.packetId === fromId)
 		if (fromIndex === -1) {
