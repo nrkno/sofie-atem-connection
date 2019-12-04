@@ -1,7 +1,6 @@
 import { Atem, DEFAULT_PORT } from '../atem'
 import { cleanupAtem } from './lib'
 import { CutCommand } from '../commands'
-import { IPCMessageType } from '../enums'
 import { promisify } from 'util'
 import { EventEmitter } from 'events'
 
@@ -123,7 +122,7 @@ describe('Atem', () => {
 			expect(socket.sendCommand).toHaveBeenCalledWith(cmd, 124)
 
 			// Trigger the ack, and it should switfy resolve
-			socket.emit(IPCMessageType.CommandAcknowledged, 124)
+			socket.emit('commandAck', 124)
 			expect(Object.keys(sentQueue)).toHaveLength(0)
 
 			// Finally, it should now resolve without a timeout

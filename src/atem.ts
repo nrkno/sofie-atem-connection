@@ -56,6 +56,12 @@ export class Atem extends EventEmitter {
 		((event: 'stateChanged', listener: (state: AtemState, path: string) => void) => this) &
 		((event: 'receivedCommand', listener: (cmd: IDeserializedCommand) => void) => this)
 
+	public emit!: ((event: 'error', message: any) => boolean) &
+		((event: 'connected') => boolean) &
+		((event: 'disconnected') => boolean) &
+		((event: 'stateChanged', state: AtemState, path: string) => boolean) &
+		((event: 'receivedCommand', cmd: IDeserializedCommand) => boolean)
+
 	constructor (options?: AtemOptions) {
 		super()
 		this._log = (options && options.externalLog) || function (...args: any[]): void {
@@ -74,11 +80,11 @@ export class Atem extends EventEmitter {
 		this.socket.on('connect', () => this.dataTransferManager.startCommandSending((command: ISerializableCommand) => this.sendCommand(command)))
 		this.socket.on('disconnect', () => this.dataTransferManager.stopCommandSending())
 
-		this.socket.on('receivedStateChange', (command: IDeserializedCommand) => {
+		this.socket.on('commandReceived', (command: IDeserializedCommand) => {
 			this.emit('receivedCommand', command)
 			this._mutateState(command)
 		})
-		this.socket.on(Enums.IPCMessageType.CommandAcknowledged, (trackingId: number) => this._resolveCommand(trackingId))
+		this.socket.on('commandAck', (trackingId: number) => this._resolveCommand(trackingId))
 		this.socket.on('error', (e) => this.emit('error', e))
 		this.socket.on('connect', () => this.emit('connected'))
 		this.socket.on('disconnect', () => {

@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events'
 import { CommandParser } from './atemCommandParser'
-import { IPCMessageType } from '../enums'
 // import exitHook = require('exit-hook')
 import { VersionCommand, ISerializableCommand, IDeserializedCommand } from '../commands'
 import { DEFAULT_PORT } from '../atem'
@@ -27,6 +26,20 @@ export class AtemSocket extends EventEmitter {
 	private _socketProcess: ThreadedClass<AtemSocketChild> | undefined
 
 	private readonly log: (args1: any, args2?: any, args3?: any) => void
+
+	public on!: ((event: 'disconnect', listener: () => void) => this) &
+		((event: 'connect', listener: () => void) => this) &
+		((event: 'restarted', listener: () => void) => this) &
+		((event: 'error', listener: (message: string) => void) => this) &
+		((event: 'commandReceived', listener: (cmd: IDeserializedCommand) => void) => this) &
+		((event: 'commandAck', listener: (trackingId: number) => void) => this)
+
+	public emit!: ((event: 'disconnect') => boolean) &
+		((event: 'connect') => boolean) &
+		((event: 'restarted') => boolean) &
+		((event: 'error', message: string) => boolean) &
+		((event: 'commandReceived', cmd: IDeserializedCommand) => boolean) &
+		((event: 'commandAck', trackingId: number) => boolean)
 
 	constructor (options: AtemSocketOptions) {
 		super()
@@ -102,10 +115,10 @@ export class AtemSocket extends EventEmitter {
 				port: this._port,
 				debug: this._debug
 			},
-			async () => { this.emit(IPCMessageType.Disconnect) }, // onDisconnect
+			async () => { this.emit('disconnect') }, // onDisconnect
 			async (message: string) => this.log(message), // onLog
 			async (payload: Buffer) => this._parseCommand(Buffer.from(payload)), // onCommandReceived
-			async (packetId: number, trackingId: number) => { this.emit(IPCMessageType.CommandAcknowledged, { packetId, trackingId }) } // onCommandAcknowledged
+			async (_packetId: number, trackingId: number) => { this.emit('commandAck', trackingId) } // onCommandAcknowledged
 		], {
 			instanceName: 'atem-connection',
 			freezeLimit: 200,
@@ -156,7 +169,7 @@ export class AtemSocket extends EventEmitter {
 					this._commandParser.version = verCmd.properties.version
 				}
 
-				this.emit('receivedStateChange', cmd)
+				this.emit('commandReceived', cmd)
 			} catch (e) {
 				this.emit('error', e)
 			}

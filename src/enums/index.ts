@@ -198,15 +198,6 @@ export enum SuperSourceArtOption {
 	Foreground
 }
 
-export enum IPCMessageType {
-	Log = 'log',
-	Connect = 'connect',
-	Disconnect = 'disconnect',
-	InboundCommand = 'inboundCommand',
-	OutboundCommand = 'outboundCommand',
-	CommandAcknowledged = 'commandAcknowledged'
-}
-
 export enum TransferMode {
 	NoOp,
 	Write,
