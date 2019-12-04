@@ -11,7 +11,7 @@ export interface MultiViewerWindowState extends MultiViewerSourceState {
 
 export class MultiViewer {
 	public readonly index: number
-	public readonly windows: { [index: string]: MultiViewerWindowState | undefined } = {}
+	public readonly windows: Array<MultiViewerWindowState | undefined> = []
 
 	constructor (index: number) {
 		this.index = index
@@ -19,7 +19,7 @@ export class MultiViewer {
 }
 
 export class SettingsState {
-	public readonly multiViewers: { [index: string]: MultiViewer | undefined } = {}
+	public readonly multiViewers: Array<MultiViewer | undefined> = []
 	public videoMode: number
 
 	constructor () {
