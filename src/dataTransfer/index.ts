@@ -1,5 +1,6 @@
-import { Commands, Enums } from '..'
+import exitHook = require('exit-hook')
 
+import { Commands, Enums } from '..'
 import DataLock from './dataLock'
 import DataTransferFrame from './dataTransferFrame'
 import DataTransferStill from './dataTransferStill'
@@ -13,16 +14,14 @@ const MAX_TRANSFER_INDEX = (1 << 16) - 1 // Inclusive maximum
 export class DataTransferManager {
 	private readonly commandQueue: Array<ISerializableCommand> = []
 
-	private readonly stillsLock = new DataLock(0, cmd => {
-		// console.log('SEND', cmd.constructor.name)
-		this.commandQueue.push(cmd)
-	})
+	private readonly stillsLock = new DataLock(0, cmd => this.commandQueue.push(cmd))
 	private readonly clipLocks = [
 		new DataLock(1, cmd => this.commandQueue.push(cmd)),
 		new DataLock(2, cmd => this.commandQueue.push(cmd))
 	]
 
-	private interval: NodeJS.Timer | undefined
+	private interval?: NodeJS.Timer
+	private exitUnsubscribe?: () => void
 
 	private transferIndex: number = 0
 
@@ -45,8 +44,16 @@ export class DataTransferManager {
 				})
 			}, 0) // TODO - should this be done slower?
 		}
+		if (!this.exitUnsubscribe) {
+			this.exitUnsubscribe = exitHook(() => {
+				this.stopCommandSending()
+			})
+		}
 	}
 	public stopCommandSending () {
+		if (this.exitUnsubscribe) {
+			this.exitUnsubscribe = undefined
+		}
 		if (this.interval) {
 			clearInterval(this.interval)
 			this.interval = undefined
