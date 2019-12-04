@@ -8,6 +8,7 @@ import DataTransferAudio from './dataTransferAudio'
 import { ISerializableCommand } from '../commands/CommandBase'
 
 const MAX_PACKETS_TO_SEND_PER_TICK = 10
+const MAX_TRANSFER_INDEX = (1 << 16) - 1 // Inclusive maximum
 
 export class DataTransferManager {
 	private readonly commandQueue: Array<ISerializableCommand> = []
@@ -37,7 +38,10 @@ export class DataTransferManager {
 
 				const commandsToSend = this.commandQueue.splice(0, MAX_PACKETS_TO_SEND_PER_TICK)
 				commandsToSend.forEach(command => {
-					sendCommand(command).catch(() => { /* discard error */ })
+					sendCommand(command).catch((e) => {
+						// TODO - handle this better. it should probably kill/restart the upload. and should also be logged in some way
+						console.log(`Transfer send error: ${e}`)
+					})
 				})
 			}, 0) // TODO - should this be done slower?
 		}
@@ -97,21 +101,27 @@ export class DataTransferManager {
 	}
 
 	public uploadStill (index: number, data: Buffer, name: string, description: string) {
-		const transfer = new DataTransferStill(this.transferIndex++, index, data, name, description)
+		const transfer = new DataTransferStill(this.nextTransferIndex, index, data, name, description)
 		return this.stillsLock.enqueue(transfer)
 	}
 
 	public async uploadClip (index: number, data: Array<Buffer>, name: string) {
-		const frames = data.map((frame, id) => new DataTransferFrame(this.transferIndex++, 1 + index, id, frame))
+		const frames = data.map((frame, id) => new DataTransferFrame(this.nextTransferIndex, 1 + index, id, frame))
 		const transfer = new DataTransferClip(1 + index, name, frames)
 		const lock = await this.getClipLock(index)
 		return lock.enqueue(transfer)
 	}
 
 	public async uploadAudio (index: number, data: Buffer, name: string) {
-		const transfer = new DataTransferAudio(this.transferIndex++, 1 + index, data, name)
+		const transfer = new DataTransferAudio(this.nextTransferIndex, 1 + index, data, name)
 		const lock = await this.getClipLock(index)
 		return lock.enqueue(transfer)
+	}
+
+	private get nextTransferIndex () {
+		const index = this.transferIndex++
+		if (this.transferIndex > MAX_TRANSFER_INDEX) this.transferIndex = 0
+		return index
 	}
 
 	private async getClipLock (index: number) {
