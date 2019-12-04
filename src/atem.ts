@@ -44,9 +44,9 @@ export const DEFAULT_PORT = 9910
 
 export class Atem extends EventEmitter {
 	private readonly socket: AtemSocket
-	private readonly _state: AtemState
 	private readonly dataTransferManager: DT.DataTransferManager
 	private readonly _log: (...args: any[]) => void
+	private _state: AtemState
 	private _sentQueue: {[packetId: string]: SentCommand } = {}
 
 	public on!: ((event: 'error', listener: (message: any) => void) => this) &
@@ -465,6 +465,11 @@ export class Atem extends EventEmitter {
 	}
 
 	private _mutateState (command: IDeserializedCommand) {
+		if (command.constructor.name === Commands.VersionCommand.name) {
+			// On start of connection, create a new state object
+			this._state = new AtemState()
+		}
+
 		let changePaths = command.applyToState(this.state)
 		if (!Array.isArray(changePaths)) {
 			changePaths = [ changePaths ]
