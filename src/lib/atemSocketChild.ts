@@ -39,10 +39,10 @@ export class AtemSocketChild {
 	private _ackTimerRunning = false
 	private _receivedWithoutAck: number = 0
 
-	private onDisconnect: () => Promise<void>
-	private onLog: (message: string) => Promise<void>
-	private onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>
-	private onCommandAcknowledged: (packetId: number, trackingId: number) => Promise<void>
+	private readonly onDisconnect: () => Promise<void>
+	private readonly onLog: (message: string) => Promise<void>
+	private readonly onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>
+	private readonly onCommandAcknowledged: (packetId: number, trackingId: number) => Promise<void>
 
 	constructor (options: { address: string, port: number, debug: boolean }, onDisconnect: () => Promise<void>, onLog: (message: string) => Promise<void>, onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>, onCommandAcknowledged: (packetId: number, trackingId: number) => Promise<void>) {
 		this._debug = options.debug
@@ -55,13 +55,6 @@ export class AtemSocketChild {
 		this.onCommandAcknowledged = onCommandAcknowledged
 
 		this._socket = this._createSocket()
-	}
-
-	public hackSetFuncs (onDisconnect: () => Promise<void>, onLog: (message: string) => Promise<void>, onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>, onCommandAcknowledged: (packetId: number, trackingId: number) => Promise<void>) {
-		this.onDisconnect = onDisconnect
-		this.onLog = onLog
-		this.onCommandReceived = onCommandReceived
-		this.onCommandAcknowledged = onCommandAcknowledged
 	}
 
 	public connect (address: string, port: number): Promise<void> {

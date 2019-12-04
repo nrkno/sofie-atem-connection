@@ -5165,10 +5165,9 @@ text-extensions@^1.0.0:
   resolved "https://registry.yarnpkg.com/text-extensions/-/text-extensions-1.9.0.tgz#1853e45fee39c945ce6f6c36b2d659b5aabc2a26"
   integrity sha512-wiBrwC1EhBelW12Zy26JeOUkQ5mRu+5o8rpsJk5+2t+Y5vE7e842qtZDQ2g1NpX/29HdyFeJ4nSIhI47ENSxlQ==
 
-threadedclass@^0.6.8:
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/threadedclass/-/threadedclass-0.6.8.tgz#7eba5d9c7b3b40b9b5a6edcee222b54d209336bf"
-  integrity sha512-pAQSA7bM1r2tSuag6buf7o7xJ3m5W3zF77xG1SlD+7yPC09Ly/JBm4rVpXY+Ryy20An3PvdHwlkAonizBvUiFA==
+"threadedclass@https://github.com/Julusian/threadedClass.git#dist/feat/node12-types":
+  version "0.0.0-develop"
+  resolved "https://github.com/Julusian/threadedClass.git#9a40b3357db293b8a8429526a4bf7d8d4de8a10f"
   dependencies:
     callsites "^3.1.0"
     tslib "^1.9.3"

@@ -96,32 +96,22 @@ export class AtemSocket extends EventEmitter {
 	}
 
 	private async _createSocketProcess () {
-		const socketProcess = await threadedClass<AtemSocketChild>('./atemSocketChild', AtemSocketChild, [
+		const socketProcess = await threadedClass<AtemSocketChild, typeof AtemSocketChild>('./atemSocketChild', AtemSocketChild, [
 			{
 				address: this._address,
 				port: this._port,
 				debug: this._debug
 			},
-			null,
-			null,
-			null,
-			null
-			// () => this.emit(IPCMessageType.Disconnect), // onDisconnect
-			// (message: string) => this.log(message), // onLog
-			// (payload: Buffer) => this._parseCommand(Buffer.from(payload)), // onCommandReceived
-			// (packetId: number, trackingId: number) => this.emit(IPCMessageType.CommandAcknowledged, { packetId, trackingId }) // onCommandAcknowledged
+			async () => { this.emit(IPCMessageType.Disconnect) }, // onDisconnect
+			async (message: string) => this.log(message), // onLog
+			async (payload: Buffer) => this._parseCommand(Buffer.from(payload)), // onCommandReceived
+			async (packetId: number, trackingId: number) => { this.emit(IPCMessageType.CommandAcknowledged, { packetId, trackingId }) } // onCommandAcknowledged
 		], {
 			instanceName: 'atem-connection',
 			freezeLimit: 200,
 			autoRestart: true,
 			disableMultithreading: this._disableMultithreaded
 		})
-		await socketProcess.hackSetFuncs(
-			() => this.emit(IPCMessageType.Disconnect), // onDisconnect
-			(message: string) => this.log(message), // onLog
-			(payload: Buffer) => this._parseCommand(Buffer.from(payload)), // onCommandReceived
-			(packetId: number, trackingId: number) => this.emit(IPCMessageType.CommandAcknowledged, { packetId, trackingId }) // onCommandAcknowledged
-		)
 
 		ThreadedClassManager.onEvent(socketProcess, 'restarted', () => {
 			this.emit('restarted')

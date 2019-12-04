@@ -114,7 +114,7 @@
   "dependencies": {
     "exit-hook": "^2.0.0",
     "nanotimer": "^0.3.15",
-    "threadedclass": "^0.6.8",
+    "threadedclass": "https://github.com/Julusian/threadedClass.git#dist/feat/node12-types",
     "tslib": "^1.10.0",
     "wavefile": "^8.4.4"
   },
