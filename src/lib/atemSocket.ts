@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { CommandParser } from './atemCommandParser'
-// import exitHook = require('exit-hook')
+import exitHook = require('exit-hook')
 import { VersionCommand, ISerializableCommand, IDeserializedCommand } from '../commands'
 import { DEFAULT_PORT } from '../atem'
 import { threadedClass, ThreadedClass, ThreadedClassManager } from 'threadedclass'
@@ -12,7 +12,7 @@ export interface AtemSocketOptions {
 	debug: boolean
 	disableMultithreaded: boolean
 
-	log: (args1: any, args2?: any, args3?: any) => void
+	log: (...args: any[]) => void
 }
 
 export class AtemSocket extends EventEmitter {
@@ -24,19 +24,18 @@ export class AtemSocket extends EventEmitter {
 	private _address: string
 	private _port: number = DEFAULT_PORT
 	private _socketProcess: ThreadedClass<AtemSocketChild> | undefined
+	private _exitUnsubscribe?: () => void
 
 	private readonly log: (args1: any, args2?: any, args3?: any) => void
 
 	public on!: ((event: 'disconnect', listener: () => void) => this) &
 		((event: 'connect', listener: () => void) => this) &
-		((event: 'restarted', listener: () => void) => this) &
 		((event: 'error', listener: (message: string) => void) => this) &
 		((event: 'commandReceived', listener: (cmd: IDeserializedCommand) => void) => this) &
 		((event: 'commandAck', listener: (trackingId: number) => void) => this)
 
 	public emit!: ((event: 'disconnect') => boolean) &
 		((event: 'connect') => boolean) &
-		((event: 'restarted') => boolean) &
 		((event: 'error', message: string) => boolean) &
 		((event: 'commandReceived', cmd: IDeserializedCommand) => boolean) &
 		((event: 'commandAck', trackingId: number) => boolean)
@@ -48,16 +47,6 @@ export class AtemSocket extends EventEmitter {
 		this._debug = options.debug
 		this._disableMultithreaded = options.disableMultithreaded
 		this.log = options.log
-
-		// When the parent process begins exiting, remove the listeners on our child process.
-		// We do this to avoid throwing an error when the child process exits
-		// as a natural part of the parent process exiting.
-		// exitHook(() => {
-		// 	if (this._socketProcess) {
-		// 		this._socketProcess.removeAllListeners()
-		// 		this._socketProcess.kill()
-		// 	}
-		// })
 	}
 
 	public async connect (address?: string, port?: number): Promise<void> {
@@ -70,8 +59,21 @@ export class AtemSocket extends EventEmitter {
 
 		if (!this._socketProcess) {
 			this._socketProcess = await this._createSocketProcess()
+			this._exitUnsubscribe = exitHook(() => this.destroy())
 		} else {
 			await this._socketProcess.connect(this._address, this._port)
+		}
+	}
+
+	public async destroy () {
+		await this.disconnect()
+		if (this._socketProcess) {
+			await ThreadedClassManager.destroy(this._socketProcess)
+			this._socketProcess = undefined
+		}
+		if (this._exitUnsubscribe) {
+			this._exitUnsubscribe()
+			this._exitUnsubscribe = undefined
 		}
 	}
 
@@ -127,11 +129,10 @@ export class AtemSocket extends EventEmitter {
 		})
 
 		ThreadedClassManager.onEvent(socketProcess, 'restarted', () => {
-			this.emit('restarted')
+			this.emit('disconnect')
 			this.connect().catch(error => {
-				const errorMsg = 'Failed to reconnect after respawning socket process'
-				this.emit('error', error)
-				this.log(errorMsg + ':', error && error.message)
+				const errorMsg = `Failed to reconnect after respawning socket process: ${error}`
+				this.emit('error', errorMsg)
 			})
 		})
 

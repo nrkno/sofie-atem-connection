@@ -52,6 +52,7 @@ export class DataTransferManager {
 	}
 	public stopCommandSending () {
 		if (this.exitUnsubscribe) {
+			this.exitUnsubscribe()
 			this.exitUnsubscribe = undefined
 		}
 		if (this.interval) {

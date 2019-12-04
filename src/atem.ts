@@ -32,7 +32,7 @@ export interface AtemOptions {
 	debug?: boolean,
 	disableMultithreaded?: boolean
 
-	externalLog?: (arg0?: any, arg1?: any, arg2?: any, arg3?: any) => void
+	externalLog?: (...args: any[]) => void
 }
 
 interface SentCommand {
@@ -64,9 +64,7 @@ export class Atem extends EventEmitter {
 
 	constructor (options?: AtemOptions) {
 		super()
-		this._log = (options && options.externalLog) || function (...args: any[]): void {
-			console.log(...args)
-		}
+		this._log = (options && options.externalLog) || ((...args: any[]) => { console.log(...args) })
 
 		this._state = new AtemState()
 		this.socket = new AtemSocket({
@@ -77,21 +75,19 @@ export class Atem extends EventEmitter {
 			disableMultithreaded: (options || {}).disableMultithreaded || false
 		})
 		this.dataTransferManager = new DT.DataTransferManager()
-		this.socket.on('connect', () => this.dataTransferManager.startCommandSending((command: ISerializableCommand) => this.sendCommand(command)))
-		this.socket.on('disconnect', () => this.dataTransferManager.stopCommandSending())
 
-		this.socket.on('commandReceived', (command: IDeserializedCommand) => {
+		this.socket.on('commandReceived', command => {
 			this.emit('receivedCommand', command)
 			this._mutateState(command)
 		})
-		this.socket.on('commandAck', (trackingId: number) => this._resolveCommand(trackingId))
-		this.socket.on('error', (e) => this.emit('error', e))
-		this.socket.on('connect', () => this.emit('connected'))
-		this.socket.on('disconnect', () => {
-			this._rejectAllCommands()
-			this.emit('disconnected')
+		this.socket.on('commandAck', trackingId => this._resolveCommand(trackingId))
+		this.socket.on('error', e => this.emit('error', e))
+		this.socket.on('connect', () => {
+			this.dataTransferManager.startCommandSending(command => this.sendCommand(command))
+			this.emit('connected')
 		})
-		this.socket.on('restarted', () => {
+		this.socket.on('disconnect', () => {
+			this.dataTransferManager.stopCommandSending()
 			this._rejectAllCommands()
 			this.emit('disconnected')
 		})
@@ -107,6 +103,10 @@ export class Atem extends EventEmitter {
 
 	public disconnect (): Promise<void> {
 		return this.socket.disconnect()
+	}
+
+	public destroy (): Promise<void> {
+		return this.socket.destroy()
 	}
 
 	public sendCommand (command: ISerializableCommand): Promise<ISerializableCommand> {

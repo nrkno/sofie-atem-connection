@@ -542,14 +542,14 @@ describe('AtemSocket', () => {
 
 		const connect = socket.connect = jest.fn(() => Promise.resolve())
 
-		const restarted = jest.fn()
-		socket.on('restarted', restarted)
+		const disconnected = jest.fn()
+		socket.on('disconnect', disconnected)
 
 		expect(ThreadedClassManagerSingleton.handlers).toHaveLength(1)
 		// simulate a restart
 		ThreadedClassManagerSingleton.handlers.forEach(handler => handler())
 
-		expect(restarted).toHaveBeenCalledTimes(1)
+		expect(disconnected).toHaveBeenCalledTimes(1)
 		expect(connect).toHaveBeenCalledTimes(1)
 	})
 	// test('receive - thread restart with error', async () => {
