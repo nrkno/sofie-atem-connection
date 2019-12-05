@@ -131,19 +131,29 @@ export class AtemSocketChild {
 		this.onLog(message)
 	}
 
-	public sendCommand (payload: Buffer, trackingId: number): void {
+	public sendCommands (commands: Array<{ payload: number[], rawName: string, trackingId: number }>): void {
+		commands.forEach(cmd => {
+			this.sendCommand(cmd.payload, cmd.rawName, cmd.trackingId)
+		})
+	}
+
+	private sendCommand (payload: number[], rawName: string, trackingId: number): void {
 		const packetId = this._nextSendPacketId++
 		if (this._nextSendPacketId >= MAX_PACKET_ID) this._nextSendPacketId = 0
 
 		const opcode = PacketFlag.AckRequest << 11
 
-		if (this._debug) this.log(`SEND ${payload}`)
-		const buffer = Buffer.alloc(12 + payload.length, 0)
-		buffer.writeUInt16BE(opcode | (payload.length + 12), 0) // Opcode & Length
+		const buffer = Buffer.alloc(20 + payload.length, 0)
+		buffer.writeUInt16BE(opcode | (payload.length + 20), 0) // Opcode & Length
 		buffer.writeUInt16BE(this._sessionId, 2)
 		buffer.writeUInt16BE(packetId, 10)
 
-		payload.copy(buffer, 12)
+		// Command
+		buffer.writeUInt16BE(payload.length + 8, 12)
+		buffer.write(rawName, 16, 4)
+
+		// Body
+		Buffer.from(payload).copy(buffer, 20)
 		this._sendPacket(buffer)
 
 		this._inFlight.push({

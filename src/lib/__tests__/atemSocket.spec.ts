@@ -28,7 +28,7 @@ export class AtemSocketChildMock {
 
 	public connect = jest.fn()
 	public disconnect = jest.fn(() => Promise.resolve(87))
-	public sendCommand = jest.fn()
+	public sendCommands = jest.fn()
 }
 
 const AtemSocketChildSingleton = new AtemSocketChildMock()
@@ -58,7 +58,7 @@ describe('AtemSocket', () => {
 		(AtemSocketChild as any).mockClear()
 		AtemSocketChildSingleton.connect.mockClear()
 		AtemSocketChildSingleton.disconnect.mockClear()
-		AtemSocketChildSingleton.sendCommand.mockClear()
+		AtemSocketChildSingleton.sendCommands.mockClear()
 
 		if (!lite) {
 			AtemSocketChildSingleton.onLog = undefined
@@ -103,7 +103,7 @@ describe('AtemSocket', () => {
 		// Connect was not called explicitly
 		expect(AtemSocketChildSingleton.connect).toHaveBeenCalledTimes(1)
 		expect(AtemSocketChildSingleton.disconnect).toHaveBeenCalledTimes(0)
-		expect(AtemSocketChildSingleton.sendCommand).toHaveBeenCalledTimes(0)
+		expect(AtemSocketChildSingleton.sendCommands).toHaveBeenCalledTimes(0)
 
 		// New child was constructed
 		expect(AtemSocketChild).toHaveBeenCalledTimes(1)
@@ -122,7 +122,7 @@ describe('AtemSocket', () => {
 		// Connect was not called explicitly
 		expect(AtemSocketChildSingleton.connect).toHaveBeenCalledTimes(1)
 		expect(AtemSocketChildSingleton.disconnect).toHaveBeenCalledTimes(0)
-		expect(AtemSocketChildSingleton.sendCommand).toHaveBeenCalledTimes(0)
+		expect(AtemSocketChildSingleton.sendCommands).toHaveBeenCalledTimes(0)
 
 		// New child was constructed
 		expect(AtemSocketChild).toHaveBeenCalledTimes(1)
@@ -143,7 +143,7 @@ describe('AtemSocket', () => {
 		expect(AtemSocketChild).toHaveBeenCalledTimes(1)
 		expect(AtemSocketChildSingleton.connect).toHaveBeenCalledTimes(1)
 		expect(AtemSocketChildSingleton.disconnect).toHaveBeenCalledTimes(0)
-		expect(AtemSocketChildSingleton.sendCommand).toHaveBeenCalledTimes(0)
+		expect(AtemSocketChildSingleton.sendCommands).toHaveBeenCalledTimes(0)
 
 		mockClear()
 
@@ -156,7 +156,7 @@ describe('AtemSocket', () => {
 		expect(AtemSocketChild).toHaveBeenCalledTimes(0)
 		expect(AtemSocketChildSingleton.connect).toHaveBeenCalledTimes(1)
 		expect(AtemSocketChildSingleton.disconnect).toHaveBeenCalledTimes(0)
-		expect(AtemSocketChildSingleton.sendCommand).toHaveBeenCalledTimes(0)
+		expect(AtemSocketChildSingleton.sendCommands).toHaveBeenCalledTimes(0)
 		expect(AtemSocketChildSingleton.connect).toHaveBeenCalledWith('new', 455)
 	})
 
@@ -183,7 +183,7 @@ describe('AtemSocket', () => {
 		expect(AtemSocketChild).toHaveBeenCalledTimes(0)
 		expect(AtemSocketChildSingleton.connect).toHaveBeenCalledTimes(0)
 		expect(AtemSocketChildSingleton.disconnect).toHaveBeenCalledTimes(1)
-		expect(AtemSocketChildSingleton.sendCommand).toHaveBeenCalledTimes(0)
+		expect(AtemSocketChildSingleton.sendCommands).toHaveBeenCalledTimes(0)
 		expect(AtemSocketChildSingleton.disconnect).toHaveBeenCalledWith()
 	})
 
@@ -197,7 +197,7 @@ describe('AtemSocket', () => {
 		expect(AtemSocketChild).toHaveBeenCalledTimes(0)
 		expect(AtemSocketChildSingleton.connect).toHaveBeenCalledTimes(0)
 		expect(AtemSocketChildSingleton.disconnect).toHaveBeenCalledTimes(0)
-		expect(AtemSocketChildSingleton.sendCommand).toHaveBeenCalledTimes(0)
+		expect(AtemSocketChildSingleton.sendCommands).toHaveBeenCalledTimes(0)
 	})
 
 	test('sendCommand - not open', async () => {
@@ -206,7 +206,7 @@ describe('AtemSocket', () => {
 
 		try {
 			const cmd = new CutCommand(0)
-			await socket.sendCommand(cmd, 1)
+			await socket.sendCommands([{ rawCommand: cmd, trackingId: 1 }])
 			// Should not get here
 			expect(false).toBeTruthy()
 		} catch (e) {
@@ -217,7 +217,7 @@ describe('AtemSocket', () => {
 		expect(AtemSocketChild).toHaveBeenCalledTimes(0)
 		expect(AtemSocketChildSingleton.connect).toHaveBeenCalledTimes(0)
 		expect(AtemSocketChildSingleton.disconnect).toHaveBeenCalledTimes(0)
-		expect(AtemSocketChildSingleton.sendCommand).toHaveBeenCalledTimes(0)
+		expect(AtemSocketChildSingleton.sendCommands).toHaveBeenCalledTimes(0)
 	})
 
 	test('sendCommand - not serializable', async () => {
@@ -234,18 +234,18 @@ describe('AtemSocket', () => {
 		}) as any as ISerializableCommand
 		expect(cmd.serialize).toBeFalsy()
 		try {
-			await socket.sendCommand(cmd, 1)
+			await socket.sendCommands([{ rawCommand: cmd, trackingId: 1 }])
 			// Should not get here
 			expect(false).toBeTruthy()
 		} catch (e) {
-			expect(e.message).toEqual('Command is not serializable')
+			expect(e.message).toEqual('Command ProductIdentifierCommand is not serializable')
 		}
 
 		// connect was called explicitly
 		expect(AtemSocketChild).toHaveBeenCalledTimes(0)
 		expect(AtemSocketChildSingleton.connect).toHaveBeenCalledTimes(0)
 		expect(AtemSocketChildSingleton.disconnect).toHaveBeenCalledTimes(0)
-		expect(AtemSocketChildSingleton.sendCommand).toHaveBeenCalledTimes(0)
+		expect(AtemSocketChildSingleton.sendCommands).toHaveBeenCalledTimes(0)
 	})
 
 	test('sendCommand', async () => {
@@ -266,16 +266,20 @@ describe('AtemSocket', () => {
 
 		const cmd = new MockCommand({})
 		const cmdId = 836
-		await socket.sendCommand(cmd, cmdId)
+		await socket.sendCommands([{ rawCommand: cmd, trackingId: cmdId }])
 
 		// connect was called explicitly
 		expect(AtemSocketChild).toHaveBeenCalledTimes(0)
 		expect(AtemSocketChildSingleton.connect).toHaveBeenCalledTimes(0)
 		expect(AtemSocketChildSingleton.disconnect).toHaveBeenCalledTimes(0)
-		expect(AtemSocketChildSingleton.sendCommand).toHaveBeenCalledTimes(1)
+		expect(AtemSocketChildSingleton.sendCommands).toHaveBeenCalledTimes(1)
 
-		const expectedBuffer = Buffer.concat([Buffer.from([0, 20, 0, 0, 84, 69, 83, 84]), cmd.serialize()])
-		expect(AtemSocketChildSingleton.sendCommand).toHaveBeenCalledWith(expectedBuffer, cmdId)
+		const expectedBuffer = [...cmd.serialize()]
+		expect(AtemSocketChildSingleton.sendCommands).toHaveBeenCalledWith([{
+			payload: expectedBuffer,
+			rawName: 'TEST',
+			trackingId: cmdId
+		}])
 	})
 
 	test('events', async () => {

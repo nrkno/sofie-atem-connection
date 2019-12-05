@@ -108,7 +108,7 @@ describe('Atem', () => {
 			})
 			expect(socket.nextCommandTrackingId).toEqual(123)
 
-			socket.sendCommand = jest.fn(() => Promise.resolve(35) as any)
+			socket.sendCommands = jest.fn(() => Promise.resolve(35) as any)
 
 			const sentQueue = (conn as any)._sentQueue as object
 			expect(Object.keys(sentQueue)).toHaveLength(0)
@@ -118,8 +118,11 @@ describe('Atem', () => {
 			await setImmediatePromise()
 			expect(Object.keys(sentQueue)).toHaveLength(1)
 
-			expect(socket.sendCommand).toHaveBeenCalledTimes(1)
-			expect(socket.sendCommand).toHaveBeenCalledWith(cmd, 124)
+			expect(socket.sendCommands).toHaveBeenCalledTimes(1)
+			expect(socket.sendCommands).toHaveBeenCalledWith([{
+				rawCommand: cmd,
+				trackingId: 124
+			}])
 
 			// Trigger the ack, and it should switfy resolve
 			socket.emit('commandAck', 124)
@@ -147,7 +150,7 @@ describe('Atem', () => {
 			})
 			expect(socket.nextCommandTrackingId).toEqual(123)
 
-			socket.sendCommand = jest.fn(() => Promise.reject(35) as any)
+			socket.sendCommands = jest.fn(() => Promise.reject(35) as any)
 
 			const sentQueue = (conn as any)._sentQueue as object
 			expect(Object.keys(sentQueue)).toHaveLength(0)
@@ -156,8 +159,11 @@ describe('Atem', () => {
 			const res = conn.sendCommand(cmd)
 
 			// Send command should be called
-			expect(socket.sendCommand).toHaveBeenCalledTimes(1)
-			expect(socket.sendCommand).toHaveBeenCalledWith(cmd, 124)
+			expect(socket.sendCommands).toHaveBeenCalledTimes(1)
+			expect(socket.sendCommands).toHaveBeenCalledWith([{
+				rawCommand: cmd,
+				trackingId: 124
+			}])
 
 			expect(Object.keys(sentQueue)).toHaveLength(0)
 

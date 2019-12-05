@@ -30,12 +30,6 @@ function uploadNext () {
 			console.log('')
 			console.log('UPLOAD GOT STUCK')
 			console.log('')
-
-			const dt = (conn as any).dataTransferManager
-			fs.writeFileSync('upload-stuck', JSON.stringify({
-				stills: dt.stillsLock,
-				clips: dt.clipLocks
-			}, undefined, 4))
 		}, 20000)
 
 		setTimeout(() => uploadNext(), 0)

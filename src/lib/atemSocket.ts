@@ -90,21 +90,24 @@ export class AtemSocket extends EventEmitter {
 		return ++this._nextCommandTrackingId
 	}
 
-	public async sendCommand (command: ISerializableCommand, trackingId: number): Promise<void> {
+	public async sendCommands (commands: Array<{ rawCommand: ISerializableCommand, trackingId: number}>): Promise<void> {
 		if (this._socketProcess) {
-			if (typeof (command as any).serialize !== 'function') {
-				throw new Error('Command is not serializable')
-			}
+			const commands2 = commands.map(cmd => {
+				if (typeof (cmd.rawCommand as any).serialize !== 'function') {
+					throw new Error(`Command ${cmd.rawCommand.constructor.name} is not serializable`)
+				}
 
-			const payload = command.serialize(this._commandParser.version)
-			const fullPayload = Buffer.alloc(payload.length + 8, 0)
-			fullPayload.writeUInt16BE(fullPayload.length, 0)
-			fullPayload.write((command.constructor as any).rawName, 4, 4)
-			payload.copy(fullPayload, 8, 0)
+				const payload = cmd.rawCommand.serialize(this._commandParser.version)
+				if (this._debug) this.log('PAYLOAD', cmd.rawCommand.constructor.name, payload)
 
-			if (this._debug) this.log('PAYLOAD', command.constructor.name, fullPayload)
+				return {
+					payload: [...payload],
+					rawName: (cmd.rawCommand.constructor as any).rawName,
+					trackingId: cmd.trackingId
+				}
+			})
 
-			await this._socketProcess.sendCommand(fullPayload, trackingId)
+			await this._socketProcess.sendCommands(commands2)
 		} else {
 			throw new Error('Socket process is not open')
 		}

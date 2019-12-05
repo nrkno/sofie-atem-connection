@@ -355,7 +355,7 @@ describe('SocketChild', () => {
 		}
 	})
 
-	test('SendCommand', async () => {
+	test('SendCommands', async () => {
 		const child = createSocketChild()
 		try {
 			fakeConnect(child)
@@ -375,20 +375,26 @@ describe('SocketChild', () => {
 			}
 
 			// Send something
-			const buf1 = Buffer.from([0, 1, 2])
-			child.sendCommand(buf1, 1)
+			const buf1 = [0, 1, 2]
+			const cmdName = 'test'
+			const buf1Expected = Buffer.alloc(11)
+			buf1Expected.writeUInt16BE(buf1Expected.length, 0)
+			buf1Expected.write(cmdName, 4, 4)
+			Buffer.from(buf1).copy(buf1Expected, 8)
+
+			child.sendCommands([{ payload: buf1, rawName: cmdName, trackingId: 1 }])
 			expect(received).toEqual([{
 				id: 123,
-				payload: buf1
+				payload: buf1Expected
 			}])
 			received = []
 			expect(getInflightIds(child)).toEqual([123])
 
 			// Send another
-			child.sendCommand(buf1, 1)
+			child.sendCommands([{ payload: buf1, rawName: cmdName, trackingId: 1 }])
 			expect(received).toEqual([{
 				id: 124,
-				payload: buf1
+				payload: buf1Expected
 			}])
 			received = []
 			expect(getInflightIds(child)).toEqual([123, 124	])
@@ -438,13 +444,19 @@ describe('SocketChild', () => {
 			acked = []
 
 			// Send some stuff
-			const buf1 = Buffer.from([0, 1, 2])
-			child.sendCommand(buf1, 5)
-			child.sendCommand(buf1, 6)
-			child.sendCommand(buf1, 7)
-			child.sendCommand(buf1, 8)
-			child.sendCommand(buf1, 9)
-			child.sendCommand(buf1, 10)
+			const buf1 = [0, 1, 2]
+			child.sendCommands([
+				{ payload: buf1, rawName: '', trackingId: 5 },
+				{ payload: buf1, rawName: '', trackingId: 6 },
+				{ payload: buf1, rawName: '', trackingId: 7 }
+			])
+			child.sendCommands([
+				{ payload: buf1, rawName: '', trackingId: 8 }
+			])
+			child.sendCommands([
+				{ payload: buf1, rawName: '', trackingId: 9 },
+				{ payload: buf1, rawName: '', trackingId: 10 }
+			])
 			expect(received).toEqual([123, 124, 125, 126, 127, 128])
 			received = []
 			expect(getInflightIds(child)).toEqual([123, 124, 125, 126, 127, 128])
@@ -498,13 +510,19 @@ describe('SocketChild', () => {
 			acked = []
 
 			// Send some stuff
-			const buf1 = Buffer.from([0, 1, 2])
-			child.sendCommand(buf1, 5) // 32764
-			child.sendCommand(buf1, 6) // 32765
-			child.sendCommand(buf1, 7) // 32766
-			child.sendCommand(buf1, 8) // 32767
-			child.sendCommand(buf1, 9) // 0
-			child.sendCommand(buf1, 10)// 1
+			const buf1 = [0, 1, 2]
+			child.sendCommands([
+				{ payload: buf1, rawName: '', trackingId: 5 }, // 32764
+				{ payload: buf1, rawName: '', trackingId: 6 }, // 32765
+				{ payload: buf1, rawName: '', trackingId: 7 }  // 32766
+			])
+			child.sendCommands([
+				{ payload: buf1, rawName: '', trackingId: 8 }  // 32767
+			])
+			child.sendCommands([
+				{ payload: buf1, rawName: '', trackingId: 9 }, // 0
+				{ payload: buf1, rawName: '', trackingId: 10 } // 1
+			])
 			expect(received).toEqual([32764, 32765, 32766, 32767, 0, 1])
 			received = []
 			expect(getInflightIds(child)).toEqual([32764, 32765, 32766, 32767, 0, 1])

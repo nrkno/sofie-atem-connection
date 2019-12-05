@@ -25,7 +25,7 @@ export class DataTransferManager {
 
 	private transferIndex: number = 0
 
-	public startCommandSending (sendCommand: (command: ISerializableCommand) => Promise<ISerializableCommand>) {
+	public startCommandSending (sendCommands: (cmds: ISerializableCommand[]) => Array<Promise<ISerializableCommand>>) {
 		if (!this.interval) {
 			// New connection means a new queue
 			this.commandQueue.splice(0, this.commandQueue.length)
@@ -36,8 +36,8 @@ export class DataTransferManager {
 				}
 
 				const commandsToSend = this.commandQueue.splice(0, MAX_PACKETS_TO_SEND_PER_TICK)
-				commandsToSend.forEach(command => {
-					sendCommand(command).catch((e) => {
+				sendCommands(commandsToSend).forEach(cmdRes => {
+					cmdRes.catch((e) => {
 						// TODO - handle this better. it should probably kill/restart the upload. and should also be logged in some way
 						console.log(`Transfer send error: ${e}`)
 					})

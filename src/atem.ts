@@ -83,7 +83,7 @@ export class Atem extends EventEmitter {
 		this.socket.on('commandAck', trackingId => this._resolveCommand(trackingId))
 		this.socket.on('error', e => this.emit('error', e))
 		this.socket.on('connect', () => {
-			this.dataTransferManager.startCommandSending(command => this.sendCommand(command))
+			this.dataTransferManager.startCommandSending(cmds => this.sendCommands(cmds))
 			this.emit('connected')
 		})
 		this.socket.on('disconnect', () => {
@@ -109,17 +109,30 @@ export class Atem extends EventEmitter {
 		return this.socket.destroy()
 	}
 
-	public sendCommand (command: ISerializableCommand): Promise<ISerializableCommand> {
-		const commandTrackingId = this.socket.nextCommandTrackingId
-		return new Promise((resolve, reject) => {
-			this.socket.sendCommand(command, commandTrackingId).then(() => {
-				this._sentQueue[commandTrackingId] = {
-					command,
-					resolve,
-					reject
-				}
-			}).catch(reject)
+	private sendCommands (commands: ISerializableCommand[]): Array<Promise<ISerializableCommand>> {
+		const cmds2 = commands.map(cmd => ({
+			rawCommand: cmd,
+			trackingId: this.socket.nextCommandTrackingId
+		}))
+
+		const sendPromise = this.socket.sendCommands(cmds2)
+
+		return cmds2.map(cmd => {
+			// TODO - does this work?
+			return sendPromise.then(() => {
+				return new Promise((resolve, reject) => {
+					this._sentQueue[cmd.trackingId] = {
+						command: cmd.rawCommand,
+						resolve,
+						reject
+					}
+				})
+			})
 		})
+	}
+
+	public sendCommand (command: ISerializableCommand): Promise<ISerializableCommand> {
+		return this.sendCommands([command])[0]
 	}
 
 	public changeProgramInput (input: number, me: number = 0) {
