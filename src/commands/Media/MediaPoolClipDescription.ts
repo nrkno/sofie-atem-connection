@@ -6,12 +6,12 @@ import { Util } from '../../lib/atemUtil'
 export class MediaPoolClipDescriptionCommand extends DeserializedCommand<Omit<ClipBank, 'frames'>> {
 	public static readonly rawName = 'MPCS'
 
-	public readonly mediaPool: number
+	public readonly clipId: number
 
 	constructor (mediaPool: number, properties: Omit<ClipBank, 'frames'>) {
 		super(properties)
 
-		this.mediaPool = mediaPool
+		this.clipId = mediaPool
 	}
 
 	public static deserialize (rawCommand: Buffer) {
@@ -26,10 +26,12 @@ export class MediaPoolClipDescriptionCommand extends DeserializedCommand<Omit<Cl
 	}
 
 	public applyToState (state: AtemState) {
-		state.media.clipPool[this.mediaPool] = {
+		// TODO - validate ids
+
+		state.media.clipPool[this.clipId] = {
 			...this.properties,
-			frames: state.media.getClip(this.mediaPool).frames // TODO - lengthen/shorten array of frames?
+			frames: state.media.getClip(this.clipId).frames // TODO - lengthen/shorten array of frames?
 		}
-		return `media.clipPool.${this.mediaPool}`
+		return `media.clipPool.${this.clipId}`
 	}
 }

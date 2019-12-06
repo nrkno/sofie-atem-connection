@@ -24,6 +24,10 @@ export class DownstreamKeySourcesCommand extends DeserializedCommand<DownstreamK
 	}
 
 	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.downstreamKeyerId >= state.info.capabilities.downstreamKeyers) {
+			throw new Error(`DownstreamKeyer ${this.downstreamKeyerId} is not valid`)
+		}
+
 		state.video.getDownstreamKeyer(this.downstreamKeyerId).sources = this.properties
 		return `video.downstreamKeyers.${this.downstreamKeyerId}`
 	}

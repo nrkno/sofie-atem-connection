@@ -94,6 +94,10 @@ export class SuperSourceBoxParametersUpdateCommand extends DeserializedCommand<S
 	}
 
 	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.ssrcId >= state.info.capabilities.superSources) {
+			throw new Error(`SuperSource ${this.ssrcId} is not valid`)
+		}
+
 		const supersource = state.video.getSuperSource(this.ssrcId)
 		supersource.boxes[this.boxId] = {
 			...this.properties

@@ -1,7 +1,7 @@
 import { Model, ProtocolVersion } from '../enums'
 
 export interface AtemCapabilites {
-	readonly MEs: number
+	readonly mixEffects: number
 	readonly sources: number
 	readonly colorGenerators: number
 	readonly auxilliaries: number
@@ -13,6 +13,9 @@ export interface AtemCapabilites {
 	readonly stingers: number
 	readonly superSources: number
 	readonly talkbackOverSDI: number
+	readonly downstreamKeyers: number
+	readonly multiViewers: number
+	readonly upstreamKeyers: number
 }
 
 export interface SuperSourceInfo {

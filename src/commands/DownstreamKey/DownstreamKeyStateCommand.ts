@@ -27,6 +27,10 @@ export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKey
 	}
 
 	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.downstreamKeyerId >= state.info.capabilities.downstreamKeyers) {
+			throw new Error(`DownstreamKeyer ${this.downstreamKeyerId} is not valid`)
+		}
+
 		state.video.downstreamKeyers[this.downstreamKeyerId] = {
 			...state.video.getDownstreamKeyer(this.downstreamKeyerId),
 			...this.properties
@@ -61,6 +65,10 @@ export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamK
 	}
 
 	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.downstreamKeyerId >= state.info.capabilities.downstreamKeyers) {
+			throw new Error(`DownstreamKeyer ${this.downstreamKeyerId} is not valid`)
+		}
+
 		state.video.downstreamKeyers[this.downstreamKeyerId] = {
 			...state.video.getDownstreamKeyer(this.downstreamKeyerId),
 			...this.properties

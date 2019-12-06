@@ -501,7 +501,7 @@ describe('AtemSocket', () => {
 			public static readonly rawName = 'TEST'
 
 			public deserialize () {
-				throw new Error('Deserialize failure')
+				throw new Error('Broken command')
 			}
 			public applyToState (): string[] {
 				throw new Error('Method not implemented.')
@@ -533,7 +533,7 @@ describe('AtemSocket', () => {
 
 		// The second command should have been a success
 		expect(change).toHaveBeenCalledWith(expectedCmd2)
-		expect(error).toHaveBeenCalledWith(new Error('Deserialize failure'))
+		expect(error).toHaveBeenCalledWith('Failed to deserialize command: BrokenCommand: Error: Broken command')
 	})
 
 	test('receive - thread restart', async () => {

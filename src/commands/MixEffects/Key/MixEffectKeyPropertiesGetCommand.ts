@@ -6,17 +6,20 @@ export class MixEffectKeyPropertiesGetCommand extends DeserializedCommand<Upstre
 	public static readonly rawName = 'KeBP'
 
 	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
 
-	constructor (mixEffect: number, properties: UpstreamKeyerBase) {
+	constructor (mixEffect: number, keyer: number, properties: UpstreamKeyerBase) {
 		super(properties)
 
 		this.mixEffect = mixEffect
+		this.upstreamKeyerId = keyer
 	}
 
 	public static deserialize (rawCommand: Buffer): MixEffectKeyPropertiesGetCommand {
 		const mixEffect = rawCommand[0]
+		const keyer = rawCommand[1]
 		const properties = {
-			upstreamKeyerId: rawCommand[1],
+			upstreamKeyerId: keyer,
 			mixEffectKeyType: rawCommand.readUInt8(2),
 			flyEnabled: rawCommand[5] === 1,
 			fillSource: rawCommand.readUInt16BE(6),
@@ -28,10 +31,14 @@ export class MixEffectKeyPropertiesGetCommand extends DeserializedCommand<Upstre
 			maskRight: rawCommand.readInt16BE(18)
 		}
 
-		return new MixEffectKeyPropertiesGetCommand(mixEffect, properties)
+		return new MixEffectKeyPropertiesGetCommand(mixEffect, keyer, properties)
 	}
 
 	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects || this.upstreamKeyerId >= state.info.capabilities.upstreamKeyers) {
+			throw new Error(`UpstreamKeyer ${this.mixEffect}-${this.upstreamKeyerId} is not valid`)
+		}
+
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.upstreamKeyers[this.properties.upstreamKeyerId] = {
 			...mixEffect.getUpstreamKeyer(this.properties.upstreamKeyerId),

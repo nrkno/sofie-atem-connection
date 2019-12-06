@@ -191,6 +191,10 @@ export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{ pr
 	}
 
 	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || !state.info.capabilities.superSources) {
+			throw new Error(`SuperSource 0 is not valid`)
+		}
+
 		const supersource = state.video.getSuperSource(0)
 		supersource.properties = this.properties.properties
 		supersource.border = this.properties.border
@@ -229,6 +233,10 @@ export class SuperSourcePropertiesUpdateV8Command extends DeserializedCommand<Su
 	}
 
 	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.ssrcId >= state.info.capabilities.superSources) {
+			throw new Error(`SuperSource ${this.ssrcId} is not valid`)
+		}
+
 		const supersource = state.video.getSuperSource(this.ssrcId)
 		supersource.properties = {
 			...this.properties
@@ -271,6 +279,10 @@ export class SuperSourceBorderUpdateCommand extends DeserializedCommand<SuperSou
 	}
 
 	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.ssrcId >= state.info.capabilities.superSources) {
+			throw new Error(`SuperSource ${this.ssrcId} is not valid`)
+		}
+
 		const supersource = state.video.getSuperSource(this.ssrcId)
 		supersource.border = this.properties
 

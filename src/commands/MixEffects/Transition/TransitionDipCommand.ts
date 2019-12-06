@@ -49,6 +49,10 @@ export class TransitionDipUpdateCommand extends DeserializedCommand<DipTransitio
 	}
 
 	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
+			throw new Error(`MixEffect ${this.mixEffect} is not valid`)
+		}
+
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionSettings.dip = {
 			...this.properties

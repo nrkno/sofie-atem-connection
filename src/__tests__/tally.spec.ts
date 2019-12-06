@@ -3,7 +3,7 @@ import { listVisibleInputs } from '../lib/tally'
 
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
-import { parseAtemState } from './util'
+import { parseAtemState, createEmptyState } from './util'
 
 function readJson (fileName: string) {
 	const filePath = resolve(__dirname, fileName)
@@ -12,7 +12,14 @@ function readJson (fileName: string) {
 }
 
 function loadRawState (file: string) {
-	return parseAtemState(readJson(`./tally/${file}-state.json`))
+	const loadedState = parseAtemState(readJson(`./tally/${file}-state.json`))
+
+	if (!loadedState.info.capabilities) {
+		const emptyState = createEmptyState()
+		loadedState.info.capabilities = emptyState.info.capabilities
+	}
+
+	return loadedState
 }
 function loadTally (file: string) {
 	const rawTally = readJson(`./tally/${file}-tally.json`) as Commands.TallyBySourceCommand['properties']

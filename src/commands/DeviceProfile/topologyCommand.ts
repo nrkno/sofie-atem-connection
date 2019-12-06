@@ -7,7 +7,7 @@ export class TopologyCommand extends DeserializedCommand<AtemCapabilites> {
 
 	public static deserialize (rawCommand: Buffer) {
 		const properties = {
-			MEs: rawCommand[0],
+			mixEffects: rawCommand[0],
 			sources: rawCommand[1],
 			colorGenerators: rawCommand[2],
 			auxilliaries: rawCommand[3],
@@ -18,7 +18,12 @@ export class TopologyCommand extends DeserializedCommand<AtemCapabilites> {
 			DVEs: rawCommand[8],
 			stingers: rawCommand[9],
 			superSources: rawCommand[10],
-			talkbackOverSDI: rawCommand[13]
+			talkbackOverSDI: rawCommand[13],
+
+			// TODO - define the below properly
+			multiViewers: 2,
+			downstreamKeyers: 2,
+			upstreamKeyers: 2
 		}
 
 		return new TopologyCommand(properties)

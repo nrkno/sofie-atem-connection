@@ -85,6 +85,10 @@ export class TransitionDVEUpdateCommand extends DeserializedCommand<DVETransitio
 	}
 
 	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
+			throw new Error(`MixEffect ${this.mixEffect} is not valid`)
+		}
+
 		const mixEffect = state.video.getMe(this.mixEffect)
 		mixEffect.transitionSettings.DVE = {
 			...this.properties

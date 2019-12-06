@@ -27,3 +27,28 @@ export function parseAtemState (rawState: any): AtemState {
 
 	return state
 }
+
+export function createEmptyState () {
+	const state = new AtemState()
+
+	// These should be the maximum supported by any device.
+	// But they can also be whatever is needed to allow the tests to run without error
+	state.info.capabilities = {
+		mixEffects: 4,
+		sources: 40,
+		colorGenerators: 2,
+		auxilliaries: 6,
+		talkbackOutputs: 8,
+		mediaPlayers: 4,
+		serialPorts: 1,
+		maxHyperdecks: 4,
+		DVEs: 1,
+		stingers: 1,
+		superSources: 2,
+		talkbackOverSDI: 0,
+		multiViewers: 255,
+		downstreamKeyers: 4
+	}
+
+	return state
+}

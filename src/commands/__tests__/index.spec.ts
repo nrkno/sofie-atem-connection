@@ -257,11 +257,17 @@ const commandConverters: CommandTestConverterSet = {
 			'auxiliaries': (val: any) => ({ val, name: 'auxilliaries' }),
 			'dVE': (val: any) => ({ val, name: 'DVEs' }),
 			'hyperDecks': (val: any) => ({ val, name: 'maxHyperdecks' }),
-			'mixEffectBlocks': (val: any) => ({ val, name: 'MEs' }),
+			'mixEffectBlocks': (val: any) => ({ val, name: 'mixEffects' }),
 			'serialPort': (val: any) => ({ val, name: 'serialPorts' }),
 			'videoSources': (val: any) => ({ val, name: 'sources' }),
 			'superSource': (val: any) => ({ val, name: 'superSources' }),
 			'talkbackOverSDI': () => ({ val: 0 }) // @todo: should be fixed in atem-connection
+		},
+		customMutate: obj => {
+			obj.downstreamKeyers = 2
+			obj.multiViewers = 2
+			obj.upstreamKeyers = 2
+			return obj
 		}
 	},
 	'FTCD': {

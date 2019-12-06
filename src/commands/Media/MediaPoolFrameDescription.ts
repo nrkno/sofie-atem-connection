@@ -28,16 +28,19 @@ export class MediaPoolFrameDescriptionCommand extends DeserializedCommand<StillF
 		return new MediaPoolFrameDescriptionCommand(mediaPool, frameIndex, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState (state: AtemState): string | string[] {
+		// TODO - validate ids
+
 		if (this.mediaPool === 0) {
 			// This is a still
 			state.media.stillPool[this.frameIndex] = this.properties
 			return `media.stillPool.${this.frameIndex}`
 		} else if (this.mediaPool < 3) {
+			const clipId = this.mediaPool - 1
 			// This is a clip
-			state.media.getClip(this.mediaPool - 1).frames[this.frameIndex] = this.properties
-			return `media.clipPool.${this.mediaPool - 1}.${this.frameIndex}`
+			state.media.getClip(clipId).frames[this.frameIndex] = this.properties
+			return `media.clipPool.${clipId}.frames.${this.frameIndex}`
 		}
-		return `media`
+		return []
 	}
 }

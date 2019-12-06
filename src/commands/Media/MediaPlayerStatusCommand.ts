@@ -55,6 +55,10 @@ export class MediaPlayerStatusUpdateCommand extends DeserializedCommand<MediaPla
 	}
 
 	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.mediaPlayerId >= state.info.capabilities.mediaPlayers) {
+			throw new Error(`MediaPlayer ${this.mediaPlayerId} is not valid`)
+		}
+
 		state.media.players[this.mediaPlayerId] = {
 			...state.media.getMediaPlayer(this.mediaPlayerId),
 			...this.properties

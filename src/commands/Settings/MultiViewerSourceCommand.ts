@@ -44,6 +44,10 @@ export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiVie
 	}
 
 	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.multiViewerId >= state.info.capabilities.multiViewers) {
+			throw new Error(`MultiViewer ${this.multiViewerId} is not valid`)
+		}
+
 		const multiviewer = state.settings.getMultiViewer(this.multiViewerId)
 		multiviewer.windows[this.properties.windowIndex] = {
 			...multiviewer.windows[this.properties.windowIndex],
