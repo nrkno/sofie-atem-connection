@@ -62,6 +62,14 @@ export namespace Util {
 		const KBoKRi = KB / KRi * HalfCbCrRange
 		const KGoKRi = KG / KRi * HalfCbCrRange
 
+		const genColor = (rawA: number, uv16: number, y16: number) => {
+			const a = ((rawA << 2) * 219 / 255) + (16 << 2)
+			const y = Math.round(y16) >> 6
+			const uv = Math.round(uv16) >> 6
+
+			return (a << 20) + (uv << 10) + y
+		}
+
 		const buffer = Buffer.alloc(width * height * 4)
 		for (let i = 0; i < width * height * 4; i += 8) {
 			const r1 = data[i + 0]
@@ -72,28 +80,16 @@ export namespace Util {
 			const g2 = data[i + 5]
 			const b2 = data[i + 6]
 
-			const a1 = ((data[i + 3] << 2) * 219 / 255) + (16 << 2)
-			const a2 = ((data[i + 7] << 2) * 219 / 255) + (16 << 2)
+			const a1 = data[i + 3]
+			const a2 = data[i + 7]
 
 			const y16a = YOffset + KR * YRange * r1 + KG * YRange * g1 + KB * YRange * b1
 			const cb16 = CbCrOffset + (-KRoKBi * r1 - KGoKBi * g1 + HalfCbCrRange * b1)
 			const y16b = YOffset + KR * YRange * r2 + KG * YRange * g2 + KB * YRange * b2
 			const cr16 = CbCrOffset + (HalfCbCrRange * r1 - KGoKRi * g1 - KBoKRi * b1)
 
-			const y1 = Math.round(y16a) >> 6
-			const u1 = Math.round(cb16) >> 6
-			const y2 = Math.round(y16b) >> 6
-			const v2 = Math.round(cr16) >> 6
-
-			// TODO - rewrite using buffer.writeUIntLE/writeUIntBE?
-			buffer[i + 0] = a1 >> 4
-			buffer[i + 1] = ((a1 & 0x0f) << 4) | (u1 >> 6)
-			buffer[i + 2] = ((u1 & 0x3f) << 2) | (y1 >> 8)
-			buffer[i + 3] = y1 & 0xff
-			buffer[i + 4] = a2 >> 4
-			buffer[i + 5] = ((a2 & 0x0f) << 4) | (v2 >> 6)
-			buffer[i + 6] = ((v2 & 0x3f) << 2) | (y2 >> 8)
-			buffer[i + 7] = y2 & 0xff
+			buffer.writeUInt32BE(genColor(a1, cb16, y16a), i)
+			buffer.writeUInt32BE(genColor(a2, cr16, y16b), i + 4)
 		}
 		return buffer
 	}
