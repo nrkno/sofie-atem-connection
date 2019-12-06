@@ -115,7 +115,7 @@ export class DataTransferManager {
 
 	public async uploadClip (index: number, data: Array<Buffer>, name: string) {
 		const frames = data.map((frame, id) => new DataTransferFrame(this.nextTransferIndex, 1 + index, id, frame))
-		const transfer = new DataTransferClip(1 + index, name, frames)
+		const transfer = new DataTransferClip(index, name, frames)
 		const lock = await this.getClipLock(index)
 		return lock.enqueue(transfer)
 	}

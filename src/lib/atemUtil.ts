@@ -131,9 +131,8 @@ export namespace Util {
 		const buffer = Buffer.from(wav.data.samples)
 		const buffer2 = Buffer.alloc(buffer.length)
 		for (let i = 0; i < buffer.length; i += 3) {
-			// TODO - is this the correct way around? (only matters for readability)
 			// 24bit samples, change endian
-			buffer2.writeUIntLE(buffer.readUIntBE(i, 3), i, 3)
+			buffer2.writeUIntBE(buffer.readUIntLE(i, 3), i, 3)
 		}
 
 		return buffer2

@@ -56,73 +56,38 @@ test('Test Still upload', async () => {
 	const newBuffer = Buffer.alloc(1920 * 1080 * 4, 0)
 
 	const manager = runDataTransferTest(spec)
-	await manager.uploadStill(0, newBuffer, 'some still', '')
+	await manager.uploadStill(2, newBuffer, 'some still', '')
 
-	await new Promise(resolve => setTimeout(resolve, 1000))
+	await new Promise(resolve => setTimeout(resolve, 200))
 
 	// Nothing should be left by this point
 	expect(spec).toHaveLength(0)
 })
 
-// function cleanupAtem (atem: Atem) {
-// 	const atem2 = atem as any
-// 	atem2.dataTransferManager.stop()
+test('Test Wav upload', async () => {
+	const spec: any[] = JSON.parse(readFileSync(path.join(__dirname, './upload-wav-sequence.json')).toString())
 
-// 	const sock = atem2.socket._socketProcess
-// 	sock.removeAllListeners()
-// 	sock.kill()
-// }
+	const newBuffer = readFileSync(path.join(__dirname, './sampleAudio.wav'))
 
-// test('TMP: Generate DataTransferSpec', async () => {
-// 	const newBuffer = Buffer.alloc(1920 * 1080 * 4, 0)
+	const manager = runDataTransferTest(spec)
+	await manager.uploadAudio(1, newBuffer, 'audio file')
 
-// 	const nb = new Atem({ debug: false })
-// 	try {
-// 		nb.on('error', () => null)
+	await new Promise(resolve => setTimeout(resolve, 200))
 
-// 		await new Promise(resolve => {
-// 			nb.on('connected', resolve)
-// 			nb.connect('10.42.13.99')
-// 		})
+	// Nothing should be left by this point
+	expect(spec).toHaveLength(0)
+})
 
-// 		const commands: any[] = []
+test('Test clip upload', async () => {
+	const spec: any[] = JSON.parse(readFileSync(path.join(__dirname, './upload-clip-sequence.json')).toString())
 
-// 		const procCmd = (cmd: AbstractCommand, dir: string) => {
-// 			const props = { ...cmd.properties }
-// 			Object.keys(props).forEach(k => {
-// 				if (Buffer.isBuffer(props[k])) {
-// 					const buf = props[k] as Buffer
-// 					props[k] = { bufferLength: buf.length }
-// 				}
-// 			})
-// 			return {
-// 				name: cmd.constructor.name,
-// 				properties: props,
-// 				direction: dir
-// 			}
-// 		}
+	const newBuffer = Buffer.alloc(1920 * 1080 * 4, 0)
 
-// 		const transfer = new DataTransferManager(cmd => {
-// 			commands.push(procCmd(cmd, 'send'))
-// 			return nb.sendCommand(cmd)
-// 		})
-// 		nb.on('receivedCommand', cmd => {
-// 			commands.push(procCmd(cmd, 'recv'))
-// 			transfer.handleCommand(cmd)
-// 		})
+	const manager = runDataTransferTest(spec)
+	await manager.uploadClip(1, [newBuffer, newBuffer, newBuffer], 'clip file')
 
-// 		await transfer.uploadStill(0, newBuffer, 'some still', '')
+	await new Promise(resolve => setTimeout(resolve, 200))
 
-// 		await new Promise(resolve => setTimeout(resolve, 1000))
-
-// 		// console.log(JSON.stringify({
-// 		// 	sent: sentCommands,
-// 		// 	received: receivedCommands
-// 		// }))
-// 		writeFileSync('upload.json', JSON.stringify(commands, undefined, '\t'))
-
-// 		expect(nb).toBeTruthy()
-// 	} finally {
-// 		cleanupAtem(nb)
-// 	}
-// })
+	// Nothing should be left by this point
+	expect(spec).toHaveLength(0)
+}, 10000)

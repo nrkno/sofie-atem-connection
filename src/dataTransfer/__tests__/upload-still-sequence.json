@@ -19,7 +19,7 @@
 		"properties": {
 			"transferId": 0,
 			"transferStoreId": 0,
-			"transferIndex": 0,
+			"transferIndex": 2,
 			"size": 8294400,
 			"mode": 1
 		},

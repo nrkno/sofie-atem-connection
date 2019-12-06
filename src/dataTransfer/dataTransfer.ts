@@ -2,17 +2,15 @@ import { Commands, Enums } from '..'
 
 export default abstract class DataTransfer {
 	public state: Enums.TransferState = Enums.TransferState.Queued
-	public readonly transferId: number
+	public readonly _transferId: number
 	public readonly storeId: number
-
-	// commandQueue: Array<Commands.ISerializableCommand>
 
 	private readonly completionPromise: Promise<DataTransfer>
 	public resolvePromise: (value?: DataTransfer | PromiseLike<DataTransfer> | undefined) => void
 	public rejectPromise: (reason?: any) => void
 
 	constructor (transferId: number, storeId: number) {
-		this.transferId = transferId
+		this._transferId = transferId
 		this.storeId = storeId
 
 		// Make typescript happy
@@ -25,6 +23,10 @@ export default abstract class DataTransfer {
 			this.resolvePromise = resolve
 			this.rejectPromise = reject
 		})
+	}
+
+	get transferId () {
+		return this._transferId
 	}
 
 	get promise () {
