@@ -60,9 +60,9 @@ export class TransitionWipeUpdateCommand extends DeserializedCommand<WipeTransit
 	}
 
 	public static deserialize (rawCommand: Buffer): TransitionWipeUpdateCommand {
-		const mixEffect = rawCommand[0]
+		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
-			rate: rawCommand[1],
+			rate: rawCommand.readUInt8(1),
 			pattern: rawCommand.readUInt8(2),
 			borderWidth: rawCommand.readUInt16BE(4),
 			borderInput: rawCommand.readUInt16BE(6),
@@ -70,8 +70,8 @@ export class TransitionWipeUpdateCommand extends DeserializedCommand<WipeTransit
 			borderSoftness: rawCommand.readUInt16BE(10),
 			xPosition: rawCommand.readUInt16BE(12),
 			yPosition: rawCommand.readUInt16BE(14),
-			reverseDirection: rawCommand[16] === 1,
-			flipFlop: rawCommand[17] === 1
+			reverseDirection: rawCommand.readUInt8(16) === 1,
+			flipFlop: rawCommand.readUInt8(17) === 1
 		}
 
 		return new TransitionWipeUpdateCommand(mixEffect, properties)

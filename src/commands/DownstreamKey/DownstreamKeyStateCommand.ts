@@ -15,12 +15,12 @@ export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKey
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const downstreamKeyerId = rawCommand[0]
+		const downstreamKeyerId = rawCommand.readUInt8(0)
 		const properties = {
-			onAir: rawCommand[1] === 1,
-			inTransition: rawCommand[2] === 1,
-			isAuto: rawCommand[3] === 1,
-			remainingFrames: rawCommand[4]
+			onAir: rawCommand.readUInt8(1) === 1,
+			inTransition: rawCommand.readUInt8(2) === 1,
+			isAuto: rawCommand.readUInt8(3) === 1,
+			remainingFrames: rawCommand.readUInt8(4)
 		}
 
 		return new DownstreamKeyStateCommand(downstreamKeyerId, properties)
@@ -52,13 +52,13 @@ export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamK
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const downstreamKeyerId = rawCommand[0]
+		const downstreamKeyerId = rawCommand.readUInt8(0)
 		const properties = {
-			onAir: rawCommand[1] === 1,
-			inTransition: rawCommand[2] === 1,
-			isAuto: rawCommand[3] === 1,
-			isTowardsOnAir: rawCommand[4] === 1,
-			remainingFrames: rawCommand[5]
+			onAir: rawCommand.readUInt8(1) === 1,
+			inTransition: rawCommand.readUInt8(2) === 1,
+			isAuto: rawCommand.readUInt8(3) === 1,
+			isTowardsOnAir: rawCommand.readUInt8(4) === 1,
+			remainingFrames: rawCommand.readUInt8(5)
 		}
 
 		return new DownstreamKeyStateV8Command(downstreamKeyerId, properties)

@@ -37,10 +37,10 @@ export class MixEffectKeyOnAirUpdateCommand extends DeserializedCommand<{onAir: 
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const mixEffect = rawCommand[0]
-		const upstreamKeyerId = rawCommand[1]
+		const mixEffect = rawCommand.readUInt8(0)
+		const upstreamKeyerId = rawCommand.readUInt8(1)
 		const properties = {
-			onAir: rawCommand[2] === 1
+			onAir: rawCommand.readUInt8(2) === 1
 		}
 		return new MixEffectKeyOnAirUpdateCommand(mixEffect, upstreamKeyerId, properties)
 	}

@@ -78,12 +78,12 @@ export class SuperSourceBoxParametersUpdateCommand extends DeserializedCommand<S
 
 		const boxId = rawCommand.readUInt8(i > 0 ? 1 : 0)
 		const properties = {
-			enabled: rawCommand[i > 0 ? 2 : 1] === 1,
+			enabled: rawCommand.readUInt8(i > 0 ? 2 : 1) === 1,
 			source: rawCommand.readUInt16BE(i + 2),
 			x: rawCommand.readInt16BE(i + 4),
 			y: rawCommand.readInt16BE(i + 6),
 			size: rawCommand.readUInt16BE(i + 8),
-			cropped: rawCommand[i + 10] === 1,
+			cropped: rawCommand.readUInt8(i + 10) === 1,
 			cropTop: rawCommand.readUInt16BE(i + 12),
 			cropBottom: rawCommand.readUInt16BE(i + 14),
 			cropLeft: rawCommand.readUInt16BE(i + 16),

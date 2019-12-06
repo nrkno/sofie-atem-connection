@@ -16,15 +16,15 @@ export class MixEffectKeyPropertiesGetCommand extends DeserializedCommand<Upstre
 	}
 
 	public static deserialize (rawCommand: Buffer): MixEffectKeyPropertiesGetCommand {
-		const mixEffect = rawCommand[0]
-		const keyer = rawCommand[1]
+		const mixEffect = rawCommand.readUInt8(0)
+		const keyer = rawCommand.readUInt8(1)
 		const properties = {
 			upstreamKeyerId: keyer,
 			mixEffectKeyType: rawCommand.readUInt8(2),
-			flyEnabled: rawCommand[5] === 1,
+			flyEnabled: rawCommand.readUInt8(5) === 1,
 			fillSource: rawCommand.readUInt16BE(6),
 			cutSource: rawCommand.readUInt16BE(8),
-			maskEnabled: rawCommand[10] === 1,
+			maskEnabled: rawCommand.readUInt8(10) === 1,
 			maskTop: rawCommand.readInt16BE(12),
 			maskBottom: rawCommand.readInt16BE(14),
 			maskLeft: rawCommand.readInt16BE(16),

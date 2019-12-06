@@ -64,21 +64,21 @@ export class TransitionDVEUpdateCommand extends DeserializedCommand<DVETransitio
 	}
 
 	public static deserialize (rawCommand: Buffer): TransitionDVEUpdateCommand {
-		const mixEffect = rawCommand[0]
+		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
-			rate: rawCommand[1],
-			logoRate: rawCommand[2],
+			rate: rawCommand.readUInt8(1),
+			logoRate: rawCommand.readUInt8(2),
 			style: rawCommand.readUInt8(3),
-			fillSource: rawCommand[4] << 8 | (rawCommand[5] & 0xff),
-			keySource: rawCommand[6] << 8 | (rawCommand[7] & 0xff),
+			fillSource: rawCommand.readUInt8(4) << 8 | (rawCommand.readUInt8(5) & 0xff),
+			keySource: rawCommand.readUInt8(6) << 8 | (rawCommand.readUInt8(7) & 0xff),
 
-			enableKey: rawCommand[8] === 1,
-			preMultiplied: rawCommand[9] === 1,
+			enableKey: rawCommand.readUInt8(8) === 1,
+			preMultiplied: rawCommand.readUInt8(9) === 1,
 			clip: rawCommand.readUInt16BE(10),
 			gain: rawCommand.readUInt16BE(12),
-			invertKey: rawCommand[14] === 1,
-			reverse: rawCommand[15] === 1,
-			flipFlop: rawCommand[16] === 1
+			invertKey: rawCommand.readUInt8(14) === 1,
+			reverse: rawCommand.readUInt8(15) === 1,
+			flipFlop: rawCommand.readUInt8(16) === 1
 		}
 
 		return new TransitionDVEUpdateCommand(mixEffect, properties)

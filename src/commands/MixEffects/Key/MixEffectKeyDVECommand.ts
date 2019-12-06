@@ -99,8 +99,8 @@ export class MixEffectKeyDVEUpdateCommand extends DeserializedCommand<UpstreamKe
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const mixEffect = rawCommand[0]
-		const upstreamKeyerId = rawCommand[1]
+		const mixEffect = rawCommand.readUInt8(0)
+		const upstreamKeyerId = rawCommand.readUInt8(1)
 		const properties = {
 			// Note: these are higher than the ui shows, but are within the range the atem can be set to
 			sizeX: rawCommand.readUInt32BE(4),
@@ -110,8 +110,8 @@ export class MixEffectKeyDVEUpdateCommand extends DeserializedCommand<UpstreamKe
 			positionY: rawCommand.readInt32BE(16),
 			rotation: rawCommand.readInt32BE(20),
 
-			borderEnabled: rawCommand[24] === 1,
-			shadowEnabled: rawCommand[25] === 1,
+			borderEnabled: rawCommand.readUInt8(24) === 1,
+			shadowEnabled: rawCommand.readUInt8(25) === 1,
 			borderBevel: rawCommand.readUInt8(26),
 			borderOuterWidth: rawCommand.readUInt16BE(28),
 			borderInnerWidth: rawCommand.readUInt16BE(30),
@@ -128,7 +128,7 @@ export class MixEffectKeyDVEUpdateCommand extends DeserializedCommand<UpstreamKe
 			lightSourceDirection: rawCommand.readUInt16BE(44),
 			lightSourceAltitude: rawCommand.readUInt8(46),
 
-			maskEnabled: rawCommand[47] === 1,
+			maskEnabled: rawCommand.readUInt8(47) === 1,
 			maskTop: rawCommand.readUInt16BE(48),
 			maskBottom: rawCommand.readUInt16BE(50),
 			maskLeft: rawCommand.readUInt16BE(52),

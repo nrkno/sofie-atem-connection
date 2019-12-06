@@ -42,7 +42,7 @@ export class TransitionPropertiesUpdateCommand extends DeserializedCommand<Trans
 	}
 
 	public static deserialize (rawCommand: Buffer): TransitionPropertiesUpdateCommand {
-		const mixEffect = rawCommand[0]
+		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
 			style: rawCommand.readUInt8(1),
 			selection: rawCommand.readUInt8(2),

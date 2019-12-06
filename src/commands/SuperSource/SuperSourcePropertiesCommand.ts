@@ -164,14 +164,14 @@ export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{ pr
 				artFillSource: rawCommand.readUInt16BE(0),
 				artCutSource: rawCommand.readUInt16BE(2),
 				artOption: rawCommand.readUInt8(4),
-				artPreMultiplied: rawCommand[5] === 1,
+				artPreMultiplied: rawCommand.readUInt8(5) === 1,
 				artClip: rawCommand.readUInt16BE(6),
 				artGain: rawCommand.readUInt16BE(8),
-				artInvertKey: rawCommand[10] === 1
+				artInvertKey: rawCommand.readUInt8(10) === 1
 			},
 
 			border: {
-				borderEnabled: rawCommand[11] === 1,
+				borderEnabled: rawCommand.readUInt8(11) === 1,
 				borderBevel: rawCommand.readUInt8(12),
 				borderOuterWidth: rawCommand.readUInt16BE(14),
 				borderInnerWidth: rawCommand.readUInt16BE(16),
@@ -223,10 +223,10 @@ export class SuperSourcePropertiesUpdateV8Command extends DeserializedCommand<Su
 			artFillSource: rawCommand.readUInt16BE(2),
 			artCutSource: rawCommand.readUInt16BE(4),
 			artOption: rawCommand.readUInt8(6),
-			artPreMultiplied: rawCommand[7] === 1,
+			artPreMultiplied: rawCommand.readUInt8(7) === 1,
 			artClip: rawCommand.readUInt16BE(8),
 			artGain: rawCommand.readUInt16BE(10),
-			artInvertKey: rawCommand[12] === 1
+			artInvertKey: rawCommand.readUInt8(12) === 1
 		}
 
 		return new SuperSourcePropertiesUpdateV8Command(ssrcId, properties)
@@ -260,7 +260,7 @@ export class SuperSourceBorderUpdateCommand extends DeserializedCommand<SuperSou
 	public static deserialize (rawCommand: Buffer) {
 		const ssrcId = rawCommand.readUInt8(0)
 		const properties = {
-			borderEnabled: rawCommand[1] === 1,
+			borderEnabled: rawCommand.readUInt8(1) === 1,
 			borderBevel: rawCommand.readUInt8(2),
 			borderOuterWidth: rawCommand.readUInt16BE(4),
 			borderInnerWidth: rawCommand.readUInt16BE(6),

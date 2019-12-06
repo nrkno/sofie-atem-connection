@@ -11,8 +11,8 @@ export class PowerStatusCommand extends DeserializedCommand<boolean[]> {
 
 	public static deserialize (rawCommand: Buffer): PowerStatusCommand {
 		const properties = [
-			Boolean(rawCommand[0] & 1 << 0),
-			Boolean(rawCommand[0] & 1 << 1)
+			Boolean(rawCommand.readUInt8(0) & 1 << 0),
+			Boolean(rawCommand.readUInt8(0) & 1 << 1)
 		]
 
 		return new PowerStatusCommand(properties)

@@ -7,9 +7,9 @@ export class MacroRunStatusCommand extends DeserializedCommand<MacroPlayerState>
 
 	public static deserialize (rawCommand: Buffer) {
 		const properties = {
-			isRunning: Boolean(rawCommand[0] & 1 << 0),
-			isWaiting: Boolean(rawCommand[0] & 1 << 1),
-			loop: Boolean(rawCommand[1] & 1 << 0),
+			isRunning: Boolean(rawCommand.readUInt8(0) & 1 << 0),
+			isWaiting: Boolean(rawCommand.readUInt8(0) & 1 << 1),
+			loop: Boolean(rawCommand.readUInt8(1) & 1 << 0),
 			macroIndex: rawCommand.readUInt16BE(2)
 		}
 

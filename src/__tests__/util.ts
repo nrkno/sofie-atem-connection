@@ -47,7 +47,8 @@ export function createEmptyState () {
 		superSources: 2,
 		talkbackOverSDI: 0,
 		multiViewers: 255,
-		downstreamKeyers: 4
+		downstreamKeyers: 4,
+		upstreamKeyers: 4
 	}
 
 	return state

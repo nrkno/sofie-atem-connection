@@ -36,9 +36,9 @@ export class PreviewTransitionUpdateCommand extends DeserializedCommand<PreviewP
 	}
 
 	public static deserialize (rawCommand: Buffer): PreviewTransitionUpdateCommand {
-		const mixEffect = rawCommand[0]
+		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
-			preview: rawCommand[1] === 1
+			preview: rawCommand.readUInt8(1) === 1
 		}
 
 		return new PreviewTransitionUpdateCommand(mixEffect, properties)

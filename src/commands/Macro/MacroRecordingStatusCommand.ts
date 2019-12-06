@@ -7,7 +7,7 @@ export class MacroRecordingStatusCommand extends DeserializedCommand<MacroRecord
 
 	public static deserialize (rawCommand: Buffer) {
 		const properties = {
-			isRecording: Boolean(rawCommand[0] & 1 << 0),
+			isRecording: Boolean(rawCommand.readUInt8(0) & 1 << 0),
 			macroIndex: rawCommand.readUInt16BE(2)
 		}
 

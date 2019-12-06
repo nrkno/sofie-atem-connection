@@ -28,7 +28,7 @@ export class VideoModeUpdateCommand extends DeserializedCommand<VideoModeProps> 
 	}
 
 	public static deserialize (rawCommand: Buffer): VideoModeUpdateCommand {
-		return new VideoModeUpdateCommand(rawCommand[0])
+		return new VideoModeUpdateCommand(rawCommand.readUInt8(0))
 	}
 
 	public applyToState (state: AtemState) {

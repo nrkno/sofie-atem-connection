@@ -33,9 +33,9 @@ export class TransitionMixUpdateCommand extends DeserializedCommand<MixTransitio
 	}
 
 	public static deserialize (rawCommand: Buffer): TransitionMixUpdateCommand {
-		const mixEffect = rawCommand[0]
+		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
-			rate: rawCommand[1]
+			rate: rawCommand.readUInt8(1)
 		}
 
 		return new TransitionMixUpdateCommand(mixEffect, properties)

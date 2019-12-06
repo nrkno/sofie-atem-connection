@@ -37,7 +37,7 @@ export class AuxSourceUpdateCommand extends DeserializedCommand<AuxSourceProps> 
 	}
 
 	public static deserialize (rawCommand: Buffer): AuxSourceUpdateCommand {
-		const auxBus = rawCommand[0]
+		const auxBus = rawCommand.readUInt8(0)
 		const properties = {
 			source: rawCommand.readUInt16BE(2)
 		}

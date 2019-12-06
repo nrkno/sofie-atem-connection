@@ -41,10 +41,10 @@ export class TransitionPositionUpdateCommand extends DeserializedCommand<Transit
 	}
 
 	public static deserialize (rawCommand: Buffer): TransitionPositionUpdateCommand {
-		const mixEffect = rawCommand[0]
+		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
-			inTransition: rawCommand[1] === 1,
-			remainingFrames: rawCommand[2],
+			inTransition: rawCommand.readUInt8(1) === 1,
+			remainingFrames: rawCommand.readUInt8(2),
 			handlePosition: rawCommand.readUInt16BE(4)
 		}
 

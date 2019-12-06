@@ -39,10 +39,10 @@ export class TransitionDipUpdateCommand extends DeserializedCommand<DipTransitio
 	}
 
 	public static deserialize (rawCommand: Buffer): TransitionDipUpdateCommand {
-		const mixEffect = rawCommand[0]
+		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
-			rate: rawCommand[1],
-			input: rawCommand[2] << 8 | (rawCommand[3] & 0xFF)
+			rate: rawCommand.readUInt8(1),
+			input: rawCommand.readUInt8(2) << 8 | (rawCommand.readUInt8(3) & 0xFF)
 		}
 
 		return new TransitionDipUpdateCommand(mixEffect, properties)

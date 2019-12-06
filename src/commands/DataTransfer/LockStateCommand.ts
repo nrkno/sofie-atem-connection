@@ -26,7 +26,7 @@ export class LockStateUpdateCommand extends DeserializedCommand<LockStateProps> 
 	public static deserialize (rawCommand: Buffer) {
 		const properties = {
 			index: rawCommand.readUInt16BE(0),
-			locked: rawCommand[2] === 1
+			locked: rawCommand.readUInt8(2) === 1
 		}
 
 		return new LockStateUpdateCommand(properties)

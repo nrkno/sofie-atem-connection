@@ -16,13 +16,13 @@ export class MixEffectKeyFlyPropertiesGetCommand extends DeserializedCommand<Ups
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const mixEffect = rawCommand[0]
-		const upstreamKeyerId = rawCommand[1]
+		const mixEffect = rawCommand.readUInt8(0)
+		const upstreamKeyerId = rawCommand.readUInt8(1)
 		const properties = {
-			isASet: rawCommand[2] === 1,
-			isBSet: rawCommand[3] === 1,
-			isAtKeyFrame: rawCommand[6],
-			runToInfiniteIndex: rawCommand[7]
+			isASet: rawCommand.readUInt8(2) === 1,
+			isBSet: rawCommand.readUInt8(3) === 1,
+			isAtKeyFrame: rawCommand.readUInt8(6),
+			runToInfiniteIndex: rawCommand.readUInt8(7)
 		}
 		return new MixEffectKeyFlyPropertiesGetCommand(mixEffect, upstreamKeyerId, properties)
 	}

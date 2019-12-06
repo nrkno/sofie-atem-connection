@@ -10,7 +10,7 @@ export class ProductIdentifierCommand extends DeserializedCommand<Pick<DeviceInf
 	public static deserialize (rawCommand: Buffer) {
 		const properties = {
 			productIdentifier: Util.bufToNullTerminatedString(rawCommand, 0, 40),
-			model: rawCommand[40]
+			model: rawCommand.readUInt8(40)
 		}
 
 		return new ProductIdentifierCommand(properties)

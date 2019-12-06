@@ -52,14 +52,14 @@ export class MixEffectKeyChromaUpdateCommand extends DeserializedCommand<Upstrea
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const mixEffect = rawCommand[0]
-		const upstreamKeyerId = rawCommand[1]
+		const mixEffect = rawCommand.readUInt8(0)
+		const upstreamKeyerId = rawCommand.readUInt8(1)
 		const properties = {
 			hue: rawCommand.readUInt16BE(2),
 			gain: rawCommand.readUInt16BE(4),
 			ySuppress: rawCommand.readUInt16BE(6),
 			lift: rawCommand.readUInt16BE(8),
-			narrow: rawCommand[10] === 1
+			narrow: rawCommand.readUInt8(10) === 1
 		}
 
 		return new MixEffectKeyChromaUpdateCommand(mixEffect, upstreamKeyerId, properties)

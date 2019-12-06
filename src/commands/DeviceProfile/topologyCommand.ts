@@ -7,18 +7,18 @@ export class TopologyCommand extends DeserializedCommand<AtemCapabilites> {
 
 	public static deserialize (rawCommand: Buffer) {
 		const properties = {
-			mixEffects: rawCommand[0],
-			sources: rawCommand[1],
-			colorGenerators: rawCommand[2],
-			auxilliaries: rawCommand[3],
-			talkbackOutputs: rawCommand[4],
-			mediaPlayers: rawCommand[5],
-			serialPorts: rawCommand[6],
-			maxHyperdecks: rawCommand[7],
-			DVEs: rawCommand[8],
-			stingers: rawCommand[9],
-			superSources: rawCommand[10],
-			talkbackOverSDI: rawCommand[13],
+			mixEffects: rawCommand.readUInt8(0),
+			sources: rawCommand.readUInt8(1),
+			colorGenerators: rawCommand.readUInt8(2),
+			auxilliaries: rawCommand.readUInt8(3),
+			talkbackOutputs: rawCommand.readUInt8(4),
+			mediaPlayers: rawCommand.readUInt8(5),
+			serialPorts: rawCommand.readUInt8(6),
+			maxHyperdecks: rawCommand.readUInt8(7),
+			DVEs: rawCommand.readUInt8(8),
+			stingers: rawCommand.readUInt8(9),
+			superSources: rawCommand.readUInt8(10),
+			talkbackOverSDI: rawCommand.readUInt8(13),
 
 			// TODO - define the below properly
 			multiViewers: 2,

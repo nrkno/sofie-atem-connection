@@ -50,13 +50,13 @@ export class MixEffectKeyLumaUpdateCommand extends DeserializedCommand<UpstreamK
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const mixEffect = rawCommand[0]
-		const upstreamKeyerId = rawCommand[1]
+		const mixEffect = rawCommand.readUInt8(0)
+		const upstreamKeyerId = rawCommand.readUInt8(1)
 		const properties = {
-			preMultiplied: rawCommand[2] === 1,
+			preMultiplied: rawCommand.readUInt8(2) === 1,
 			clip: rawCommand.readUInt16BE(4),
 			gain: rawCommand.readUInt16BE(6),
-			invert: rawCommand[8] === 1
+			invert: rawCommand.readUInt8(8) === 1
 		}
 
 		return new MixEffectKeyLumaUpdateCommand(mixEffect, upstreamKeyerId, properties)

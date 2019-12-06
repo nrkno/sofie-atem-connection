@@ -14,7 +14,7 @@ export class DownstreamKeyPropertiesCommand extends DeserializedCommand<Downstre
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const downstreamKeyerId = rawCommand[0]
+		const downstreamKeyerId = rawCommand.readUInt8(0)
 		const properties = {
 			tie: rawCommand.readUInt8(1) === 1,
 			rate: rawCommand.readUInt8(2),

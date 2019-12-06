@@ -18,9 +18,9 @@ export class MixEffectKeyFlyKeyframeGetCommand extends DeserializedCommand<Upstr
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const mixEffect = rawCommand[0]
-		const upstreamKeyerId = rawCommand[1]
-		const keyFrameId = rawCommand[2]
+		const mixEffect = rawCommand.readUInt8(0)
+		const upstreamKeyerId = rawCommand.readUInt8(1)
+		const keyFrameId = rawCommand.readUInt8(2)
 		const properties = {
 			keyFrameId: keyFrameId,
 
@@ -46,7 +46,7 @@ export class MixEffectKeyFlyKeyframeGetCommand extends DeserializedCommand<Upstr
 			lightSourceDirection: rawCommand.readUInt16BE(40),
 			lightSourceAltitude: rawCommand.readUInt8(42),
 
-			// maskEnabled: rawCommand[43] === 1,
+			// maskEnabled: rawCommand.readUInt8(43) === 1,
 			maskTop: rawCommand.readInt16BE(44),
 			maskBottom: rawCommand.readInt16BE(46),
 			maskLeft: rawCommand.readInt16BE(48),

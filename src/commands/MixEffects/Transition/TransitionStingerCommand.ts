@@ -58,19 +58,19 @@ export class TransitionStingerUpdateCommand extends DeserializedCommand<StingerT
 	}
 
 	public static deserialize (rawCommand: Buffer): TransitionStingerUpdateCommand {
-		const mixEffect = rawCommand[0]
+		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
-			source: rawCommand[1],
-			preMultipliedKey: rawCommand[2] === 1,
+			source: rawCommand.readUInt8(1),
+			preMultipliedKey: rawCommand.readUInt8(2) === 1,
 
 			clip: rawCommand.readUInt16BE(4),
 			gain: rawCommand.readUInt16BE(6),
-			invert: rawCommand[8] === 1,
+			invert: rawCommand.readUInt8(8) === 1,
 
-			preroll: rawCommand[10] << 8 | rawCommand[11],
-			clipDuration: rawCommand[12] << 8 | rawCommand[13],
-			triggerPoint: rawCommand[14] << 8 | rawCommand[15],
-			mixRate: rawCommand[16] << 8 | rawCommand[17]
+			preroll: rawCommand.readUInt8(10) << 8 | rawCommand.readUInt8(11),
+			clipDuration: rawCommand.readUInt8(12) << 8 | rawCommand.readUInt8(13),
+			triggerPoint: rawCommand.readUInt8(14) << 8 | rawCommand.readUInt8(15),
+			mixRate: rawCommand.readUInt8(16) << 8 | rawCommand.readUInt8(17)
 		}
 
 		return new TransitionStingerUpdateCommand(mixEffect, properties)

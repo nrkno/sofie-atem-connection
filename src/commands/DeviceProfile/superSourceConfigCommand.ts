@@ -16,9 +16,9 @@ export class SuperSourceConfigCommand extends DeserializedCommand<SuperSourceInf
 
 	public static deserialize (rawCommand: Buffer, version: ProtocolVersion): SuperSourceConfigCommand {
 		if (version >= ProtocolVersion.V8_0) {
-			return new SuperSourceConfigCommand(rawCommand[0], { boxCount: rawCommand[2] })
+			return new SuperSourceConfigCommand(rawCommand.readUInt8(0), { boxCount: rawCommand.readUInt8(2) })
 		} else {
-			return new SuperSourceConfigCommand(0, { boxCount: rawCommand[0] })
+			return new SuperSourceConfigCommand(0, { boxCount: rawCommand.readUInt8(0) })
 		}
 	}
 

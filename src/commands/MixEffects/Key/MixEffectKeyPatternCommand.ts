@@ -57,8 +57,8 @@ export class MixEffectKeyUpdateCommand extends DeserializedCommand<UpstreamKeyer
 	}
 
 	public static deserialize (rawCommand: Buffer): MixEffectKeyUpdateCommand {
-		const mixEffect = rawCommand[0]
-		const upstreamKeyerId = rawCommand[1]
+		const mixEffect = rawCommand.readUInt8(0)
+		const upstreamKeyerId = rawCommand.readUInt8(1)
 		const properties = {
 			style: rawCommand.readUInt8(2),
 			size: rawCommand.readUInt16BE(4),
@@ -66,7 +66,7 @@ export class MixEffectKeyUpdateCommand extends DeserializedCommand<UpstreamKeyer
 			softness: rawCommand.readUInt16BE(8),
 			positionX: rawCommand.readUInt16BE(10),
 			positionY: rawCommand.readUInt16BE(12),
-			invert: rawCommand[14] === 1
+			invert: rawCommand.readUInt8(14) === 1
 		}
 
 		return new MixEffectKeyUpdateCommand(mixEffect, upstreamKeyerId, properties)

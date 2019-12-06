@@ -46,7 +46,7 @@ export class InputPropertiesUpdateCommand extends DeserializedCommand<InputChann
 	public static deserialize (rawCommand: Buffer) {
 		const inputId = rawCommand.readUInt16BE(0)
 
-		const externalPortsMask = rawCommand[29]
+		const externalPortsMask = rawCommand.readUInt8(29)
 		const externalPorts: ExternalPortType[] = []
 		if (externalPortsMask & ExternalPorts.SDI) {
 			externalPorts.push(ExternalPortType.SDI)
@@ -69,7 +69,7 @@ export class InputPropertiesUpdateCommand extends DeserializedCommand<InputChann
 			longName: Util.bufToNullTerminatedString(rawCommand, 2, 20),
 			shortName: Util.bufToNullTerminatedString(rawCommand, 22, 4),
 			externalPorts: externalPorts.length > 0 ? externalPorts : null,
-			isExternal: rawCommand[28] === 0,
+			isExternal: rawCommand.readUInt8(28) === 0,
 			externalPortType: rawCommand.readUInt8(31),
 			internalPortType: rawCommand.readUInt8(32),
 			sourceAvailability: rawCommand.readUInt8(34),

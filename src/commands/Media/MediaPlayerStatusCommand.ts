@@ -43,12 +43,12 @@ export class MediaPlayerStatusUpdateCommand extends DeserializedCommand<MediaPla
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const mediaPlayerId = rawCommand[0]
+		const mediaPlayerId = rawCommand.readUInt8(0)
 		const properties = {
-			playing: rawCommand[1] === 1,
-			loop: rawCommand[2] === 1,
-			atBeginning: rawCommand[3] === 1,
-			clipFrame: rawCommand[4] << 8 | (rawCommand[5])
+			playing: rawCommand.readUInt8(1) === 1,
+			loop: rawCommand.readUInt8(2) === 1,
+			atBeginning: rawCommand.readUInt8(3) === 1,
+			clipFrame: rawCommand.readUInt8(4) << 8 | (rawCommand.readUInt8(5))
 		}
 
 		return new MediaPlayerStatusUpdateCommand(mediaPlayerId, properties)

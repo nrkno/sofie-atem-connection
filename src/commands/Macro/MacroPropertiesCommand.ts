@@ -21,7 +21,7 @@ export class MacroPropertiesCommand extends DeserializedCommand<MacroPropertiesS
 
 		const properties = {
 			description: '',
-			isUsed: Boolean(rawCommand[2] & 1 << 0),
+			isUsed: Boolean(rawCommand.readUInt8(2) & 1 << 0),
 			macroIndex: macroIndexID,
 			name: ''
 		}

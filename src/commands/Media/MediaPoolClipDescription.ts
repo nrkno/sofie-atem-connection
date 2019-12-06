@@ -15,9 +15,9 @@ export class MediaPoolClipDescriptionCommand extends DeserializedCommand<Omit<Cl
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const mediaPool = rawCommand[0]
+		const mediaPool = rawCommand.readUInt8(0)
 		const properties = {
-			isUsed: rawCommand[1] === 1,
+			isUsed: rawCommand.readUInt8(1) === 1,
 			name: Util.bufToNullTerminatedString(rawCommand, 2, 64),
 			frameCount: rawCommand.readUInt16BE(66)
 		}
