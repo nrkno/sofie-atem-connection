@@ -1,6 +1,5 @@
 import { BasicWritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
-import { Util } from '../..'
 
 export interface InputSource {
 	source: number
@@ -37,7 +36,7 @@ export class PreviewInputUpdateCommand extends DeserializedCommand<InputSource> 
 	}
 
 	public static deserialize (rawCommand: Buffer): PreviewInputUpdateCommand {
-		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const mixEffect = rawCommand[0]
 		const properties = {
 			source: rawCommand.readUInt16BE(2)
 		}

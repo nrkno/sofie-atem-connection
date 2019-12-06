@@ -1,7 +1,6 @@
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { SuperSourceProperties, SuperSourceBorder } from '../../state/video'
-import { Util, Enums } from '../..'
 import { ProtocolVersion } from '../../enums'
 
 export class SuperSourcePropertiesCommand extends WritableCommand<SuperSourceProperties & SuperSourceBorder> {
@@ -164,27 +163,27 @@ export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{ pr
 			properties: {
 				artFillSource: rawCommand.readUInt16BE(0),
 				artCutSource: rawCommand.readUInt16BE(2),
-				artOption: Util.parseEnum<Enums.SuperSourceArtOption>(rawCommand.readUInt8(4), Enums.SuperSourceArtOption),
+				artOption: rawCommand.readUInt8(4),
 				artPreMultiplied: rawCommand[5] === 1,
-				artClip: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 1000),
-				artGain: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 1000),
+				artClip: rawCommand.readUInt16BE(6),
+				artGain: rawCommand.readUInt16BE(8),
 				artInvertKey: rawCommand[10] === 1
 			},
 
 			border: {
 				borderEnabled: rawCommand[11] === 1,
-				borderBevel: Util.parseEnum<Enums.BorderBevel>(rawCommand.readUInt8(12), Enums.BorderBevel),
-				borderOuterWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(14), 0, 1600),
-				borderInnerWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(16), 0, 1600),
-				borderOuterSoftness: Util.parseNumberBetween(rawCommand.readUInt8(18), 0, 100),
-				borderInnerSoftness: Util.parseNumberBetween(rawCommand.readUInt8(19), 0, 100),
-				borderBevelSoftness: Util.parseNumberBetween(rawCommand.readUInt8(20), 0, 100),
-				borderBevelPosition: Util.parseNumberBetween(rawCommand.readUInt8(21), 0, 100),
-				borderHue: Util.parseNumberBetween(rawCommand.readUInt16BE(22), 0, 3599),
-				borderSaturation: Util.parseNumberBetween(rawCommand.readUInt16BE(24), 0, 1000),
-				borderLuma: Util.parseNumberBetween(rawCommand.readUInt16BE(26), 0, 1000),
-				borderLightSourceDirection: Util.parseNumberBetween(rawCommand.readUInt16BE(28), 0, 3599),
-				borderLightSourceAltitude: Util.parseNumberBetween(rawCommand.readUInt8(30), 0, 100)
+				borderBevel: rawCommand.readUInt8(12),
+				borderOuterWidth: rawCommand.readUInt16BE(14),
+				borderInnerWidth: rawCommand.readUInt16BE(16),
+				borderOuterSoftness: rawCommand.readUInt8(18),
+				borderInnerSoftness: rawCommand.readUInt8(19),
+				borderBevelSoftness: rawCommand.readUInt8(20),
+				borderBevelPosition: rawCommand.readUInt8(21),
+				borderHue: rawCommand.readUInt16BE(22),
+				borderSaturation: rawCommand.readUInt16BE(24),
+				borderLuma: rawCommand.readUInt16BE(26),
+				borderLightSourceDirection: rawCommand.readUInt16BE(28),
+				borderLightSourceAltitude: rawCommand.readUInt8(30)
 			}
 		}
 
@@ -219,10 +218,10 @@ export class SuperSourcePropertiesUpdateV8Command extends DeserializedCommand<Su
 		const properties = {
 			artFillSource: rawCommand.readUInt16BE(2),
 			artCutSource: rawCommand.readUInt16BE(4),
-			artOption: Util.parseEnum<Enums.SuperSourceArtOption>(rawCommand.readUInt8(6), Enums.SuperSourceArtOption),
+			artOption: rawCommand.readUInt8(6),
 			artPreMultiplied: rawCommand[7] === 1,
-			artClip: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 1000),
-			artGain: Util.parseNumberBetween(rawCommand.readUInt16BE(10), 0, 1000),
+			artClip: rawCommand.readUInt16BE(8),
+			artGain: rawCommand.readUInt16BE(10),
 			artInvertKey: rawCommand[12] === 1
 		}
 
@@ -254,18 +253,18 @@ export class SuperSourceBorderUpdateCommand extends DeserializedCommand<SuperSou
 		const ssrcId = rawCommand.readUInt8(0)
 		const properties = {
 			borderEnabled: rawCommand[1] === 1,
-			borderBevel: Util.parseEnum<Enums.BorderBevel>(rawCommand.readUInt8(2), Enums.BorderBevel),
-			borderOuterWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 1600),
-			borderInnerWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 1600),
-			borderOuterSoftness: Util.parseNumberBetween(rawCommand.readUInt8(8), 0, 100),
-			borderInnerSoftness: Util.parseNumberBetween(rawCommand.readUInt8(9), 0, 100),
-			borderBevelSoftness: Util.parseNumberBetween(rawCommand.readUInt8(10), 0, 100),
-			borderBevelPosition: Util.parseNumberBetween(rawCommand.readUInt8(11), 0, 100),
-			borderHue: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 3599),
-			borderSaturation: Util.parseNumberBetween(rawCommand.readUInt16BE(14), 0, 1000),
-			borderLuma: Util.parseNumberBetween(rawCommand.readUInt16BE(16), 0, 1000),
-			borderLightSourceDirection: Util.parseNumberBetween(rawCommand.readUInt16BE(18), 0, 3599),
-			borderLightSourceAltitude: Util.parseNumberBetween(rawCommand.readUInt8(20), 0, 100)
+			borderBevel: rawCommand.readUInt8(2),
+			borderOuterWidth: rawCommand.readUInt16BE(4),
+			borderInnerWidth: rawCommand.readUInt16BE(6),
+			borderOuterSoftness: rawCommand.readUInt8(8),
+			borderInnerSoftness: rawCommand.readUInt8(9),
+			borderBevelSoftness: rawCommand.readUInt8(10),
+			borderBevelPosition: rawCommand.readUInt8(11),
+			borderHue: rawCommand.readUInt16BE(12),
+			borderSaturation: rawCommand.readUInt16BE(14),
+			borderLuma: rawCommand.readUInt16BE(16),
+			borderLightSourceDirection: rawCommand.readUInt16BE(18),
+			borderLightSourceAltitude: rawCommand.readUInt8(20)
 		}
 
 		return new SuperSourceBorderUpdateCommand(ssrcId, properties)

@@ -1,7 +1,6 @@
 import { DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { UpstreamKeyerFlySettings } from '../../../state/video/upstreamKeyers'
-import { Util } from '../../..'
 
 export class MixEffectKeyFlyPropertiesGetCommand extends DeserializedCommand<UpstreamKeyerFlySettings> {
 	public static readonly rawName = 'KeFS'
@@ -17,8 +16,8 @@ export class MixEffectKeyFlyPropertiesGetCommand extends DeserializedCommand<Ups
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
+		const mixEffect = rawCommand[0]
+		const upstreamKeyerId = rawCommand[1]
 		const properties = {
 			isASet: rawCommand[2] === 1,
 			isBSet: rawCommand[3] === 1,

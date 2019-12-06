@@ -1,7 +1,6 @@
 import { AtemState } from '../../state'
 import { MediaPlayer } from '../../state/media'
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
-import { Util } from '../../lib/atemUtil'
 
 export class MediaPlayerStatusCommand extends WritableCommand<MediaPlayer> {
 	public static MaskFlags = {
@@ -44,7 +43,7 @@ export class MediaPlayerStatusUpdateCommand extends DeserializedCommand<MediaPla
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const mediaPlayerId = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const mediaPlayerId = rawCommand[0]
 		const properties = {
 			playing: rawCommand[1] === 1,
 			loop: rawCommand[2] === 1,

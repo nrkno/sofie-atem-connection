@@ -1,6 +1,5 @@
 import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
-import { Util } from '../..'
 import { DownstreamKeyer } from '../../state/video/downstreamKeyers'
 
 export class DownstreamKeySourcesCommand extends DeserializedCommand<DownstreamKeyer['sources']> {
@@ -15,7 +14,7 @@ export class DownstreamKeySourcesCommand extends DeserializedCommand<DownstreamK
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const downstreamKeyerId = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const downstreamKeyerId = rawCommand.readUInt8(0)
 		const properties = {
 			fillSource: rawCommand.readUInt16BE(2),
 			cutSource: rawCommand.readUInt16BE(4)

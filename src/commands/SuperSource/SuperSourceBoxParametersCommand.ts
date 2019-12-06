@@ -1,7 +1,6 @@
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { SuperSourceBox } from '../../state/video'
-import { Util } from '../..'
 import { ProtocolVersion } from '../../enums'
 
 export class SuperSourceBoxParametersCommand extends WritableCommand<SuperSourceBox> {
@@ -81,14 +80,14 @@ export class SuperSourceBoxParametersUpdateCommand extends DeserializedCommand<S
 		const properties = {
 			enabled: rawCommand[i > 0 ? 2 : 1] === 1,
 			source: rawCommand.readUInt16BE(i + 2),
-			x: Util.parseNumberBetween(rawCommand.readInt16BE(i + 4), -4800, 4800),
-			y: Util.parseNumberBetween(rawCommand.readInt16BE(i + 6), -3400, 3400),
-			size: Util.parseNumberBetween(rawCommand.readUInt16BE(i + 8), 70, 1000),
+			x: rawCommand.readInt16BE(i + 4),
+			y: rawCommand.readInt16BE(i + 6),
+			size: rawCommand.readUInt16BE(i + 8),
 			cropped: rawCommand[i + 10] === 1,
-			cropTop: Util.parseNumberBetween(rawCommand.readUInt16BE(i + 12), 0, 18000),
-			cropBottom: Util.parseNumberBetween(rawCommand.readUInt16BE(i + 14), 0, 18000),
-			cropLeft: Util.parseNumberBetween(rawCommand.readUInt16BE(i + 16), 0, 32000),
-			cropRight: Util.parseNumberBetween(rawCommand.readUInt16BE(i + 18), 0, 32000)
+			cropTop: rawCommand.readUInt16BE(i + 12),
+			cropBottom: rawCommand.readUInt16BE(i + 14),
+			cropLeft: rawCommand.readUInt16BE(i + 16),
+			cropRight: rawCommand.readUInt16BE(i + 18)
 		}
 
 		return new SuperSourceBoxParametersUpdateCommand(ssrcId, boxId, properties)

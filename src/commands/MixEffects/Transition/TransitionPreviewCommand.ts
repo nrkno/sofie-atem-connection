@@ -1,6 +1,5 @@
 import { BasicWritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
-import { Util } from '../../..'
 
 export interface PreviewProps {
 	preview: boolean
@@ -37,7 +36,7 @@ export class PreviewTransitionUpdateCommand extends DeserializedCommand<PreviewP
 	}
 
 	public static deserialize (rawCommand: Buffer): PreviewTransitionUpdateCommand {
-		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const mixEffect = rawCommand[0]
 		const properties = {
 			preview: rawCommand[1] === 1
 		}

@@ -1,7 +1,6 @@
 import { DeserializedCommand, BasicWritableCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { MixTransitionSettings } from '../../../state/video'
-import { Util } from '../../..'
 
 export class TransitionMixCommand extends BasicWritableCommand<MixTransitionSettings> {
 	public static readonly rawName = 'CTMx'
@@ -34,9 +33,9 @@ export class TransitionMixUpdateCommand extends DeserializedCommand<MixTransitio
 	}
 
 	public static deserialize (rawCommand: Buffer): TransitionMixUpdateCommand {
-		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const mixEffect = rawCommand[0]
 		const properties = {
-			rate: Util.parseNumberBetween(rawCommand[1], 1, 250)
+			rate: rawCommand[1]
 		}
 
 		return new TransitionMixUpdateCommand(mixEffect, properties)

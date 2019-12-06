@@ -1,7 +1,6 @@
 import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { DVETransitionSettings } from '../../../state/video'
-import { Util, Enums } from '../../..'
 
 export class TransitionDVECommand extends WritableCommand<DVETransitionSettings> {
 	public static MaskFlags = {
@@ -65,18 +64,18 @@ export class TransitionDVEUpdateCommand extends DeserializedCommand<DVETransitio
 	}
 
 	public static deserialize (rawCommand: Buffer): TransitionDVEUpdateCommand {
-		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const mixEffect = rawCommand[0]
 		const properties = {
-			rate: Util.parseNumberBetween(rawCommand[1], 1, 250),
-			logoRate: Util.parseNumberBetween(rawCommand[2], 1, 250),
-			style: Util.parseEnum<Enums.DVEEffect>(rawCommand[3], Enums.DVEEffect),
+			rate: rawCommand[1],
+			logoRate: rawCommand[2],
+			style: rawCommand.readUInt8(3),
 			fillSource: rawCommand[4] << 8 | (rawCommand[5] & 0xff),
 			keySource: rawCommand[6] << 8 | (rawCommand[7] & 0xff),
 
 			enableKey: rawCommand[8] === 1,
 			preMultiplied: rawCommand[9] === 1,
-			clip: Util.parseNumberBetween(rawCommand.readUInt16BE(10), 0, 1000),
-			gain: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 1000),
+			clip: rawCommand.readUInt16BE(10),
+			gain: rawCommand.readUInt16BE(12),
 			invertKey: rawCommand[14] === 1,
 			reverse: rawCommand[15] === 1,
 			flipFlop: rawCommand[16] === 1

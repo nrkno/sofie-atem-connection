@@ -1,7 +1,6 @@
 import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { TransitionProperties } from '../../../state/video'
-import { Util, Enums } from '../../..'
 
 export class TransitionPropertiesCommand extends WritableCommand<TransitionProperties> {
 	public static MaskFlags = {
@@ -43,12 +42,12 @@ export class TransitionPropertiesUpdateCommand extends DeserializedCommand<Trans
 	}
 
 	public static deserialize (rawCommand: Buffer): TransitionPropertiesUpdateCommand {
-		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const mixEffect = rawCommand[0]
 		const properties = {
-			style: Util.parseEnum<Enums.TransitionStyle>(rawCommand[1], Enums.TransitionStyle),// rawCommand[1],
-			selection: rawCommand[2],
-			nextStyle: Util.parseEnum<Enums.TransitionStyle>(rawCommand[3], Enums.TransitionStyle),
-			nextSelection: rawCommand[4]
+			style: rawCommand.readUInt8(1),
+			selection: rawCommand.readUInt8(2),
+			nextStyle: rawCommand.readUInt8(3),
+			nextSelection: rawCommand.readUInt8(4)
 		}
 
 		return new TransitionPropertiesUpdateCommand(mixEffect, properties)

@@ -1,6 +1,5 @@
 import { BasicWritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
-import { Util } from '../../..'
 
 export interface HandlePositionProps {
 	handlePosition: number // 0...10000
@@ -42,11 +41,11 @@ export class TransitionPositionUpdateCommand extends DeserializedCommand<Transit
 	}
 
 	public static deserialize (rawCommand: Buffer): TransitionPositionUpdateCommand {
-		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const mixEffect = rawCommand[0]
 		const properties = {
 			inTransition: rawCommand[1] === 1,
-			remainingFrames: Util.parseNumberBetween(rawCommand[2], 0, 250),
-			handlePosition: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 10000)
+			remainingFrames: rawCommand[2],
+			handlePosition: rawCommand.readUInt16BE(4)
 		}
 
 		return new TransitionPositionUpdateCommand(mixEffect, properties)

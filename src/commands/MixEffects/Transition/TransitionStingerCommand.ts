@@ -1,7 +1,6 @@
 import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { StingerTransitionSettings } from '../../../state/video'
-import { Util } from '../../..'
 
 export class TransitionStingerCommand extends WritableCommand<StingerTransitionSettings> {
 	public static MaskFlags = {
@@ -59,13 +58,13 @@ export class TransitionStingerUpdateCommand extends DeserializedCommand<StingerT
 	}
 
 	public static deserialize (rawCommand: Buffer): TransitionStingerUpdateCommand {
-		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const mixEffect = rawCommand[0]
 		const properties = {
 			source: rawCommand[1],
 			preMultipliedKey: rawCommand[2] === 1,
 
-			clip: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 1000),
-			gain: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 1000),
+			clip: rawCommand.readUInt16BE(4),
+			gain: rawCommand.readUInt16BE(6),
 			invert: rawCommand[8] === 1,
 
 			preroll: rawCommand[10] << 8 | rawCommand[11],

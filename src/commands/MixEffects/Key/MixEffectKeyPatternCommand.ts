@@ -1,7 +1,6 @@
 import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { UpstreamKeyerPatternSettings } from '../../../state/video/upstreamKeyers'
-import { Util, Enums } from '../../..'
 
 export class MixEffectKeyPatternCommand extends WritableCommand<UpstreamKeyerPatternSettings> {
 	public static MaskFlags = {
@@ -58,15 +57,15 @@ export class MixEffectKeyUpdateCommand extends DeserializedCommand<UpstreamKeyer
 	}
 
 	public static deserialize (rawCommand: Buffer): MixEffectKeyUpdateCommand {
-		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
+		const mixEffect = rawCommand[0]
+		const upstreamKeyerId = rawCommand[1]
 		const properties = {
-			style: Util.parseEnum<Enums.Pattern>(rawCommand[2], Enums.Pattern),
-			size: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 10000),
-			symmetry: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 10000),
-			softness: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 10000),
-			positionX: Util.parseNumberBetween(rawCommand.readUInt16BE(10), 0, 10000),
-			positionY: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 10000),
+			style: rawCommand.readUInt8(2),
+			size: rawCommand.readUInt16BE(4),
+			symmetry: rawCommand.readUInt16BE(6),
+			softness: rawCommand.readUInt16BE(8),
+			positionX: rawCommand.readUInt16BE(10),
+			positionY: rawCommand.readUInt16BE(12),
 			invert: rawCommand[14] === 1
 		}
 

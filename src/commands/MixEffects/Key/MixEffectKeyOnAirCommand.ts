@@ -1,6 +1,5 @@
 import { BasicWritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
-import { Util } from '../../..'
 
 export class MixEffectKeyOnAirCommand extends BasicWritableCommand<{ onAir: boolean}> {
 	public static readonly rawName = 'CKOn'
@@ -38,8 +37,8 @@ export class MixEffectKeyOnAirUpdateCommand extends DeserializedCommand<{onAir: 
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
+		const mixEffect = rawCommand[0]
+		const upstreamKeyerId = rawCommand[1]
 		const properties = {
 			onAir: rawCommand[2] === 1
 		}

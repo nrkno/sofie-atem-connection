@@ -1,6 +1,5 @@
 import { BasicWritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
-import { Util } from '../../..'
 
 export class FadeToBlackRateCommand extends BasicWritableCommand<{ rate: number }> {
 	public static readonly rawName = 'FtbC'
@@ -34,7 +33,7 @@ export class FadeToBlackRateUpdateCommand extends DeserializedCommand<{ rate: nu
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const mixEffect = rawCommand.readUInt8(0)
 		const rate = rawCommand.readUInt8(1)
 
 		return new FadeToBlackRateUpdateCommand(mixEffect, rate)

@@ -1,7 +1,6 @@
 import { DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { UpstreamKeyerBase } from '../../../state/video/upstreamKeyers'
-import { Util, Enums } from '../../..'
 
 export class MixEffectKeyPropertiesGetCommand extends DeserializedCommand<UpstreamKeyerBase> {
 	public static readonly rawName = 'KeBP'
@@ -15,18 +14,18 @@ export class MixEffectKeyPropertiesGetCommand extends DeserializedCommand<Upstre
 	}
 
 	public static deserialize (rawCommand: Buffer): MixEffectKeyPropertiesGetCommand {
-		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const mixEffect = rawCommand[0]
 		const properties = {
-			upstreamKeyerId: Util.parseNumberBetween(rawCommand[1], 0, 3),
-			mixEffectKeyType: Util.parseEnum<Enums.MixEffectKeyType>(rawCommand[2], Enums.MixEffectKeyType),
+			upstreamKeyerId: rawCommand[1],
+			mixEffectKeyType: rawCommand.readUInt8(2),
 			flyEnabled: rawCommand[5] === 1,
 			fillSource: rawCommand.readUInt16BE(6),
 			cutSource: rawCommand.readUInt16BE(8),
 			maskEnabled: rawCommand[10] === 1,
-			maskTop: Util.parseNumberBetween(rawCommand.readInt16BE(12), -9000, 9000),
-			maskBottom: Util.parseNumberBetween(rawCommand.readInt16BE(14), -9000, 9000),
-			maskLeft: Util.parseNumberBetween(rawCommand.readInt16BE(16), -16000, 16000),
-			maskRight: Util.parseNumberBetween(rawCommand.readInt16BE(18), -16000, 16000)
+			maskTop: rawCommand.readInt16BE(12),
+			maskBottom: rawCommand.readInt16BE(14),
+			maskLeft: rawCommand.readInt16BE(16),
+			maskRight: rawCommand.readInt16BE(18)
 		}
 
 		return new MixEffectKeyPropertiesGetCommand(mixEffect, properties)

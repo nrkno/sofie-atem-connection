@@ -1,7 +1,6 @@
 import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { UpstreamKeyerChromaSettings } from '../../../state/video/upstreamKeyers'
-import { Util } from '../../..'
 
 export class MixEffectKeyChromaCommand extends WritableCommand<UpstreamKeyerChromaSettings> {
 	public static MaskFlags = {
@@ -53,13 +52,13 @@ export class MixEffectKeyChromaUpdateCommand extends DeserializedCommand<Upstrea
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
+		const mixEffect = rawCommand[0]
+		const upstreamKeyerId = rawCommand[1]
 		const properties = {
-			hue: Util.parseNumberBetween(rawCommand.readUInt16BE(2), 0, 3599),
-			gain: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 1000),
-			ySuppress: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 1000),
-			lift: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 1000),
+			hue: rawCommand.readUInt16BE(2),
+			gain: rawCommand.readUInt16BE(4),
+			ySuppress: rawCommand.readUInt16BE(6),
+			lift: rawCommand.readUInt16BE(8),
 			narrow: rawCommand[10] === 1
 		}
 

@@ -1,7 +1,6 @@
 import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { DownstreamKeyerBase } from '../../state/video/downstreamKeyers'
-import { Util } from '../..'
 import { ProtocolVersion } from '../../enums'
 
 export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKeyerBase> {
@@ -16,7 +15,7 @@ export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKey
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const downstreamKeyerId = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const downstreamKeyerId = rawCommand[0]
 		const properties = {
 			onAir: rawCommand[1] === 1,
 			inTransition: rawCommand[2] === 1,
@@ -49,7 +48,7 @@ export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamK
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const downstreamKeyerId = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const downstreamKeyerId = rawCommand[0]
 		const properties = {
 			onAir: rawCommand[1] === 1,
 			inTransition: rawCommand[2] === 1,

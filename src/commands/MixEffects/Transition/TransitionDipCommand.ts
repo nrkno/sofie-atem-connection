@@ -1,7 +1,6 @@
 import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { DipTransitionSettings } from '../../../state/video'
-import { Util } from '../../..'
 
 export class TransitionDipCommand extends WritableCommand<DipTransitionSettings> {
 	public static MaskFlags = {
@@ -40,9 +39,9 @@ export class TransitionDipUpdateCommand extends DeserializedCommand<DipTransitio
 	}
 
 	public static deserialize (rawCommand: Buffer): TransitionDipUpdateCommand {
-		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
+		const mixEffect = rawCommand[0]
 		const properties = {
-			rate: Util.parseNumberBetween(rawCommand[1], 0, 250),
+			rate: rawCommand[1],
 			input: rawCommand[2] << 8 | (rawCommand[3] & 0xFF)
 		}
 

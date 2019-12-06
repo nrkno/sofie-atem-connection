@@ -1,7 +1,6 @@
 import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState } from '../../../state'
 import { UpstreamKeyerLumaSettings } from '../../../state/video/upstreamKeyers'
-import { Util } from '../../..'
 
 export class MixEffectKeyLumaCommand extends WritableCommand<UpstreamKeyerLumaSettings> {
 	public static MaskFlags = {
@@ -51,12 +50,12 @@ export class MixEffectKeyLumaUpdateCommand extends DeserializedCommand<UpstreamK
 	}
 
 	public static deserialize (rawCommand: Buffer) {
-		const mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		const upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
+		const mixEffect = rawCommand[0]
+		const upstreamKeyerId = rawCommand[1]
 		const properties = {
 			preMultiplied: rawCommand[2] === 1,
-			clip: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 1000),
-			gain: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 1000),
+			clip: rawCommand.readUInt16BE(4),
+			gain: rawCommand.readUInt16BE(6),
 			invert: rawCommand[8] === 1
 		}
 
