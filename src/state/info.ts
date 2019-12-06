@@ -11,7 +11,6 @@ export interface AtemCapabilites {
 	readonly maxHyperdecks: number
 	readonly DVEs: number
 	readonly stingers: number
-	readonly hasSuperSources: boolean
 	readonly superSources: number
 	readonly talkbackOverSDI: number
 }

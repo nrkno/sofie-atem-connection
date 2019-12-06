@@ -48,7 +48,7 @@ export class MixEffectKeyFlyKeyframeGetCommand extends DeserializedCommand<Upstr
 			lightSourceDirection: Util.parseNumberBetween(rawCommand.readUInt16BE(40), 0, 65535),
 			lightSourceAltitude: Util.parseNumberBetween(rawCommand.readUInt8(42), 0, 254),
 
-			maskEnabled: rawCommand[43] === 1,
+			// maskEnabled: rawCommand[43] === 1,
 			maskTop: Util.parseNumberBetween(rawCommand.readInt16BE(44), -9000, 9000),
 			maskBottom: Util.parseNumberBetween(rawCommand.readInt16BE(46), -9000, 9000),
 			maskLeft: Util.parseNumberBetween(rawCommand.readInt16BE(48), -16000, 16000),

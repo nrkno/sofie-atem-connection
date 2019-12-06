@@ -4,9 +4,13 @@ import { IDeserializedCommand, ISerializableCommand } from '../CommandBase'
 
 export type CommandTestConverterSet = { [key: string]: CommandTestConverter }
 export interface CommandTestConverter {
-	idAliases: { [key: string]: string }
+	/** Internal name to LibAtem name */
+	idAliases: { [internalName: string]: string }
+	/** LibAtem name to Internal name & mutated value */
 	propertyAliases: { [key: string]: (v: any) => { name?: string, val: any } }
 	customMutate?: (v: any) => any
+	/** pre-process deserialized command */
+	processDeserialized?: (v: any) => void
 }
 
 export interface TestCase {
@@ -18,6 +22,10 @@ export interface TestCase {
 export function runTestForCommand (commandParser: CommandParser, commandConverters: CommandTestConverterSet, i: number, testCase: TestCase, allowUnknown?: boolean) {
 	const cmdConstructor = commandParser.commandFromRawName(testCase.name)
 	if (!cmdConstructor && allowUnknown) return
+
+	// if (i !== 1121) {
+	// 	return
+	// }
 
 	let matchedCase = false
 	if (cmdConstructor) {
@@ -48,6 +56,10 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 				// delete (cmd as any).rawCommand
 
 				if (converter) {
+					if (converter.processDeserialized) {
+						converter.processDeserialized(cmd.properties)
+					}
+
 					for (const key in cmd) {
 						const newName = converter.idAliases[key]
 						if (cmd.hasOwnProperty(key) && newName) {

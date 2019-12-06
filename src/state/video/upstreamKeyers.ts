@@ -49,7 +49,7 @@ export interface UpstreamKeyerDVESettings extends UpstreamKeyerDVEBase {
 	rate: number
 }
 
-export interface UpstreamKeyerFlyKeyframe extends UpstreamKeyerDVEBase {
+export interface UpstreamKeyerFlyKeyframe extends Omit<UpstreamKeyerDVEBase, 'maskEnabled'> {
 	readonly keyFrameId: number
 }
 

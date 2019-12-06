@@ -145,12 +145,12 @@ export namespace Util {
 	}
 
 	export function DecibelToUInt16BE (input: number) {
-		return parseInt(Math.pow(10, input / 20) * 32768 + '', 10)
+		return Math.floor(Math.pow(10, input / 20) * 32768)
 	}
 
 	export function IntToBalance (input: number): number {
 		// -100000 = -50, 0x0000 = 0, 0x2710 = +50
-		return Math.round((input / 200) * 10) / 10
+		return Math.round(input / 200)
 	}
 	export function BalanceToInt (input: number): number {
 		return Math.round(input * 200)

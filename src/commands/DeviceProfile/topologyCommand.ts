@@ -17,7 +17,6 @@ export class TopologyCommand extends DeserializedCommand<AtemCapabilites> {
 			maxHyperdecks: rawCommand[7],
 			DVEs: rawCommand[8],
 			stingers: rawCommand[9],
-			hasSuperSources: rawCommand[10] !== 0,
 			superSources: rawCommand[10],
 			talkbackOverSDI: rawCommand[13]
 		}
