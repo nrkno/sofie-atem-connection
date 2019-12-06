@@ -1,6 +1,7 @@
 import { CommandParser } from '../../lib/atemCommandParser'
 import { ProtocolVersion } from '../../enums'
 import { IDeserializedCommand, ISerializableCommand } from '../CommandBase'
+import { AtemState } from '../../state'
 
 export type CommandTestConverterSet = { [key: string]: CommandTestConverter }
 export interface CommandTestConverter {
@@ -70,6 +71,10 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 				}
 
 				expect(cmd.properties).toEqual(mutatedCommand)
+
+				const state = new AtemState()
+				// Ensure state update doesnt error
+				expect(cmd.applyToState(state)).toBeTruthy()
 			})
 		}
 
