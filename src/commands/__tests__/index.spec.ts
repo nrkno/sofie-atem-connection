@@ -655,7 +655,7 @@ const commandConverters: CommandTestConverterSet = {
 	},
 	'MPCS': {
 		idAliases: {
-			'mediaPool': 'index'
+			'clipId': 'index'
 		},
 		propertyAliases: {}
 	},

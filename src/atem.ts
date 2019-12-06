@@ -485,11 +485,16 @@ export class Atem extends EventEmitter {
 			this._state = new AtemState()
 		}
 
-		let changePaths = command.applyToState(this.state)
-		if (!Array.isArray(changePaths)) {
-			changePaths = [ changePaths ]
+		try {
+			let changePaths = command.applyToState(this.state)
+			if (!Array.isArray(changePaths)) {
+				changePaths = [ changePaths ]
+			}
+			changePaths.forEach(path => this.emit('stateChanged', this._state, path))
+		} catch (e) {
+			// TODO - should we error or warn on this?
+			this.emit('error', `MutateState failed: ${e}`)
 		}
-		changePaths.forEach(path => this.emit('stateChanged', this._state, path))
 
 		for (const commandName in DataTransferCommands) {
 			if (command.constructor.name === commandName) {
