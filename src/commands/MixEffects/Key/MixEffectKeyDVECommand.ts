@@ -143,6 +143,8 @@ export class MixEffectKeyDVEUpdateCommand extends DeserializedCommand<UpstreamKe
 	public applyToState (state: AtemState) {
 		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects || this.upstreamKeyerId >= state.info.capabilities.upstreamKeyers) {
 			throw new Error(`UpstreamKeyer ${this.mixEffect}-${this.upstreamKeyerId} is not valid`)
+		} else if (!state.info.capabilities.DVEs) {
+			throw new Error(`DVE is not supported`)
 		}
 
 		const mixEffect = state.video.getMe(this.mixEffect)
