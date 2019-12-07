@@ -60,7 +60,6 @@ export class Socket extends EventEmitter {
 
 	public close (cb?: Function) {
 		this.isOpen = false
-		// TODO - optional delay?
 		if (cb) cb()
 	}
 }

@@ -80,9 +80,6 @@ export class InputPropertiesUpdateCommand extends DeserializedCommand<InputChann
 	}
 
 	public applyToState (state: AtemState) {
-		// @TODO(Lange - 04/30/2018): We may need something to clean up inputs which
-		// don't exist anymore, which can happen when switching the connection from
-		// one model of ATEM to another.
 		state.inputs[this.inputId] = {
 			...this.properties
 		}

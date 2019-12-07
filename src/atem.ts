@@ -109,29 +109,27 @@ export class Atem extends EventEmitter {
 		return this.socket.destroy()
 	}
 
-	private sendCommands (commands: ISerializableCommand[]): Array<Promise<ISerializableCommand>> {
-		const cmds2 = commands.map(cmd => ({
+	private sendCommands (commands: ISerializableCommand[]): Array<Promise<void>> {
+		const commands2 = commands.map(cmd => ({
 			rawCommand: cmd,
 			trackingId: this.socket.nextCommandTrackingId
 		}))
 
-		const sendPromise = this.socket.sendCommands(cmds2)
+		const sendPromise = this.socket.sendCommands(commands2)
 
-		return cmds2.map(cmd => {
-			// TODO - does this work?
-			return sendPromise.then(() => {
-				return new Promise((resolve, reject) => {
-					this._sentQueue[cmd.trackingId] = {
-						command: cmd.rawCommand,
-						resolve,
-						reject
-					}
-				})
+		return commands2.map(async cmd => {
+			await sendPromise
+			return new Promise<void>((resolve, reject) => {
+				this._sentQueue[cmd.trackingId] = {
+					command: cmd.rawCommand,
+					resolve,
+					reject
+				}
 			})
 		})
 	}
 
-	public sendCommand (command: ISerializableCommand): Promise<ISerializableCommand> {
+	public sendCommand (command: ISerializableCommand): Promise<void> {
 		return this.sendCommands([command])[0]
 	}
 

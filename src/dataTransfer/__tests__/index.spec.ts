@@ -45,7 +45,7 @@ function runDataTransferTest (spec: any) {
 			manager.handleCommand(nextCmd2)
 		}
 
-		return Promise.resolve(cmd)
+		return Promise.resolve()
 	}))
 	return manager
 }

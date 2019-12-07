@@ -78,7 +78,7 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 			})
 		}
 
-		const cmd: ISerializableCommand = new cmdConstructor() // TODO - params
+		const cmd: ISerializableCommand = new cmdConstructor() // constructor params get filled in below
 		if (typeof (cmd as any).serialize === 'function') {
 			matchedCase = true
 			test(`Test #${i}: ${testCase.name} - Serialize`, () => {

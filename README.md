@@ -37,20 +37,15 @@ const myAtem = new Atem({ externalLog: console.log })
 myAtem.connect('192.168.168.240')
 
 myAtem.on('connected', () => {
-	myAtem.changeProgramInput(3).then((res) => {
-		console.log(res)
-		// ProgramInputCommand {
-		// 	flag: 0,
-		// 	rawName: 'PrgI',
-		// 	mixEffect: 0,
-		// 	properties: { source: 3 },
-		// 	resolve: [Function],
-		// 	reject: [Function] }
+	myAtem.changeProgramInput(3).then(() => {
+		// Fired once the atem has acknowledged the command
+		// Note: the state likely hasnt updated yet, but will follow shortly
+		console.log('Program input set')
 	})
 	console.log(myAtem.state)
 })
 
-myAtem.on('stateChanged', function(err, state) {
+myAtem.on('stateChanged', (state, pathToChange) => {
   console.log(state); // catch the ATEM state.
 });
 ```

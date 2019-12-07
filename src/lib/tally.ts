@@ -89,7 +89,7 @@ function _calcActiveMeInputs (mode: 'program' | 'preview', state: AtemState, meI
 		if (usk) {
 			const keyerMask = 1 << (usk.upstreamKeyerId + 1)
 			const isPartOfTransition = meRef.transitionProperties.selection & keyerMask
-			if (mode === 'program') { // TODO - verify these conditions
+			if (mode === 'program') {
 				if (meRef.inTransition) {
 					return usk.onAir || isPartOfTransition
 				}

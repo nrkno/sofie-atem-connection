@@ -25,7 +25,7 @@ export class DataTransferManager {
 
 	private transferIndex: number = 0
 
-	public startCommandSending (sendCommands: (cmds: ISerializableCommand[]) => Array<Promise<ISerializableCommand>>) {
+	public startCommandSending (sendCommands: (cmds: ISerializableCommand[]) => Array<Promise<void>>) {
 		if (!this.interval) {
 			// New connection means a new queue
 			this.commandQueue.splice(0, this.commandQueue.length)
@@ -42,7 +42,7 @@ export class DataTransferManager {
 						console.log(`Transfer send error: ${e}`)
 					})
 				})
-			}, 0) // TODO - should this be done slower?
+			}, 0)
 		}
 		if (!this.exitUnsubscribe) {
 			this.exitUnsubscribe = exitHook(() => {
