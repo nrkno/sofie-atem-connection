@@ -842,7 +842,6 @@ describe('Commands v7.2', () => {
 		switch (testCase.name) {
 			// Temporarily ignore the failures
 			case 'FTSU': // Unkown props getting overwritten by generator: https://github.com/LibAtem/LibAtem/blob/master/LibAtem/Commands/DataTransfer/DataTransferDownloadRequestCommand.cs
-			case 'TDpP': // Range validation errors
 				continue
 		}
 
