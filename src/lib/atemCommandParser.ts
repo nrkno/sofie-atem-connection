@@ -16,7 +16,7 @@ export class CommandParser {
 					this.commands[rawName].push(cmdConstructor)
 				}
 			} catch (e) {
-				// wwwwhatever
+				// probably not a valid command
 			}
 		}
 	}

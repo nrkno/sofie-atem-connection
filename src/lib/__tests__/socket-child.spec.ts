@@ -26,16 +26,22 @@ function fakeConnect (child: AtemSocketChild) {
 	const child2 = child as any
 	child2._connectionState = ConnectionState.Established
 	child2._address = '127.0.0.1'
+	child2.startTimers()
 }
 
-function createSocketChild (onCommandReceived?: (payload: Buffer, packetId: number) => Promise<void>, onCommandAcknowledged?: (packetId: number, trackingId: number) => Promise<void>) {
+function createSocketChild (
+	onCommandReceived?: (payload: Buffer, packetId: number) => Promise<void>,
+	onCommandAcknowledged?: (packetId: number, trackingId: number) => Promise<void>,
+	onDisconnect?: () => Promise<void>
+	) {
 	return new AtemSocketChild(
 		{
 			address: ADDRESS,
 			port: DEFAULT_PORT,
 			debug: false
 		},
-		() => Promise.resolve(),
+		onDisconnect || (() => Promise.resolve()),
+		// async msg => { console.log(msg) },
 		() => Promise.resolve(),
 		onCommandReceived || (() => Promise.resolve()),
 		onCommandAcknowledged || (() => Promise.resolve())
@@ -544,6 +550,310 @@ describe('SocketChild', () => {
 				{ packetId: 32767, trackingId: 8 },
 				{ packetId: 0, trackingId: 9 }
 			])
+
+		} finally {
+			if (child) {
+				// Try and cleanup any timers
+				await child.disconnect()
+			}
+		}
+	})
+
+	test('SendCommand - retransmit timeouts', async () => {
+		let acked: Array<{packetId: number, trackingId: number}> = []
+		const child = createSocketChild(undefined, (packetId, trackingId) => {
+			acked.push({ packetId, trackingId })
+			return Promise.resolve()
+		})
+		try {
+			fakeConnect(child)
+			const socket = getSocket(child)
+
+			;(child as any)._nextSendPacketId = 32764 // 32767 is max
+
+			let received: number[] = []
+			socket.sendImpl = (msg: Buffer) => {
+				const opcode = msg.readUInt8(0) >> 3
+				expect(opcode).toEqual(PacketFlag.AckRequest)
+
+				received.push(msg.readUInt16BE(10))
+			}
+
+			acked = []
+
+			// Send some stuff
+			const buf1 = [0, 1, 2]
+			child.sendCommands([
+				{ payload: buf1, rawName: '', trackingId: 5 }, // 32764
+				{ payload: buf1, rawName: '', trackingId: 6 }, // 32765
+				{ payload: buf1, rawName: '', trackingId: 7 }, // 32766
+				{ payload: buf1, rawName: '', trackingId: 8 }, // 32767
+				{ payload: buf1, rawName: '', trackingId: 9 }, // 0
+				{ payload: buf1, rawName: '', trackingId: 10 } // 1
+			])
+			expect(received).toEqual([32764, 32765, 32766, 32767, 0, 1])
+			received = []
+			expect(getInflightIds(child)).toEqual([32764, 32765, 32766, 32767, 0, 1])
+			expect(acked).toEqual([])
+
+			// Ack a couple to ensure socket is running properly
+			await socket.emitMessage(clock, genAckCommandMessage(32765))
+			expect(getInflightIds(child)).toEqual([32766, 32767, 0, 1])
+			expect(acked).toEqual([
+				{ packetId: 32764, trackingId: 5 },
+				{ packetId: 32765, trackingId: 6 }
+			])
+			acked = []
+			expect(received).toEqual([])
+			received = []
+
+			// Let the commands be resent
+			await clock.tickAsync(80)
+			expect(received).toEqual([32766, 32767, 0, 1])
+			received = []
+
+			// Should keep happening
+			await clock.tickAsync(80)
+			expect(received).toEqual([32766, 32767, 0, 1])
+			received = []
+
+			// Add another to the queue
+			child.sendCommands([
+				{ payload: buf1, rawName: '', trackingId: 11 } // 2
+			])
+			expect(received).toEqual([2])
+			received = []
+			expect(getInflightIds(child)).toEqual([32766, 32767, 0, 1, 2])
+			expect(acked).toEqual([])
+
+			// And again, this time with the new thing
+			await clock.tickAsync(80)
+			expect(received).toEqual([32766, 32767, 0, 1, 2])
+			received = []
+
+		} finally {
+			if (child) {
+				// Try and cleanup any timers
+				await child.disconnect()
+			}
+		}
+	})
+
+	function genRetransmitRequestCommandMessage (pktId: number) {
+		const buffer = Buffer.from([
+			0x40, 0x0c, // Length & Type
+			0x53, 0x1b, // Session Id
+			0x00, 0x00, // Not acking
+			0x00, 0x00, // retransmit - set after
+			0x00, 0x00, // 'Client pkt id' Not needed
+			0x00, 0x00  // No Packet Id
+		])
+		buffer.writeUInt16BE(pktId, 6) // retransmit Id
+
+		return buffer
+	}
+
+	test('SendCommand - retransmit request', async () => {
+		let acked: Array<{packetId: number, trackingId: number}> = []
+		const child = createSocketChild(undefined, (packetId, trackingId) => {
+			acked.push({ packetId, trackingId })
+			return Promise.resolve()
+		})
+		try {
+			fakeConnect(child)
+			const socket = getSocket(child)
+
+			;(child as any)._nextSendPacketId = 32764 // 32767 is max
+
+			let received: number[] = []
+			socket.sendImpl = (msg: Buffer) => {
+				const opcode = msg.readUInt8(0) >> 3
+				expect(opcode).toEqual(PacketFlag.AckRequest)
+
+				received.push(msg.readUInt16BE(10))
+			}
+
+			acked = []
+
+			// Send some stuff
+			const buf1 = [0, 1, 2]
+			child.sendCommands([
+				{ payload: buf1, rawName: '', trackingId: 5 }, // 32764
+				{ payload: buf1, rawName: '', trackingId: 6 }, // 32765
+				{ payload: buf1, rawName: '', trackingId: 7 }, // 32766
+				{ payload: buf1, rawName: '', trackingId: 8 }, // 32767
+				{ payload: buf1, rawName: '', trackingId: 9 }, // 0
+				{ payload: buf1, rawName: '', trackingId: 10 } // 1
+			])
+			expect(received).toEqual([32764, 32765, 32766, 32767, 0, 1])
+			received = []
+			expect(getInflightIds(child)).toEqual([32764, 32765, 32766, 32767, 0, 1])
+			expect(acked).toEqual([])
+
+			// Ack a couple to ensure socket is running properly
+			await socket.emitMessage(clock, genAckCommandMessage(32765))
+			expect(getInflightIds(child)).toEqual([32766, 32767, 0, 1])
+			expect(acked).toEqual([
+				{ packetId: 32764, trackingId: 5 },
+				{ packetId: 32765, trackingId: 6 }
+			])
+			acked = []
+			expect(received).toEqual([])
+			received = []
+
+			// The device asks for a retransmit
+			await socket.emitMessage(clock, genRetransmitRequestCommandMessage(32766))
+			expect(received).toEqual([32766, 32767, 0, 1])
+			received = []
+
+			// And again
+			await socket.emitMessage(clock, genRetransmitRequestCommandMessage(32767))
+			expect(received).toEqual([32767, 0, 1])
+			received = []
+
+		} finally {
+			if (child) {
+				// Try and cleanup any timers
+				await child.disconnect()
+			}
+		}
+	})
+
+	test('SendCommand - retransmit request future', async () => {
+		const acked: Array<{packetId: number, trackingId: number}> = []
+		let connected = true
+		const child = createSocketChild(undefined, (packetId, trackingId) => {
+			acked.push({ packetId, trackingId })
+			return Promise.resolve()
+		}, async () => { connected = false })
+		try {
+			fakeConnect(child)
+			const socket = getSocket(child)
+
+			;(child as any)._nextSendPacketId = 32767 // 32767 is max
+			connected = true
+
+			// Send some stuff
+			const buf1 = [0, 1, 2]
+			child.sendCommands([
+				{ payload: buf1, rawName: '', trackingId: 5 }, // 32767
+				{ payload: buf1, rawName: '', trackingId: 6 }  // 0
+			])
+			expect(getInflightIds(child)).toEqual([32767, 0])
+			expect(acked).toEqual([])
+			expect(connected).toBeTrue()
+
+			// The device asks for a retransmit of a future packet
+			await socket.emitMessage(clock, genRetransmitRequestCommandMessage(1))
+			expect(getInflightIds(child)).toEqual([])
+			expect(connected).toBeFalse()
+
+		} finally {
+			if (child) {
+				// Try and cleanup any timers
+				await child.disconnect()
+			}
+		}
+	})
+
+	test('SendCommand - retransmit request previous', async () => {
+		const acked: Array<{packetId: number, trackingId: number}> = []
+		let connected = true
+		const child = createSocketChild(undefined, (packetId, trackingId) => {
+			acked.push({ packetId, trackingId })
+			return Promise.resolve()
+		}, async () => { connected = false })
+		try {
+			fakeConnect(child)
+			const socket = getSocket(child)
+
+			;(child as any)._nextSendPacketId = 32767 // 32767 is max
+			connected = true
+
+			// Send some stuff
+			const buf1 = [0, 1, 2]
+			child.sendCommands([
+				{ payload: buf1, rawName: '', trackingId: 5 }, // 32767
+				{ payload: buf1, rawName: '', trackingId: 6 }  // 0
+			])
+			expect(getInflightIds(child)).toEqual([32767, 0])
+			expect(acked).toEqual([])
+			expect(connected).toBeTrue()
+
+			// The device asks for a retransmit of a past packet
+			await socket.emitMessage(clock, genRetransmitRequestCommandMessage(32766))
+			expect(getInflightIds(child)).toEqual([])
+			expect(connected).toBeFalse()
+
+		} finally {
+			if (child) {
+				// Try and cleanup any timers
+				await child.disconnect()
+			}
+		}
+	})
+
+	test('Reconnect timer', async () => {
+		let acked: Array<{packetId: number, trackingId: number}> = []
+		let connected = true
+		const child = createSocketChild(undefined, (packetId, trackingId) => {
+			acked.push({ packetId, trackingId })
+			return Promise.resolve()
+		}, async () => { connected = false })
+		try {
+			fakeConnect(child)
+			const socket = getSocket(child)
+
+			;(child as any)._nextSendPacketId = 32767 // 32767 is max
+			connected = true
+
+			acked = []
+
+			// Send some stuff
+			const buf1 = [0, 1, 2]
+			child.sendCommands([
+				{ payload: buf1, rawName: '', trackingId: 5 }, // 32767
+				{ payload: buf1, rawName: '', trackingId: 6 }  // 0
+			])
+			expect(getInflightIds(child)).toEqual([32767, 0])
+			expect(acked).toEqual([])
+			expect(connected).toBeTrue()
+
+			// Ack a couple to ensure socket is running properly
+			await socket.emitMessage(clock, genAckCommandMessage(0))
+			expect(getInflightIds(child)).toEqual([])
+			expect(acked).toEqual([
+				{ packetId: 32767, trackingId: 5 },
+				{ packetId: 0, trackingId: 6 }
+			])
+			acked = []
+
+			// Tick to let the timer execute
+			await clock.tickAsync(1500)
+			expect(connected).toBeTrue()
+			expect(getInflightIds(child)).toEqual([])
+			expect(acked).toEqual([])
+
+			// Still nothing
+			await clock.tickAsync(1500)
+			expect(connected).toBeTrue()
+			expect(getInflightIds(child)).toEqual([])
+			expect(acked).toEqual([])
+
+			// Not quite
+			await clock.tickAsync(1990)
+			expect(connected).toBeTrue()
+			child.sendCommands([
+				{ payload: buf1, rawName: '', trackingId: 7 }  // 1
+			])
+			expect(getInflightIds(child)).toEqual([1])
+			expect(acked).toEqual([])
+
+			// Timeout
+			await clock.tickAsync(20)
+			expect(connected).toBeFalse()
+			expect(getInflightIds(child)).toEqual([])
+			expect(acked).toEqual([])
 
 		} finally {
 			if (child) {

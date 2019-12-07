@@ -70,7 +70,7 @@ export class AtemSocketChild {
 		this._socket = this._createSocket()
 	}
 
-	public connect (address: string, port: number): Promise<void> {
+	private startTimers () {
 		if (!this._reconnectTimer) {
 			this._reconnectTimer = setInterval(async () => {
 				if (this._lastReceivedAt + CONNECTION_TIMEOUT > Date.now()) {
@@ -89,6 +89,10 @@ export class AtemSocketChild {
 		if (!this._retransmitTimer) {
 			this._retransmitTimer = setInterval(() => this._checkForRetransmit(), 10)
 		}
+	}
+
+	public connect (address: string, port: number): Promise<void> {
+		this.startTimers()
 
 		this._address = address
 		this._port = port
