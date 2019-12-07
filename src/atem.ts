@@ -25,7 +25,7 @@ import { Util } from './lib/atemUtil'
 import * as Enums from './enums'
 import { AudioChannel, AudioMasterChannel } from './state/audio'
 import exitHook = require('exit-hook')
-import { isArray, isFunction } from 'util'
+import { listVisibleInputs } from './lib/tally'
 
 export interface AtemOptions {
 	address?: string,
@@ -53,7 +53,11 @@ export class Atem extends EventEmitter {
 	private _log: (...args: any[]) => void
 	private _sentQueue: {[packetId: string]: SentCommand } = {}
 
-	on!: ((event: 'error', listener: (message: any) => void) => this) & ((event: 'connected', listener: () => void) => this) & ((event: 'disconnected', listener: () => void) => this) & ((event: 'stateChanged', listener: (state: AtemState, path: string) => void) => this)
+	on!: ((event: 'error', listener: (message: any) => void) => this) &
+		((event: 'connected', listener: () => void) => this) &
+		((event: 'disconnected', listener: () => void) => this) &
+		((event: 'stateChanged', listener: (state: AtemState, path: string) => void) => this) &
+		((event: 'receivedCommand', listener: (cmd: IDeserializedCommand) => void) => this)
 
 	constructor (options?: AtemOptions) {
 		super()
@@ -84,7 +88,10 @@ export class Atem extends EventEmitter {
 			}
 		})
 
-		this.socket.on('receivedStateChange', (command: IDeserializedCommand) => this._mutateState(command))
+		this.socket.on('receivedStateChange', (command: IDeserializedCommand) => {
+			this.emit('receivedCommand', command)
+			this._mutateState(command)
+		})
 		this.socket.on(Enums.IPCMessageType.CommandAcknowledged, ({ trackingId }: {trackingId: number}) => this._resolveCommand(trackingId))
 		this.socket.on(Enums.IPCMessageType.CommandTimeout, ({ trackingId }: {trackingId: number}) => this._rejectCommand(trackingId))
 		this.socket.on('error', (e) => this.emit('error', e))
@@ -140,6 +147,11 @@ export class Atem extends EventEmitter {
 
 	fadeToBlack (me: number = 0) {
 		const command = new Commands.FadeToBlackAutoCommand(me)
+		return this.sendCommand(command)
+	}
+
+	setFadeToBlackRate (rate: number, me: number = 0) {
+		const command = new Commands.FadeToBlackRateCommand(me, rate)
 		return this.sendCommand(command)
 	}
 
@@ -453,14 +465,17 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	listVisibleInputs (mode: 'program' | 'preview', me = 0): number[] {
+		return listVisibleInputs(mode, this.state, me)
+	}
+
 	private _mutateState (command: IDeserializedCommand) {
-		if (isFunction(command.applyToState)) {
-			let changePaths = command.applyToState(this._state)
-			if (!isArray(changePaths)) {
-				changePaths = [ changePaths ]
-			}
-			changePaths.forEach(path => this.emit('stateChanged', this._state, path))
+		let changePaths = command.applyToState(this.state)
+		if (!Array.isArray(changePaths)) {
+			changePaths = [ changePaths ]
 		}
+		changePaths.forEach(path => this.emit('stateChanged', this._state, path))
+
 		for (const commandName in DataTransferCommands) {
 			if (command.constructor.name === commandName) {
 				this.dataTransferManager.handleCommand(command)

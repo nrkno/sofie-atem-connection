@@ -133,7 +133,7 @@ export function ensureAllCommandsCovered (commandParser: CommandParser, testCase
 		const testNames = Array.from(new Set(testCases.map(c => c.name))).filter(n => knownNames.indexOf(n) !== -1).sort()
 
 		// Temporarily ignore these missing cases
-		knownNames = knownNames.filter(n => n !== 'InCm' && n !== 'InPr' && n !== 'KeFS')
+		knownNames = knownNames.filter(n => n !== 'InCm' && n !== 'InPr' && n !== 'KeFS' && n !== 'TlSr')
 
 		knownNames.sort()
 

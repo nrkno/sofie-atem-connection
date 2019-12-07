@@ -1,49 +1,66 @@
-defaults: &defaults
-  docker:
-    - image: circleci/node:8
-  working_directory: ~/project
-
 version: 2
 jobs:
-  Checkout Code:
-    <<: *defaults
+  test-node-8:
+    docker:
+      - image: circleci/node:8
+    working_directory: ~/project
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-cache-8-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-cache-8-{{ .Branch }}
+            - yarn-cache-8-
+      - run: yarn install
+      - save_cache:
+          key: yarn-cache-8-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths: [node_modules]
+      - run: yarn test
+
+  test-node-10:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/project
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-cache-10-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-cache-10-{{ .Branch }}
+            - yarn-cache-10-
+      - run: yarn install
+      - save_cache:
+          key: yarn-cache-10-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths: [node_modules]
+      - run: yarn test
+
+  test-latest(node-12):
+    docker:
+      - image: circleci/node:12
+    working_directory: ~/project
     steps:
       - checkout
       - attach_workspace:
           at: ~/project
       - restore_cache:
           keys:
-            - yarn-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - yarn-cache-{{ .Branch }}
-            - yarn-cache-
+            - yarn-cache-12-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-cache-12-{{ .Branch }}
+            - yarn-cache-12-
+
       - run: yarn install
+
       - save_cache:
-          key: yarn-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: yarn-cache-12-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths: [node_modules]
+
+      - run: yarn test
+      - run: yarn send-coverage
+      - run: yarn docs:test
+
       - persist_to_workspace:
           root: .
           paths: [.]
-  Check for vulnerabilities:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: ~/project
-      - run: yarn install
-      - run: yarn validate:dependencies
-  Test node-8:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: ~/project
-      - run: yarn install
-      - run: yarn ci
-  Send Coverage:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: ~/project
-      - run: yarn install
-      - run: yarn send-coverage
       - store_artifacts:
           path: ./coverage/clover.xml
           prefix: tests
@@ -53,91 +70,69 @@ jobs:
       - store_test_results:
           path: ./coverage/clover.xml
 
-  Build:
-    <<: *defaults
+  validate-dependencies:
+    docker:
+      - image: circleci/node:12
+    working_directory: ~/project
     steps:
-      - attach_workspace:
-          at: ~/project
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-cache-12-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-cache-12-{{ .Branch }}
+            - yarn-cache-12-
+            
       - run: yarn install
-      - run: yarn build
-      - persist_to_workspace:
-          root: .
-          paths: [.]
+      - run: yarn validate:dependencies
 
-  Git Release:
-    <<: *defaults
+  release:
+    docker:
+      - image: circleci/node:12
+    working_directory: ~/project
     steps:
       - attach_workspace:
           at: ~/project
       - add_ssh_keys:
           fingerprints:
             - "8d:f8:a8:b0:86:33:58:1c:fb:24:53:2b:03:73:9c:34"
-      - run: yarn install
       - run: mkdir -p ~/.ssh
       - run:
           name: Keyscan Github
           command: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+      # Clean working tree, tag, and push
       - run: git config --global user.email "info@superfly.tv"
       - run: git config --global user.name "superflytvab"
       - run: yarn release
       - run: git push --follow-tags origin HEAD
-      - persist_to_workspace:
-          root: .
-          paths: [.]
-  Deploy to NPM:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: ~/project
+      # Build and deploy
+      - run: yarn install
+      - run: yarn build
       - run:
           name: Write NPM Token to ~/.npmrc
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
           name: Publish to NPM with yarn
           command: NEW_VERSION=$(node -p "require('./package.json').version") && yarn publish --access=public --new-version=$NEW_VERSION --network-timeout 100000
-      # I have read that some people are experiencing problems with yars publish. Change to npm publish, as below, if that happens.
-      # - deploy:
-      #     name: Publish to NPM with npm
-      #     command: npm publish --access=public
 
 workflows:
   version: 2
-  Test build and deploy(master only):
+  build-test-publish:
     jobs:
-      - Checkout Code
-      - Check for vulnerabilities:
-          requires:
-            - Checkout Code
-      - Test node-8:
-          requires:
-            - Checkout Code
-      - Send Coverage:
-          requires:
-            - Check for vulnerabilities
-            - Test node-8
+      - test-latest(node-12)
+      - test-node-10
+      - test-node-8
+      - validate-dependencies:
           filters:
             branches:
               only:
                 - master
-      - Git Release:
+                - develop
+      - release:
           requires:
-          #   - Send Coverage
-            - Checkout Code
-          filters:
-            branches:
-              only:
-                - master
-      - Build:
-          requires:
-            # - Send Coverage
-            - Git Release
-          filters:
-            branches:
-              only:
-                - master
-      - Deploy to NPM:
-          requires:
-            - Build
+            - validate-dependencies
+            - test-latest(node-12)
+            - test-node-10
+            - test-node-8
           filters:
             branches:
               only:

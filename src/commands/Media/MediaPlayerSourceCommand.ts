@@ -45,8 +45,8 @@ export class MediaPlayerSourceUpdateCommand extends DeserializedCommand<MediaPla
 		const mediaPlayerId = rawCommand[0]
 		const properties = {
 			sourceType: rawCommand[1],
-			clipIndex: rawCommand[2],
-			stillIndex: rawCommand[3]
+			stillIndex: rawCommand[2],
+			clipIndex: rawCommand[3]
 		}
 
 		return new MediaPlayerSourceUpdateCommand(mediaPlayerId, properties)

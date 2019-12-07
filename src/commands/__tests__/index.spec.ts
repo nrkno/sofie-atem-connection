@@ -23,6 +23,12 @@ const commandConverters: CommandTestConverterSet = {
 			'name': (val: any) => ({ val, name: 'productIdentifier' })
 		}
 	},
+	'_SSC': {
+		idAliases: {},
+		propertyAliases: {
+			'boxes': (val: any) => ({ val, name: 'boxCount' })
+		}
+	},
 	'SSBP': {
 		idAliases: {
 			'boxId': 'index'

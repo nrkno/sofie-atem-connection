@@ -1,0 +1,1215 @@
+{
+	"video": {
+		"ME": {
+			"0": {
+				"transitionProperties": {
+					"style": 2,
+					"selection": 1,
+					"nextStyle": 2,
+					"nextSelection": 1
+				},
+				"transitionSettings": {
+					"mix": {
+						"rate": 25
+					},
+					"dip": {
+						"rate": 25,
+						"input": 7
+					},
+					"wipe": {
+						"rate": 25,
+						"pattern": 1,
+						"borderWidth": 1770,
+						"borderInput": 7,
+						"symmetry": 5000,
+						"borderSoftness": 0,
+						"xPosition": 5000,
+						"yPosition": 5000,
+						"reverseDirection": false,
+						"flipFlop": false
+					},
+					"DVE": {
+						"rate": 25,
+						"logoRate": 25,
+						"style": 26,
+						"fillSource": 0,
+						"keySource": 0,
+						"enableKey": false,
+						"preMultiplied": false,
+						"clip": 0,
+						"gain": 0,
+						"invertKey": false,
+						"reverse": false,
+						"flipFlop": false
+					},
+					"stinger": {
+						"source": 2,
+						"preMultipliedKey": false,
+						"clip": 0,
+						"gain": 0,
+						"invert": false,
+						"preroll": 0,
+						"clipDuration": 25,
+						"triggerPoint": 13,
+						"mixRate": 1
+					}
+				},
+				"upstreamKeyers": [
+					{
+						"dveSettings": {
+							"sizeX": 0,
+							"sizeY": 0,
+							"positionX": 0,
+							"positionY": 0,
+							"rotation": 0,
+							"borderEnabled": false,
+							"shadowEnabled": false,
+							"borderBevel": 0,
+							"borderOuterWidth": 0,
+							"borderInnerWidth": 0,
+							"borderOuterSoftness": 0,
+							"borderInnerSoftness": 0,
+							"borderBevelSoftness": 0,
+							"borderBevelPosition": 0,
+							"borderOpacity": 0,
+							"borderHue": 0,
+							"borderSaturation": 0,
+							"borderLuma": 0,
+							"lightSourceDirection": 0,
+							"lightSourceAltitude": 0,
+							"maskEnabled": false,
+							"maskTop": 0,
+							"maskBottom": 0,
+							"maskLeft": 0,
+							"maskRight": 0,
+							"rate": 1
+						},
+						"chromaSettings": {
+							"hue": 0,
+							"gain": 0,
+							"ySuppress": 0,
+							"lift": 0,
+							"narrow": false
+						},
+						"lumaSettings": {
+							"preMultiplied": false,
+							"clip": 0,
+							"gain": 0,
+							"invert": false
+						},
+						"patternSettings": {
+							"style": 0,
+							"size": 0,
+							"symmetry": 5000,
+							"softness": 0,
+							"positionX": 500,
+							"positionY": 500,
+							"invert": false
+						},
+						"flyKeyframes": [
+							null,
+							{
+								"keyFrameId": 1,
+								"sizeX": 1000,
+								"sizeY": 1000,
+								"positionX": 0,
+								"positionY": 0,
+								"rotation": 0,
+								"borderOuterWidth": 0,
+								"borderInnerWidth": 0,
+								"borderOuterSoftness": 0,
+								"borderInnerSoftness": 0,
+								"borderBevelSoftness": 0,
+								"borderBevelPosition": 0,
+								"borderOpacity": 0,
+								"borderHue": 0,
+								"borderSaturation": 0,
+								"borderLuma": 1000,
+								"lightSourceDirection": 360,
+								"lightSourceAltitude": 25,
+								"maskEnabled": false,
+								"maskTop": 0,
+								"maskBottom": 0,
+								"maskLeft": 0,
+								"maskRight": 0
+							},
+							{
+								"keyFrameId": 2,
+								"sizeX": 1000,
+								"sizeY": 1000,
+								"positionX": 0,
+								"positionY": 0,
+								"rotation": 0,
+								"borderOuterWidth": 0,
+								"borderInnerWidth": 0,
+								"borderOuterSoftness": 0,
+								"borderInnerSoftness": 0,
+								"borderBevelSoftness": 0,
+								"borderBevelPosition": 0,
+								"borderOpacity": 0,
+								"borderHue": 0,
+								"borderSaturation": 0,
+								"borderLuma": 1000,
+								"lightSourceDirection": 360,
+								"lightSourceAltitude": 25,
+								"maskEnabled": false,
+								"maskTop": 0,
+								"maskBottom": 0,
+								"maskLeft": 0,
+								"maskRight": 0
+							}
+						],
+						"flyProperties": {
+							"isASet": false,
+							"isBSet": false,
+							"isAtKeyFrame": 0,
+							"runToInfiniteIndex": 0
+						},
+						"onAir": false,
+						"upstreamKeyerId": 0,
+						"mixEffectKeyType": 0,
+						"flyEnabled": false,
+						"fillSource": 8,
+						"cutSource": 9,
+						"maskEnabled": false,
+						"maskTop": 0,
+						"maskBottom": 0,
+						"maskLeft": 0,
+						"maskRight": 0
+					},
+					{
+						"dveSettings": {
+							"sizeX": 0,
+							"sizeY": 0,
+							"positionX": 0,
+							"positionY": 0,
+							"rotation": 0,
+							"borderEnabled": false,
+							"shadowEnabled": false,
+							"borderBevel": 0,
+							"borderOuterWidth": 0,
+							"borderInnerWidth": 0,
+							"borderOuterSoftness": 0,
+							"borderInnerSoftness": 0,
+							"borderBevelSoftness": 0,
+							"borderBevelPosition": 0,
+							"borderOpacity": 0,
+							"borderHue": 0,
+							"borderSaturation": 0,
+							"borderLuma": 0,
+							"lightSourceDirection": 0,
+							"lightSourceAltitude": 0,
+							"maskEnabled": false,
+							"maskTop": 0,
+							"maskBottom": 0,
+							"maskLeft": 0,
+							"maskRight": 0,
+							"rate": 1
+						},
+						"chromaSettings": {
+							"hue": 0,
+							"gain": 0,
+							"ySuppress": 0,
+							"lift": 0,
+							"narrow": false
+						},
+						"lumaSettings": {
+							"preMultiplied": true,
+							"clip": 0,
+							"gain": 0,
+							"invert": false
+						},
+						"patternSettings": {
+							"style": 0,
+							"size": 0,
+							"symmetry": 5000,
+							"softness": 0,
+							"positionX": 500,
+							"positionY": 500,
+							"invert": false
+						},
+						"flyKeyframes": [
+							null,
+							{
+								"keyFrameId": 1,
+								"sizeX": 1000,
+								"sizeY": 1000,
+								"positionX": 0,
+								"positionY": 0,
+								"rotation": 0,
+								"borderOuterWidth": 0,
+								"borderInnerWidth": 0,
+								"borderOuterSoftness": 0,
+								"borderInnerSoftness": 0,
+								"borderBevelSoftness": 0,
+								"borderBevelPosition": 0,
+								"borderOpacity": 0,
+								"borderHue": 0,
+								"borderSaturation": 0,
+								"borderLuma": 1000,
+								"lightSourceDirection": 360,
+								"lightSourceAltitude": 25,
+								"maskEnabled": false,
+								"maskTop": 0,
+								"maskBottom": 0,
+								"maskLeft": 0,
+								"maskRight": 0
+							},
+							{
+								"keyFrameId": 2,
+								"sizeX": 1000,
+								"sizeY": 1000,
+								"positionX": 0,
+								"positionY": 0,
+								"rotation": 0,
+								"borderOuterWidth": 0,
+								"borderInnerWidth": 0,
+								"borderOuterSoftness": 0,
+								"borderInnerSoftness": 0,
+								"borderBevelSoftness": 0,
+								"borderBevelPosition": 0,
+								"borderOpacity": 0,
+								"borderHue": 0,
+								"borderSaturation": 0,
+								"borderLuma": 1000,
+								"lightSourceDirection": 360,
+								"lightSourceAltitude": 25,
+								"maskEnabled": false,
+								"maskTop": 0,
+								"maskBottom": 0,
+								"maskLeft": 0,
+								"maskRight": 0
+							}
+						],
+						"flyProperties": {
+							"isASet": false,
+							"isBSet": false,
+							"isAtKeyFrame": 0,
+							"runToInfiniteIndex": 0
+						},
+						"onAir": false,
+						"upstreamKeyerId": 1,
+						"mixEffectKeyType": 0,
+						"flyEnabled": false,
+						"fillSource": 3010,
+						"cutSource": 3011,
+						"maskEnabled": false,
+						"maskTop": 0,
+						"maskBottom": 0,
+						"maskLeft": 0,
+						"maskRight": 0
+					}
+				],
+				"index": 0,
+				"programInput": 9,
+				"previewInput": 7,
+				"transitionPreview": false,
+				"transitionFramesLeft": 13,
+				"transitionPosition": 4674,
+				"inTransition": true,
+				"fadeToBlack": {
+					"rate": 25,
+					"isFullyBlack": false,
+					"inTransition": false,
+					"remainingFrames": 25
+				}
+			},
+			"1": {
+				"transitionProperties": {
+					"style": 0,
+					"selection": 1,
+					"nextStyle": 0,
+					"nextSelection": 1
+				},
+				"transitionSettings": {
+					"mix": {
+						"rate": 6
+					},
+					"dip": {
+						"rate": 25,
+						"input": 0
+					},
+					"wipe": {
+						"rate": 25,
+						"pattern": 1,
+						"borderWidth": 0,
+						"borderInput": 0,
+						"symmetry": 5000,
+						"borderSoftness": 0,
+						"xPosition": 5000,
+						"yPosition": 5000,
+						"reverseDirection": false,
+						"flipFlop": false
+					},
+					"DVE": {
+						"rate": 25,
+						"logoRate": 25,
+						"style": 27,
+						"fillSource": 0,
+						"keySource": 0,
+						"enableKey": false,
+						"preMultiplied": false,
+						"clip": 0,
+						"gain": 0,
+						"invertKey": false,
+						"reverse": false,
+						"flipFlop": false
+					},
+					"stinger": {
+						"source": 1,
+						"preMultipliedKey": false,
+						"clip": 0,
+						"gain": 0,
+						"invert": false,
+						"preroll": 0,
+						"clipDuration": 25,
+						"triggerPoint": 13,
+						"mixRate": 1
+					}
+				},
+				"upstreamKeyers": [
+					{
+						"dveSettings": {
+							"sizeX": 0,
+							"sizeY": 0,
+							"positionX": 0,
+							"positionY": 0,
+							"rotation": 0,
+							"borderEnabled": false,
+							"shadowEnabled": false,
+							"borderBevel": 0,
+							"borderOuterWidth": 0,
+							"borderInnerWidth": 0,
+							"borderOuterSoftness": 0,
+							"borderInnerSoftness": 0,
+							"borderBevelSoftness": 0,
+							"borderBevelPosition": 0,
+							"borderOpacity": 0,
+							"borderHue": 0,
+							"borderSaturation": 0,
+							"borderLuma": 0,
+							"lightSourceDirection": 0,
+							"lightSourceAltitude": 0,
+							"maskEnabled": false,
+							"maskTop": 0,
+							"maskBottom": 0,
+							"maskLeft": 0,
+							"maskRight": 0,
+							"rate": 1
+						},
+						"chromaSettings": {
+							"hue": 0,
+							"gain": 0,
+							"ySuppress": 0,
+							"lift": 0,
+							"narrow": false
+						},
+						"lumaSettings": {
+							"preMultiplied": false,
+							"clip": 0,
+							"gain": 0,
+							"invert": false
+						},
+						"patternSettings": {
+							"style": 0,
+							"size": 0,
+							"symmetry": 5000,
+							"softness": 0,
+							"positionX": 500,
+							"positionY": 500,
+							"invert": false
+						},
+						"flyKeyframes": [
+							null,
+							{
+								"keyFrameId": 1,
+								"sizeX": 1000,
+								"sizeY": 1000,
+								"positionX": 0,
+								"positionY": 0,
+								"rotation": 0,
+								"borderOuterWidth": 0,
+								"borderInnerWidth": 0,
+								"borderOuterSoftness": 0,
+								"borderInnerSoftness": 0,
+								"borderBevelSoftness": 0,
+								"borderBevelPosition": 0,
+								"borderOpacity": 0,
+								"borderHue": 0,
+								"borderSaturation": 0,
+								"borderLuma": 1000,
+								"lightSourceDirection": 360,
+								"lightSourceAltitude": 25,
+								"maskEnabled": false,
+								"maskTop": 0,
+								"maskBottom": 0,
+								"maskLeft": 0,
+								"maskRight": 0
+							},
+							{
+								"keyFrameId": 2,
+								"sizeX": 1000,
+								"sizeY": 1000,
+								"positionX": 0,
+								"positionY": 0,
+								"rotation": 0,
+								"borderOuterWidth": 0,
+								"borderInnerWidth": 0,
+								"borderOuterSoftness": 0,
+								"borderInnerSoftness": 0,
+								"borderBevelSoftness": 0,
+								"borderBevelPosition": 0,
+								"borderOpacity": 0,
+								"borderHue": 0,
+								"borderSaturation": 0,
+								"borderLuma": 1000,
+								"lightSourceDirection": 360,
+								"lightSourceAltitude": 25,
+								"maskEnabled": false,
+								"maskTop": 0,
+								"maskBottom": 0,
+								"maskLeft": 0,
+								"maskRight": 0
+							}
+						],
+						"flyProperties": {
+							"isASet": false,
+							"isBSet": false,
+							"isAtKeyFrame": 0,
+							"runToInfiniteIndex": 1
+						},
+						"onAir": false,
+						"upstreamKeyerId": 0,
+						"mixEffectKeyType": 0,
+						"flyEnabled": false,
+						"fillSource": 0,
+						"cutSource": 0,
+						"maskEnabled": false,
+						"maskTop": 0,
+						"maskBottom": 0,
+						"maskLeft": 0,
+						"maskRight": 0
+					},
+					{
+						"dveSettings": {
+							"sizeX": 0,
+							"sizeY": 0,
+							"positionX": 0,
+							"positionY": 0,
+							"rotation": 0,
+							"borderEnabled": false,
+							"shadowEnabled": false,
+							"borderBevel": 0,
+							"borderOuterWidth": 0,
+							"borderInnerWidth": 0,
+							"borderOuterSoftness": 0,
+							"borderInnerSoftness": 0,
+							"borderBevelSoftness": 0,
+							"borderBevelPosition": 0,
+							"borderOpacity": 0,
+							"borderHue": 0,
+							"borderSaturation": 0,
+							"borderLuma": 0,
+							"lightSourceDirection": 0,
+							"lightSourceAltitude": 0,
+							"maskEnabled": false,
+							"maskTop": 0,
+							"maskBottom": 0,
+							"maskLeft": 0,
+							"maskRight": 0,
+							"rate": 1
+						},
+						"chromaSettings": {
+							"hue": 0,
+							"gain": 0,
+							"ySuppress": 0,
+							"lift": 0,
+							"narrow": false
+						},
+						"lumaSettings": {
+							"preMultiplied": false,
+							"clip": 0,
+							"gain": 0,
+							"invert": false
+						},
+						"patternSettings": {
+							"style": 0,
+							"size": 0,
+							"symmetry": 5000,
+							"softness": 0,
+							"positionX": 500,
+							"positionY": 500,
+							"invert": false
+						},
+						"flyKeyframes": [
+							null,
+							{
+								"keyFrameId": 1,
+								"sizeX": 1000,
+								"sizeY": 1000,
+								"positionX": 0,
+								"positionY": 0,
+								"rotation": 0,
+								"borderOuterWidth": 0,
+								"borderInnerWidth": 0,
+								"borderOuterSoftness": 0,
+								"borderInnerSoftness": 0,
+								"borderBevelSoftness": 0,
+								"borderBevelPosition": 0,
+								"borderOpacity": 0,
+								"borderHue": 0,
+								"borderSaturation": 0,
+								"borderLuma": 1000,
+								"lightSourceDirection": 360,
+								"lightSourceAltitude": 25,
+								"maskEnabled": false,
+								"maskTop": 0,
+								"maskBottom": 0,
+								"maskLeft": 0,
+								"maskRight": 0
+							},
+							{
+								"keyFrameId": 2,
+								"sizeX": 1000,
+								"sizeY": 1000,
+								"positionX": 0,
+								"positionY": 0,
+								"rotation": 0,
+								"borderOuterWidth": 0,
+								"borderInnerWidth": 0,
+								"borderOuterSoftness": 0,
+								"borderInnerSoftness": 0,
+								"borderBevelSoftness": 0,
+								"borderBevelPosition": 0,
+								"borderOpacity": 0,
+								"borderHue": 0,
+								"borderSaturation": 0,
+								"borderLuma": 1000,
+								"lightSourceDirection": 360,
+								"lightSourceAltitude": 25,
+								"maskEnabled": false,
+								"maskTop": 0,
+								"maskBottom": 0,
+								"maskLeft": 0,
+								"maskRight": 0
+							}
+						],
+						"flyProperties": {
+							"isASet": false,
+							"isBSet": false,
+							"isAtKeyFrame": 0,
+							"runToInfiniteIndex": 0
+						},
+						"onAir": false,
+						"upstreamKeyerId": 1,
+						"mixEffectKeyType": 0,
+						"flyEnabled": false,
+						"fillSource": 0,
+						"cutSource": 0,
+						"maskEnabled": false,
+						"maskTop": 0,
+						"maskBottom": 0,
+						"maskLeft": 0,
+						"maskRight": 0
+					}
+				],
+				"index": 1,
+				"programInput": 1,
+				"previewInput": 1,
+				"transitionPreview": false,
+				"transitionFramesLeft": 6,
+				"transitionPosition": 0,
+				"inTransition": false,
+				"fadeToBlack": {
+					"rate": 25,
+					"isFullyBlack": false,
+					"inTransition": false,
+					"remainingFrames": 25
+				}
+			}
+		},
+		"downstreamKeyers": {
+			"0": {
+				"sources": {
+					"fillSource": 13,
+					"cutSource": 14
+				},
+				"properties": {
+					"tie": false,
+					"rate": 250,
+					"preMultiply": true,
+					"clip": 0,
+					"gain": 0,
+					"invert": false,
+					"mask": {
+						"enabled": false,
+						"top": 0,
+						"bottom": 0,
+						"left": 0,
+						"right": 0
+					}
+				},
+				"onAir": false,
+				"inTransition": false,
+				"isAuto": false,
+				"isTowardsOnAir": true,
+				"remainingFrames": 250
+			},
+			"1": {
+				"sources": {
+					"fillSource": 15,
+					"cutSource": 16
+				},
+				"properties": {
+					"tie": false,
+					"rate": 25,
+					"preMultiply": true,
+					"clip": 0,
+					"gain": 0,
+					"invert": false,
+					"mask": {
+						"enabled": false,
+						"top": 0,
+						"bottom": 0,
+						"left": 0,
+						"right": 0
+					}
+				},
+				"onAir": false,
+				"inTransition": false,
+				"isAuto": false,
+				"isTowardsOnAir": true,
+				"remainingFrames": 25
+			}
+		},
+		"auxilliaries": {
+			"0": 3020,
+			"1": 0,
+			"2": 6000,
+			"3": 0,
+			"4": 6000,
+			"5": 7001
+		},
+		"superSources": {
+			"0": {
+				"boxes": {
+					"0": {
+						"enabled": true,
+						"source": 3,
+						"x": -1600,
+						"y": 2503,
+						"size": 504,
+						"cropped": false,
+						"cropTop": 1800,
+						"cropBottom": 1025,
+						"cropLeft": 3200,
+						"cropRight": 631
+					},
+					"1": {
+						"enabled": false,
+						"source": 2,
+						"x": 800,
+						"y": 450,
+						"size": 500,
+						"cropped": false,
+						"cropTop": 0,
+						"cropBottom": 0,
+						"cropLeft": 0,
+						"cropRight": 0
+					},
+					"2": {
+						"enabled": true,
+						"source": 1,
+						"x": -800,
+						"y": -450,
+						"size": 500,
+						"cropped": false,
+						"cropTop": 0,
+						"cropBottom": 0,
+						"cropLeft": 0,
+						"cropRight": 0
+					},
+					"3": {
+						"enabled": false,
+						"source": 4,
+						"x": 800,
+						"y": -450,
+						"size": 500,
+						"cropped": false,
+						"cropTop": 0,
+						"cropBottom": 0,
+						"cropLeft": 0,
+						"cropRight": 0
+					}
+				},
+				"index": 0,
+				"properties": {
+					"artFillSource": 3010,
+					"artCutSource": 3011,
+					"artOption": 1,
+					"artPreMultiplied": false,
+					"artClip": 500,
+					"artGain": 700,
+					"artInvertKey": false
+				},
+				"border": {
+					"borderEnabled": false,
+					"borderBevel": 1,
+					"borderOuterWidth": 50,
+					"borderInnerWidth": 50,
+					"borderOuterSoftness": 0,
+					"borderInnerSoftness": 0,
+					"borderBevelSoftness": 0,
+					"borderBevelPosition": 50,
+					"borderHue": 0,
+					"borderSaturation": 0,
+					"borderLuma": 1000,
+					"borderLightSourceDirection": 360,
+					"borderLightSourceAltitude": 25
+				}
+			}
+		}
+	},
+	"inputs": {
+		"0": {
+			"inputId": 0,
+			"longName": "Black",
+			"shortName": "Blk",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 1,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"1": {
+			"inputId": 1,
+			"longName": "Camera 1",
+			"shortName": "Cam1",
+			"externalPorts": [
+				1,
+				2
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"2": {
+			"inputId": 2,
+			"longName": "Camera 2",
+			"shortName": "Cam2",
+			"externalPorts": [
+				1
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"3": {
+			"inputId": 3,
+			"longName": "Camera 3",
+			"shortName": "Cam3",
+			"externalPorts": [
+				1
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"4": {
+			"inputId": 4,
+			"longName": "9532",
+			"shortName": "96",
+			"externalPorts": [
+				1
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"5": {
+			"inputId": 5,
+			"longName": "Camera 5",
+			"shortName": "Cam5",
+			"externalPorts": [
+				1
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"6": {
+			"inputId": 6,
+			"longName": "Camera 6",
+			"shortName": "Cam6",
+			"externalPorts": [
+				1
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"7": {
+			"inputId": 7,
+			"longName": "6+6",
+			"shortName": "00",
+			"externalPorts": [
+				1
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"8": {
+			"inputId": 8,
+			"longName": "Camera 8",
+			"shortName": "Cam8",
+			"externalPorts": [
+				1
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"9": {
+			"inputId": 9,
+			"longName": "Camera 9",
+			"shortName": "Cam9",
+			"externalPorts": [
+				1
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"10": {
+			"inputId": 10,
+			"longName": "Camera 10",
+			"shortName": "Cm10",
+			"externalPorts": [
+				1
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"11": {
+			"inputId": 11,
+			"longName": "Camera 11",
+			"shortName": "Cm11",
+			"externalPorts": [
+				1
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"12": {
+			"inputId": 12,
+			"longName": "Camera 12",
+			"shortName": "Cm12",
+			"externalPorts": [
+				1
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"13": {
+			"inputId": 13,
+			"longName": "Camera 13",
+			"shortName": "Cm13",
+			"externalPorts": [
+				1
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"14": {
+			"inputId": 14,
+			"longName": "Camera 14",
+			"shortName": "Cm14",
+			"externalPorts": [
+				1
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"15": {
+			"inputId": 15,
+			"longName": "Camera 15",
+			"shortName": "Cm15",
+			"externalPorts": [
+				1
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"16": {
+			"inputId": 16,
+			"longName": "Camera 16",
+			"shortName": "Cm16",
+			"externalPorts": [
+				1
+			],
+			"isExternal": true,
+			"externalPortType": 1,
+			"internalPortType": 0,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"1000": {
+			"inputId": 1000,
+			"longName": "Color Bars",
+			"shortName": "Bars",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 2,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"2001": {
+			"inputId": 2001,
+			"longName": "Color 1",
+			"shortName": "Col1",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 3,
+			"sourceAvailability": 15,
+			"meAvailability": 3
+		},
+		"2002": {
+			"inputId": 2002,
+			"longName": "Color 2",
+			"shortName": "Col2",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 3,
+			"sourceAvailability": 15,
+			"meAvailability": 3
+		},
+		"3010": {
+			"inputId": 3010,
+			"longName": "Media Player 1",
+			"shortName": "MP1",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 4,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"3011": {
+			"inputId": 3011,
+			"longName": "Media Player 1 Key",
+			"shortName": "MP1K",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 5,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"3020": {
+			"inputId": 3020,
+			"longName": "Media Player 2",
+			"shortName": "MP2",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 4,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"3021": {
+			"inputId": 3021,
+			"longName": "Media Player 2 Key",
+			"shortName": "MP2K",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 5,
+			"sourceAvailability": 31,
+			"meAvailability": 3
+		},
+		"6000": {
+			"inputId": 6000,
+			"longName": "SuperSource",
+			"shortName": "SSrc",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 6,
+			"sourceAvailability": 27,
+			"meAvailability": 3
+		},
+		"7001": {
+			"inputId": 7001,
+			"longName": "Clean Feed 1",
+			"shortName": "Cfd1",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 128,
+			"sourceAvailability": 3,
+			"meAvailability": 0
+		},
+		"7002": {
+			"inputId": 7002,
+			"longName": "Clean Feed 2",
+			"shortName": "Cfd2",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 128,
+			"sourceAvailability": 3,
+			"meAvailability": 0
+		},
+		"8001": {
+			"inputId": 8001,
+			"longName": "Auxiliary 1",
+			"shortName": "Aux1",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 129,
+			"sourceAvailability": 2,
+			"meAvailability": 0
+		},
+		"8002": {
+			"inputId": 8002,
+			"longName": "Auxiliary 2",
+			"shortName": "Aux2",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 129,
+			"sourceAvailability": 2,
+			"meAvailability": 0
+		},
+		"8003": {
+			"inputId": 8003,
+			"longName": "Auxiliary 3",
+			"shortName": "Aux3",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 129,
+			"sourceAvailability": 2,
+			"meAvailability": 0
+		},
+		"8004": {
+			"inputId": 8004,
+			"longName": "Auxiliary 4",
+			"shortName": "Aux4",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 129,
+			"sourceAvailability": 2,
+			"meAvailability": 0
+		},
+		"8005": {
+			"inputId": 8005,
+			"longName": "Auxiliary 5",
+			"shortName": "Aux5",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 129,
+			"sourceAvailability": 2,
+			"meAvailability": 0
+		},
+		"8006": {
+			"inputId": 8006,
+			"longName": "Auxiliary 6",
+			"shortName": "Aux6",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 129,
+			"sourceAvailability": 2,
+			"meAvailability": 0
+		},
+		"10010": {
+			"inputId": 10010,
+			"longName": "ME 1 PGM 89089898989",
+			"shortName": "M/E1",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 128,
+			"sourceAvailability": 3,
+			"meAvailability": 0
+		},
+		"10011": {
+			"inputId": 10011,
+			"longName": "ME 1 PVW",
+			"shortName": "Pvw1",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 128,
+			"sourceAvailability": 3,
+			"meAvailability": 0
+		},
+		"10020": {
+			"inputId": 10020,
+			"longName": "ME 2 PGM",
+			"shortName": "M/E2",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 128,
+			"sourceAvailability": 11,
+			"meAvailability": 1
+		},
+		"10021": {
+			"inputId": 10021,
+			"longName": "ME 2 PVW",
+			"shortName": "Pvw2",
+			"externalPorts": null,
+			"isExternal": false,
+			"externalPortType": 0,
+			"internalPortType": 128,
+			"sourceAvailability": 11,
+			"meAvailability": 1
+		}
+	}
+}
