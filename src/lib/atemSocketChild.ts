@@ -1,6 +1,5 @@
 import { createSocket, Socket, RemoteInfo } from 'dgram'
 import { Util } from './atemUtil'
-import { ConnectionState, PacketFlag } from '../enums'
 import * as NanoTimer from 'nanotimer'
 
 const IN_FLIGHT_TIMEOUT = 60 // ms
@@ -9,6 +8,20 @@ const CONNECTION_RETRY_INTERVAL = 1000 // ms
 const MAX_PACKET_RETRIES = 10
 const MAX_PACKET_ID = (1 << 15) // Atem expects 15 not 16 bits before wrapping
 const MAX_PACKET_PER_ACK = 16
+
+export enum ConnectionState {
+	Closed = 0x00,
+	SynSent = 0x01,
+	Established = 0x02
+}
+
+export enum PacketFlag {
+	AckRequest = 0x01,
+	Connect = 0x02,
+	IsRetransmit = 0x04,
+	RetransmitRequest = 0x08,
+	AckReply = 0x10
+}
 
 interface InFlightPacket {
 	readonly packetId: number

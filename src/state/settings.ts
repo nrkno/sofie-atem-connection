@@ -1,3 +1,5 @@
+import { VideoMode } from '../enums'
+
 export interface MultiViewerSourceState {
 	source: number
 	windowIndex: number
@@ -20,7 +22,7 @@ export class MultiViewer {
 
 export class SettingsState {
 	public readonly multiViewers: Array<MultiViewer | undefined> = []
-	public videoMode: number
+	public videoMode: VideoMode
 
 	constructor () {
 		this.videoMode = 0

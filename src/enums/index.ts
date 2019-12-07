@@ -26,26 +26,6 @@ export enum TransitionStyle {
 	STING = 0x04
 }
 
-export enum TallyState {
-	None = 0x00,
-	Program = 0x01,
-	Preview = 0x02
-}
-
-export enum ConnectionState {
-	Closed = 0x00,
-	SynSent = 0x01,
-	Established = 0x02
-}
-
-export enum PacketFlag {
-	AckRequest = 0x01,
-	Connect = 0x02,
-	IsRetransmit = 0x04,
-	RetransmitRequest = 0x08,
-	AckReply = 0x10
-}
-
 export enum DVEEffect {
 	SwooshTopLeft= 0,
 	SwooshTop = 1,
@@ -205,14 +185,6 @@ export enum TransferMode {
 	WriteAudio = 256
 }
 
-export enum StoragePool {
-	Stills,
-	Clip1,
-	Clip2,
-	Audio1,
-	Audio2
-}
-
 export enum VideoMode {
 	N525i5994NTSC,
 	P625i50PAL,
@@ -249,13 +221,6 @@ export enum TransferState {
 export enum MediaSourceType {
 	Still = 1,
 	Clip
-}
-
-export enum MultiViewerLayout {
-	Top = 0,
-	Bottom = 1,
-	Left = 2,
-	Right = 3
 }
 
 export enum AudioMixOption {
