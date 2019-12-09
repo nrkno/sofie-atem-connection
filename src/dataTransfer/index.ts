@@ -36,11 +36,10 @@ export class DataTransferManager {
 				}
 
 				const commandsToSend = this.commandQueue.splice(0, MAX_PACKETS_TO_SEND_PER_TICK)
-				sendCommands(commandsToSend).forEach(cmdRes => {
-					cmdRes.catch((e) => {
-						// TODO - handle this better. it should probably kill/restart the upload. and should also be logged in some way
-						console.log(`Transfer send error: ${e}`)
-					})
+				// The only way commands are rejected is if the connection dies, so if any reject then we fail
+				Promise.all(sendCommands(commandsToSend)).catch((e) => {
+					// TODO - handle this better. it should kill/restart the upload. and should also be logged in some way
+					console.log(`Transfer send error: ${e}`)
 				})
 			}, 0)
 		}
