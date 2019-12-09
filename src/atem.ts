@@ -41,32 +41,40 @@ interface SentCommand {
 	reject: () => void
 }
 
+export enum AtemConnectionStatus {
+	CLOSED,
+	CONNECTING,
+	CONNECTED
+}
+
 export const DEFAULT_PORT = 9910
 
 export class BasicAtem extends EventEmitter {
 	private readonly socket: AtemSocket
 	protected readonly dataTransferManager: DT.DataTransferManager
 	private readonly _log: (...args: any[]) => void
-	private _state: AtemState
+	private _state: AtemState | undefined
 	private _sentQueue: {[packetId: string]: SentCommand } = {}
+	private _status: AtemConnectionStatus
 
 	public on!: ((event: 'error', listener: (message: any) => void) => this) &
 		((event: 'connected', listener: () => void) => this) &
 		((event: 'disconnected', listener: () => void) => this) &
-		((event: 'stateChanged', listener: (state: AtemState, path: string) => void) => this) &
-		((event: 'receivedCommand', listener: (cmd: IDeserializedCommand) => void) => this)
+		((event: 'stateChanged', listener: (state: AtemState, paths: string[]) => void) => this) &
+		((event: 'receivedCommands', listener: (cmds: IDeserializedCommand[]) => void) => this)
 
 	public emit!: ((event: 'error', message: any) => boolean) &
 		((event: 'connected') => boolean) &
 		((event: 'disconnected') => boolean) &
-		((event: 'stateChanged', state: AtemState, path: string) => boolean) &
-		((event: 'receivedCommand', cmd: IDeserializedCommand) => boolean)
+		((event: 'stateChanged', state: AtemState, paths: string[]) => boolean) &
+		((event: 'receivedCommands', cmds: IDeserializedCommand[]) => boolean)
 
 	constructor (options?: AtemOptions) {
 		super()
 		this._log = (options && options.externalLog) || ((...args: any[]) => { console.log(...args) })
 
 		this._state = new AtemState()
+		this._status = AtemConnectionStatus.CLOSED
 		this.socket = new AtemSocket({
 			debug: (options || {}).debug || false,
 			log: this._log,
@@ -76,24 +84,31 @@ export class BasicAtem extends EventEmitter {
 		})
 		this.dataTransferManager = new DT.DataTransferManager()
 
-		this.socket.on('commandReceived', command => {
-			this.emit('receivedCommand', command)
-			this._mutateState(command)
+		this.socket.on('commandsReceived', commands => {
+			this.emit('receivedCommands', commands)
+			this._mutateState(commands)
 		})
-		this.socket.on('commandAck', trackingId => this._resolveCommand(trackingId))
+		this.socket.on('commandsAck', trackingIds => this._resolveCommands(trackingIds))
 		this.socket.on('error', e => this.emit('error', e))
-		this.socket.on('connect', () => {
-			this.dataTransferManager.startCommandSending(cmds => this.sendCommands(cmds))
-			this.emit('connected')
-		})
 		this.socket.on('disconnect', () => {
+			this._status = AtemConnectionStatus.CLOSED
 			this.dataTransferManager.stopCommandSending()
 			this._rejectAllCommands()
 			this.emit('disconnected')
+			this._state = undefined
 		})
 	}
 
-	get state (): Readonly<AtemState> {
+	private _onInitComplete () {
+		this.dataTransferManager.startCommandSending(cmds => this.sendCommands(cmds))
+		this.emit('connected')
+	}
+
+	get status (): AtemConnectionStatus {
+		return this._status
+	}
+
+	get state (): Readonly<AtemState> | undefined {
 		return this._state
 	}
 
@@ -133,36 +148,56 @@ export class BasicAtem extends EventEmitter {
 		return this.sendCommands([command])[0]
 	}
 
-	private _mutateState (command: IDeserializedCommand) {
-		if (command.constructor.name === Commands.VersionCommand.name) {
+	private _mutateState (commands: IDeserializedCommand[]) {
+		// Is this the start of a new connection?
+		if (commands.find(cmd => cmd.constructor.name === Commands.VersionCommand.name)) {
 			// On start of connection, create a new state object
 			this._state = new AtemState()
+			this._status = AtemConnectionStatus.CONNECTING
 		}
 
-		try {
-			let changePaths = command.applyToState(this.state)
-			if (!Array.isArray(changePaths)) {
-				changePaths = [ changePaths ]
-			}
-			changePaths.forEach(path => this.emit('stateChanged', this._state, path))
-		} catch (e) {
-			// TODO - should we error or warn on this?
-			this.emit('error', `MutateState failed: ${e}`)
-		}
+		const allChangedPaths: string[] = []
 
-		for (const commandName in DataTransferCommands) {
-			if (command.constructor.name === commandName) {
-				this.dataTransferManager.handleCommand(command)
+		const state = this._state
+		commands.forEach(command => {
+			if (state) {
+				try {
+					const changePaths = command.applyToState(state)
+					if (!Array.isArray(changePaths)) {
+						allChangedPaths.push(changePaths)
+					} else {
+						allChangedPaths.push(...changePaths)
+					}
+				} catch (e) {
+					// TODO - should we error or warn on this?
+					this.emit('error', `MutateState failed: ${e}`)
+				}
 			}
+
+			for (const commandName in DataTransferCommands) {
+				if (command.constructor.name === commandName) {
+					this.dataTransferManager.handleCommand(command)
+				}
+			}
+		})
+
+		const initComplete = commands.find(cmd => cmd.constructor.name === Commands.InitCompleteCommand.name)
+		if (initComplete) {
+			this._status = AtemConnectionStatus.CONNECTED
+			this._onInitComplete()
+		} else if (state && this._status === AtemConnectionStatus.CONNECTED && allChangedPaths.length > 0) {
+			this.emit('stateChanged', state, allChangedPaths)
 		}
 	}
 
-	private _resolveCommand (trackingId: number) {
-		const sent = this._sentQueue[trackingId]
-		if (sent) {
-			sent.resolve()
-			delete this._sentQueue[trackingId]
-		}
+	private _resolveCommands (trackingIds: number[]) {
+		trackingIds.forEach(trackingId => {
+			const sent = this._sentQueue[trackingId]
+			if (sent) {
+				sent.resolve()
+				delete this._sentQueue[trackingId]
+			}
+		})
 	}
 
 	private _rejectAllCommands () {
@@ -372,7 +407,7 @@ export class Atem extends BasicAtem {
 	}
 
 	public setSuperSourceProperties (newProps: Partial<SuperSourceProperties>, ssrcId: number = 0) {
-		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
+		if (this.state && this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
 			const command = new Commands.SuperSourcePropertiesV8Command(ssrcId)
 			command.updateProps(newProps)
 			return this.sendCommand(command)
@@ -384,7 +419,7 @@ export class Atem extends BasicAtem {
 	}
 
 	public setSuperSourceBorder (newProps: Partial<SuperSourceBorder>, ssrcId: number = 0) {
-		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
+		if (this.state && this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
 			const command = new Commands.SuperSourceBorderCommand(ssrcId)
 			command.updateProps(newProps)
 			return this.sendCommand(command)
@@ -453,6 +488,7 @@ export class Atem extends BasicAtem {
 	}
 
 	public uploadStill (index: number, data: Buffer, name: string, description: string) {
+		if (!this.state) return Promise.reject()
 		const resolution = Util.getResolution(this.state.settings.videoMode)
 		return this.dataTransferManager.uploadStill(
 			index,
@@ -463,6 +499,7 @@ export class Atem extends BasicAtem {
 	}
 
 	public uploadClip (index: number, frames: Array<Buffer>, name: string) {
+		if (!this.state) return Promise.reject()
 		const resolution = Util.getResolution(this.state.settings.videoMode)
 		const data: Array<Buffer> = []
 		for (const frame of frames) {
@@ -520,6 +557,10 @@ export class Atem extends BasicAtem {
 	}
 
 	public listVisibleInputs (mode: 'program' | 'preview', me = 0): number[] {
-		return listVisibleInputs(mode, this.state, me)
+		if (this.state) {
+			return listVisibleInputs(mode, this.state, me)
+		} else {
+			return []
+		}
 	}
 }

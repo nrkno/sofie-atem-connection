@@ -125,7 +125,7 @@ describe('Atem', () => {
 			}])
 
 			// Trigger the ack, and it should switfy resolve
-			socket.emit('commandAck', 124)
+			socket.emit('commandsAck', [124])
 			expect(Object.keys(sentQueue)).toHaveLength(0)
 
 			// Finally, it should now resolve without a timeout

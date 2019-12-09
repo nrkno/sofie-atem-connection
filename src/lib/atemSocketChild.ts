@@ -54,18 +54,18 @@ export class AtemSocketChild {
 
 	private readonly onDisconnect: () => Promise<void>
 	private readonly onLog: (message: string) => Promise<void>
-	private readonly onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>
-	private readonly onCommandAcknowledged: (packetId: number, trackingId: number) => Promise<void>
+	private readonly onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>
+	private readonly onCommandsAcknowledged: (ids: Array<{ packetId: number, trackingId: number }>) => Promise<void>
 
-	constructor (options: { address: string, port: number, debug: boolean }, onDisconnect: () => Promise<void>, onLog: (message: string) => Promise<void>, onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>, onCommandAcknowledged: (packetId: number, trackingId: number) => Promise<void>) {
+	constructor (options: { address: string, port: number, debug: boolean }, onDisconnect: () => Promise<void>, onLog: (message: string) => Promise<void>, onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>, onCommandAcknowledged: (ids: Array<{ packetId: number, trackingId: number }>) => Promise<void>) {
 		this._debug = options.debug
 		this._address = options.address
 		this._port = options.port
 
 		this.onDisconnect = onDisconnect
 		this.onLog = onLog
-		this.onCommandReceived = onCommandReceived
-		this.onCommandAcknowledged = onCommandAcknowledged
+		this.onCommandsReceived = onCommandReceived
+		this.onCommandsAcknowledged = onCommandAcknowledged
 
 		this._socket = this._createSocket()
 	}
@@ -244,7 +244,7 @@ export class AtemSocketChild {
 
 					// It might have commands
 					if (length > 12) {
-						ps.push(this.onCommandReceived(packet.slice(12), remotePacketId))
+						ps.push(this.onCommandsReceived(packet.slice(12), remotePacketId))
 					}
 				} else if (this._isPacketCoveredByAck(this._lastReceivedPacketId, remotePacketId)) {
 					// We got a retransmit of something we have already acked, so reack it
@@ -255,15 +255,20 @@ export class AtemSocketChild {
 			// Device ack'ed our packet
 			if (flags & PacketFlag.AckReply) {
 				const ackPacketId = packet.readUInt16BE(4)
+				const ackedCommands: Array<{ packetId: number, trackingId: number }> = []
 				this._inFlight = this._inFlight.filter(pkt => {
 					if (this._isPacketCoveredByAck(ackPacketId, pkt.packetId)) {
-						ps.push(this.onCommandAcknowledged(pkt.packetId, pkt.trackingId))
+						ackedCommands.push({
+							packetId: pkt.packetId,
+							trackingId: pkt.trackingId
+						})
 						return false
 					} else {
 						// Not acked yet
 						return true
 					}
 				})
+				ps.push(this.onCommandsAcknowledged(ackedCommands))
 				// this.log(`${Date.now()} Got ack ${ackPacketId} Remaining=${this._inFlight.length}`)
 			}
 		}

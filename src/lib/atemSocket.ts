@@ -29,16 +29,14 @@ export class AtemSocket extends EventEmitter {
 	private readonly log: (args1: any, args2?: any, args3?: any) => void
 
 	public on!: ((event: 'disconnect', listener: () => void) => this) &
-		((event: 'connect', listener: () => void) => this) &
 		((event: 'error', listener: (message: string) => void) => this) &
-		((event: 'commandReceived', listener: (cmd: IDeserializedCommand) => void) => this) &
-		((event: 'commandAck', listener: (trackingId: number) => void) => this)
+		((event: 'commandsReceived', listener: (cmds: IDeserializedCommand[]) => void) => this) &
+		((event: 'commandsAck', listener: (trackingIds: number[]) => void) => this)
 
 	public emit!: ((event: 'disconnect') => boolean) &
-		((event: 'connect') => boolean) &
 		((event: 'error', message: string) => boolean) &
-		((event: 'commandReceived', cmd: IDeserializedCommand) => boolean) &
-		((event: 'commandAck', trackingId: number) => boolean)
+		((event: 'commandsReceived', cmds: IDeserializedCommand[]) => boolean) &
+		((event: 'commandsAck', trackingIds: number[]) => boolean)
 
 	constructor (options: AtemSocketOptions) {
 		super()
@@ -122,8 +120,8 @@ export class AtemSocket extends EventEmitter {
 			},
 			async () => { this.emit('disconnect') }, // onDisconnect
 			async (message: string) => this.log(message), // onLog
-			async (payload: Buffer) => this._parseCommand(Buffer.from(payload)), // onCommandReceived
-			async (_packetId: number, trackingId: number) => { this.emit('commandAck', trackingId) } // onCommandAcknowledged
+			async (payload: Buffer) => this._parseCommands(Buffer.from(payload)), // onCommandsReceived
+			async (ids: Array<{ packetId: number, trackingId: number }>) => { this.emit('commandsAck', ids.map(id => id.trackingId)) } // onCommandsAcknowledged
 		], {
 			instanceName: 'atem-connection',
 			freezeLimit: 200,
@@ -144,43 +142,40 @@ export class AtemSocket extends EventEmitter {
 		return socketProcess
 	}
 
-	private _parseCommand (buffer: Buffer) {
-		if (buffer.length < 8) {
-			// Commands are never less than 8, as that is the header
-			return
-		}
+	private _parseCommands (buffer: Buffer) {
+		const parsedCommands: IDeserializedCommand[] = []
 
-		const length = buffer.readUInt16BE(0)
-		const name = buffer.toString('ascii', 4, 8)
+		while (buffer.length > 8) {
+			const length = buffer.readUInt16BE(0)
+			const name = buffer.toString('ascii', 4, 8)
 
-		if (length < 8) {
-			// Commands are never less than 8, as that is the header
-			return
-		}
-
-		if (name === 'InCm') {
-			this.emit('connect')
-		}
-
-		// this.log('COMMAND', `${name}(${length})`, buffer.slice(0, length))
-		const cmdConstructor = this._commandParser.commandFromRawName(name)
-		if (cmdConstructor && typeof cmdConstructor.deserialize === 'function') {
-			try {
-				const cmd: IDeserializedCommand = cmdConstructor.deserialize(buffer.slice(0, length).slice(8), this._commandParser.version)
-
-				if (name === '_ver') { // init started
-					const verCmd = cmd as VersionCommand
-					this._commandParser.version = verCmd.properties.version
-				}
-
-				this.emit('commandReceived', cmd)
-			} catch (e) {
-				this.emit('error', `Failed to deserialize command: ${cmdConstructor.constructor.name}: ${e}`)
+			if (length < 8) {
+				// Commands are never less than 8, as that is the header
+				break
 			}
-		} // TODO - log the unknown command?
 
-		if (buffer.length > length) {
-			this._parseCommand(buffer.slice(length))
+			const cmdConstructor = this._commandParser.commandFromRawName(name)
+			if (cmdConstructor && typeof cmdConstructor.deserialize === 'function') {
+				try {
+					const cmd: IDeserializedCommand = cmdConstructor.deserialize(buffer.slice(0, length).slice(8), this._commandParser.version)
+
+					if (cmdConstructor.name === VersionCommand.name) { // init started
+						const verCmd = cmd as VersionCommand
+						this._commandParser.version = verCmd.properties.version
+					}
+
+					parsedCommands.push(cmd)
+				} catch (e) {
+					this.emit('error', `Failed to deserialize command: ${cmdConstructor.constructor.name}: ${e}`)
+				}
+			} // TODO - log the unknown command?
+
+			// Trim the buffer
+			buffer = buffer.slice(length)
+		}
+
+		if (parsedCommands.length > 0) {
+			this.emit('commandsReceived', parsedCommands)
 		}
 	}
 }

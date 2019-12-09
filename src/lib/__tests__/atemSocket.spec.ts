@@ -1,4 +1,4 @@
-import { CutCommand, ProductIdentifierCommand, InitCompleteCommand, VersionCommand, ProgramInputUpdateCommand, PreviewInputUpdateCommand, ISerializableCommand, BasicWritableCommand, DeserializedCommand } from '../../commands'
+import { CutCommand, ProductIdentifierCommand, VersionCommand, ProgramInputUpdateCommand, PreviewInputUpdateCommand, ISerializableCommand, BasicWritableCommand, DeserializedCommand } from '../../commands'
 import { ProtocolVersion, Model } from '../../enums'
 import { AtemSocket } from '../atemSocket'
 import { ThreadedClass, ThreadedClassManager } from 'threadedclass'
@@ -9,34 +9,42 @@ import { AtemSocketChild } from '../atemSocketChild'
 // import { promisify } from 'util'
 jest.mock('../atemSocketChild')
 
-export class AtemSocketChildMock {
-	public onDisconnect?: () => Promise<void>
-	public onLog?: (message: string) => Promise<void>
-	public onCommandReceived?: (payload: Buffer, packetId: number) => Promise<void>
-	public onCommandAcknowledged?: (packetId: number, trackingId: number) => Promise<void>
+// @ts-ignore
+export class AtemSocketChildMock implements AtemSocketChild {
+	public onDisconnect: () => Promise<void>
+	public onLog: (message: string) => Promise<void>
+	public onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>
+	public onCommandsAcknowledged: (ids: Array<{ packetId: number, trackingId: number }>) => Promise<void>
 
-	// constructor (_options: { address: string, port: number, debug: boolean }, onDisconnect: () => Promise<void>, onLog: (message: string) => Promise<void>, onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>, onCommandAcknowledged: (packetId: number, trackingId: number) => Promise<void>) {
-	// 	// this._debug = options.debug
-	// 	// this._address = options.address
-	// 	// this._port = options.port
+	constructor () {
+		// this._debug = options.debug
+		// this._address = options.address
+		// this._port = options.port
 
-	// 	this.onDisconnect = onDisconnect
-	// 	this.onLog = onLog
-	// 	this.onCommandReceived = onCommandReceived
-	// 	this.onCommandAcknowledged = onCommandAcknowledged
-	// }
+		this.onDisconnect = () => Promise.resolve()
+		this.onLog = () => Promise.resolve()
+		this.onCommandsReceived = () => Promise.resolve()
+		this.onCommandsAcknowledged = () => Promise.resolve()
+	}
 
-	public connect = jest.fn()
-	public disconnect = jest.fn(() => Promise.resolve(87))
-	public sendCommands = jest.fn()
+	public restartConnection () {
+		return Promise.resolve()
+	}
+	public log (message: string) {
+		console.log(message)
+	}
+
+	public connect = jest.fn(() => Promise.resolve())
+	public disconnect = jest.fn(() => Promise.resolve())
+	public sendCommands = jest.fn(() => Promise.resolve())
 }
 
 const AtemSocketChildSingleton = new AtemSocketChildMock()
-;(AtemSocketChild as any).mockImplementation((_opts: any, onDisconnect: () => Promise<void>, onLog: (message: string) => Promise<void>, onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>, onCommandAcknowledged: (packetId: number, trackingId: number) => Promise<void>) => {
+;(AtemSocketChild as any).mockImplementation((_opts: any, onDisconnect: () => Promise<void>, onLog: (message: string) => Promise<void>, onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>, onCommandsAcknowledged: (ids: Array<{ packetId: number, trackingId: number }>) => Promise<void>) => {
 	AtemSocketChildSingleton.onDisconnect = onDisconnect
 	AtemSocketChildSingleton.onLog = onLog
-	AtemSocketChildSingleton.onCommandReceived = onCommandReceived
-	AtemSocketChildSingleton.onCommandAcknowledged = onCommandAcknowledged
+	AtemSocketChildSingleton.onCommandsReceived = onCommandsReceived
+	AtemSocketChildSingleton.onCommandsAcknowledged = onCommandsAcknowledged
 	return AtemSocketChildSingleton
 })
 
@@ -61,10 +69,10 @@ describe('AtemSocket', () => {
 		AtemSocketChildSingleton.sendCommands.mockClear()
 
 		if (!lite) {
-			AtemSocketChildSingleton.onLog = undefined
-			AtemSocketChildSingleton.onDisconnect = undefined
-			AtemSocketChildSingleton.onCommandAcknowledged = undefined
-			AtemSocketChildSingleton.onCommandReceived = undefined
+			AtemSocketChildSingleton.onLog = () => Promise.resolve()
+			AtemSocketChildSingleton.onDisconnect = () => Promise.resolve()
+			AtemSocketChildSingleton.onCommandsAcknowledged = () => Promise.resolve()
+			AtemSocketChildSingleton.onCommandsReceived = () => Promise.resolve()
 		}
 	}
 	beforeEach(() => {
@@ -294,18 +302,18 @@ describe('AtemSocket', () => {
 		const ack = jest.fn()
 
 		socket.on('disconnect', disconnect)
-		socket.on('commandAck', ack)
+		socket.on('commandsAck', ack)
 
 		expect(AtemSocketChildSingleton.onDisconnect).toBeDefined()
-		await AtemSocketChildSingleton.onDisconnect!()
+		await AtemSocketChildSingleton.onDisconnect()
 		await clock.tickAsync(0)
 		expect(disconnect).toHaveBeenCalledTimes(1)
 
-		expect(AtemSocketChildSingleton.onCommandAcknowledged).toBeDefined()
-		await AtemSocketChildSingleton.onCommandAcknowledged!(675, 98)
+		expect(AtemSocketChildSingleton.onCommandsAcknowledged).toBeDefined()
+		await AtemSocketChildSingleton.onCommandsAcknowledged([{ packetId: 675, trackingId: 98 }])
 		await clock.tickAsync(0)
 		expect(ack).toHaveBeenCalledTimes(1)
-		expect(ack).toHaveBeenCalledWith(98)
+		expect(ack).toHaveBeenCalledWith([98])
 
 	})
 
@@ -317,13 +325,11 @@ describe('AtemSocket', () => {
 		mockClear(true)
 		expect(getChild(socket)).toBeTruthy()
 
-		const connect = jest.fn()
 		const error = jest.fn()
 		const change = jest.fn()
 
-		socket.on('connect', connect)
 		socket.on('error', error)
-		socket.on('commandReceived', change)
+		socket.on('commandsReceived', change)
 
 		const parser = (socket as any)._commandParser as CommandParser
 		expect(parser).toBeTruthy()
@@ -331,20 +337,14 @@ describe('AtemSocket', () => {
 
 		const testBuffer = Buffer.from([0, 8, 0, 0, ...Buffer.from('InCm', 'ascii')])
 		const pktId = 822
-		expect(AtemSocketChildSingleton.onCommandReceived).toBeDefined()
-		await AtemSocketChildSingleton.onCommandReceived!(testBuffer, pktId)
+		expect(AtemSocketChildSingleton.onCommandsReceived).toBeDefined()
+		await AtemSocketChildSingleton.onCommandsReceived(testBuffer, pktId)
 		await clock.tickAsync(0)
 
-		expect(connect).toHaveBeenCalledTimes(1)
 		expect(error).toHaveBeenCalledTimes(0)
-		expect(change).toHaveBeenCalledTimes(1)
+		expect(change).toHaveBeenCalledTimes(0)
 
-		expect(parserSpy).toHaveBeenCalledTimes(1)
-		expect(parserSpy).toHaveBeenCalledWith('InCm')
-
-		// A change with the command
-		const expectedCmd = new InitCompleteCommand()
-		expect(change).toHaveBeenCalledWith(expectedCmd)
+		expect(parserSpy).toHaveBeenCalledTimes(0)
 	})
 	test('receive - protocol version', async () => {
 		const socket = createSocket()
@@ -354,13 +354,11 @@ describe('AtemSocket', () => {
 		mockClear(true)
 		expect(getChild(socket)).toBeTruthy()
 
-		const connect = jest.fn()
 		const error = jest.fn()
 		const change = jest.fn()
 
-		socket.on('connect', connect)
 		socket.on('error', error)
-		socket.on('commandReceived', change)
+		socket.on('commandsReceived', change)
 
 		const parser = (socket as any)._commandParser as CommandParser
 		expect(parser).toBeTruthy()
@@ -369,11 +367,10 @@ describe('AtemSocket', () => {
 
 		const testBuffer = Buffer.from([0, 12, 0, 0, ...Buffer.from('_ver', 'ascii'), 0x01, 0x02, 0x03, 0x04])
 		const pktId = 822
-		expect(AtemSocketChildSingleton.onCommandReceived).toBeDefined()
-		await AtemSocketChildSingleton.onCommandReceived!(testBuffer, pktId)
+		expect(AtemSocketChildSingleton.onCommandsReceived).toBeDefined()
+		await AtemSocketChildSingleton.onCommandsReceived(testBuffer, pktId)
 		await clock.tickAsync(0)
 
-		expect(connect).toHaveBeenCalledTimes(0)
 		expect(error).toHaveBeenCalledTimes(0)
 		expect(change).toHaveBeenCalledTimes(1)
 
@@ -384,7 +381,7 @@ describe('AtemSocket', () => {
 
 		// A change with the command
 		const expectedCmd = new VersionCommand(0x01020304)
-		expect(change).toHaveBeenCalledWith(expectedCmd)
+		expect(change).toHaveBeenCalledWith([expectedCmd])
 	})
 	test('receive - multiple commands', async () => {
 		const socket = createSocket()
@@ -394,13 +391,11 @@ describe('AtemSocket', () => {
 		mockClear(true)
 		expect(getChild(socket)).toBeTruthy()
 
-		const connect = jest.fn()
 		const error = jest.fn()
 		const change = jest.fn()
 
-		socket.on('connect', connect)
 		socket.on('error', error)
-		socket.on('commandReceived', change)
+		socket.on('commandsReceived', change)
 
 		const parser = (socket as any)._commandParser as CommandParser
 		expect(parser).toBeTruthy()
@@ -413,21 +408,19 @@ describe('AtemSocket', () => {
 		const testCmd1 = Buffer.from([0, 12, 0, 0, ...Buffer.from(ProgramInputUpdateCommand.rawName, 'ascii'), 0x00, 0x00, 0x01, 0x23])
 		const testCmd2 = Buffer.from([0, 12, 0, 0, ...Buffer.from(PreviewInputUpdateCommand.rawName, 'ascii'), 0x01, 0x00, 0x04, 0x44])
 		const pktId = 822
-		expect(AtemSocketChildSingleton.onCommandReceived).toBeDefined()
-		await AtemSocketChildSingleton.onCommandReceived!(Buffer.concat([testCmd1, testCmd2]), pktId)
+		expect(AtemSocketChildSingleton.onCommandsReceived).toBeDefined()
+		await AtemSocketChildSingleton.onCommandsReceived(Buffer.concat([testCmd1, testCmd2]), pktId)
 		await clock.tickAsync(0)
 
-		expect(connect).toHaveBeenCalledTimes(0)
 		expect(error).toHaveBeenCalledTimes(0)
-		expect(change).toHaveBeenCalledTimes(2)
+		expect(change).toHaveBeenCalledTimes(1)
 
 		expect(parserSpy).toHaveBeenCalledTimes(2)
 		expect(parserSpy).toHaveBeenCalledWith(ProgramInputUpdateCommand.rawName)
 		expect(parserSpy).toHaveBeenCalledWith(PreviewInputUpdateCommand.rawName)
 
 		// A change with the command
-		expect(change).toHaveBeenCalledWith(expectedCmd1)
-		expect(change).toHaveBeenCalledWith(expectedCmd2)
+		expect(change).toHaveBeenCalledWith([expectedCmd1, expectedCmd2])
 	})
 	test('receive - empty buffer', async () => {
 		const socket = createSocket()
@@ -437,21 +430,18 @@ describe('AtemSocket', () => {
 		mockClear(true)
 		expect(getChild(socket)).toBeTruthy()
 
-		const connect = jest.fn()
 		const error = jest.fn()
 		const change = jest.fn()
 
-		socket.on('connect', connect)
 		socket.on('error', error)
-		socket.on('commandReceived', change)
+		socket.on('commandsReceived', change)
 
 		const testBuffer = Buffer.alloc(0)
 		const pktId = 822
-		expect(AtemSocketChildSingleton.onCommandReceived).toBeDefined()
-		await AtemSocketChildSingleton.onCommandReceived!(testBuffer, pktId)
+		expect(AtemSocketChildSingleton.onCommandsReceived).toBeDefined()
+		await AtemSocketChildSingleton.onCommandsReceived(testBuffer, pktId)
 		await clock.tickAsync(0)
 
-		expect(connect).toHaveBeenCalledTimes(0)
 		expect(error).toHaveBeenCalledTimes(0)
 		expect(change).toHaveBeenCalledTimes(0)
 	})
@@ -463,21 +453,18 @@ describe('AtemSocket', () => {
 		mockClear(true)
 		expect(getChild(socket)).toBeTruthy()
 
-		const connect = jest.fn()
 		const error = jest.fn()
 		const change = jest.fn()
 
-		socket.on('connect', connect)
 		socket.on('error', error)
-		socket.on('commandReceived', change)
+		socket.on('commandsReceived', change)
 
 		const testBuffer = Buffer.alloc(10, 0)
 		const pktId = 822
-		expect(AtemSocketChildSingleton.onCommandReceived).toBeDefined()
-		await AtemSocketChildSingleton.onCommandReceived!(testBuffer, pktId)
+		expect(AtemSocketChildSingleton.onCommandsReceived).toBeDefined()
+		await AtemSocketChildSingleton.onCommandsReceived(testBuffer, pktId)
 		await clock.tickAsync(0)
 
-		expect(connect).toHaveBeenCalledTimes(0)
 		expect(error).toHaveBeenCalledTimes(0)
 		expect(change).toHaveBeenCalledTimes(0)
 	})
@@ -489,13 +476,11 @@ describe('AtemSocket', () => {
 		mockClear(true)
 		expect(getChild(socket)).toBeTruthy()
 
-		const connect = jest.fn()
 		const error = jest.fn()
 		const change = jest.fn()
 
-		socket.on('connect', connect)
 		socket.on('error', error)
-		socket.on('commandReceived', change)
+		socket.on('commandsReceived', change)
 
 		class BrokenCommand extends DeserializedCommand<{}> {
 			public static readonly rawName = 'TEST'
@@ -519,11 +504,10 @@ describe('AtemSocket', () => {
 		const testCmd1 = Buffer.from([0, 12, 0, 0, ...Buffer.from(ProgramInputUpdateCommand.rawName, 'ascii'), 0x00, 0x00, 0x01, 0x23])
 		const testCmd2 = Buffer.from([0, 12, 0, 0, ...Buffer.from(PreviewInputUpdateCommand.rawName, 'ascii'), 0x01, 0x00, 0x04, 0x44])
 		const pktId = 822
-		expect(AtemSocketChildSingleton.onCommandReceived).toBeDefined()
-		await AtemSocketChildSingleton.onCommandReceived!(Buffer.concat([testCmd1, testCmd2]), pktId)
+		expect(AtemSocketChildSingleton.onCommandsReceived).toBeDefined()
+		await AtemSocketChildSingleton.onCommandsReceived(Buffer.concat([testCmd1, testCmd2]), pktId)
 		await clock.tickAsync(0)
 
-		expect(connect).toHaveBeenCalledTimes(0)
 		expect(error).toHaveBeenCalledTimes(1)
 		expect(change).toHaveBeenCalledTimes(1)
 
@@ -532,7 +516,7 @@ describe('AtemSocket', () => {
 		expect(parserSpy).toHaveBeenCalledWith(PreviewInputUpdateCommand.rawName)
 
 		// The second command should have been a success
-		expect(change).toHaveBeenCalledWith(expectedCmd2)
+		expect(change).toHaveBeenCalledWith([expectedCmd2])
 		expect(error).toHaveBeenCalledWith('Failed to deserialize command: BrokenCommand: Error: Broken command')
 	})
 

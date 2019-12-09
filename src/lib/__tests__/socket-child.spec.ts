@@ -30,8 +30,8 @@ function fakeConnect (child: AtemSocketChild) {
 }
 
 function createSocketChild (
-	onCommandReceived?: (payload: Buffer, packetId: number) => Promise<void>,
-	onCommandAcknowledged?: (packetId: number, trackingId: number) => Promise<void>,
+	onCommandsReceived?: (payload: Buffer, packetId: number) => Promise<void>,
+	onCommandsAcknowledged?: (ids: Array<{ packetId: number, trackingId: number }>) => Promise<void>,
 	onDisconnect?: () => Promise<void>
 	) {
 	return new AtemSocketChild(
@@ -43,8 +43,8 @@ function createSocketChild (
 		onDisconnect || (() => Promise.resolve()),
 		// async msg => { console.log(msg) },
 		() => Promise.resolve(),
-		onCommandReceived || (() => Promise.resolve()),
-		onCommandAcknowledged || (() => Promise.resolve())
+		onCommandsReceived || (() => Promise.resolve()),
+		onCommandsAcknowledged || (() => Promise.resolve())
 	)
 }
 
@@ -428,10 +428,7 @@ describe('SocketChild', () => {
 
 	test('SendCommand - acks', async () => {
 		let acked: Array<{packetId: number, trackingId: number}> = []
-		const child = createSocketChild(undefined, (packetId, trackingId) => {
-			acked.push({ packetId, trackingId })
-			return Promise.resolve()
-		})
+		const child = createSocketChild(undefined, async ids => { acked.push(...ids) })
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -494,10 +491,7 @@ describe('SocketChild', () => {
 
 	test('SendCommand - acks wrap', async () => {
 		let acked: Array<{packetId: number, trackingId: number}> = []
-		const child = createSocketChild(undefined, (packetId, trackingId) => {
-			acked.push({ packetId, trackingId })
-			return Promise.resolve()
-		})
+		const child = createSocketChild(undefined, async ids => { acked.push(...ids) })
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -561,10 +555,7 @@ describe('SocketChild', () => {
 
 	test('SendCommand - retransmit timeouts', async () => {
 		let acked: Array<{packetId: number, trackingId: number}> = []
-		const child = createSocketChild(undefined, (packetId, trackingId) => {
-			acked.push({ packetId, trackingId })
-			return Promise.resolve()
-		})
+		const child = createSocketChild(undefined, async ids => { acked.push(...ids) })
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -655,10 +646,7 @@ describe('SocketChild', () => {
 
 	test('SendCommand - retransmit request', async () => {
 		let acked: Array<{packetId: number, trackingId: number}> = []
-		const child = createSocketChild(undefined, (packetId, trackingId) => {
-			acked.push({ packetId, trackingId })
-			return Promise.resolve()
-		})
+		const child = createSocketChild(undefined, async ids => { acked.push(...ids) })
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -722,10 +710,7 @@ describe('SocketChild', () => {
 	test('SendCommand - retransmit request future', async () => {
 		const acked: Array<{packetId: number, trackingId: number}> = []
 		let connected = true
-		const child = createSocketChild(undefined, (packetId, trackingId) => {
-			acked.push({ packetId, trackingId })
-			return Promise.resolve()
-		}, async () => { connected = false })
+		const child = createSocketChild(undefined, async ids => { acked.push(...ids) }, async () => { connected = false })
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -759,10 +744,7 @@ describe('SocketChild', () => {
 	test('SendCommand - retransmit request previous', async () => {
 		const acked: Array<{packetId: number, trackingId: number}> = []
 		let connected = true
-		const child = createSocketChild(undefined, (packetId, trackingId) => {
-			acked.push({ packetId, trackingId })
-			return Promise.resolve()
-		}, async () => { connected = false })
+		const child = createSocketChild(undefined, async ids => { acked.push(...ids) }, async () => { connected = false })
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
@@ -796,10 +778,7 @@ describe('SocketChild', () => {
 	test('Reconnect timer', async () => {
 		let acked: Array<{packetId: number, trackingId: number}> = []
 		let connected = true
-		const child = createSocketChild(undefined, (packetId, trackingId) => {
-			acked.push({ packetId, trackingId })
-			return Promise.resolve()
-		}, async () => { connected = false })
+		const child = createSocketChild(undefined, async ids => { acked.push(...ids) }, async () => { connected = false })
 		try {
 			fakeConnect(child)
 			const socket = getSocket(child)
