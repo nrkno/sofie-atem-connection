@@ -24,7 +24,6 @@ export interface ISerializableCommand {
 }
 
 export abstract class BasicWritableCommand<T> implements ISerializableCommand {
-	public static readonly MaskFlags?: { [key: string]: number }
 	public static readonly minimumVersion?: ProtocolVersion
 
 	protected _properties: T

@@ -104,9 +104,9 @@ export class MixEffect implements IMixEffect {
 
 		this.transitionProperties = {
 			style: Enum.TransitionStyle.MIX,
-			selection: 0,
+			selection: 1,
 			nextStyle: Enum.TransitionStyle.MIX,
-			nextSelection: 0
+			nextSelection: 1
 		}
 	}
 
