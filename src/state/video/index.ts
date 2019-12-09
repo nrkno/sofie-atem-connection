@@ -1,6 +1,8 @@
 import * as Enum from '../../enums'
 import * as USK from './upstreamKeyers'
-import { DownstreamKeyer } from './downstreamKeyers'
+import * as DSK from './downstreamKeyers'
+
+export { USK, DSK }
 
 export interface DipTransitionSettings {
 	rate: number
@@ -193,7 +195,7 @@ export interface FadeToBlackProperties {
 
 export class AtemVideoState {
 	public readonly ME: Array<MixEffect | undefined> = []
-	public readonly downstreamKeyers: Array<DownstreamKeyer | undefined> = []
+	public readonly downstreamKeyers: Array<DSK.DownstreamKeyer | undefined> = []
 	public readonly auxilliaries: Array<number | undefined> = []
 	public readonly superSources: Array<SuperSource | undefined> = []
 
@@ -223,7 +225,7 @@ export class AtemVideoState {
 		return ssrc
 	}
 
-	public getDownstreamKeyer (index: number, dontCreate?: boolean): DownstreamKeyer {
+	public getDownstreamKeyer (index: number, dontCreate?: boolean): DSK.DownstreamKeyer {
 		let dsk = this.downstreamKeyers[index]
 		if (!dsk) {
 			dsk = {
