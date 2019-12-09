@@ -43,9 +43,9 @@ interface SentCommand {
 
 export const DEFAULT_PORT = 9910
 
-export class Atem extends EventEmitter {
+export class BasicAtem extends EventEmitter {
 	private readonly socket: AtemSocket
-	private readonly dataTransferManager: DT.DataTransferManager
+	protected readonly dataTransferManager: DT.DataTransferManager
 	private readonly _log: (...args: any[]) => void
 	private _state: AtemState
 	private _sentQueue: {[packetId: string]: SentCommand } = {}
@@ -131,6 +131,52 @@ export class Atem extends EventEmitter {
 
 	public sendCommand (command: ISerializableCommand): Promise<void> {
 		return this.sendCommands([command])[0]
+	}
+
+	private _mutateState (command: IDeserializedCommand) {
+		if (command.constructor.name === Commands.VersionCommand.name) {
+			// On start of connection, create a new state object
+			this._state = new AtemState()
+		}
+
+		try {
+			let changePaths = command.applyToState(this.state)
+			if (!Array.isArray(changePaths)) {
+				changePaths = [ changePaths ]
+			}
+			changePaths.forEach(path => this.emit('stateChanged', this._state, path))
+		} catch (e) {
+			// TODO - should we error or warn on this?
+			this.emit('error', `MutateState failed: ${e}`)
+		}
+
+		for (const commandName in DataTransferCommands) {
+			if (command.constructor.name === commandName) {
+				this.dataTransferManager.handleCommand(command)
+			}
+		}
+	}
+
+	private _resolveCommand (trackingId: number) {
+		const sent = this._sentQueue[trackingId]
+		if (sent) {
+			sent.resolve()
+			delete this._sentQueue[trackingId]
+		}
+	}
+
+	private _rejectAllCommands () {
+		// Take a copy in case the promises cause more mutations
+		const sentQueue = this._sentQueue
+		this._sentQueue = {}
+
+		Object.values(sentQueue).forEach(sent => sent.reject())
+	}
+}
+
+export class Atem extends BasicAtem {
+	constructor (options?: AtemOptions) {
+		super(options)
 	}
 
 	public changeProgramInput (input: number, me: number = 0) {
@@ -326,7 +372,7 @@ export class Atem extends EventEmitter {
 	}
 
 	public setSuperSourceProperties (newProps: Partial<SuperSourceProperties>, ssrcId: number = 0) {
-		if (this._state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
+		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
 			const command = new Commands.SuperSourcePropertiesV8Command(ssrcId)
 			command.updateProps(newProps)
 			return this.sendCommand(command)
@@ -338,7 +384,7 @@ export class Atem extends EventEmitter {
 	}
 
 	public setSuperSourceBorder (newProps: Partial<SuperSourceBorder>, ssrcId: number = 0) {
-		if (this._state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
+		if (this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
 			const command = new Commands.SuperSourceBorderCommand(ssrcId)
 			command.updateProps(newProps)
 			return this.sendCommand(command)
@@ -407,7 +453,7 @@ export class Atem extends EventEmitter {
 	}
 
 	public uploadStill (index: number, data: Buffer, name: string, description: string) {
-		const resolution = Util.getResolution(this._state.settings.videoMode)
+		const resolution = Util.getResolution(this.state.settings.videoMode)
 		return this.dataTransferManager.uploadStill(
 			index,
 			Util.convertRGBAToYUV422(resolution[0], resolution[1], data),
@@ -417,7 +463,7 @@ export class Atem extends EventEmitter {
 	}
 
 	public uploadClip (index: number, frames: Array<Buffer>, name: string) {
-		const resolution = Util.getResolution(this._state.settings.videoMode)
+		const resolution = Util.getResolution(this.state.settings.videoMode)
 		const data: Array<Buffer> = []
 		for (const frame of frames) {
 			data.push(Util.convertRGBAToYUV422(resolution[0], resolution[1], frame))
@@ -475,45 +521,5 @@ export class Atem extends EventEmitter {
 
 	public listVisibleInputs (mode: 'program' | 'preview', me = 0): number[] {
 		return listVisibleInputs(mode, this.state, me)
-	}
-
-	private _mutateState (command: IDeserializedCommand) {
-		if (command.constructor.name === Commands.VersionCommand.name) {
-			// On start of connection, create a new state object
-			this._state = new AtemState()
-		}
-
-		try {
-			let changePaths = command.applyToState(this.state)
-			if (!Array.isArray(changePaths)) {
-				changePaths = [ changePaths ]
-			}
-			changePaths.forEach(path => this.emit('stateChanged', this._state, path))
-		} catch (e) {
-			// TODO - should we error or warn on this?
-			this.emit('error', `MutateState failed: ${e}`)
-		}
-
-		for (const commandName in DataTransferCommands) {
-			if (command.constructor.name === commandName) {
-				this.dataTransferManager.handleCommand(command)
-			}
-		}
-	}
-
-	private _resolveCommand (trackingId: number) {
-		const sent = this._sentQueue[trackingId]
-		if (sent) {
-			sent.resolve()
-			delete this._sentQueue[trackingId]
-		}
-	}
-
-	private _rejectAllCommands () {
-		// Take a copy in case the promises cause more mutations
-		const sentQueue = this._sentQueue
-		this._sentQueue = {}
-
-		Object.values(sentQueue).forEach(sent => sent.reject())
 	}
 }
