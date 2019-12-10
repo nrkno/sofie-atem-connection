@@ -34,9 +34,7 @@ const commandConverters: CommandTestConverterSet = {
 			'superSource': (val: any) => ({ val, name: 'superSources' })
 		},
 		customMutate: obj => {
-			obj.downstreamKeyers = 2
 			obj.multiViewers = 2
-			obj.upstreamKeyers = 2
 			return obj
 		}
 	},

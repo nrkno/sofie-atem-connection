@@ -3,23 +3,41 @@ import { Model, ProtocolVersion } from '../enums'
 export interface AtemCapabilites {
 	readonly mixEffects: number
 	readonly sources: number
-	readonly colorGenerators: number
 	readonly auxilliaries: number
-	readonly talkbackOutputs: number
+	readonly mixMinusOutputs: number
 	readonly mediaPlayers: number
 	readonly serialPorts: number
 	readonly maxHyperdecks: number
 	readonly DVEs: number
 	readonly stingers: number
 	readonly superSources: number
-	readonly talkbackOverSDI: number
+	// readonly talkbackOverSDI: number
 	readonly downstreamKeyers: number
+	readonly cameraControl: boolean
+	readonly advancedChromaKeyers: boolean
 	readonly multiViewers: number
-	readonly upstreamKeyers: number
+}
+
+export interface MixEffectInfo {
+	readonly keyCount: number
 }
 
 export interface SuperSourceInfo {
-	boxCount: number
+	readonly boxCount: number
+}
+
+export interface AudioMixerInfo {
+	readonly inputs: number
+	readonly monitors: number
+}
+
+export interface MacroPoolInfo {
+	readonly macroCount: number
+}
+
+export interface MediaPoolInfo {
+	readonly stillCount: number
+	readonly clipCount: number
 }
 
 export class DeviceInfo {
@@ -28,5 +46,9 @@ export class DeviceInfo {
 	public model: Model = Model.Unknown
 	public productIdentifier?: string
 	public superSources: SuperSourceInfo[] = []
+	public mixEffects: MixEffectInfo[] = []
 	public power: boolean[] = []
+	public audioMixer?: AudioMixerInfo
+	public macroPool?: MacroPoolInfo
+	public mediaPool?: MediaPoolInfo
 }

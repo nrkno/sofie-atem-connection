@@ -17,7 +17,7 @@ export enum ConnectionState {
 
 export enum PacketFlag {
 	AckRequest = 0x01,
-	Connect = 0x02,
+	Connect = 0x02, // TODO - 'new session id'? or something like that
 	IsRetransmit = 0x04,
 	RetransmitRequest = 0x08,
 	AckReply = 0x10

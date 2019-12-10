@@ -36,19 +36,19 @@ export function createEmptyState () {
 	state.info.capabilities = {
 		mixEffects: 4,
 		sources: 40,
-		colorGenerators: 2,
 		auxilliaries: 6,
-		talkbackOutputs: 8,
+		mixMinusOutputs: 8,
 		mediaPlayers: 4,
 		serialPorts: 1,
 		maxHyperdecks: 4,
 		DVEs: 1,
 		stingers: 1,
 		superSources: 2,
-		talkbackOverSDI: 0,
+		// talkbackOverSDI: 0,
 		multiViewers: 255,
 		downstreamKeyers: 4,
-		upstreamKeyers: 4
+		cameraControl: true,
+		advancedChromaKeyers: true
 	}
 
 	return state

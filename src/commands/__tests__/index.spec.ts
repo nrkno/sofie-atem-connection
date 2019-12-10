@@ -264,10 +264,16 @@ const commandConverters: CommandTestConverterSet = {
 			'talkbackOverSDI': () => ({ val: 0 }) // @todo: should be fixed in atem-connection
 		},
 		customMutate: obj => {
-			obj.downstreamKeyers = 2
 			obj.multiViewers = 2
-			obj.upstreamKeyers = 2
 			return obj
+		}
+	},
+	'_MeC': {
+		idAliases: {
+			'index': 'index'
+		},
+		propertyAliases: {
+			'balance': (v: number) => ({ val: Math.round(v * 200) / 200 })
 		}
 	},
 	'FTCD': {
