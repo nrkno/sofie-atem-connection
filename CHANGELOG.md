@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/nrkno/tv-automation-atem-connection/compare/1.1.0...1.2.0) (2019-12-13)
+
+
+### Features
+
+* add listVisibleInputs method ([#57](https://github.com/nrkno/tv-automation-atem-connection/issues/57)) ([23c9318](https://github.com/nrkno/tv-automation-atem-connection/commit/23c93185fe05c4bf763aefd301717414a5ec8d88))
+* expose setFadeToBlackRate ([fa974a4](https://github.com/nrkno/tv-automation-atem-connection/commit/fa974a4412344054eca0cf9950aa5943381452d7))
+
+
+### Bug Fixes
+
+* add missing TVS-pro models to Model enum ([8ac6777](https://github.com/nrkno/tv-automation-atem-connection/commit/8ac67776e8a419bb41ac0e543545b73210029673))
+
 ## [1.1.0](https://github.com/nrkno/tv-automation-atem-connection/compare/1.0.2...1.1.0) (2019-10-24)
 
 
