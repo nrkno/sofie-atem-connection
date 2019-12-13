@@ -25,6 +25,7 @@ import { Util } from './lib/atemUtil'
 import * as Enums from './enums'
 import { AudioChannel, AudioMasterChannel } from './state/audio'
 import exitHook = require('exit-hook')
+import { listVisibleInputs } from './lib/tally'
 
 export interface AtemOptions {
 	address?: string,
@@ -50,7 +51,8 @@ export class Atem extends EventEmitter {
 	on: ((event: 'error', listener: (message: any) => void) => this) &
 		((event: 'connected', listener: () => void) => this) &
 		((event: 'disconnected', listener: () => void) => this) &
-		((event: 'stateChanged', listener: (state: AtemState, path: string) => void) => this)
+		((event: 'stateChanged', listener: (state: AtemState, path: string) => void) => this) &
+		((event: 'receivedCommand', listener: (cmd: AbstractCommand) => void) => this)
 
 	constructor (options?: AtemOptions) {
 		super()
@@ -81,7 +83,10 @@ export class Atem extends EventEmitter {
 			}
 		})
 
-		this.socket.on('receivedStateChange', (command: AbstractCommand) => this._mutateState(command))
+		this.socket.on('receivedStateChange', (command: AbstractCommand) => {
+			this.emit('receivedCommand', command)
+			this._mutateState(command)
+		})
 		this.socket.on(Enums.IPCMessageType.CommandAcknowledged, ({ trackingId }: {trackingId: number}) => this._resolveCommand(trackingId))
 		this.socket.on(Enums.IPCMessageType.CommandTimeout, ({ trackingId }: {trackingId: number}) => this._rejectCommand(trackingId))
 		this.socket.on('error', (e) => this.emit('error', e))
@@ -138,6 +143,13 @@ export class Atem extends EventEmitter {
 	fadeToBlack (me = 0) {
 		const command = new Commands.FadeToBlackAutoCommand()
 		command.mixEffect = me
+		return this.sendCommand(command)
+	}
+
+	setFadeToBlackRate (rate: number, me: number = 0) {
+		const command = new Commands.FadeToBlackRateCommand()
+		command.mixEffect = me
+		command.properties = { rate }
 		return this.sendCommand(command)
 	}
 
@@ -523,6 +535,10 @@ export class Atem extends EventEmitter {
 		const command = new Commands.AudioMixerMasterCommand()
 		command.updateProps(props)
 		return this.sendCommand(command)
+	}
+
+	listVisibleInputs (mode: 'program' | 'preview', me = 0): number[] {
+		return listVisibleInputs(mode, this.state, me)
 	}
 
 	private _mutateState (command: AbstractCommand) {

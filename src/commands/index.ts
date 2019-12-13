@@ -15,3 +15,4 @@ export { AbstractCommand }
 export * from './AuxSourceCommand'
 export * from './InitCompleteCommand'
 export * from './PowerStatusCommand'
+export * from './TallyBySourceCommand'
