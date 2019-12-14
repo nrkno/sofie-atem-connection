@@ -847,6 +847,7 @@ describe('Commands v7.2', () => {
 		const testCase = TestCases[i]
 		switch (testCase.name) {
 			// Temporarily ignore the failures
+			case '_top': // New properties not implemented in LibAtem yet
 			case 'FTSU': // Unkown props getting overwritten by generator: https://github.com/LibAtem/LibAtem/blob/master/LibAtem/Commands/DataTransfer/DataTransferDownloadRequestCommand.cs
 				continue
 		}

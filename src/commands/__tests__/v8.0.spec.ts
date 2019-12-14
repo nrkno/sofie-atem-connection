@@ -134,6 +134,7 @@ describe('Commands v8.0', () => {
 
 		switch (testCase.name) {
 			// Not parsed
+			case '_top': // New properties not implemented in LibAtem yet
 			case '_MvC': // Not parsed
 			case 'AMIP': // portType max value
 				continue

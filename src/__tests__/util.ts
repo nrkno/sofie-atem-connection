@@ -50,6 +50,20 @@ export function createEmptyState () {
 		cameraControl: true,
 		advancedChromaKeyers: true
 	}
+	state.info.mixEffects = [
+		{
+			keyCount: 4
+		},
+		{
+			keyCount: 4
+		},
+		{
+			keyCount: 4
+		},
+		{
+			keyCount: 4
+		}
+	]
 
 	return state
 }

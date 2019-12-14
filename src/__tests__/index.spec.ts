@@ -1,5 +1,6 @@
 import { Atem, Enums } from '../index'
 import { cleanupAtem } from './lib'
+import { createEmptyState } from './util'
 
 test('Simple test', async () => {
 	const nb = new Atem({ disableMultithreaded: true })
@@ -14,9 +15,15 @@ test('Simple test', async () => {
 
 function createConnection (apiVersion: Enums.ProtocolVersion) {
 	const conn = new Atem({ debug: true, disableMultithreaded: true })
+
+	// Create a state object
+	const state = createEmptyState()
+	state.info.apiVersion = apiVersion
+
 	// conn.on('error', () => null)
 	conn.sendCommand = jest.fn()
-	conn.state.info.apiVersion = apiVersion
+
+	;(conn as any)._state = state
 
 	return conn
 }
