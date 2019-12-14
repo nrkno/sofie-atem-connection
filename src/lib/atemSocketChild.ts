@@ -207,7 +207,7 @@ export class AtemSocketChild {
 	}
 
 	private _receivePacket (packet: Buffer, rinfo: RemoteInfo) {
-		if (this._debug) this.log(`RECV ${packet}`)
+		if (this._debug) this.log(`RECV ${packet.toString('hex')}`)
 		this._lastReceivedAt = Date.now()
 		const length = packet.readUInt16BE(0) & 0x07ff
 		if (length !== rinfo.size) return
@@ -277,7 +277,7 @@ export class AtemSocketChild {
 	}
 
 	private _sendPacket (packet: Buffer) {
-		if (this._debug) this.log(`SEND ${packet}`)
+		if (this._debug) this.log(`SEND ${packet.toString('hex')}`)
 		this._socket.send(packet, 0, packet.length, this._port, this._address)
 	}
 
