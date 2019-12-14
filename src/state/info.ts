@@ -45,8 +45,8 @@ export class DeviceInfo {
 	public capabilities?: AtemCapabilites
 	public model: Model = Model.Unknown
 	public productIdentifier?: string
-	public superSources: SuperSourceInfo[] = []
-	public mixEffects: MixEffectInfo[] = []
+	public superSources: Array<SuperSourceInfo | undefined> = []
+	public mixEffects: Array<MixEffectInfo | undefined> = []
 	public power: boolean[] = []
 	public audioMixer?: AudioMixerInfo
 	public macroPool?: MacroPoolInfo

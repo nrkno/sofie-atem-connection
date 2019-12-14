@@ -63,7 +63,8 @@ export class MixEffectKeyLumaUpdateCommand extends DeserializedCommand<UpstreamK
 	}
 
 	public applyToState (state: AtemState) {
-		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects || this.upstreamKeyerId >= state.info.capabilities.upstreamKeyers) {
+		const meInfo = state.info.mixEffects[this.mixEffect]
+		if (!meInfo || this.upstreamKeyerId >= meInfo.keyCount) {
 			throw new Error(`UpstreamKeyer ${this.mixEffect}-${this.upstreamKeyerId} is not valid`)
 		}
 
