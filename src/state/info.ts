@@ -25,6 +25,13 @@ export interface SuperSourceInfo {
 	boxCount: number
 }
 
+export interface TimeInfo {
+	hour: number
+	minute: number
+	second: number
+	frame: number
+}
+
 export class DeviceInfo {
 	apiVersion: ProtocolVersion
 	capabilities: AtemCapabilites
@@ -32,4 +39,5 @@ export class DeviceInfo {
 	productIdentifier: string
 	superSources: SuperSourceInfo[] = []
 	power: boolean[]
+	time: TimeInfo
 }
