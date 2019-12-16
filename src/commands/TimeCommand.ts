@@ -1,6 +1,7 @@
 import AbstractCommand from './AbstractCommand'
 import { AtemState } from '../state'
 import { TimeInfo } from '../state/info'
+import * as Enums from '../enums'
 
 export class TimeCommand extends AbstractCommand {
 	rawName = 'Time'
@@ -39,5 +40,17 @@ export class TimeCommand extends AbstractCommand {
 			...this.properties
 		}
 		return 'info.time'
+	}
+}
+
+export class TimeRequestCommand extends AbstractCommand {
+	rawName = 'TiRq'
+	minimumVersion = Enums.ProtocolVersion.V8_0
+
+	properties = {}
+
+	serialize () {
+		const buffer = Buffer.alloc(0)
+		return buffer
 	}
 }

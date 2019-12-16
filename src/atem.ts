@@ -278,6 +278,11 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	requestTime () {
+		const command = new Commands.TimeRequestCommand()
+		return this.sendCommand(command)
+	}
+
 	macroContinue () {
 		const command = new Commands.MacroActionCommand()
 		command.index = 0
