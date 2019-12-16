@@ -6,18 +6,18 @@ export class TimeCommand extends AbstractCommand {
 	rawName = 'Time'
 
 	properties: TimeInfo = {
-		hour: 0,
-		minute: 0,
-		second: 0,
-		frame: 0
+		hours: 0,
+		minutes: 0,
+		seconds: 0,
+		frames: 0
 	}
 
 	serialize () {
 		const buffer = Buffer.alloc(8)
-		buffer.writeUInt8(this.properties.hour, 0)
-		buffer.writeUInt8(this.properties.minute, 1)
-		buffer.writeUInt8(this.properties.second, 2)
-		buffer.writeUInt8(this.properties.frame, 3)
+		buffer.writeUInt8(this.properties.hours, 0)
+		buffer.writeUInt8(this.properties.minutes, 1)
+		buffer.writeUInt8(this.properties.seconds, 2)
+		buffer.writeUInt8(this.properties.frames, 3)
 
 		// Not sure what the meaning of these 4 bytes is, but 0x00000000 works.
 		buffer.writeUInt32BE(0x00000000, 4)
@@ -27,17 +27,17 @@ export class TimeCommand extends AbstractCommand {
 
 	deserialize (rawCommand: Buffer) {
 		this.properties = {
-			hour: rawCommand.readUInt8(0),
-			minute: rawCommand.readUInt8(1),
-			second: rawCommand.readUInt8(2),
-			frame: rawCommand.readUInt8(3)
+			hours: rawCommand.readUInt8(0),
+			minutes: rawCommand.readUInt8(1),
+			seconds: rawCommand.readUInt8(2),
+			frames: rawCommand.readUInt8(3)
 		}
 	}
 
 	applyToState (state: AtemState) {
-		state.info.time = {
+		state.info.lastTime = {
 			...this.properties
 		}
-		return 'time'
+		return 'info.time'
 	}
 }

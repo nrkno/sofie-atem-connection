@@ -26,10 +26,10 @@ export interface SuperSourceInfo {
 }
 
 export interface TimeInfo {
-	hour: number
-	minute: number
-	second: number
-	frame: number
+	hours: number
+	minutes: number
+	seconds: number
+	frames: number
 }
 
 export class DeviceInfo {
@@ -39,5 +39,5 @@ export class DeviceInfo {
 	productIdentifier: string
 	superSources: SuperSourceInfo[] = []
 	power: boolean[]
-	time: TimeInfo
+	lastTime: TimeInfo
 }
