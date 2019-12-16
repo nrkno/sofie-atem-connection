@@ -26,10 +26,10 @@ export interface SuperSourceInfo {
 }
 
 export interface TimeInfo {
-	hours: number
-	minutes: number
-	seconds: number
-	frames: number
+	hour: number
+	minute: number
+	second: number
+	frame: number
 }
 
 export class DeviceInfo {
