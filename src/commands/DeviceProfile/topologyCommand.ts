@@ -23,7 +23,7 @@ export class TopologyCommand extends DeserializedCommand<AtemCapabilites> {
 			cameraControl: rawCommand.readUInt8(17) === 1,
 
 			// Note: these are defined below as they can overflow in older firmwares
-			advancedChromaKeyers: false,
+			advancedChromaKeyers: false
 		}
 
 		// in 7.4?

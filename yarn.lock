@@ -5165,12 +5165,13 @@ text-extensions@^1.0.0:
   resolved "https://registry.yarnpkg.com/text-extensions/-/text-extensions-1.9.0.tgz#1853e45fee39c945ce6f6c36b2d659b5aabc2a26"
   integrity sha512-wiBrwC1EhBelW12Zy26JeOUkQ5mRu+5o8rpsJk5+2t+Y5vE7e842qtZDQ2g1NpX/29HdyFeJ4nSIhI47ENSxlQ==
 
-"threadedclass@https://github.com/Julusian/threadedClass.git#dist/feat/node12-types":
-  version "0.0.0-develop"
-  resolved "https://github.com/Julusian/threadedClass.git#9a40b3357db293b8a8429526a4bf7d8d4de8a10f"
+threadedclass@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/threadedclass/-/threadedclass-0.7.0.tgz#16d970211f930b5759fae83a4cde78563b0b5104"
+  integrity sha512-at4Ouv4JSbFz5hX5XnhjkukqOz+J086BHPXT3P6lD64rhYgzbOdWruyj8AgE7xfeh3Wd8nl9yUJiZ4ryoD9IFA==
   dependencies:
     callsites "^3.1.0"
-    tslib "^1.9.3"
+    tslib "^1.10.0"
 
 throat@^4.0.0:
   version "4.1.0"
@@ -5338,7 +5339,7 @@ tslib@1.9.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.0.tgz#e37a86fda8cbbaf23a057f473c9f4dc64e5fc2e8"
   integrity sha512-f/qGG2tUkrISBlQZEjEqoZ3B2+npJjIf04H1wuAv9iA8i04Icp+61KRXxFdha22670NJopsZCIjhC3SnjPRKrQ==
 
-tslib@^1.10.0, tslib@^1.8.0, tslib@^1.8.1, tslib@^1.9.3:
+tslib@^1.10.0, tslib@^1.8.0, tslib@^1.8.1:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==

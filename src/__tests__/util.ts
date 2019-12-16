@@ -45,7 +45,6 @@ export function createEmptyState () {
 		stingers: 1,
 		superSources: 2,
 		// talkbackOverSDI: 0,
-		multiViewers: 255,
 		downstreamKeyers: 4,
 		cameraControl: true,
 		advancedChromaKeyers: true
@@ -64,6 +63,10 @@ export function createEmptyState () {
 			keyCount: 4
 		}
 	]
+	state.info.multiviewer = {
+		count: 255,
+		windowCount: 16
+	}
 
 	return state
 }
