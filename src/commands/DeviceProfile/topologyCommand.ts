@@ -24,9 +24,6 @@ export class TopologyCommand extends DeserializedCommand<AtemCapabilites> {
 
 			// Note: these are defined below as they can overflow in older firmwares
 			advancedChromaKeyers: false,
-
-			// TODO - define the below properly
-			multiViewers: 2
 		}
 
 		// in 7.4?

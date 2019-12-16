@@ -61,10 +61,20 @@ function runTestMe1 (name: string, filename: string) {
 		expect(child).toBeTruthy()
 		expect(child.onCommandsReceived).toBeTruthy()
 
+		const errors: any[] = []
+		conn.on('error', e => {
+			// Ignore any errors that are due to bad ids, as they are 'good' errors
+			if (!e.indexOf('is not valid')) {
+				errors.push(e)
+			}
+		})
+
 		for (const i in fileData) {
 			const buffer = Buffer.from(fileData[i].trim(), 'hex')
 			await child.onCommandsReceived(buffer, i)
 		}
+
+		expect(errors).toEqual([])
 
 		// console.log(conn.state)
 	})

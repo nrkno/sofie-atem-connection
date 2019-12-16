@@ -15,7 +15,6 @@ export interface AtemCapabilites {
 	readonly downstreamKeyers: number
 	readonly cameraControl: boolean
 	readonly advancedChromaKeyers: boolean
-	readonly multiViewers: number
 }
 
 export interface MixEffectInfo {
@@ -40,6 +39,11 @@ export interface MediaPoolInfo {
 	readonly clipCount: number
 }
 
+export interface MultiviewerInfo {
+	readonly count: number
+	readonly windowCount: number
+}
+
 export class DeviceInfo {
 	public apiVersion: ProtocolVersion = 0
 	public capabilities?: AtemCapabilites
@@ -51,4 +55,5 @@ export class DeviceInfo {
 	public audioMixer?: AudioMixerInfo
 	public macroPool?: MacroPoolInfo
 	public mediaPool?: MediaPoolInfo
+	public multiviewer?: MultiviewerInfo
 }

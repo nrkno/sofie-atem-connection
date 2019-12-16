@@ -170,7 +170,7 @@ export class BasicAtem extends EventEmitter {
 					}
 				} catch (e) {
 					// TODO - should we error or warn on this?
-					this.emit('error', `MutateState failed: ${e}`)
+					this.emit('error', `MutateState failed: ${e}. Command: ${command.constructor.name} ${JSON.stringify(command)}`)
 				}
 			}
 

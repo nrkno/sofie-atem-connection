@@ -44,7 +44,7 @@ export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiVie
 	}
 
 	public applyToState (state: AtemState) {
-		if (!state.info.capabilities || this.multiViewerId >= state.info.capabilities.multiViewers) {
+		if (!state.info.multiviewer || this.multiViewerId >= state.info.multiviewer.count) {
 			throw new Error(`MultiViewer ${this.multiViewerId} is not valid`)
 		}
 

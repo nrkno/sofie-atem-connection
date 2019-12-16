@@ -32,10 +32,6 @@ const commandConverters: CommandTestConverterSet = {
 			'serialPort': (val: any) => ({ val, name: 'serialPorts' }),
 			'videoSources': (val: any) => ({ val, name: 'sources' }),
 			'superSource': (val: any) => ({ val, name: 'superSources' })
-		},
-		customMutate: obj => {
-			obj.multiViewers = 2
-			return obj
 		}
 	},
 	'SSrc': {
