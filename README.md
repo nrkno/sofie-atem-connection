@@ -4,6 +4,17 @@
 
 This library is used in the [**Sofie** TV News Studio Automation System](https://github.com/nrkno/Sofie-TV-automation/) for connecting to Blackmagic Design ATEM devices.
 
+## Device support
+
+| Version | Target Support |
+| ----- | ----- |
+| v8.0 - v8.1 | Primary focus. Target support for new features |
+| v7.2 | Previous target, should work well |
+| v7.3 - v7.5.2 | Community tested, no reported problems |
+
+Due to the nature of the library it is likely that new versions of the ATEM firmware will break some functionality, so any new functionality will generally not be tested for older versions.
+
+It is tested on a variety of models spanning every generation, and the aim is to provide support for every model.
 
 ## Technology highlights
 - Typescript
