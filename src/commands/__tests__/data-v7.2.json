@@ -378,17 +378,19 @@
       "Hour": 13,
       "Minute": 41,
       "Second": 31,
-      "Frame": 4
+	  "Frame": 4,
+	  "DropFrame": false
     }
   },
   {
     "name": "Time",
-    "bytes": "00-10-00-00-54-69-6D-65-09-28-3A-0B-00-00-00-00",
+    "bytes": "00-10-00-00-54-69-6D-65-09-28-3A-0B-00-01-00-00",
     "command": {
       "Hour": 9,
       "Minute": 40,
       "Second": 58,
-      "Frame": 11
+      "Frame": 11,
+	  "DropFrame": true
     }
   },
   {
@@ -398,7 +400,8 @@
       "Hour": 11,
       "Minute": 50,
       "Second": 26,
-      "Frame": 28
+      "Frame": 28,
+	  "DropFrame": false
     }
   },
   {
@@ -408,37 +411,41 @@
       "Hour": 8,
       "Minute": 45,
       "Second": 13,
-      "Frame": 21
+      "Frame": 21,
+	  "DropFrame": false
     }
   },
   {
     "name": "Time",
-    "bytes": "00-10-00-00-54-69-6D-65-16-05-1E-32-00-00-00-00",
+    "bytes": "00-10-00-00-54-69-6D-65-16-05-1E-32-00-01-00-00",
     "command": {
       "Hour": 22,
       "Minute": 5,
       "Second": 30,
-      "Frame": 50
+      "Frame": 50,
+	  "DropFrame": true
     }
   },
   {
     "name": "Time",
-    "bytes": "00-10-00-00-54-69-6D-65-0F-0B-0A-23-00-00-00-00",
+    "bytes": "00-10-00-00-54-69-6D-65-0F-0B-0A-23-00-01-00-00",
     "command": {
       "Hour": 15,
       "Minute": 11,
       "Second": 10,
-      "Frame": 35
+      "Frame": 35,
+	  "DropFrame": true
     }
   },
   {
     "name": "Time",
-    "bytes": "00-10-00-00-54-69-6D-65-09-04-19-2C-00-00-00-00",
+    "bytes": "00-10-00-00-54-69-6D-65-09-04-19-2C-00-01-00-00",
     "command": {
       "Hour": 9,
       "Minute": 4,
       "Second": 25,
-      "Frame": 44
+      "Frame": 44,
+	  "DropFrame": true
     }
   },
   {
@@ -448,27 +455,30 @@
       "Hour": 6,
       "Minute": 43,
       "Second": 27,
-      "Frame": 26
+      "Frame": 26,
+	  "DropFrame": false
     }
   },
   {
     "name": "Time",
-    "bytes": "00-10-00-00-54-69-6D-65-0B-0C-1F-1F-00-00-00-00",
+    "bytes": "00-10-00-00-54-69-6D-65-0B-0C-1F-1F-00-01-00-00",
     "command": {
       "Hour": 11,
       "Minute": 12,
       "Second": 31,
-      "Frame": 31
+      "Frame": 31,
+	  "DropFrame": true
     }
   },
   {
     "name": "Time",
-    "bytes": "00-10-00-00-54-69-6D-65-01-03-37-13-00-00-00-00",
+    "bytes": "00-10-00-00-54-69-6D-65-01-03-37-13-00-01-00-00",
     "command": {
       "Hour": 1,
       "Minute": 3,
       "Second": 55,
-      "Frame": 19
+      "Frame": 19,
+	  "DropFrame": true
     }
   },
   {

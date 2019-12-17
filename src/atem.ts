@@ -272,6 +272,17 @@ export class Atem extends EventEmitter {
 		return this.sendCommand(command)
 	}
 
+	setTime (hour: number, minute: number, second: number, frame: number) {
+		const command = new Commands.TimeCommand()
+		command.updateProps({ hour, minute, second, frame })
+		return this.sendCommand(command)
+	}
+
+	requestTime () {
+		const command = new Commands.TimeRequestCommand()
+		return this.sendCommand(command)
+	}
+
 	macroContinue () {
 		const command = new Commands.MacroActionCommand()
 		command.index = 0
