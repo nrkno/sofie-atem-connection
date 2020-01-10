@@ -168,7 +168,9 @@ export class AtemSocket extends EventEmitter {
 				} catch (e) {
 					this.emit('error', `Failed to deserialize command: ${cmdConstructor.constructor.name}: ${e}`)
 				}
-			} // TODO - log the unknown command?
+			} else if (this._debug) {
+				this.log(`Unknown command ${name} (${length}b)`)
+			}
 
 			// Trim the buffer
 			buffer = buffer.slice(length)

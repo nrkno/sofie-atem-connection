@@ -9,7 +9,8 @@ export enum Model {
 	TwoMEBS4K = 0x07,
 	TVSHD = 0x08,
 	Constellation = 0x0b,
-	Constellation8K = 0x0c
+	Constellation8K = 0x0c,
+	Mini = 0x0d
 }
 
 export enum ProtocolVersion {
