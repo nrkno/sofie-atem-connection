@@ -16,6 +16,8 @@ Due to the nature of the library it is likely that new versions of the ATEM firm
 
 It is tested on a variety of models spanning every generation, and the aim is to provide support for every model.
 
+Note: USB control of devices is not supported by this library.
+
 ## Technology highlights
 - Typescript
 - Yarn
