@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/nrkno/tv-automation-atem-connection/compare/1.2.0...1.3.0) (2020-01-12)
+
+
+### Features
+
+* add TimeCommand and TimeRequestCommand ([6a95340](https://github.com/nrkno/tv-automation-atem-connection/commit/6a953403be9fd930a47a14b38bd843028174c167))
+
+
+### Bug Fixes
+
+* add atem-mini ModelId ([b6787a9](https://github.com/nrkno/tv-automation-atem-connection/commit/b6787a92f4ad35b60020219d36878db818adbdfb))
+* expose listVisibleInputs to allow explicit usage on an old/cached state ([ee69821](https://github.com/nrkno/tv-automation-atem-connection/commit/ee69821ed25af8e6d8c999bcb5271e8d87b04b9f))
+
 ## [1.2.0](https://github.com/nrkno/tv-automation-atem-connection/compare/1.1.0...1.2.0) (2019-12-13)
 
 
