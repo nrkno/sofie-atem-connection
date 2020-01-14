@@ -120,7 +120,7 @@ export class MixEffect implements IMixEffect {
 				fillSource: 0,
 				onAir: false,
 				flyEnabled: false,
-				flyKeyframes: []
+				flyKeyframes: [undefined, undefined]
 			}
 
 			if (!dontCreate) {

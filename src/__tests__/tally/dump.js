@@ -21,26 +21,10 @@ function writeJson (fileName, data) {
 	fs.writeFileSync(filePath, JSON.stringify(data, undefined, '\t'))
 }
 
-function toMap (arr) {
-	if (!Array.isArray(arr)) {
-		return arr
-	}
-
-	const map = {}
-	for(let i = 0; i < arr.length; i++) {
-		const val = arr[i]
-		if (val !== null && val !== undefined) {
-			map[i] = val
-		}
-	}
-
-	return map
-}
-
 conn.once('connected', () => {
 	writeJson(`./${args[1]}-state.json`, {
 		video: conn.state.video,
-		inputs: toMap(conn.state.inputs) // Optimise out the nulls
+		inputs: conn.state.inputs // Optimise out the nulls
 	})
 	console.log('Wrote state file')
 

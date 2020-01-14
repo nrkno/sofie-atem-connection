@@ -6,7 +6,7 @@ import { AtemVideoState, MixEffect, SuperSource } from '../state/video'
 function parseAudio (rawState: AtemAudioState) {
 	const state = plainToClass(AtemAudioState, rawState)
 	state.master = state.master
-	state.channels = state.channels.map(ch => ch)
+	state.channels = state.channels
 
 	return state
 }

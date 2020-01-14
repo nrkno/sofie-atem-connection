@@ -11,7 +11,7 @@ export class AtemState {
 	public video: AtemVideoState = new AtemVideoState()
 	public audio: AtemAudioState = new AtemAudioState()
 	public media: MediaState = new MediaState()
-	public inputs: Array<InputChannel> = [] // TODO should this be `| undefined` or an object?
+	public inputs: { [inputId: number]: InputChannel | undefined } = {}
 	public macro: MacroState = new MacroState()
 	public settings: SettingsState = new SettingsState()
 }

@@ -90,7 +90,7 @@ export interface UpstreamKeyer extends UpstreamKeyerBase {
 	chromaSettings?: UpstreamKeyerChromaSettings,
 	lumaSettings?: UpstreamKeyerLumaSettings,
 	patternSettings?: UpstreamKeyerPatternSettings,
-	flyKeyframes: Array<UpstreamKeyerFlyKeyframe | undefined>,
+	flyKeyframes: [UpstreamKeyerFlyKeyframe | undefined, UpstreamKeyerFlyKeyframe | undefined],
 	flyProperties?: UpstreamKeyerFlySettings,
 	onAir: boolean
 }

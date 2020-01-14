@@ -27,11 +27,12 @@ export function listVisibleInputs (mode: 'program' | 'preview', state: AtemState
 		// every time the ATEM's state updates.
 		lastSize = inputs.size
 		Array.from(inputs).slice(lastProcessed).forEach(inputId => {
-			if (!state.inputs[inputId]) {
+			const input = state.inputs[inputId]
+			if (!input) {
 				// Data isn't hydrated yet, we'll get 'em next time.
 				return
 			}
-			const portType = state.inputs[inputId].internalPortType
+			const portType = input.internalPortType
 			switch (portType) {
 				case Enums.InternalPortType.SuperSource:
 					const ssrcId = inputId - 6000

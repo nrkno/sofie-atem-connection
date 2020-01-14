@@ -21,6 +21,6 @@ export interface AudioMasterChannel {
 export class AtemAudioState {
 	public numberOfChannels?: number
 	public hasMonitor?: boolean
-	public channels: Array<AudioChannel | undefined> = []
+	public channels: { [channelId: number]: AudioChannel | undefined } = {}
 	public master?: AudioMasterChannel
 }
