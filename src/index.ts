@@ -9,6 +9,7 @@ export {
 	Commands,
 	Util
 }
+export { listVisibleInputs } from './lib/tally'
 
 import * as VideoState from './state/video'
 import * as AudioState from './state/audio'

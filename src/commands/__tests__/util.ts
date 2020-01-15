@@ -1,6 +1,6 @@
 import { CommandParser } from '../../lib/atemCommandParser'
 import { ProtocolVersion } from '../../enums'
-import { IDeserializedCommand, ISerializableCommand } from '../CommandBase'
+import { IDeserializedCommand, ISerializableCommand, SymmetricalCommand } from '../CommandBase'
 import { createEmptyState } from '../../__tests__/util'
 
 export type CommandTestConverterSet = { [key: string]: CommandTestConverter }
@@ -24,7 +24,7 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 	const cmdConstructor = commandParser.commandFromRawName(testCase.name)
 	if (!cmdConstructor && allowUnknown) return
 
-	// if (i !== 1121) {
+	// if (i !== 39) {
 	// 	return
 	// }
 
@@ -95,7 +95,12 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 					delete mutatedCommand.mask
 				}
 
-				(cmd as any)._properties = mutatedCommand
+				if (cmd instanceof SymmetricalCommand) {
+					// These properties are stored in slightly different place
+					(cmd as any).properties = mutatedCommand
+				} else {
+					(cmd as any)._properties = mutatedCommand
+				}
 
 				// Ensure all properties appear in the mask
 				const maskProps = (cmd as any).constructor.MaskFlags

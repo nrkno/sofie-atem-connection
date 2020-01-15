@@ -339,6 +339,16 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	public setTime (hour: number, minute: number, second: number, frame: number) {
+		const command = new Commands.TimeCommand({ hour, minute, second, frame })
+		return this.sendCommand(command)
+	}
+
+	public requestTime () {
+		const command = new Commands.TimeRequestCommand()
+		return this.sendCommand(command)
+	}
+
 	public macroContinue () {
 		const command = new Commands.MacroActionCommand(0, Enums.MacroAction.Continue)
 		return this.sendCommand(command)

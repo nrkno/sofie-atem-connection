@@ -1,9 +1,24 @@
 # Sofie: The Modern TV News Studio Automation System (ATEM connection library)
 [![CircleCI](https://circleci.com/gh/nrkno/tv-automation-atem-connection.svg?style=svg)](https://circleci.com/gh/nrkno/tv-automation-atem-connection)
 [![codecov](https://codecov.io/gh/nrkno/tv-automation-atem-connection/branch/master/graph/badge.svg)](https://codecov.io/gh/nrkno/tv-automation-atem-connection)
+[![npm](https://img.shields.io/npm/v/atem-connection)](https://www.npmjs.com/package/atem-connection)
 
 This library is used in the [**Sofie** TV News Studio Automation System](https://github.com/nrkno/Sofie-TV-automation/) for connecting to Blackmagic Design ATEM devices.
 
+## Device support
+
+| Version | Level of Support |
+| ----- | ----- |
+| v8.0 - v8.1 | Primary focus. Target for new features |
+| v7.2 | Previous focus, should still work well |
+| v7.3 - v7.5.2 | Community tested, we may accept PRs but will not be testing these |
+
+Due to the nature of the ATEM firmware and its tendency to break things, it is likely that new firmwares will require updates to the library to be fully supported.
+Additionally any newly unimplemented functionality will generally only be written and tested for the latest firmware, even if it was added in an older firmware.
+
+It is tested on a variety of models spanning every generation, and the aim is to provide support for every model.
+
+Note: USB control of devices is not supported by this library.
 
 ## Technology highlights
 - Typescript

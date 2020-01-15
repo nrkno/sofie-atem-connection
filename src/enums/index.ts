@@ -8,6 +8,8 @@ export enum Model {
 	TwoME4K = 0x06,
 	TwoMEBS4K = 0x07,
 	TVSHD = 0x08,
+	TVSProHD = 0x09,
+	TVSPro4K = 0x0a,
 	Constellation = 0x0b,
 	Constellation8K = 0x0c,
 	Mini = 0x0d

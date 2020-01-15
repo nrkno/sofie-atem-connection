@@ -44,6 +44,14 @@ export interface MultiviewerInfo {
 	readonly windowCount: number
 }
 
+export interface TimeInfo {
+	hour: number
+	minute: number
+	second: number
+	frame: number
+	dropFrame: boolean
+}
+
 export interface DeviceInfo {
 	apiVersion: ProtocolVersion
 	capabilities?: AtemCapabilites
@@ -56,4 +64,5 @@ export interface DeviceInfo {
 	macroPool?: MacroPoolInfo
 	mediaPool?: MediaPoolInfo
 	multiviewer?: MultiviewerInfo
+	lastTime?: TimeInfo
 }

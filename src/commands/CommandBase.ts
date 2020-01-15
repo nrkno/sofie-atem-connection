@@ -8,6 +8,7 @@ export interface IDeserializedCommand {
 }
 
 export abstract class DeserializedCommand<T> implements IDeserializedCommand {
+	public static readonly rawName?: string
 	public static readonly minimumVersion?: ProtocolVersion
 
 	public readonly properties: Readonly<T>
@@ -24,6 +25,7 @@ export interface ISerializableCommand {
 }
 
 export abstract class BasicWritableCommand<T> implements ISerializableCommand {
+	public static readonly rawName?: string
 	public static readonly minimumVersion?: ProtocolVersion
 
 	protected _properties: T
@@ -69,5 +71,8 @@ export abstract class WritableCommand<T> extends BasicWritableCommand<Partial<T>
 		}
 		return hasChanges
 	}
+}
 
+export abstract class SymmetricalCommand<T> extends DeserializedCommand<T> implements ISerializableCommand {
+	public abstract serialize (version: ProtocolVersion): Buffer
 }
