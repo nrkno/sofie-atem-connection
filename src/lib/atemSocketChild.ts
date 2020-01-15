@@ -17,7 +17,7 @@ export enum ConnectionState {
 
 export enum PacketFlag {
 	AckRequest = 0x01,
-	Connect = 0x02, // TODO - 'new session id'? or something like that
+	NewSessionId = 0x02,
 	IsRetransmit = 0x04,
 	RetransmitRequest = 0x08,
 	AckReply = 0x10
@@ -217,7 +217,7 @@ export class AtemSocketChild {
 		const remotePacketId = packet.readUInt16BE(10)
 
 		// Send hello answer packet when receive connect flags
-		if (flags & PacketFlag.Connect) {
+		if (flags & PacketFlag.NewSessionId) {
 			this._connectionState = ConnectionState.Established
 			this._lastReceivedPacketId = remotePacketId
 			this._sendAck(remotePacketId)
