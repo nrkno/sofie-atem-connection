@@ -1,4 +1,4 @@
-import { AtemState, AtemStateUtil } from '../../state'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../state'
 import { MediaPlayerSource } from '../../state/media'
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
 
@@ -54,7 +54,7 @@ export class MediaPlayerSourceUpdateCommand extends DeserializedCommand<MediaPla
 
 	public applyToState (state: AtemState) {
 		if (!state.info.capabilities || this.mediaPlayerId >= state.info.capabilities.mediaPlayers) {
-			throw new Error(`MediaPlayer ${this.mediaPlayerId} is not valid`)
+			throw new InvalidIdError('MediaPlayer', this.mediaPlayerId)
 		}
 
 		state.media.players[this.mediaPlayerId] = {

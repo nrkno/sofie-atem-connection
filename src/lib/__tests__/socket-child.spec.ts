@@ -38,7 +38,7 @@ function createSocketChild (
 		{
 			address: ADDRESS,
 			port: DEFAULT_PORT,
-			debug: false
+			debugBuffers: false
 		},
 		onDisconnect || (() => Promise.resolve()),
 		// async msg => { console.log(msg) },

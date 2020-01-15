@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { AtemState, AtemStateUtil } from './state'
+import { AtemState, AtemStateUtil, InvalidIdError } from './state'
 import { AtemSocket } from './lib/atemSocket'
 import { ISerializableCommand, IDeserializedCommand } from './commands/CommandBase'
 import * as Commands from './commands'
@@ -27,10 +27,8 @@ import { listVisibleInputs } from './lib/tally'
 export interface AtemOptions {
 	address?: string,
 	port?: number,
-	debug?: boolean,
+	debugBuffers?: boolean,
 	disableMultithreaded?: boolean
-
-	externalLog?: (...args: any[]) => void
 }
 
 interface SentCommand {
@@ -50,18 +48,21 @@ export const DEFAULT_PORT = 9910
 export class BasicAtem extends EventEmitter {
 	private readonly socket: AtemSocket
 	protected readonly dataTransferManager: DT.DataTransferManager
-	private readonly _log: (...args: any[]) => void
 	private _state: AtemState | undefined
 	private _sentQueue: {[packetId: string]: SentCommand } = {}
 	private _status: AtemConnectionStatus
 
 	public on!: ((event: 'error', listener: (message: any) => void) => this) &
+		((event: 'info', listener: (message: string) => void) => this) &
+		((event: 'debug', listener: (message: string) => void) => this) &
 		((event: 'connected', listener: () => void) => this) &
 		((event: 'disconnected', listener: () => void) => this) &
 		((event: 'stateChanged', listener: (state: AtemState, paths: string[]) => void) => this) &
 		((event: 'receivedCommands', listener: (cmds: IDeserializedCommand[]) => void) => this)
 
 	public emit!: ((event: 'error', message: any) => boolean) &
+		((event: 'info', message: string) => boolean) &
+		((event: 'debug', message: string) => boolean) &
 		((event: 'connected') => boolean) &
 		((event: 'disconnected') => boolean) &
 		((event: 'stateChanged', state: AtemState, paths: string[]) => boolean) &
@@ -69,13 +70,11 @@ export class BasicAtem extends EventEmitter {
 
 	constructor (options?: AtemOptions) {
 		super()
-		this._log = (options && options.externalLog) || ((...args: any[]) => { console.log(...args) })
 
 		this._state = AtemStateUtil.Create()
 		this._status = AtemConnectionStatus.CLOSED
 		this.socket = new AtemSocket({
-			debug: (options || {}).debug || false,
-			log: this._log,
+			debugBuffers: (options || {}).debugBuffers || false,
 			address: (options || {}).address || '',
 			port: (options || {}).port || DEFAULT_PORT,
 			disableMultithreaded: (options || {}).disableMultithreaded || false
@@ -87,6 +86,8 @@ export class BasicAtem extends EventEmitter {
 			this._mutateState(commands)
 		})
 		this.socket.on('commandsAck', trackingIds => this._resolveCommands(trackingIds))
+		this.socket.on('info', msg => this.emit('info', msg))
+		this.socket.on('debug', msg => this.emit('debug', msg))
 		this.socket.on('error', e => this.emit('error', e))
 		this.socket.on('disconnect', () => {
 			this._status = AtemConnectionStatus.CLOSED
@@ -167,8 +168,11 @@ export class BasicAtem extends EventEmitter {
 						allChangedPaths.push(...changePaths)
 					}
 				} catch (e) {
-					// TODO - should we error or warn on this?
-					this.emit('error', `MutateState failed: ${e}. Command: ${command.constructor.name} ${JSON.stringify(command)}`)
+					if (e instanceof InvalidIdError) {
+						this.emit('debug', `Invalid command id: ${e}. Command: ${command.constructor.name} ${JSON.stringify(command)}`)
+					} else {
+						this.emit('error', `MutateState failed: ${e}. Command: ${command.constructor.name} ${JSON.stringify(command)}`)
+					}
 				}
 			}
 

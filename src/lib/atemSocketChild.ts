@@ -32,7 +32,7 @@ interface InFlightPacket {
 }
 
 export class AtemSocketChild {
-	private readonly _debug: boolean
+	private readonly _debugBuffers: boolean
 
 	private _connectionState = ConnectionState.Closed
 	private _reconnectTimer: NodeJS.Timer | undefined
@@ -57,8 +57,8 @@ export class AtemSocketChild {
 	private readonly onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>
 	private readonly onCommandsAcknowledged: (ids: Array<{ packetId: number, trackingId: number }>) => Promise<void>
 
-	constructor (options: { address: string, port: number, debug: boolean }, onDisconnect: () => Promise<void>, onLog: (message: string) => Promise<void>, onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>, onCommandAcknowledged: (ids: Array<{ packetId: number, trackingId: number }>) => Promise<void>) {
-		this._debug = options.debug
+	constructor (options: { address: string, port: number, debugBuffers: boolean }, onDisconnect: () => Promise<void>, onLog: (message: string) => Promise<void>, onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>, onCommandAcknowledged: (ids: Array<{ packetId: number, trackingId: number }>) => Promise<void>) {
+		this._debugBuffers = options.debugBuffers
 		this._address = options.address
 		this._port = options.port
 
@@ -207,7 +207,7 @@ export class AtemSocketChild {
 	}
 
 	private _receivePacket (packet: Buffer, rinfo: RemoteInfo) {
-		if (this._debug) this.log(`RECV ${packet.toString('hex')}`)
+		if (this._debugBuffers) this.log(`RECV ${packet.toString('hex')}`)
 		this._lastReceivedAt = Date.now()
 		const length = packet.readUInt16BE(0) & 0x07ff
 		if (length !== rinfo.size) return
@@ -277,7 +277,7 @@ export class AtemSocketChild {
 	}
 
 	private _sendPacket (packet: Buffer) {
-		if (this._debug) this.log(`SEND ${packet.toString('hex')}`)
+		if (this._debugBuffers) this.log(`SEND ${packet.toString('hex')}`)
 		this._socket.send(packet, 0, packet.length, this._port, this._address)
 	}
 

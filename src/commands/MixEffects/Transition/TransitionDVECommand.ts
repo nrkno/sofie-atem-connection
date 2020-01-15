@@ -1,5 +1,5 @@
 import { WritableCommand, DeserializedCommand } from '../../CommandBase'
-import { AtemState, AtemStateUtil } from '../../../state'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../../state'
 import { DVETransitionSettings } from '../../../state/video'
 
 export class TransitionDVECommand extends WritableCommand<DVETransitionSettings> {
@@ -86,9 +86,9 @@ export class TransitionDVEUpdateCommand extends DeserializedCommand<DVETransitio
 
 	public applyToState (state: AtemState) {
 		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
-			throw new Error(`MixEffect ${this.mixEffect} is not valid`)
+			throw new InvalidIdError('MixEffect', this.mixEffect)
 		} else if (!state.info.capabilities.DVEs) {
-			throw new Error(`DVE is not supported`)
+			throw new InvalidIdError(`DVE is not supported`)
 		}
 
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)

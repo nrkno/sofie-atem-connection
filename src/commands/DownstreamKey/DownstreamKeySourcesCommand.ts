@@ -1,5 +1,5 @@
 import { DeserializedCommand } from '../CommandBase'
-import { AtemState, AtemStateUtil } from '../../state'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../state'
 import { DownstreamKeyer } from '../../state/video/downstreamKeyers'
 
 export class DownstreamKeySourcesCommand extends DeserializedCommand<DownstreamKeyer['sources']> {
@@ -25,7 +25,7 @@ export class DownstreamKeySourcesCommand extends DeserializedCommand<DownstreamK
 
 	public applyToState (state: AtemState) {
 		if (!state.info.capabilities || this.downstreamKeyerId >= state.info.capabilities.downstreamKeyers) {
-			throw new Error(`DownstreamKeyer ${this.downstreamKeyerId} is not valid`)
+			throw new InvalidIdError('DownstreamKeyer', this.downstreamKeyerId)
 		}
 
 		AtemStateUtil.getDownstreamKeyer(state, this.downstreamKeyerId).sources = this.properties

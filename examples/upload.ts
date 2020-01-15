@@ -12,7 +12,7 @@ const IP = process.argv[2]
 let uploadNumber = 0
 let uploadStarted = Date.now()
 
-const conn = new Atem({ debug: false })
+const conn = new Atem({})
 
 let stuckTimeout: any = null
 

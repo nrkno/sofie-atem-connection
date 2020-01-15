@@ -1,5 +1,5 @@
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
-import { AtemState, AtemStateUtil } from '../../state'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../state'
 import { MultiViewerSourceState } from '../../state/settings'
 
 export class MultiViewerSourceCommand extends WritableCommand<MultiViewerSourceState> {
@@ -45,7 +45,7 @@ export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiVie
 
 	public applyToState (state: AtemState) {
 		if (!state.info.multiviewer || this.multiViewerId >= state.info.multiviewer.count) {
-			throw new Error(`MultiViewer ${this.multiViewerId} is not valid`)
+			throw new InvalidIdError('MultiViewer', this.multiViewerId)
 		}
 
 		const multiviewer = AtemStateUtil.getMultiViewer(state, this.multiViewerId)

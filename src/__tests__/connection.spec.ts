@@ -3,6 +3,7 @@ import { resolve } from 'path'
 import { AtemSocketChild } from '../lib/atemSocketChild'
 import { ThreadedClass } from 'threadedclass'
 import { BasicAtem } from '../atem'
+import { InvalidIdError } from '../state'
 jest.mock('../lib/atemSocketChild')
 
 // @ts-ignore
@@ -37,11 +38,10 @@ export class AtemSocketChildMock implements AtemSocketChild {
 
 function createConnection () {
 	return new BasicAtem({
-		debug: false,
+		debugBuffers: false,
 		address: '',
 		port: 890,
-		disableMultithreaded: true,
-		externalLog: console.log
+		disableMultithreaded: true
 	})
 }
 
@@ -62,9 +62,9 @@ function runTestMe1 (name: string, filename: string) {
 		expect(child.onCommandsReceived).toBeTruthy()
 
 		const errors: any[] = []
-		conn.on('error', e => {
+		conn.on('error', (e: any) => {
 			// Ignore any errors that are due to bad ids, as they are 'good' errors
-			if (!e.indexOf('is not valid')) {
+			if (!(e instanceof InvalidIdError)) {
 				errors.push(e)
 			}
 		})

@@ -1,5 +1,5 @@
 import { WritableCommand, DeserializedCommand } from '../../CommandBase'
-import { AtemState, AtemStateUtil } from '../../../state'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../../state'
 import { UpstreamKeyerChromaSettings } from '../../../state/video/upstreamKeyers'
 
 export class MixEffectKeyChromaCommand extends WritableCommand<UpstreamKeyerChromaSettings> {
@@ -68,7 +68,7 @@ export class MixEffectKeyChromaUpdateCommand extends DeserializedCommand<Upstrea
 	public applyToState (state: AtemState) {
 		const meInfo = state.info.mixEffects[this.mixEffect]
 		if (!meInfo || this.upstreamKeyerId >= meInfo.keyCount) {
-			throw new Error(`UpstreamKeyer ${this.mixEffect}-${this.upstreamKeyerId} is not valid`)
+			throw new InvalidIdError('UpstreamKeyer', this.mixEffect, this.upstreamKeyerId)
 		}
 
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)

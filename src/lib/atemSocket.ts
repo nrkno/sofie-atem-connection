@@ -9,14 +9,12 @@ import { AtemSocketChild } from './atemSocketChild'
 export interface AtemSocketOptions {
 	address: string
 	port: number
-	debug: boolean
+	debugBuffers: boolean
 	disableMultithreaded: boolean
-
-	log: (...args: any[]) => void
 }
 
 export class AtemSocket extends EventEmitter {
-	private readonly _debug: boolean
+	private readonly _debugBuffers: boolean
 	private readonly _disableMultithreaded: boolean
 	private readonly _commandParser: CommandParser = new CommandParser()
 
@@ -26,14 +24,16 @@ export class AtemSocket extends EventEmitter {
 	private _socketProcess: ThreadedClass<AtemSocketChild> | undefined
 	private _exitUnsubscribe?: () => void
 
-	private readonly log: (args1: any, args2?: any, args3?: any) => void
-
 	public on!: ((event: 'disconnect', listener: () => void) => this) &
+		((event: 'info', listener: (message: string) => void) => this) &
+		((event: 'debug', listener: (message: string) => void) => this) &
 		((event: 'error', listener: (message: string) => void) => this) &
 		((event: 'commandsReceived', listener: (cmds: IDeserializedCommand[]) => void) => this) &
 		((event: 'commandsAck', listener: (trackingIds: number[]) => void) => this)
 
 	public emit!: ((event: 'disconnect') => boolean) &
+		((event: 'info', message: string) => boolean) &
+		((event: 'debug', message: string) => boolean) &
 		((event: 'error', message: string) => boolean) &
 		((event: 'commandsReceived', cmds: IDeserializedCommand[]) => boolean) &
 		((event: 'commandsAck', trackingIds: number[]) => boolean)
@@ -42,9 +42,8 @@ export class AtemSocket extends EventEmitter {
 		super()
 		this._address = options.address
 		this._port = options.port
-		this._debug = options.debug
+		this._debugBuffers = options.debugBuffers
 		this._disableMultithreaded = options.disableMultithreaded
-		this.log = options.log
 	}
 
 	public async connect (address?: string, port?: number): Promise<void> {
@@ -96,7 +95,7 @@ export class AtemSocket extends EventEmitter {
 				}
 
 				const payload = cmd.rawCommand.serialize(this._commandParser.version)
-				if (this._debug) this.log('PAYLOAD', cmd.rawCommand.constructor.name, payload)
+				if (this._debugBuffers) this.emit('debug', `PAYLOAD ${cmd.rawCommand.constructor.name} ${payload.toString('hex')}`)
 
 				return {
 					payload: [...payload],
@@ -116,10 +115,10 @@ export class AtemSocket extends EventEmitter {
 			{
 				address: this._address,
 				port: this._port,
-				debug: this._debug
+				debugBuffers: this._debugBuffers
 			},
 			async () => { this.emit('disconnect') }, // onDisconnect
-			async (message: string) => this.log(message), // onLog
+			async (message: string) => { this.emit('info', message) }, // onLog
 			async (payload: Buffer) => this._parseCommands(Buffer.from(payload)), // onCommandsReceived
 			async (ids: Array<{ packetId: number, trackingId: number }>) => { this.emit('commandsAck', ids.map(id => id.trackingId)) } // onCommandsAcknowledged
 		], {
@@ -168,8 +167,8 @@ export class AtemSocket extends EventEmitter {
 				} catch (e) {
 					this.emit('error', `Failed to deserialize command: ${cmdConstructor.constructor.name}: ${e}`)
 				}
-			} else if (this._debug) {
-				this.log(`Unknown command ${name} (${length}b)`)
+			} else {
+				this.emit('debug', `Unknown command ${name} (${length}b)`)
 			}
 
 			// Trim the buffer

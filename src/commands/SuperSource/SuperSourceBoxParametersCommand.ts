@@ -1,5 +1,5 @@
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
-import { AtemState, AtemStateUtil } from '../../state'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../state'
 import { SuperSourceBox } from '../../state/video/superSource'
 import { ProtocolVersion } from '../../enums'
 
@@ -95,7 +95,7 @@ export class SuperSourceBoxParametersUpdateCommand extends DeserializedCommand<S
 
 	public applyToState (state: AtemState) {
 		if (!state.info.capabilities || this.ssrcId >= state.info.capabilities.superSources) {
-			throw new Error(`SuperSource ${this.ssrcId} is not valid`)
+			throw new InvalidIdError('SuperSource', this.ssrcId)
 		}
 
 		const supersource = AtemStateUtil.getSuperSource(state, this.ssrcId)

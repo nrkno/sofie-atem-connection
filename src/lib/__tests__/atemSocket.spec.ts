@@ -86,11 +86,10 @@ describe('AtemSocket', () => {
 
 	function createSocket () {
 		return new AtemSocket({
-			debug: false,
+			debugBuffers: false,
 			address: '',
 			port: 890,
-			disableMultithreaded: true,
-			log: console.log
+			disableMultithreaded: true
 		})
 	}
 
@@ -115,7 +114,7 @@ describe('AtemSocket', () => {
 
 		// New child was constructed
 		expect(AtemSocketChild).toHaveBeenCalledTimes(1)
-		expect(AtemSocketChild).toHaveBeenCalledWith({ address: '', port: 890, debug: false }, expect.toBeFunction(), expect.toBeFunction(), expect.toBeFunction(), expect.toBeFunction())
+		expect(AtemSocketChild).toHaveBeenCalledWith({ address: '', port: 890, debugBuffers: false }, expect.toBeFunction(), expect.toBeFunction(), expect.toBeFunction(), expect.toBeFunction())
 	})
 	test('connect initial with params', async () => {
 		const socket = createSocket()
@@ -134,7 +133,7 @@ describe('AtemSocket', () => {
 
 		// New child was constructed
 		expect(AtemSocketChild).toHaveBeenCalledTimes(1)
-		expect(AtemSocketChild).toHaveBeenCalledWith({ address: 'abc', port: 765, debug: false }, expect.toBeFunction(), expect.toBeFunction(), expect.toBeFunction(), expect.toBeFunction())
+		expect(AtemSocketChild).toHaveBeenCalledWith({ address: 'abc', port: 765, debugBuffers: false }, expect.toBeFunction(), expect.toBeFunction(), expect.toBeFunction(), expect.toBeFunction())
 	})
 	test('connect change details', async () => {
 		const socket = createSocket()

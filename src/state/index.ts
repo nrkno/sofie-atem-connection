@@ -17,3 +17,18 @@ export interface AtemState {
 	macro: MacroState
 	settings: SettingsState
 }
+
+export class InvalidIdError extends Error {
+	constructor (message: string, ...ids: number[]) {
+		super(InvalidIdError.BuildErrorString(message, ids))
+		Object.setPrototypeOf(this, new.target.prototype)
+	}
+
+	private static BuildErrorString (message: string, ids: number[]) {
+		if (ids && ids.length > 0) {
+			return `${message} ${ids.join('-')} is not valid`
+		} else {
+			return message
+		}
+	}
+}

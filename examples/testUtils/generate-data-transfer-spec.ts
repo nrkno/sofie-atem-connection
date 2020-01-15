@@ -5,7 +5,7 @@ import * as fs from 'fs'
 const frameBuffer = Buffer.alloc(1920 * 1080 * 4,0)
 // const wavBuffer = fs.readFileSync('./src/dataTransfer/__tests__/sampleAudio.wav')
 
-const nb = new Atem({ debug: false })
+const nb = new Atem({})
 nb.on('error', () => null)
 
 nb.on('connected', async () => {

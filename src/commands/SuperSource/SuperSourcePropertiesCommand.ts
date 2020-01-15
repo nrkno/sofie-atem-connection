@@ -1,5 +1,5 @@
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
-import { AtemState, AtemStateUtil } from '../../state'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../state'
 import { SuperSourceProperties, SuperSourceBorder } from '../../state/video/superSource'
 import { ProtocolVersion } from '../../enums'
 
@@ -192,7 +192,7 @@ export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{ pr
 
 	public applyToState (state: AtemState) {
 		if (!state.info.capabilities || !state.info.capabilities.superSources) {
-			throw new Error(`SuperSource 0 is not valid`)
+			throw new InvalidIdError('SuperSource', 0)
 		}
 
 		const supersource = AtemStateUtil.getSuperSource(state, 0)
@@ -234,7 +234,7 @@ export class SuperSourcePropertiesUpdateV8Command extends DeserializedCommand<Su
 
 	public applyToState (state: AtemState) {
 		if (!state.info.capabilities || this.ssrcId >= state.info.capabilities.superSources) {
-			throw new Error(`SuperSource ${this.ssrcId} is not valid`)
+			throw new InvalidIdError('SuperSource', this.ssrcId)
 		}
 
 		const supersource = AtemStateUtil.getSuperSource(state, this.ssrcId)
@@ -280,7 +280,7 @@ export class SuperSourceBorderUpdateCommand extends DeserializedCommand<SuperSou
 
 	public applyToState (state: AtemState) {
 		if (!state.info.capabilities || this.ssrcId >= state.info.capabilities.superSources) {
-			throw new Error(`SuperSource ${this.ssrcId} is not valid`)
+			throw new InvalidIdError('SuperSource', this.ssrcId)
 		}
 
 		const supersource = AtemStateUtil.getSuperSource(state, this.ssrcId)

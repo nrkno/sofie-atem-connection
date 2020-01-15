@@ -1,5 +1,5 @@
 import { DeserializedCommand } from '../CommandBase'
-import { AtemState, AtemStateUtil } from '../../state'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../state'
 import { DownstreamKeyerBase } from '../../state/video/downstreamKeyers'
 import { ProtocolVersion } from '../../enums'
 
@@ -28,7 +28,7 @@ export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKey
 
 	public applyToState (state: AtemState) {
 		if (!state.info.capabilities || this.downstreamKeyerId >= state.info.capabilities.downstreamKeyers) {
-			throw new Error(`DownstreamKeyer ${this.downstreamKeyerId} is not valid`)
+			throw new InvalidIdError('DownstreamKeyer', this.downstreamKeyerId)
 		}
 
 		state.video.downstreamKeyers[this.downstreamKeyerId] = {
@@ -66,7 +66,7 @@ export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamK
 
 	public applyToState (state: AtemState) {
 		if (!state.info.capabilities || this.downstreamKeyerId >= state.info.capabilities.downstreamKeyers) {
-			throw new Error(`DownstreamKeyer ${this.downstreamKeyerId} is not valid`)
+			throw new InvalidIdError('DownstreamKeyer', this.downstreamKeyerId)
 		}
 
 		state.video.downstreamKeyers[this.downstreamKeyerId] = {

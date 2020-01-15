@@ -15,7 +15,7 @@ describe('Atem', () => {
 	})
 
 	test('constructor test 1', async () => {
-		const conn = new Atem({ disableMultithreaded: true, externalLog: () => null })
+		const conn = new Atem({ disableMultithreaded: true })
 
 		try {
 			const socket = (conn as any).socket as AtemSocket
@@ -24,7 +24,7 @@ describe('Atem', () => {
 			expect(AtemSocket).toHaveBeenCalledTimes(1)
 			expect(AtemSocket).toHaveBeenCalledWith({
 				address: '',
-				debug: false,
+				debugBuffers: false,
 				disableMultithreaded: true,
 				log: (conn as any)._log,
 				port: DEFAULT_PORT
@@ -34,7 +34,7 @@ describe('Atem', () => {
 		}
 	})
 	test('constructor test 2', async () => {
-		const conn = new Atem({ debug: true, address: 'test1', port: 23 })
+		const conn = new Atem({ debugBuffers: true, address: 'test1', port: 23 })
 
 		try {
 			const socket = (conn as any).socket as AtemSocket
@@ -43,7 +43,7 @@ describe('Atem', () => {
 			expect(AtemSocket).toHaveBeenCalledTimes(1)
 			expect(AtemSocket).toHaveBeenCalledWith({
 				address: 'test1',
-				debug: true,
+				debugBuffers: true,
 				disableMultithreaded: false,
 				log: (conn as any)._log,
 				port: 23
@@ -54,7 +54,7 @@ describe('Atem', () => {
 	})
 
 	test('connect', async () => {
-		const conn = new Atem({ debug: true, address: 'test1', port: 23 })
+		const conn = new Atem({ debugBuffers: true, address: 'test1', port: 23 })
 
 		try {
 			const socket = (conn as any).socket as AtemSocket
@@ -74,7 +74,7 @@ describe('Atem', () => {
 	})
 
 	test('disconnect', async () => {
-		const conn = new Atem({ debug: true, address: 'test1', port: 23 })
+		const conn = new Atem({ debugBuffers: true, address: 'test1', port: 23 })
 
 		try {
 			const socket = (conn as any).socket as AtemSocket
@@ -95,7 +95,7 @@ describe('Atem', () => {
 
 	test('sendCommand - good', async () => {
 		(AtemSocket as any).mockImplementation(() => new EventEmitter())
-		const conn = new Atem({ debug: true, address: 'test1', port: 23 })
+		const conn = new Atem({ debugBuffers: true, address: 'test1', port: 23 })
 
 		try {
 			const socket = (conn as any).socket as AtemSocket
@@ -137,7 +137,7 @@ describe('Atem', () => {
 
 	test('sendCommand - send error', async () => {
 		(AtemSocket as any).mockImplementation(() => new EventEmitter())
-		const conn = new Atem({ debug: true, address: 'test1', port: 23 })
+		const conn = new Atem({ debugBuffers: true, address: 'test1', port: 23 })
 
 		try {
 			const socket = (conn as any).socket as AtemSocket
