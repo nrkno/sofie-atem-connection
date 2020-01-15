@@ -1,5 +1,5 @@
 import { DeserializedCommand } from '../CommandBase'
-import { AtemState } from '../../state'
+import { AtemState, AtemStateUtil } from '../../state'
 import { DownstreamKeyerBase } from '../../state/video/downstreamKeyers'
 import { ProtocolVersion } from '../../enums'
 
@@ -32,7 +32,7 @@ export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKey
 		}
 
 		state.video.downstreamKeyers[this.downstreamKeyerId] = {
-			...state.video.getDownstreamKeyer(this.downstreamKeyerId),
+			...AtemStateUtil.getDownstreamKeyer(state, this.downstreamKeyerId),
 			...this.properties
 		}
 		return `video.downstreamKeyers.${this.downstreamKeyerId}`
@@ -70,7 +70,7 @@ export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamK
 		}
 
 		state.video.downstreamKeyers[this.downstreamKeyerId] = {
-			...state.video.getDownstreamKeyer(this.downstreamKeyerId),
+			...AtemStateUtil.getDownstreamKeyer(state, this.downstreamKeyerId),
 			...this.properties
 		}
 		return `video.downstreamKeyers.${this.downstreamKeyerId}`

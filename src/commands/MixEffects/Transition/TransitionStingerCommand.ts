@@ -1,5 +1,5 @@
 import { WritableCommand, DeserializedCommand } from '../../CommandBase'
-import { AtemState } from '../../../state'
+import { AtemState, AtemStateUtil } from '../../../state'
 import { StingerTransitionSettings } from '../../../state/video'
 
 export class TransitionStingerCommand extends WritableCommand<StingerTransitionSettings> {
@@ -81,7 +81,7 @@ export class TransitionStingerUpdateCommand extends DeserializedCommand<StingerT
 			throw new Error(`MixEffect ${this.mixEffect} is not valid`)
 		}
 
-		const mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionSettings.stinger = {
 			...this.properties
 		}

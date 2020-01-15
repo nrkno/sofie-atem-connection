@@ -3,7 +3,8 @@ import { listVisibleInputs } from '../lib/tally'
 
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
-import { parseAtemState, createEmptyState } from './util'
+import { AtemStateUtil, AtemState } from '../state'
+import { createEmptyState } from './util'
 
 function readJson (fileName: string) {
 	const filePath = resolve(__dirname, fileName)
@@ -12,11 +13,20 @@ function readJson (fileName: string) {
 }
 
 function loadRawState (file: string) {
-	const loadedState = parseAtemState(readJson(`./tally/${file}-state.json`))
+	const loadedState: AtemState = {
+		...AtemStateUtil.Create(),
+		...readJson(`./tally/${file}-state.json`)
+	}
 
 	if (!loadedState.info.capabilities) {
 		const emptyState = createEmptyState()
 		loadedState.info.capabilities = emptyState.info.capabilities
+	}
+
+	// Fix up older video states
+	if (!loadedState.video.mixEffects) {
+		const videoState = loadedState.video as any
+		videoState.mixEffects = videoState.ME
 	}
 
 	return loadedState

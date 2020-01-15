@@ -1,5 +1,5 @@
 import { BasicWritableCommand, DeserializedCommand } from '../../CommandBase'
-import { AtemState } from '../../../state'
+import { AtemState, AtemStateUtil } from '../../../state'
 
 export class MixEffectKeyOnAirCommand extends BasicWritableCommand<{ onAir: boolean}> {
 	public static readonly rawName = 'CKOn'
@@ -51,8 +51,8 @@ export class MixEffectKeyOnAirUpdateCommand extends DeserializedCommand<{onAir: 
 			throw new Error(`UpstreamKeyer ${this.mixEffect}-${this.upstreamKeyerId} is not valid`)
 		}
 
-		const mixEffect = state.video.getMe(this.mixEffect)
-		const upstreamKeyer = mixEffect.getUpstreamKeyer(this.upstreamKeyerId)
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
+		const upstreamKeyer = AtemStateUtil.getUpstreamKeyer(mixEffect, this.upstreamKeyerId)
 		upstreamKeyer.onAir = this.properties.onAir
 		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.onAir`
 	}

@@ -1,5 +1,5 @@
 import { BasicWritableCommand, DeserializedCommand } from '../../CommandBase'
-import { AtemState } from '../../../state'
+import { AtemState, AtemStateUtil } from '../../../state'
 
 export interface PreviewProps {
 	preview: boolean
@@ -49,7 +49,7 @@ export class PreviewTransitionUpdateCommand extends DeserializedCommand<PreviewP
 			throw new Error(`MixEffect ${this.mixEffect} is not valid`)
 		}
 
-		const mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionPreview = this.properties.preview
 		return `video.ME.${this.mixEffect}.transitionPreview`
 	}

@@ -44,16 +44,16 @@ export interface MultiviewerInfo {
 	readonly windowCount: number
 }
 
-export class DeviceInfo {
-	public apiVersion: ProtocolVersion = 0
-	public capabilities?: AtemCapabilites
-	public model: Model = Model.Unknown
-	public productIdentifier?: string
-	public superSources: Array<SuperSourceInfo | undefined> = []
-	public mixEffects: Array<MixEffectInfo | undefined> = []
-	public power: boolean[] = []
-	public audioMixer?: AudioMixerInfo
-	public macroPool?: MacroPoolInfo
-	public mediaPool?: MediaPoolInfo
-	public multiviewer?: MultiviewerInfo
+export interface DeviceInfo {
+	apiVersion: ProtocolVersion
+	capabilities?: AtemCapabilites
+	model: Model
+	productIdentifier?: string
+	superSources: Array<SuperSourceInfo | undefined>
+	mixEffects: Array<MixEffectInfo | undefined>
+	power: boolean[]
+	audioMixer?: AudioMixerInfo
+	macroPool?: MacroPoolInfo
+	mediaPool?: MediaPoolInfo
+	multiviewer?: MultiviewerInfo
 }

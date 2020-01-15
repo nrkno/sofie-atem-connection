@@ -1,5 +1,5 @@
 import { WritableCommand, DeserializedCommand } from '../../CommandBase'
-import { AtemState } from '../../../state'
+import { AtemState, AtemStateUtil } from '../../../state'
 import { UpstreamKeyerChromaSettings } from '../../../state/video/upstreamKeyers'
 
 export class MixEffectKeyChromaCommand extends WritableCommand<UpstreamKeyerChromaSettings> {
@@ -71,8 +71,8 @@ export class MixEffectKeyChromaUpdateCommand extends DeserializedCommand<Upstrea
 			throw new Error(`UpstreamKeyer ${this.mixEffect}-${this.upstreamKeyerId} is not valid`)
 		}
 
-		const mixEffect = state.video.getMe(this.mixEffect)
-		const upstreamKeyer = mixEffect.getUpstreamKeyer(this.upstreamKeyerId)
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
+		const upstreamKeyer = AtemStateUtil.getUpstreamKeyer(mixEffect, this.upstreamKeyerId)
 		upstreamKeyer.chromaSettings = {
 			...this.properties
 		}

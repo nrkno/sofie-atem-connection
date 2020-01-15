@@ -1,5 +1,5 @@
 import { DeserializedCommand, BasicWritableCommand } from '../../CommandBase'
-import { AtemState } from '../../../state'
+import { AtemState, AtemStateUtil } from '../../../state'
 import { MixTransitionSettings } from '../../../state/video'
 
 export class TransitionMixCommand extends BasicWritableCommand<MixTransitionSettings> {
@@ -46,7 +46,7 @@ export class TransitionMixUpdateCommand extends DeserializedCommand<MixTransitio
 			throw new Error(`MixEffect ${this.mixEffect} is not valid`)
 		}
 
-		const mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionSettings.mix = {
 			...this.properties
 		}

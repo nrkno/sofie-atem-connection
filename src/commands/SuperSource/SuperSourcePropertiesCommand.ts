@@ -1,6 +1,6 @@
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
-import { AtemState } from '../../state'
-import { SuperSourceProperties, SuperSourceBorder } from '../../state/video'
+import { AtemState, AtemStateUtil } from '../../state'
+import { SuperSourceProperties, SuperSourceBorder } from '../../state/video/superSource'
 import { ProtocolVersion } from '../../enums'
 
 export class SuperSourcePropertiesCommand extends WritableCommand<SuperSourceProperties & SuperSourceBorder> {
@@ -195,7 +195,7 @@ export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{ pr
 			throw new Error(`SuperSource 0 is not valid`)
 		}
 
-		const supersource = state.video.getSuperSource(0)
+		const supersource = AtemStateUtil.getSuperSource(state, 0)
 		supersource.properties = this.properties.properties
 		supersource.border = this.properties.border
 		return [
@@ -237,7 +237,7 @@ export class SuperSourcePropertiesUpdateV8Command extends DeserializedCommand<Su
 			throw new Error(`SuperSource ${this.ssrcId} is not valid`)
 		}
 
-		const supersource = state.video.getSuperSource(this.ssrcId)
+		const supersource = AtemStateUtil.getSuperSource(state, this.ssrcId)
 		supersource.properties = {
 			...this.properties
 		}
@@ -283,7 +283,7 @@ export class SuperSourceBorderUpdateCommand extends DeserializedCommand<SuperSou
 			throw new Error(`SuperSource ${this.ssrcId} is not valid`)
 		}
 
-		const supersource = state.video.getSuperSource(this.ssrcId)
+		const supersource = AtemStateUtil.getSuperSource(state, this.ssrcId)
 		supersource.border = this.properties
 
 		return `video.superSources.${this.ssrcId}.border`

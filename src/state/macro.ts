@@ -17,21 +17,8 @@ export interface MacroPropertiesState {
 	name: string
 }
 
-export class MacroState {
-	public macroPlayer: MacroPlayerState
-	public macroRecorder: MacroRecorderState
-	public readonly macroProperties: Array<MacroPropertiesState | undefined> = []
-
-	constructor () {
-		this.macroPlayer = {
-			isRunning: false,
-			isWaiting: false,
-			loop: false,
-			macroIndex: 0
-		}
-		this.macroRecorder = {
-			isRecording: false,
-			macroIndex: 0
-		}
-	}
+export interface MacroState {
+	macroPlayer: MacroPlayerState
+	macroRecorder: MacroRecorderState
+	readonly macroProperties: Array<MacroPropertiesState | undefined>
 }

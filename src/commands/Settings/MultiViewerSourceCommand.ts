@@ -1,5 +1,5 @@
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
-import { AtemState } from '../../state'
+import { AtemState, AtemStateUtil } from '../../state'
 import { MultiViewerSourceState } from '../../state/settings'
 
 export class MultiViewerSourceCommand extends WritableCommand<MultiViewerSourceState> {
@@ -48,7 +48,7 @@ export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiVie
 			throw new Error(`MultiViewer ${this.multiViewerId} is not valid`)
 		}
 
-		const multiviewer = state.settings.getMultiViewer(this.multiViewerId)
+		const multiviewer = AtemStateUtil.getMultiViewer(state, this.multiViewerId)
 		multiviewer.windows[this.properties.windowIndex] = {
 			...multiviewer.windows[this.properties.windowIndex],
 			...this.properties

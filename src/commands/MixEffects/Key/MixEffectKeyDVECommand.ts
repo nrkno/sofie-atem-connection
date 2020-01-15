@@ -1,5 +1,5 @@
 import { WritableCommand, DeserializedCommand } from '../../CommandBase'
-import { AtemState } from '../../../state'
+import { AtemState, AtemStateUtil } from '../../../state'
 import { UpstreamKeyerDVESettings } from '../../../state/video/upstreamKeyers'
 
 export class MixEffectKeyDVECommand extends WritableCommand<UpstreamKeyerDVESettings> {
@@ -148,8 +148,8 @@ export class MixEffectKeyDVEUpdateCommand extends DeserializedCommand<UpstreamKe
 			throw new Error(`DVE is not supported`)
 		}
 
-		const mixEffect = state.video.getMe(this.mixEffect)
-		const upstreamKeyer = mixEffect.getUpstreamKeyer(this.upstreamKeyerId)
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
+		const upstreamKeyer = AtemStateUtil.getUpstreamKeyer(mixEffect, this.upstreamKeyerId)
 		upstreamKeyer.dveSettings = {
 			...this.properties
 		}

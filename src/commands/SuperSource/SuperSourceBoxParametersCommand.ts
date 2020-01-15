@@ -1,6 +1,6 @@
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
-import { AtemState } from '../../state'
-import { SuperSourceBox } from '../../state/video'
+import { AtemState, AtemStateUtil } from '../../state'
+import { SuperSourceBox } from '../../state/video/superSource'
 import { ProtocolVersion } from '../../enums'
 
 export class SuperSourceBoxParametersCommand extends WritableCommand<SuperSourceBox> {
@@ -98,7 +98,7 @@ export class SuperSourceBoxParametersUpdateCommand extends DeserializedCommand<S
 			throw new Error(`SuperSource ${this.ssrcId} is not valid`)
 		}
 
-		const supersource = state.video.getSuperSource(this.ssrcId)
+		const supersource = AtemStateUtil.getSuperSource(state, this.ssrcId)
 		supersource.boxes[this.boxId] = {
 			...this.properties
 		}

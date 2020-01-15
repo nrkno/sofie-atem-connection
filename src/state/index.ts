@@ -6,12 +6,14 @@ import { InputChannel } from './input'
 import { MacroState } from './macro'
 import { SettingsState } from './settings'
 
-export class AtemState {
-	public info = new DeviceInfo()
-	public video: AtemVideoState = new AtemVideoState()
-	public audio: AtemAudioState = new AtemAudioState()
-	public media: MediaState = new MediaState()
-	public inputs: { [inputId: number]: InputChannel | undefined } = {}
-	public macro: MacroState = new MacroState()
-	public settings: SettingsState = new SettingsState()
+export { AtemStateUtil } from './util'
+
+export interface AtemState {
+	info: DeviceInfo
+	video: AtemVideoState
+	audio: AtemAudioState
+	media: MediaState
+	inputs: { [inputId: number]: InputChannel | undefined }
+	macro: MacroState
+	settings: SettingsState
 }

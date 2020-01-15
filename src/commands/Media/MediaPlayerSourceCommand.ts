@@ -1,4 +1,4 @@
-import { AtemState } from '../../state'
+import { AtemState, AtemStateUtil } from '../../state'
 import { MediaPlayerSource } from '../../state/media'
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
 
@@ -58,7 +58,7 @@ export class MediaPlayerSourceUpdateCommand extends DeserializedCommand<MediaPla
 		}
 
 		state.media.players[this.mediaPlayerId] = {
-			...state.media.getMediaPlayer(this.mediaPlayerId),
+			...AtemStateUtil.getMediaPlayer(state, this.mediaPlayerId),
 			...this.properties
 		}
 		return `media.players.${this.mediaPlayerId}`

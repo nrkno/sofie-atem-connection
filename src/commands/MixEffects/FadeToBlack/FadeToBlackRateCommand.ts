@@ -1,5 +1,5 @@
 import { BasicWritableCommand, DeserializedCommand } from '../../CommandBase'
-import { AtemState } from '../../../state'
+import { AtemState, AtemStateUtil } from '../../../state'
 
 export class FadeToBlackRateCommand extends BasicWritableCommand<{ rate: number }> {
 	public static readonly rawName = 'FtbC'
@@ -44,7 +44,7 @@ export class FadeToBlackRateUpdateCommand extends DeserializedCommand<{ rate: nu
 			throw new Error(`MixEffect ${this.mixEffect} is not valid`)
 		}
 
-		const mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.fadeToBlack = {
 			isFullyBlack: false,
 			inTransition: false,

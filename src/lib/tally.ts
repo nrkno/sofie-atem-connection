@@ -1,4 +1,4 @@
-import { AtemState } from '../state'
+import { AtemState, AtemStateUtil } from '../state'
 import * as Enums from '../enums'
 
 /**
@@ -36,7 +36,7 @@ export function listVisibleInputs (mode: 'program' | 'preview', state: AtemState
 			switch (portType) {
 				case Enums.InternalPortType.SuperSource:
 					const ssrcId = inputId - 6000
-					const ssrc = state.video.getSuperSource(ssrcId)
+					const ssrc = AtemStateUtil.getSuperSource(state, ssrcId)
 					ssrc.boxes.forEach(box => {
 						if (box && box.enabled) {
 							inputs.add(box.source)
@@ -75,7 +75,7 @@ export function listVisibleInputs (mode: 'program' | 'preview', state: AtemState
  */
 function _calcActiveMeInputs (mode: 'program' | 'preview', state: AtemState, meId: number): number[] {
 	const inputs = new Set<number>()
-	const meRef = state.video.getMe(meId)
+	const meRef = AtemStateUtil.getMixEffect(state, meId)
 
 	if (mode === 'preview') {
 		if (meRef.transitionProperties.selection & 1) {

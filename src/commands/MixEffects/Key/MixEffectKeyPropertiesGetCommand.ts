@@ -1,5 +1,5 @@
 import { DeserializedCommand } from '../../CommandBase'
-import { AtemState } from '../../../state'
+import { AtemState, AtemStateUtil } from '../../../state'
 import { UpstreamKeyerBase } from '../../../state/video/upstreamKeyers'
 
 export class MixEffectKeyPropertiesGetCommand extends DeserializedCommand<UpstreamKeyerBase> {
@@ -40,9 +40,9 @@ export class MixEffectKeyPropertiesGetCommand extends DeserializedCommand<Upstre
 			throw new Error(`UpstreamKeyer ${this.mixEffect}-${this.upstreamKeyerId} is not valid`)
 		}
 
-		const mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.upstreamKeyers[this.properties.upstreamKeyerId] = {
-			...mixEffect.getUpstreamKeyer(this.properties.upstreamKeyerId),
+			...AtemStateUtil.getUpstreamKeyer(mixEffect, this.properties.upstreamKeyerId),
 			...this.properties
 		}
 		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.properties.upstreamKeyerId}`

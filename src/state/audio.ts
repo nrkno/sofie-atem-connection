@@ -18,9 +18,9 @@ export interface AudioMasterChannel {
 	followFadeToBlack: boolean
 }
 
-export class AtemAudioState {
-	public numberOfChannels?: number
-	public hasMonitor?: boolean
-	public channels: { [channelId: number]: AudioChannel | undefined } = {}
-	public master?: AudioMasterChannel
+export interface AtemAudioState {
+	numberOfChannels?: number
+	hasMonitor?: boolean
+	channels: { [channelId: number]: AudioChannel | undefined }
+	master?: AudioMasterChannel
 }

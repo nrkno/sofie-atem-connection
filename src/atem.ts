@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { AtemState } from './state'
+import { AtemState, AtemStateUtil } from './state'
 import { AtemSocket } from './lib/atemSocket'
 import { ISerializableCommand, IDeserializedCommand } from './commands/CommandBase'
 import * as Commands from './commands'
@@ -11,11 +11,9 @@ import {
 	DVETransitionSettings,
 	MixTransitionSettings,
 	StingerTransitionSettings,
-	SuperSourceBox,
+	SuperSource,
 	TransitionProperties,
-	WipeTransitionSettings,
-	SuperSourceProperties,
-	SuperSourceBorder
+	WipeTransitionSettings
 } from './state/video'
 import * as USK from './state/video/upstreamKeyers'
 import { InputChannel } from './state/input'
@@ -73,7 +71,7 @@ export class BasicAtem extends EventEmitter {
 		super()
 		this._log = (options && options.externalLog) || ((...args: any[]) => { console.log(...args) })
 
-		this._state = new AtemState()
+		this._state = AtemStateUtil.Create()
 		this._status = AtemConnectionStatus.CLOSED
 		this.socket = new AtemSocket({
 			debug: (options || {}).debug || false,
@@ -152,7 +150,7 @@ export class BasicAtem extends EventEmitter {
 		// Is this the start of a new connection?
 		if (commands.find(cmd => cmd.constructor.name === Commands.VersionCommand.name)) {
 			// On start of connection, create a new state object
-			this._state = new AtemState()
+			this._state = AtemStateUtil.Create()
 			this._status = AtemConnectionStatus.CONNECTING
 		}
 
@@ -400,13 +398,13 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public setSuperSourceBoxSettings (newProps: Partial<SuperSourceBox>, box: number = 0, ssrcId: number = 0) {
+	public setSuperSourceBoxSettings (newProps: Partial<SuperSource.SuperSourceBox>, box: number = 0, ssrcId: number = 0) {
 		const command = new Commands.SuperSourceBoxParametersCommand(ssrcId, box)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setSuperSourceProperties (newProps: Partial<SuperSourceProperties>, ssrcId: number = 0) {
+	public setSuperSourceProperties (newProps: Partial<SuperSource.SuperSourceProperties>, ssrcId: number = 0) {
 		if (this.state && this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
 			const command = new Commands.SuperSourcePropertiesV8Command(ssrcId)
 			command.updateProps(newProps)
@@ -418,7 +416,7 @@ export class Atem extends BasicAtem {
 		}
 	}
 
-	public setSuperSourceBorder (newProps: Partial<SuperSourceBorder>, ssrcId: number = 0) {
+	public setSuperSourceBorder (newProps: Partial<SuperSource.SuperSourceBorder>, ssrcId: number = 0) {
 		if (this.state && this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
 			const command = new Commands.SuperSourceBorderCommand(ssrcId)
 			command.updateProps(newProps)

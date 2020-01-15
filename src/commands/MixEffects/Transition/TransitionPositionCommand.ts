@@ -1,5 +1,5 @@
 import { BasicWritableCommand, DeserializedCommand } from '../../CommandBase'
-import { AtemState } from '../../../state'
+import { AtemState, AtemStateUtil } from '../../../state'
 
 export interface HandlePositionProps {
 	handlePosition: number // 0...10000
@@ -56,7 +56,7 @@ export class TransitionPositionUpdateCommand extends DeserializedCommand<Transit
 			throw new Error(`MixEffect ${this.mixEffect} is not valid`)
 		}
 
-		const mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionFramesLeft = this.properties.remainingFrames
 		mixEffect.transitionPosition = this.properties.handlePosition
 		mixEffect.inTransition = this.properties.inTransition

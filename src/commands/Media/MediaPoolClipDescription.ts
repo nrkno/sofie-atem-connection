@@ -1,4 +1,4 @@
-import { AtemState } from '../../state'
+import { AtemState, AtemStateUtil } from '../../state'
 import { ClipBank } from '../../state/media'
 import { DeserializedCommand } from '../CommandBase'
 import { Util } from '../../lib/atemUtil'
@@ -30,7 +30,7 @@ export class MediaPoolClipDescriptionCommand extends DeserializedCommand<Omit<Cl
 
 		state.media.clipPool[this.clipId] = {
 			...this.properties,
-			frames: state.media.getClip(this.clipId).frames // TODO - lengthen/shorten array of frames?
+			frames: AtemStateUtil.getClip(state, this.clipId).frames // TODO - lengthen/shorten array of frames?
 		}
 		return `media.clipPool.${this.clipId}`
 	}

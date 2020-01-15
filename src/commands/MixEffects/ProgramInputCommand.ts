@@ -1,5 +1,5 @@
 import { BasicWritableCommand, DeserializedCommand } from '../CommandBase'
-import { AtemState } from '../../state'
+import { AtemState, AtemStateUtil } from '../../state'
 import { InputSource } from './PreviewInputCommand'
 
 export class ProgramInputCommand extends BasicWritableCommand<InputSource> {
@@ -46,7 +46,7 @@ export class ProgramInputUpdateCommand extends DeserializedCommand<InputSource> 
 			throw new Error(`MixEffect ${this.mixEffect} is not valid`)
 		}
 
-		const mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.programInput = this.properties.source
 		return `video.ME.${this.mixEffect}.programInput`
 	}

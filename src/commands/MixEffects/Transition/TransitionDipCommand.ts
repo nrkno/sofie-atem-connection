@@ -1,5 +1,5 @@
 import { WritableCommand, DeserializedCommand } from '../../CommandBase'
-import { AtemState } from '../../../state'
+import { AtemState, AtemStateUtil } from '../../../state'
 import { DipTransitionSettings } from '../../../state/video'
 
 export class TransitionDipCommand extends WritableCommand<DipTransitionSettings> {
@@ -53,7 +53,7 @@ export class TransitionDipUpdateCommand extends DeserializedCommand<DipTransitio
 			throw new Error(`MixEffect ${this.mixEffect} is not valid`)
 		}
 
-		const mixEffect = state.video.getMe(this.mixEffect)
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionSettings.dip = {
 			...this.properties
 		}

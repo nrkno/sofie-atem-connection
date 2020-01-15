@@ -1,4 +1,4 @@
-import { AtemState } from '../../state'
+import { AtemState, AtemStateUtil } from '../../state'
 import { StillFrame } from '../../state/media'
 import { DeserializedCommand } from '../CommandBase'
 import { Util } from '../../lib/atemUtil'
@@ -38,7 +38,7 @@ export class MediaPoolFrameDescriptionCommand extends DeserializedCommand<StillF
 		} else if (this.mediaPool < 3) {
 			const clipId = this.mediaPool - 1
 			// This is a clip
-			state.media.getClip(clipId).frames[this.frameIndex] = this.properties
+			AtemStateUtil.getClip(state, clipId).frames[this.frameIndex] = this.properties
 			return `media.clipPool.${clipId}.frames.${this.frameIndex}`
 		}
 		return []
