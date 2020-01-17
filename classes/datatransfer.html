@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>DataTransfer | atem-connection - v1.2.0</title>
+	<title>DataTransfer | atem-connection - v2.0.0-0</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -2335,7 +2335,7 @@ img {
 		<div class="container">
 			<div class="table-wrap">
 				<div class="table-cell">
-					<strong><a href="../index.html">atem-connection - v1.2.0</a></strong>
+					<strong><a href="../index.html">atem-connection - v2.0.0-0</a></strong>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -2368,17 +2368,17 @@ img {
 		<li class="current tsd-kind-class tsd-is-external">
 			<a href="datatransfer.html" class="tsd-kind-icon">Data<wbr>Transfer</a>
 			<ul>
-				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-external">
-					<a href="datatransfer.html#commandqueue" class="tsd-kind-icon">command<wbr>Queue</a>
+				<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-external">
+					<a href="datatransfer.html#constructor" class="tsd-kind-icon">constructor</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-external">
-					<a href="datatransfer.html#fail" class="tsd-kind-icon">fail</a>
+					<a href="datatransfer.html#_transferid" class="tsd-kind-icon">_transfer<wbr>Id</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-external">
-					<a href="datatransfer.html#finish" class="tsd-kind-icon">finish</a>
+					<a href="datatransfer.html#rejectpromise" class="tsd-kind-icon">reject<wbr>Promise</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-external">
-					<a href="datatransfer.html#startedat" class="tsd-kind-icon">started<wbr>At</a>
+					<a href="datatransfer.html#resolvepromise" class="tsd-kind-icon">resolve<wbr>Promise</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-external">
 					<a href="datatransfer.html#state" class="tsd-kind-icon">state</a>
@@ -2386,7 +2386,10 @@ img {
 				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-external">
 					<a href="datatransfer.html#storeid" class="tsd-kind-icon">store<wbr>Id</a>
 				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-external">
+				<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-external">
+					<a href="datatransfer.html#promise" class="tsd-kind-icon">promise</a>
+				</li>
+				<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-external">
 					<a href="datatransfer.html#transferid" class="tsd-kind-icon">transfer<wbr>Id</a>
 				</li>
 				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-external">
@@ -2425,15 +2428,26 @@ img {
 			<section class="tsd-panel tsd-index-panel">
 				<div class="tsd-index-content">
 					<section class="tsd-index-section tsd-is-external">
+						<h3>Constructors</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-external"><a href="datatransfer.html#constructor" class="tsd-kind-icon">constructor</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section tsd-is-external">
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-external"><a href="datatransfer.html#commandqueue" class="tsd-kind-icon">command<wbr>Queue</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-external"><a href="datatransfer.html#fail" class="tsd-kind-icon">fail</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-external"><a href="datatransfer.html#finish" class="tsd-kind-icon">finish</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-external"><a href="datatransfer.html#startedat" class="tsd-kind-icon">started<wbr>At</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-external"><a href="datatransfer.html#_transferid" class="tsd-kind-icon">_transfer<wbr>Id</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-external"><a href="datatransfer.html#rejectpromise" class="tsd-kind-icon">reject<wbr>Promise</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-external"><a href="datatransfer.html#resolvepromise" class="tsd-kind-icon">resolve<wbr>Promise</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-external"><a href="datatransfer.html#state" class="tsd-kind-icon">state</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-external"><a href="datatransfer.html#storeid" class="tsd-kind-icon">store<wbr>Id</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-external"><a href="datatransfer.html#transferid" class="tsd-kind-icon">transfer<wbr>Id</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section tsd-is-external">
+						<h3>Accessors</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-external"><a href="datatransfer.html#promise" class="tsd-kind-icon">promise</a></li>
+							<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-external"><a href="datatransfer.html#transferid" class="tsd-kind-icon">transfer<wbr>Id</a></li>
 						</ul>
 					</section>
 					<section class="tsd-index-section tsd-is-external">
@@ -2448,24 +2462,53 @@ img {
 			</section>
 		</section>
 		<section class="tsd-panel-group tsd-member-group tsd-is-external">
+			<h2>Constructors</h2>
+			<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-external">
+				<a name="constructor" class="tsd-anchor"></a>
+				<h3>constructor</h3>
+				<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-external">
+					<li class="tsd-signature tsd-kind-icon">new <wbr>Data<wbr>Transfer<span class="tsd-signature-symbol">(</span>transferId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, storeId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="datatransfer.html" class="tsd-signature-type">DataTransfer</a></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/3f8cfe7/src/dataTransfer/dataTransfer.ts#L10">src/dataTransfer/dataTransfer.ts:10</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>transferId: <span class="tsd-signature-type">number</span></h5>
+							</li>
+							<li>
+								<h5>storeId: <span class="tsd-signature-type">number</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <a href="datatransfer.html" class="tsd-signature-type">DataTransfer</a></h4>
+					</li>
+				</ul>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group tsd-is-external">
 			<h2>Properties</h2>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-external">
-				<a name="commandqueue" class="tsd-anchor"></a>
-				<h3>command<wbr>Queue</h3>
-				<div class="tsd-signature tsd-kind-icon">command<wbr>Queue<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="abstractcommand.html" class="tsd-signature-type">AbstractCommand</a><span class="tsd-signature-symbol">&gt;</span></div>
+				<a name="_transferid" class="tsd-anchor"></a>
+				<h3>_transfer<wbr>Id</h3>
+				<div class="tsd-signature tsd-kind-icon">_transfer<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b25562f/src/dataTransfer/dataTransfer.ts#L9">src/dataTransfer/dataTransfer.ts:9</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/3f8cfe7/src/dataTransfer/dataTransfer.ts#L5">src/dataTransfer/dataTransfer.ts:5</a></li>
 					</ul>
 				</aside>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-external">
-				<a name="fail" class="tsd-anchor"></a>
-				<h3>fail</h3>
-				<div class="tsd-signature tsd-kind-icon">fail<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+				<a name="rejectpromise" class="tsd-anchor"></a>
+				<h3>reject<wbr>Promise</h3>
+				<div class="tsd-signature tsd-kind-icon">reject<wbr>Promise<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b25562f/src/dataTransfer/dataTransfer.ts#L12">src/dataTransfer/dataTransfer.ts:12</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/3f8cfe7/src/dataTransfer/dataTransfer.ts#L10">src/dataTransfer/dataTransfer.ts:10</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -2473,14 +2516,14 @@ img {
 					<ul class="tsd-parameters">
 						<li class="tsd-parameter-siganture">
 							<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
-								<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+								<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>reason<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 							</ul>
 							<ul class="tsd-descriptions">
 								<li class="tsd-description">
 									<h4 class="tsd-parameters-title">Parameters</h4>
 									<ul class="tsd-parameters">
 										<li>
-											<h5>error: <span class="tsd-signature-type">Error</span></h5>
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> reason: <span class="tsd-signature-type">any</span></h5>
 										</li>
 									</ul>
 									<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -2491,12 +2534,12 @@ img {
 				</div>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-external">
-				<a name="finish" class="tsd-anchor"></a>
-				<h3>finish</h3>
-				<div class="tsd-signature tsd-kind-icon">finish<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+				<a name="resolvepromise" class="tsd-anchor"></a>
+				<h3>resolve<wbr>Promise</h3>
+				<div class="tsd-signature tsd-kind-icon">resolve<wbr>Promise<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b25562f/src/dataTransfer/dataTransfer.ts#L11">src/dataTransfer/dataTransfer.ts:11</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/3f8cfe7/src/dataTransfer/dataTransfer.ts#L9">src/dataTransfer/dataTransfer.ts:9</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -2504,14 +2547,14 @@ img {
 					<ul class="tsd-parameters">
 						<li class="tsd-parameter-siganture">
 							<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
-								<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>transfer<span class="tsd-signature-symbol">: </span><a href="datatransfer.html" class="tsd-signature-type">DataTransfer</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+								<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">?: </span><a href="datatransfer.html" class="tsd-signature-type">DataTransfer</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">PromiseLike</span><span class="tsd-signature-symbol">&lt;</span><a href="datatransfer.html" class="tsd-signature-type">DataTransfer</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 							</ul>
 							<ul class="tsd-descriptions">
 								<li class="tsd-description">
 									<h4 class="tsd-parameters-title">Parameters</h4>
 									<ul class="tsd-parameters">
 										<li>
-											<h5>transfer: <a href="datatransfer.html" class="tsd-signature-type">DataTransfer</a></h5>
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> value: <a href="datatransfer.html" class="tsd-signature-type">DataTransfer</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">PromiseLike</span><span class="tsd-signature-symbol">&lt;</span><a href="datatransfer.html" class="tsd-signature-type">DataTransfer</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h5>
 										</li>
 									</ul>
 									<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -2520,16 +2563,6 @@ img {
 						</li>
 					</ul>
 				</div>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-external">
-				<a name="startedat" class="tsd-anchor"></a>
-				<h3>started<wbr>At</h3>
-				<div class="tsd-signature tsd-kind-icon">started<wbr>At<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Date</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b25562f/src/dataTransfer/dataTransfer.ts#L4">src/dataTransfer/dataTransfer.ts:4</a></li>
-					</ul>
-				</aside>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-external">
 				<a name="state" class="tsd-anchor"></a>
@@ -2537,7 +2570,7 @@ img {
 				<div class="tsd-signature tsd-kind-icon">state<span class="tsd-signature-symbol">:</span> <a href="../enums/transferstate.html" class="tsd-signature-type">TransferState</a><span class="tsd-signature-symbol"> =&nbsp;Enums.TransferState.Queued</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b25562f/src/dataTransfer/dataTransfer.ts#L5">src/dataTransfer/dataTransfer.ts:5</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/3f8cfe7/src/dataTransfer/dataTransfer.ts#L4">src/dataTransfer/dataTransfer.ts:4</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2547,19 +2580,46 @@ img {
 				<div class="tsd-signature tsd-kind-icon">store<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b25562f/src/dataTransfer/dataTransfer.ts#L7">src/dataTransfer/dataTransfer.ts:7</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/3f8cfe7/src/dataTransfer/dataTransfer.ts#L6">src/dataTransfer/dataTransfer.ts:6</a></li>
 					</ul>
 				</aside>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-external">
+		</section>
+		<section class="tsd-panel-group tsd-member-group tsd-is-external">
+			<h2>Accessors</h2>
+			<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-external">
+				<a name="promise" class="tsd-anchor"></a>
+				<h3>promise</h3>
+				<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-external">
+					<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> promise<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="datatransfer.html" class="tsd-signature-type">DataTransfer</a><span class="tsd-signature-symbol">&gt;</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/3f8cfe7/src/dataTransfer/dataTransfer.ts#L32">src/dataTransfer/dataTransfer.ts:32</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="datatransfer.html" class="tsd-signature-type">DataTransfer</a><span class="tsd-signature-symbol">&gt;</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-external">
 				<a name="transferid" class="tsd-anchor"></a>
 				<h3>transfer<wbr>Id</h3>
-				<div class="tsd-signature tsd-kind-icon">transfer<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b25562f/src/dataTransfer/dataTransfer.ts#L6">src/dataTransfer/dataTransfer.ts:6</a></li>
-					</ul>
-				</aside>
+				<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-external">
+					<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> transferId<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/3f8cfe7/src/dataTransfer/dataTransfer.ts#L28">src/dataTransfer/dataTransfer.ts:28</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+					</li>
+				</ul>
 			</section>
 		</section>
 		<section class="tsd-panel-group tsd-member-group tsd-is-external">
@@ -2568,16 +2628,16 @@ img {
 				<a name="gotlock" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> got<wbr>Lock</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-external">
-					<li class="tsd-signature tsd-kind-icon">got<wbr>Lock<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<li class="tsd-signature tsd-kind-icon">got<wbr>Lock<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iserializablecommand.html" class="tsd-signature-type">ISerializableCommand</a><span class="tsd-signature-symbol">[]</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b25562f/src/dataTransfer/dataTransfer.ts#L16">src/dataTransfer/dataTransfer.ts:16</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/3f8cfe7/src/dataTransfer/dataTransfer.ts#L39">src/dataTransfer/dataTransfer.ts:39</a></li>
 							</ul>
 						</aside>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						<h4 class="tsd-returns-title">Returns <a href="../interfaces/iserializablecommand.html" class="tsd-signature-type">ISerializableCommand</a><span class="tsd-signature-symbol">[]</span></h4>
 					</li>
 				</ul>
 			</section>
@@ -2585,22 +2645,22 @@ img {
 				<a name="handlecommand" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> handle<wbr>Command</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-external">
-					<li class="tsd-signature tsd-kind-icon">handle<wbr>Command<span class="tsd-signature-symbol">(</span>command<span class="tsd-signature-symbol">: </span><a href="abstractcommand.html" class="tsd-signature-type">AbstractCommand</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<li class="tsd-signature tsd-kind-icon">handle<wbr>Command<span class="tsd-signature-symbol">(</span>command<span class="tsd-signature-symbol">: </span><a href="../interfaces/ideserializedcommand.html" class="tsd-signature-type">IDeserializedCommand</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iserializablecommand.html" class="tsd-signature-type">ISerializableCommand</a><span class="tsd-signature-symbol">[]</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b25562f/src/dataTransfer/dataTransfer.ts#L15">src/dataTransfer/dataTransfer.ts:15</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/3f8cfe7/src/dataTransfer/dataTransfer.ts#L38">src/dataTransfer/dataTransfer.ts:38</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>command: <a href="abstractcommand.html" class="tsd-signature-type">AbstractCommand</a></h5>
+								<h5>command: <a href="../interfaces/ideserializedcommand.html" class="tsd-signature-type">IDeserializedCommand</a></h5>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						<h4 class="tsd-returns-title">Returns <a href="../interfaces/iserializablecommand.html" class="tsd-signature-type">ISerializableCommand</a><span class="tsd-signature-symbol">[]</span></h4>
 					</li>
 				</ul>
 			</section>
@@ -2608,16 +2668,16 @@ img {
 				<a name="start" class="tsd-anchor"></a>
 				<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> start</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-external">
-					<li class="tsd-signature tsd-kind-icon">start<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<li class="tsd-signature tsd-kind-icon">start<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iserializablecommand.html" class="tsd-signature-type">ISerializableCommand</a><span class="tsd-signature-symbol">[]</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b25562f/src/dataTransfer/dataTransfer.ts#L13">src/dataTransfer/dataTransfer.ts:13</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/3f8cfe7/src/dataTransfer/dataTransfer.ts#L36">src/dataTransfer/dataTransfer.ts:36</a></li>
 							</ul>
 						</aside>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						<h4 class="tsd-returns-title">Returns <a href="../interfaces/iserializablecommand.html" class="tsd-signature-type">ISerializableCommand</a><span class="tsd-signature-symbol">[]</span></h4>
 					</li>
 				</ul>
 			</section>
