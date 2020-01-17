@@ -1,15 +1,17 @@
-import AbstractCommand from './AbstractCommand'
+import { DeserializedCommand } from './CommandBase'
 
-export class InitCompleteCommand extends AbstractCommand {
-	rawName = 'InCm'
-	properties: null
+export class InitCompleteCommand extends DeserializedCommand<null> {
+	public static readonly rawName = 'InCm'
 
-	deserialize () {
-		//
+	constructor () {
+		super(null)
 	}
 
-	applyToState () {
-		//
+	public static deserialize () {
+		return new InitCompleteCommand()
+	}
+
+	public applyToState () {
 		return `info`
 	}
 }

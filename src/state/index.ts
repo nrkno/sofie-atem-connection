@@ -6,12 +6,29 @@ import { InputChannel } from './input'
 import { MacroState } from './macro'
 import { SettingsState } from './settings'
 
-export class AtemState {
-	info = new DeviceInfo()
-	video: AtemVideoState = new AtemVideoState()
-	audio: AtemAudioState = new AtemAudioState()
-	media: MediaState = new MediaState()
-	inputs: Array<InputChannel> = []
-	macro: MacroState = new MacroState()
-	settings: SettingsState = new SettingsState()
+export { AtemStateUtil } from './util'
+
+export interface AtemState {
+	info: DeviceInfo
+	video: AtemVideoState
+	audio: AtemAudioState
+	media: MediaState
+	inputs: { [inputId: number]: InputChannel | undefined }
+	macro: MacroState
+	settings: SettingsState
+}
+
+export class InvalidIdError extends Error {
+	constructor (message: string, ...ids: number[]) {
+		super(InvalidIdError.BuildErrorString(message, ids))
+		Object.setPrototypeOf(this, new.target.prototype)
+	}
+
+	private static BuildErrorString (message: string, ids: number[]) {
+		if (ids && ids.length > 0) {
+			return `${message} ${ids.join('-')} is not valid`
+		} else {
+			return message
+		}
+	}
 }

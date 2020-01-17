@@ -1,55 +1,76 @@
-import AbstractCommand from '../AbstractCommand'
-import { AtemState } from '../../state'
+import { DeserializedCommand } from '../CommandBase'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../state'
 import { DownstreamKeyerBase } from '../../state/video/downstreamKeyers'
-import { Util } from '../..'
 import { ProtocolVersion } from '../../enums'
 
-export class DownstreamKeyStateCommand extends AbstractCommand {
-	rawName = 'DskS'
-	downstreamKeyerId: number
+export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKeyerBase> {
+	public static readonly rawName = 'DskS'
 
-	properties: DownstreamKeyerBase
+	public readonly downstreamKeyerId: number
 
-	deserialize (rawCommand: Buffer) {
-		this.downstreamKeyerId = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
-			onAir: rawCommand[1] === 1,
-			inTransition: rawCommand[2] === 1,
-			isAuto: rawCommand[3] === 1,
-			remainingFrames: rawCommand[4]
-		}
+	constructor (downstreamKeyerId: number, properties: DownstreamKeyerBase) {
+		super(properties)
+
+		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	applyToState (state: AtemState) {
+	public static deserialize (rawCommand: Buffer) {
+		const downstreamKeyerId = rawCommand.readUInt8(0)
+		const properties = {
+			onAir: rawCommand.readUInt8(1) === 1,
+			inTransition: rawCommand.readUInt8(2) === 1,
+			isAuto: rawCommand.readUInt8(3) === 1,
+			remainingFrames: rawCommand.readUInt8(4)
+		}
+
+		return new DownstreamKeyStateCommand(downstreamKeyerId, properties)
+	}
+
+	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.downstreamKeyerId >= state.info.capabilities.downstreamKeyers) {
+			throw new InvalidIdError('DownstreamKeyer', this.downstreamKeyerId)
+		}
+
 		state.video.downstreamKeyers[this.downstreamKeyerId] = {
-			...state.video.downstreamKeyers[this.downstreamKeyerId],
+			...AtemStateUtil.getDownstreamKeyer(state, this.downstreamKeyerId),
 			...this.properties
 		}
 		return `video.downstreamKeyers.${this.downstreamKeyerId}`
 	}
 }
 
-export class DownstreamKeyStateV8Command extends AbstractCommand {
-	rawName = 'DskS'
-	downstreamKeyerId: number
-	minimumVersion = ProtocolVersion.V8_0_1
+export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamKeyerBase> {
+	public static readonly rawName = 'DskS'
+	public static readonly minimumVersion = ProtocolVersion.V8_0_1
 
-	properties: DownstreamKeyerBase
+	public readonly downstreamKeyerId: number
 
-	deserialize (rawCommand: Buffer) {
-		this.downstreamKeyerId = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
-			onAir: rawCommand[1] === 1,
-			inTransition: rawCommand[2] === 1,
-			isAuto: rawCommand[3] === 1,
-			isTowardsOnAir: rawCommand[4] === 1,
-			remainingFrames: rawCommand[5]
-		}
+	constructor (downstreamKeyerId: number, properties: DownstreamKeyerBase) {
+		super(properties)
+
+		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	applyToState (state: AtemState) {
+	public static deserialize (rawCommand: Buffer) {
+		const downstreamKeyerId = rawCommand.readUInt8(0)
+		const properties = {
+			onAir: rawCommand.readUInt8(1) === 1,
+			inTransition: rawCommand.readUInt8(2) === 1,
+			isAuto: rawCommand.readUInt8(3) === 1,
+			isTowardsOnAir: rawCommand.readUInt8(4) === 1,
+			remainingFrames: rawCommand.readUInt8(5)
+		}
+
+		return new DownstreamKeyStateV8Command(downstreamKeyerId, properties)
+	}
+
+	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.downstreamKeyerId >= state.info.capabilities.downstreamKeyers) {
+			throw new InvalidIdError('DownstreamKeyer', this.downstreamKeyerId)
+		}
+
 		state.video.downstreamKeyers[this.downstreamKeyerId] = {
-			...state.video.downstreamKeyers[this.downstreamKeyerId],
+			...AtemStateUtil.getDownstreamKeyer(state, this.downstreamKeyerId),
 			...this.properties
 		}
 		return `video.downstreamKeyers.${this.downstreamKeyerId}`

@@ -14,6 +14,7 @@ module.exports = {
 	testMatch: [
 		'**/__tests__/**/*.spec.(ts|js)'
 	],
+	setupFilesAfterEnv: ["jest-extended"],
 	testEnvironment: 'node',
 	coverageThreshold: {
 		global: {
@@ -26,10 +27,10 @@ module.exports = {
 	coverageDirectory: "./coverage/",
 	collectCoverage: true,
 	collectCoverageFrom: [
-		"**/src/**",
-		"!**/src/@types/**",
+		"src/**/*.{js,ts}",
+		"!**/@types/**",
 		"!**/__tests__/**",
-		"!**/__mocks__/**", 
+		"!**/__mocks__/**",
 		'!**/node_modules/**',
 		'!**/dist/**'
 	]

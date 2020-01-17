@@ -1,31 +1,40 @@
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { AtemCapabilites } from '../../state/info'
 
-export class TopologyCommand extends AbstractCommand {
-	rawName = '_top'
+export class TopologyCommand extends DeserializedCommand<AtemCapabilites> {
+	public static readonly rawName = '_top'
 
-	properties: AtemCapabilites
+	public static deserialize (rawCommand: Buffer) {
+		const properties = {
+			mixEffects: rawCommand.readUInt8(0),
+			sources: rawCommand.readUInt8(1),
+			downstreamKeyers: rawCommand.readUInt8(2),
+			auxilliaries: rawCommand.readUInt8(3),
+			mixMinusOutputs: rawCommand.readUInt8(4),
+			mediaPlayers: rawCommand.readUInt8(5),
+			serialPorts: rawCommand.readUInt8(6),
+			maxHyperdecks: rawCommand.readUInt8(7),
+			DVEs: rawCommand.readUInt8(8),
+			stingers: rawCommand.readUInt8(9),
+			superSources: rawCommand.readUInt8(10),
+			// talkbackOverSDI: rawCommand.readUInt8(13),
 
-	deserialize (rawCommand: Buffer) {
-		this.properties = {
-			MEs: rawCommand[0],
-			sources: rawCommand[1],
-			colorGenerators: rawCommand[2],
-			auxilliaries: rawCommand[3],
-			talkbackOutputs: rawCommand[4],
-			mediaPlayers: rawCommand[5],
-			serialPorts: rawCommand[6],
-			maxHyperdecks: rawCommand[7],
-			DVEs: rawCommand[8],
-			stingers: rawCommand[9],
-			hasSuperSources: rawCommand[10] !== 0,
-			superSources: rawCommand[10],
-			talkbackOverSDI: rawCommand[13]
+			cameraControl: rawCommand.readUInt8(17) === 1,
+
+			// Note: these are defined below as they can overflow in older firmwares
+			advancedChromaKeyers: false
 		}
+
+		// in 7.4?
+		if (rawCommand.length > 20) {
+			properties.advancedChromaKeyers = rawCommand.readUInt8(21) === 1
+		}
+
+		return new TopologyCommand(properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.info.capabilities = {
 			...state.info.capabilities,
 			...this.properties

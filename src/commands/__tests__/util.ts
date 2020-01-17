@@ -1,11 +1,17 @@
 import { CommandParser } from '../../lib/atemCommandParser'
 import { ProtocolVersion } from '../../enums'
+import { IDeserializedCommand, ISerializableCommand, SymmetricalCommand } from '../CommandBase'
+import { createEmptyState } from '../../__tests__/util'
 
 export type CommandTestConverterSet = { [key: string]: CommandTestConverter }
 export interface CommandTestConverter {
-	idAliases: { [key: string]: string }
+	/** Internal name to LibAtem name */
+	idAliases: { [internalName: string]: string }
+	/** LibAtem name to Internal name & mutated value */
 	propertyAliases: { [key: string]: (v: any) => { name?: string, val: any } }
 	customMutate?: (v: any) => any
+	/** pre-process deserialized command */
+	processDeserialized?: (v: any) => void
 }
 
 export interface TestCase {
@@ -15,11 +21,15 @@ export interface TestCase {
 }
 
 export function runTestForCommand (commandParser: CommandParser, commandConverters: CommandTestConverterSet, i: number, testCase: TestCase, allowUnknown?: boolean) {
-	const cmd = commandParser.commandFromRawName(testCase.name)
-	if (!cmd && allowUnknown) return
+	const cmdConstructor = commandParser.commandFromRawName(testCase.name)
+	if (!cmdConstructor && allowUnknown) return
+
+	// if (i !== 39) {
+	// 	return
+	// }
 
 	let matchedCase = false
-	if (cmd) {
+	if (cmdConstructor) {
 		const buffer = Buffer.from(testCase.bytes.replace(/-/g, ''), 'hex')
 		const length = buffer.readUInt16BE(0)
 		const name = buffer.toString('ascii', 4, 8)
@@ -38,16 +48,19 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 			mutatedCommand = converter.customMutate(mutatedCommand)
 		}
 
-		if (typeof cmd.deserialize === 'function') {
+		if (typeof cmdConstructor.deserialize === 'function') {
 			matchedCase = true
 			test(`Test #${i}: ${testCase.name} - Deserialize`, () => {
-				cmd.deserialize!(buffer.slice(0, length).slice(8), commandParser.version)
+				const cmd: IDeserializedCommand = cmdConstructor.deserialize(buffer.slice(0, length).slice(8), commandParser.version)
 
-				delete cmd.flag // Anything deserialized will never have flags
-				delete cmd.rawName
-				delete (cmd as any).rawCommand
+				// delete cmd.flag // Anything deserialized will never have flags
+				// delete (cmd as any).rawCommand
 
 				if (converter) {
+					if (converter.processDeserialized) {
+						converter.processDeserialized(cmd.properties)
+					}
+
 					for (const key in cmd) {
 						const newName = converter.idAliases[key]
 						if (cmd.hasOwnProperty(key) && newName) {
@@ -58,10 +71,15 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 				}
 
 				expect(cmd.properties).toEqual(mutatedCommand)
+
+				const state = createEmptyState()
+				// Ensure state update doesnt error
+				expect(cmd.applyToState(state)).toBeTruthy()
 			})
 		}
 
-		if (typeof cmd.serialize === 'function') {
+		const cmd: ISerializableCommand = new cmdConstructor() // constructor params get filled in below
+		if (typeof (cmd as any).serialize === 'function') {
 			matchedCase = true
 			test(`Test #${i}: ${testCase.name} - Serialize`, () => {
 				if (converter) {
@@ -73,11 +91,25 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 				}
 
 				if (mutatedCommand.mask !== undefined) {
-					cmd.flag = mutatedCommand.mask
+					(cmd as any).flag = mutatedCommand.mask
 					delete mutatedCommand.mask
 				}
 
-				cmd.properties = mutatedCommand
+				if (cmd instanceof SymmetricalCommand) {
+					// These properties are stored in slightly different place
+					(cmd as any).properties = mutatedCommand
+				} else {
+					(cmd as any)._properties = mutatedCommand
+				}
+
+				// Ensure all properties appear in the mask
+				const maskProps = (cmd as any).constructor.MaskFlags
+				if (maskProps) {
+					for (const key of Object.keys(mutatedCommand)) {
+						expect(maskProps).toHaveProperty(key)
+						// expect(maskProps[key]).not.toBeUndefined()
+					}
+				}
 
 				const hexStr = (buf: Buffer) => {
 					const str = buf.toString('hex')
@@ -89,7 +121,7 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 					return str2.substring(0, str2.length - 1)
 				}
 
-				const encodedBytes = cmd.serialize!(commandParser.version)
+				const encodedBytes = cmd.serialize(commandParser.version)
 				// console.log(hexStr(buffer.slice(4)))
 				expect(length).toEqual(encodedBytes.length + 8)
 				expect(hexStr(buffer.slice(8))).toEqual(hexStr(encodedBytes))
@@ -112,8 +144,7 @@ export function ensureAllCommandsCovered (commandParser: CommandParser, testCase
 		let knownNames: string[] = []
 		for (const name of Object.keys(commandParser.commands)) {
 			for (const cmd of commandParser.commands[name]) {
-				const inst = new cmd()
-				if ((expectUndefined && !inst.minimumVersion) || inst.minimumVersion === commandParser.version) {
+				if ((expectUndefined && !cmd.minimumVersion) || cmd.minimumVersion === commandParser.version) {
 					knownNames.push(name)
 				}
 			}

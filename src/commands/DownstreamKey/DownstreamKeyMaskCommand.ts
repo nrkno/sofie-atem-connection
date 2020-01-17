@@ -1,8 +1,8 @@
-import AbstractCommand from '../AbstractCommand'
+import { WritableCommand } from '../CommandBase'
 import { DownstreamKeyerMask } from '../../state/video/downstreamKeyers'
 
-export class DownstreamKeyMaskCommand extends AbstractCommand {
-	static MaskFlags = {
+export class DownstreamKeyMaskCommand extends WritableCommand<DownstreamKeyerMask> {
+	public static MaskFlags = {
 		enabled: 1 << 0,
 		top: 1 << 1,
 		bottom: 1 << 2,
@@ -10,24 +10,26 @@ export class DownstreamKeyMaskCommand extends AbstractCommand {
 		right: 1 << 4
 	}
 
-	rawName = 'CDsM'
-	downstreamKeyerId: number
-	properties: DownstreamKeyerMask
+	public static readonly rawName = 'CDsM'
 
-	serialize () {
+	public readonly downstreamKeyerId: number
+
+	constructor (downstreamKeyerId: number) {
+		super()
+
+		this.downstreamKeyerId = downstreamKeyerId
+	}
+
+	public serialize () {
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.downstreamKeyerId, 1)
 		buffer.writeUInt8(this.properties.enabled ? 1 : 0, 2)
 
-		buffer.writeInt16BE(this.properties.top, 4)
-		buffer.writeInt16BE(this.properties.bottom, 6)
-		buffer.writeInt16BE(this.properties.left, 8)
-		buffer.writeInt16BE(this.properties.right, 10)
+		buffer.writeInt16BE(this.properties.top || 0, 4)
+		buffer.writeInt16BE(this.properties.bottom || 0, 6)
+		buffer.writeInt16BE(this.properties.left || 0, 8)
+		buffer.writeInt16BE(this.properties.right || 0, 10)
 		return buffer
-	}
-
-	updateProps (newProps: Partial<DownstreamKeyerMask>) {
-		this._updateProps(newProps)
 	}
 }

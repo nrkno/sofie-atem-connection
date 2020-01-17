@@ -1,16 +1,22 @@
-import AbstractCommand from '../AbstractCommand'
-import { AtemState } from '../../state'
-import { Util } from '../..'
+import { BasicWritableCommand, DeserializedCommand } from '../CommandBase'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../state'
 
-export class PreviewInputCommand extends AbstractCommand {
-	rawName = 'CPvI'
-	mixEffect: number
+export interface InputSource {
+	source: number
+}
 
-	properties: {
-		source: number
+export class PreviewInputCommand extends BasicWritableCommand<InputSource> {
+	public static readonly rawName = 'CPvI'
+
+	public readonly mixEffect: number
+
+	constructor (mixEffect: number, source: number) {
+		super({ source })
+
+		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		buffer.writeUInt16BE(this.properties.source, 2)
@@ -18,23 +24,32 @@ export class PreviewInputCommand extends AbstractCommand {
 	}
 }
 
-export class PreviewInputUpdateCommand extends AbstractCommand {
-	rawName = 'PrvI'
-	mixEffect: number
+export class PreviewInputUpdateCommand extends DeserializedCommand<InputSource> {
+	public static readonly rawName = 'PrvI'
 
-	properties: {
-		source: number
+	public readonly mixEffect: number
+
+	constructor (mixEffect: number, properties: InputSource) {
+		super(properties)
+
+		this.mixEffect = mixEffect
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
+	public static deserialize (rawCommand: Buffer): PreviewInputUpdateCommand {
+		const mixEffect = rawCommand.readUInt8(0)
+		const properties = {
 			source: rawCommand.readUInt16BE(2)
 		}
+
+		return new PreviewInputUpdateCommand(mixEffect, properties)
 	}
 
-	applyToState (state: AtemState) {
-		const mixEffect = state.video.getMe(this.mixEffect)
+	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
+			throw new InvalidIdError('MixEffect', this.mixEffect)
+		}
+
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.previewInput = this.properties.source
 		return `video.ME.${this.mixEffect}.previewInput`
 	}

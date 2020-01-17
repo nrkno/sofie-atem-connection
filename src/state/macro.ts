@@ -17,8 +17,8 @@ export interface MacroPropertiesState {
 	name: string
 }
 
-export class MacroState {
+export interface MacroState {
 	macroPlayer: MacroPlayerState
 	macroRecorder: MacroRecorderState
-	macroProperties: Array<MacroPropertiesState> = []
+	readonly macroProperties: Array<MacroPropertiesState | undefined>
 }

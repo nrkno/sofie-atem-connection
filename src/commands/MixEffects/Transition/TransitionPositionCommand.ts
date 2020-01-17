@@ -1,18 +1,22 @@
-import AbstractCommand from '../../AbstractCommand'
-import { AtemState } from '../../../state'
-import { Util } from '../../..'
+import { BasicWritableCommand, DeserializedCommand } from '../../CommandBase'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../../state'
 
-export class TransitionPositionCommand extends AbstractCommand {
-	rawName = 'CTPs'
-	mixEffect: number
+export interface HandlePositionProps {
+	handlePosition: number // 0...10000
+}
 
-	properties: {
-		readonly inTransition: boolean
-		readonly remainingFrames: number // 0...250
-		handlePosition: number // 0...10000
+export class TransitionPositionCommand extends BasicWritableCommand<HandlePositionProps> {
+	public static readonly rawName = 'CTPs'
+
+	public readonly mixEffect: number
+
+	constructor (mixEffect: number, handlePosition: number) {
+		super({ handlePosition })
+
+		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		buffer.writeUInt16BE(this.properties.handlePosition, 2)
@@ -20,27 +24,39 @@ export class TransitionPositionCommand extends AbstractCommand {
 	}
 }
 
-export class TransitionPositionUpdateCommand extends AbstractCommand {
-	rawName = 'TrPs'
-	mixEffect: number
+export interface TransitionPositionProps extends HandlePositionProps {
+	inTransition: boolean
+	remainingFrames: number // 0...250
+}
 
-	properties: {
-		readonly inTransition: boolean
-		readonly remainingFrames: number // 0...250
-		handlePosition: number // 0...10000
+export class TransitionPositionUpdateCommand extends DeserializedCommand<TransitionPositionProps> {
+	public static readonly rawName = 'TrPs'
+
+	public readonly mixEffect: number
+
+	constructor (mixEffect: number, properties: TransitionPositionProps) {
+		super(properties)
+
+		this.mixEffect = mixEffect
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
-			inTransition: rawCommand[1] === 1,
-			remainingFrames: Util.parseNumberBetween(rawCommand[2], 0, 250),
-			handlePosition: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 10000)
+	public static deserialize (rawCommand: Buffer): TransitionPositionUpdateCommand {
+		const mixEffect = rawCommand.readUInt8(0)
+		const properties = {
+			inTransition: rawCommand.readUInt8(1) === 1,
+			remainingFrames: rawCommand.readUInt8(2),
+			handlePosition: rawCommand.readUInt16BE(4)
 		}
+
+		return new TransitionPositionUpdateCommand(mixEffect, properties)
 	}
 
-	applyToState (state: AtemState) {
-		const mixEffect = state.video.getMe(this.mixEffect)
+	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
+			throw new InvalidIdError('MixEffect', this.mixEffect)
+		}
+
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionFramesLeft = this.properties.remainingFrames
 		mixEffect.transitionPosition = this.properties.handlePosition
 		mixEffect.inTransition = this.properties.inTransition

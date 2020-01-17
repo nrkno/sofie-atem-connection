@@ -1,20 +1,20 @@
-import AbstractCommand from './AbstractCommand'
 import { AtemState } from '../state'
 import { TimeInfo } from '../state/info'
 import * as Enums from '../enums'
+import { BasicWritableCommand } from '.'
+import { SymmetricalCommand } from './CommandBase'
 
-export class TimeCommand extends AbstractCommand {
-	rawName = 'Time'
+export class TimeCommand extends SymmetricalCommand<TimeInfo> {
+	public static readonly rawName = 'Time'
 
-	properties: TimeInfo = {
-		hour: 0,
-		minute: 0,
-		second: 0,
-		frame: 0,
-		dropFrame: false
+	constructor (properties: TimeInfo | Omit<TimeInfo, 'dropFrame'>) {
+		super({
+			dropFrame: false,
+			...properties
+		})
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(8)
 		buffer.writeUInt8(this.properties.hour, 0)
 		buffer.writeUInt8(this.properties.minute, 1)
@@ -26,8 +26,8 @@ export class TimeCommand extends AbstractCommand {
 		return buffer
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.properties = {
+	public static deserialize (rawCommand: Buffer): TimeCommand {
+		const properties = {
 			hour: rawCommand.readUInt8(0),
 			minute: rawCommand.readUInt8(1),
 			second: rawCommand.readUInt8(2),
@@ -35,21 +35,25 @@ export class TimeCommand extends AbstractCommand {
 			// Byte 4 looks to be a field marker
 			dropFrame: rawCommand.readUInt8(5) === 1
 		}
+
+		return new TimeCommand(properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.info.lastTime = this.properties
 		return 'info.lastTime'
 	}
 }
 
-export class TimeRequestCommand extends AbstractCommand {
-	rawName = 'TiRq'
-	minimumVersion = Enums.ProtocolVersion.V8_0
+export class TimeRequestCommand extends BasicWritableCommand<null> {
+	public static readonly rawName = 'TiRq'
+	public static readonly minimumVersion = Enums.ProtocolVersion.V8_0
 
-	properties = {}
+	constructor () {
+		super(null)
+	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(0)
 		return buffer
 	}

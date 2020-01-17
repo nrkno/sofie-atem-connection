@@ -1,36 +1,43 @@
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { MacroPropertiesState } from '../../state/macro'
 import { Util } from '../../lib/atemUtil'
 
-export class MacroPropertiesCommand extends AbstractCommand {
-	rawName = 'MPrp'
+export class MacroPropertiesCommand extends DeserializedCommand<MacroPropertiesState> {
+	public static readonly rawName = 'MPrp'
 
-	macroIndexID: number
-	properties: MacroPropertiesState
+	public readonly macroIndexID: number
 
-	deserialize (rawCommand: Buffer) {
-		this.macroIndexID = rawCommand.readUInt16BE(0)
+	constructor (macroIndexID: number, properties: MacroPropertiesState) {
+		super(properties)
+
+		this.macroIndexID = macroIndexID
+	}
+
+	public static deserialize (rawCommand: Buffer): MacroPropertiesCommand {
+		const macroIndexID = rawCommand.readUInt16BE(0)
 		const nameLen = rawCommand.readUInt16BE(4)
 		const descLen = rawCommand.readUInt16BE(6)
 
-		this.properties = {
+		const properties = {
 			description: '',
-			isUsed: Boolean(rawCommand[2] & 1 << 0),
-			macroIndex: this.macroIndexID,
+			isUsed: Boolean(rawCommand.readUInt8(2) & 1 << 0),
+			macroIndex: macroIndexID,
 			name: ''
 		}
 
 		if (descLen > 0) {
-			this.properties.description = Util.bufToNullTerminatedString(rawCommand, (8 + nameLen), descLen)
+			properties.description = Util.bufToNullTerminatedString(rawCommand, (8 + nameLen), descLen)
 		}
 
 		if (nameLen > 0) {
-			this.properties.name = Util.bufToNullTerminatedString(rawCommand, 8, nameLen)
+			properties.name = Util.bufToNullTerminatedString(rawCommand, 8, nameLen)
 		}
+
+		return new MacroPropertiesCommand(macroIndexID, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.macro.macroProperties[this.macroIndexID] = {
 			...state.macro.macroProperties[this.macroIndexID],
 			...this.properties

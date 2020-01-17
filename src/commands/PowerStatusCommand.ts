@@ -1,4 +1,4 @@
-import AbstractCommand from './AbstractCommand'
+import { DeserializedCommand } from './CommandBase'
 import { AtemState } from '../state'
 
 /**
@@ -6,19 +6,19 @@ import { AtemState } from '../state'
  * DeviceProfile/productIdentifierCommand.ts the 2ME, 2ME 4K and the
  * Broadcast Studio have 2 power supplies. All other models have 1.
  */
-export class PowerStatusCommand extends AbstractCommand {
-	rawName = 'Powr'
+export class PowerStatusCommand extends DeserializedCommand<boolean[]> {
+	public static readonly rawName = 'Powr'
 
-	properties: boolean[]
-
-	deserialize (rawCommand: Buffer) {
-		this.properties = [
-			Boolean(rawCommand[0] & 1 << 0),
-			Boolean(rawCommand[0] & 1 << 1)
+	public static deserialize (rawCommand: Buffer): PowerStatusCommand {
+		const properties = [
+			Boolean(rawCommand.readUInt8(0) & 1 << 0),
+			Boolean(rawCommand.readUInt8(0) & 1 << 1)
 		]
+
+		return new PowerStatusCommand(properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		const count = state.info.power.length
 		state.info.power = this.properties.slice(0, count)
 		return `info.power`

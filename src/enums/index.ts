@@ -29,27 +29,6 @@ export enum TransitionStyle {
 	STING = 0x04
 }
 
-export enum TallyState {
-	None = 0x00,
-	Program = 0x01,
-	Preview = 0x02
-}
-
-export enum ConnectionState {
-	None = 0x00,
-	SynSent = 0x01,
-	Established = 0x02,
-	Closed = 0x03
-}
-
-export enum PacketFlag {
-	AckRequest = 0x01,
-	Connect = 0x02,
-	Repeat = 0x04,
-	Error = 0x08,
-	AckReply = 0x10
-}
-
 export enum DVEEffect {
 	SwooshTopLeft= 0,
 	SwooshTop = 1,
@@ -202,29 +181,11 @@ export enum SuperSourceArtOption {
 	Foreground
 }
 
-export enum IPCMessageType {
-	Log = 'log',
-	Connect = 'connect',
-	Disconnect = 'disconnect',
-	InboundCommand = 'inboundCommand',
-	OutboundCommand = 'outboundCommand',
-	CommandAcknowledged = 'commandAcknowledged',
-	CommandTimeout = 'commandTimeout'
-}
-
 export enum TransferMode {
 	NoOp,
 	Write,
 	Clear,
 	WriteAudio = 256
-}
-
-export enum StoragePool {
-	Stills,
-	Clip1,
-	Clip2,
-	Audio1,
-	Audio2
 }
 
 export enum VideoMode {
@@ -263,13 +224,6 @@ export enum TransferState {
 export enum MediaSourceType {
 	Still = 1,
 	Clip
-}
-
-export enum MultiViewerLayout {
-	Top = 0,
-	Bottom = 1,
-	Left = 2,
-	Right = 3
 }
 
 export enum AudioMixOption {

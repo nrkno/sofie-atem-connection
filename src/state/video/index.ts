@@ -1,6 +1,9 @@
 import * as Enum from '../../enums'
 import * as USK from './upstreamKeyers'
-import { DownstreamKeyer } from './downstreamKeyers'
+import * as DSK from './downstreamKeyers'
+import * as SuperSource from './superSource'
+
+export { USK, DSK, SuperSource }
 
 export interface DipTransitionSettings {
 	rate: number
@@ -62,109 +65,25 @@ export interface TransitionProperties {
 }
 
 export interface TransitionSettings {
-	dip: DipTransitionSettings
-	DVE: DVETransitionSettings
-	mix: MixTransitionSettings
-	stinger: StingerTransitionSettings
-	wipe: WipeTransitionSettings
+	dip?: DipTransitionSettings
+	DVE?: DVETransitionSettings
+	mix?: MixTransitionSettings
+	stinger?: StingerTransitionSettings
+	wipe?: WipeTransitionSettings
 }
 
-export interface IMixEffect {
+export interface MixEffect {
+	readonly index: number
 	programInput: number
 	previewInput: number
 	inTransition: boolean
 	transitionPreview: boolean
 	transitionPosition: number
 	transitionFramesLeft: number
-	fadeToBlack: FadeToBlackProperties
-	numberOfKeyers: number
+	fadeToBlack?: FadeToBlackProperties
 	transitionProperties: TransitionProperties
-	transitionSettings: TransitionSettings,
-	upstreamKeyers: { [index: number]: USK.UpstreamKeyer }
-}
-
-export class MixEffect implements IMixEffect {
-	index: number
-	programInput: number
-	previewInput: number
-	inTransition: boolean
-	transitionPreview: boolean
-	transitionPosition: number
-	transitionFramesLeft: number
-	fadeToBlack: FadeToBlackProperties
-	numberOfKeyers: number
-	transitionProperties: TransitionProperties = {} as TransitionProperties
-	transitionSettings: TransitionSettings = {} as TransitionSettings
-	upstreamKeyers: { [index: number]: USK.UpstreamKeyer } = []
-
-	constructor (index: number) {
-		this.index = index
-	}
-
-	getUpstreamKeyer (index: number) {
-		if (!this.upstreamKeyers[index]) {
-			this.upstreamKeyers[index] = {
-				dveSettings: {} as USK.UpstreamKeyerDVESettings,
-				chromaSettings: {} as USK.UpstreamKeyerChromaSettings,
-				lumaSettings: {} as USK.UpstreamKeyerLumaSettings,
-				patternSettings: {} as USK.UpstreamKeyerPatternSettings,
-				flyKeyframes: [] as { [index: number]: USK.UpstreamKeyerFlyKeyframe },
-				flyProperties: {} as USK.UpstreamKeyerFlySettings
-			} as USK.UpstreamKeyer
-		}
-
-		return this.upstreamKeyers[index]
-	}
-}
-
-export interface SuperSourceBox {
-	enabled: boolean
-	source: number
-	x: number
-	y: number
-	size: number
-	cropped: boolean
-	cropTop: number
-	cropBottom: number
-	cropLeft: number
-	cropRight: number
-}
-
-export interface SuperSourceProperties {
-	artFillSource: number
-	artCutSource: number
-	artOption: Enum.SuperSourceArtOption
-	artPreMultiplied: boolean
-	artClip: number
-	artGain: number
-	artInvertKey: boolean
-}
-
-export interface SuperSourceBorder {
-	borderEnabled: boolean
-	borderBevel: Enum.BorderBevel
-	borderOuterWidth: number
-	borderInnerWidth: number
-	borderOuterSoftness: number
-	borderInnerSoftness: number
-	borderBevelSoftness: number
-	borderBevelPosition: number
-	borderHue: number
-	borderSaturation: number
-	borderLuma: number
-	borderLightSourceDirection: number
-	borderLightSourceAltitude: number
-}
-
-export class SuperSource {
-	index: number
-	boxes: { [index: string]: SuperSourceBox } = {}
-	properties: SuperSourceProperties
-	border: SuperSourceBorder
-
-	constructor (index: number) {
-		this.index = index
-	}
+	transitionSettings: TransitionSettings
+	readonly upstreamKeyers: Array<USK.UpstreamKeyer | undefined>
 }
 
 export interface FadeToBlackProperties {
@@ -174,33 +93,9 @@ export interface FadeToBlackProperties {
 	remainingFrames: number
 }
 
-export class AtemVideoState {
-	ME: { [index: string]: MixEffect } = {}
-	downstreamKeyers: { [index: string]: DownstreamKeyer } = {}
-	auxilliaries: { [index: string]: number } = {}
-	superSources: { [index: string]: SuperSource } = {}
-
-	getMe (index: number) {
-		if (!this.ME[index]) {
-			this.ME[index] = new MixEffect(index)
-		}
-
-		return this.ME[index]
-	}
-
-	getSuperSource (index: number) {
-		if (!this.superSources[index]) {
-			this.superSources[index] = new SuperSource(index)
-		}
-
-		return this.superSources[index]
-	}
-
-	getDownstreamKeyer (index: number) {
-		if (!this.downstreamKeyers[index]) {
-			this.downstreamKeyers[index] = {} as DownstreamKeyer
-		}
-
-		return this.downstreamKeyers[index]
-	}
+export interface AtemVideoState {
+	readonly mixEffects: Array<MixEffect | undefined>
+	readonly downstreamKeyers: Array<DSK.DownstreamKeyer | undefined>
+	readonly auxilliaries: Array<number | undefined>
+	readonly superSources: Array<SuperSource.SuperSource | undefined>
 }

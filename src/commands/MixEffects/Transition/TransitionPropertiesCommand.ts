@@ -1,53 +1,64 @@
-import AbstractCommand from '../../AbstractCommand'
-import { AtemState } from '../../../state'
+import { WritableCommand, DeserializedCommand } from '../../CommandBase'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../../state'
 import { TransitionProperties } from '../../../state/video'
-import { Util, Enums } from '../../..'
 
-export class TransitionPropertiesCommand extends AbstractCommand {
-	static MaskFlags = {
+export class TransitionPropertiesCommand extends WritableCommand<TransitionProperties> {
+	public static MaskFlags = {
 		style: 1 << 0,
 		selection: 1 << 1
 	}
 
-	rawName = 'CTTp'
-	mixEffect: number
+	public static readonly rawName = 'CTTp'
 
-	properties: TransitionProperties
+	public readonly mixEffect: number
 
-	updateProps (newProps: Partial<TransitionProperties>) {
-		this._updateProps(newProps)
+	constructor (mixEffect: number) {
+		super()
+
+		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.flag, 0)
 
 		buffer.writeUInt8(this.mixEffect, 1)
-		buffer.writeUInt8(this.properties.style, 2)
-		buffer.writeUInt8(this.properties.selection, 3)
+		buffer.writeUInt8(this.properties.style || 0, 2)
+		buffer.writeUInt8(this.properties.selection || 0, 3)
 
 		return buffer
 	}
 }
 
-export class TransitionPropertiesUpdateCommand extends AbstractCommand {
-	rawName = 'TrSS'
-	mixEffect: number
+export class TransitionPropertiesUpdateCommand extends DeserializedCommand<TransitionProperties> {
+	public static readonly rawName = 'TrSS'
 
-	properties: TransitionProperties
+	public readonly mixEffect: number
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
-			style: Util.parseEnum<Enums.TransitionStyle>(rawCommand[1], Enums.TransitionStyle),// rawCommand[1],
-			selection: rawCommand[2],
-			nextStyle: Util.parseEnum<Enums.TransitionStyle>(rawCommand[3], Enums.TransitionStyle),
-			nextSelection: rawCommand[4]
-		}
+	constructor (mixEffect: number, properties: TransitionProperties) {
+		super(properties)
+
+		this.mixEffect = mixEffect
 	}
 
-	applyToState (state: AtemState) {
-		const mixEffect = state.video.getMe(this.mixEffect)
+	public static deserialize (rawCommand: Buffer): TransitionPropertiesUpdateCommand {
+		const mixEffect = rawCommand.readUInt8(0)
+		const properties = {
+			style: rawCommand.readUInt8(1),
+			selection: rawCommand.readUInt8(2),
+			nextStyle: rawCommand.readUInt8(3),
+			nextSelection: rawCommand.readUInt8(4)
+		}
+
+		return new TransitionPropertiesUpdateCommand(mixEffect, properties)
+	}
+
+	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
+			throw new InvalidIdError('MixEffect', this.mixEffect)
+		}
+
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionProperties = {
 			...this.properties
 		}

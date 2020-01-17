@@ -1,17 +1,40 @@
 import { Commands, Enums } from '..'
 
 export default abstract class DataTransfer {
-	startedAt: Date
-	state: Enums.TransferState = Enums.TransferState.Queued
-	transferId: number
-	storeId: number
+	public state: Enums.TransferState = Enums.TransferState.Queued
+	public readonly _transferId: number
+	public readonly storeId: number
 
-	commandQueue: Array<Commands.AbstractCommand>
+	private readonly completionPromise: Promise<DataTransfer>
+	public resolvePromise: (value?: DataTransfer | PromiseLike<DataTransfer> | undefined) => void
+	public rejectPromise: (reason?: any) => void
 
-	finish: (transfer: DataTransfer) => void
-	fail: (error: Error) => void
-	abstract start (): void
+	constructor (transferId: number, storeId: number) {
+		this._transferId = transferId
+		this.storeId = storeId
 
-	abstract handleCommand (command: Commands.AbstractCommand): void
-	abstract gotLock (): void
+		// Make typescript happy
+		// tslint:disable-next-line: no-empty
+		this.resolvePromise = () => {}
+		// tslint:disable-next-line: no-empty
+		this.rejectPromise = () => {}
+
+		this.completionPromise = new Promise((resolve, reject) => {
+			this.resolvePromise = resolve
+			this.rejectPromise = reject
+		})
+	}
+
+	get transferId () {
+		return this._transferId
+	}
+
+	get promise () {
+		return this.completionPromise
+	}
+
+	public abstract start (): Commands.ISerializableCommand[]
+
+	public abstract handleCommand (command: Commands.IDeserializedCommand): Commands.ISerializableCommand[]
+	public abstract gotLock (): Commands.ISerializableCommand[]
 }

@@ -1,12 +1,17 @@
-import AbstractCommand from '../../AbstractCommand'
+import { BasicWritableCommand } from '../../CommandBase'
 
-export class FadeToBlackAutoCommand extends AbstractCommand {
-	rawName = 'FtbA'
-	mixEffect: number
+export class FadeToBlackAutoCommand extends BasicWritableCommand<null> {
+	public static readonly rawName = 'FtbA'
 
-	properties: {}
+	public readonly mixEffect: number
 
-	serialize () {
+	constructor (mixEffect: number) {
+		super(null)
+
+		this.mixEffect = mixEffect
+	}
+
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		return buffer

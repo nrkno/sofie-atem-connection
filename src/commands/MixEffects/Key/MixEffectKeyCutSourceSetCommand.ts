@@ -1,14 +1,19 @@
-import AbstractCommand from '../../AbstractCommand'
+import { BasicWritableCommand } from '../../CommandBase'
 
-export class MixEffectKeyCutSourceSetCommand extends AbstractCommand {
-	rawName = 'CKeC'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: {
-		cutSource: number
+export class MixEffectKeyCutSourceSetCommand extends BasicWritableCommand<{ cutSource: number }> {
+	public static readonly rawName = 'CKeC'
+
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
+
+	constructor (mixEffect: number, upstreamKeyerId: number, cutSource: number) {
+		super({ cutSource })
+
+		this.mixEffect = mixEffect
+		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		buffer.writeUInt8(this.upstreamKeyerId, 1)

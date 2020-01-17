@@ -4,72 +4,72 @@ import * as crypto from 'crypto'
 import DataTransfer from './dataTransfer'
 
 export default class DataTransferFrame extends DataTransfer {
-	frameId: number
-	hash: string
+	public readonly frameId: number
+	public readonly hash: string
+	public readonly data: Buffer
 
-	lastSent: Date
-	data: Buffer
-	_sent = 0
+	private _sent = 0
 
-	start () {
-		const command = new Commands.DataTransferUploadRequestCommand()
-		command.updateProps({
+	constructor (transferId: number, storeId: number, frameId: number, data: Buffer) {
+		super(transferId, storeId)
+
+		this.frameId = frameId
+		this.data = data
+		this.hash = this.data ? crypto.createHash('md5').update(this.data).digest().toString() : ''
+	}
+
+	public start () {
+		const command = new Commands.DataTransferUploadRequestCommand({
 			transferId: this.transferId,
 			transferStoreId: this.storeId,
 			transferIndex: this.frameId,
 			size: this.data.length,
 			mode: Enums.TransferMode.Write
 		})
-		this.commandQueue.push(command)
+		return [ command ]
 	}
 
-	sendDescription () {
-		if (!this.hash) {
-			this.setHash()
-		}
-		const command = new Commands.DataTransferFileDescriptionCommand()
-		command.updateProps({ fileHash: this.hash, transferId: this.transferId })
-		this.commandQueue.push(command)
+	public sendDescription (): Commands.ISerializableCommand {
+		return new Commands.DataTransferFileDescriptionCommand({ fileHash: this.hash, transferId: this.transferId })
 	}
 
-	handleCommand (command: Commands.AbstractCommand) {
+	public handleCommand (command: Commands.IDeserializedCommand): Commands.ISerializableCommand[] {
+		const commands: Commands.ISerializableCommand[] = []
 		if (command.constructor.name === Commands.DataTransferUploadContinueCommand.name) {
 			if (this.state === Enums.TransferState.Locked) {
 				this.state = Enums.TransferState.Transferring
-				this.sendDescription()
+				commands.push(this.sendDescription())
 			}
-			this.queueCommand(command.properties.chunkCount, command.properties.chunkSize)
+			commands.push(...this.queueCommand(command.properties.chunkCount, command.properties.chunkSize))
 		} else if (command.constructor.name === Commands.DataTransferCompleteCommand.name) {
 			if (this.state === Enums.TransferState.Transferring) {
 				this.state = Enums.TransferState.Finished
 			}
 		}
+
+		return commands
 	}
 
-	gotLock () {
+	public gotLock () {
 		this.state = Enums.TransferState.Locked
-		this.start()
+		return this.start()
 	}
 
-	queueCommand (chunkCount: number, chunkSize: number) {
+	private queueCommand (chunkCount: number, chunkSize: number): Commands.ISerializableCommand[] {
+		const commands: Commands.ISerializableCommand[] = []
+
 		chunkSize += -4
-		this.lastSent = new Date()
 
 		for (let i = 0; i < chunkCount; i++) {
-			if (this._sent > this.data.length) return
-			const command = new Commands.DataTransferDataCommand()
-			command.updateProps({
+			if (this._sent > this.data.length) break
+			const command = new Commands.DataTransferDataCommand({
 				transferId: this.transferId,
 				body: this.data.slice(this._sent, this._sent + chunkSize)
 			})
-			this.commandQueue.push(command)
+			commands.push(command)
 			this._sent += chunkSize
 		}
-	}
 
-	setHash () {
-		if (this.data) {
-			this.hash = crypto.createHash('md5').update(this.data).digest().toString()
-		}
+		return commands
 	}
 }

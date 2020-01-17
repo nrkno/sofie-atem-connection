@@ -1,30 +1,37 @@
-import { AtemState } from '../../state'
+import { AtemState, AtemStateUtil } from '../../state'
 import { ClipBank } from '../../state/media'
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 import { Util } from '../../lib/atemUtil'
 
-export class MediaPoolClipDescriptionCommand extends AbstractCommand {
-	rawName = 'MPCS'
+export class MediaPoolClipDescriptionCommand extends DeserializedCommand<Omit<ClipBank, 'frames'>> {
+	public static readonly rawName = 'MPCS'
 
-	mediaPool: number
-	properties: ClipBank
+	public readonly clipId: number
 
-	deserialize (rawCommand: Buffer) {
-		this.mediaPool = rawCommand[0]
-		this.properties = {
-			isUsed: rawCommand[1] === 1,
-			name: Util.bufToNullTerminatedString(rawCommand, 2, 64),
-			frameCount: rawCommand.readUInt16BE(66),
-			frames: []
-		}
+	constructor (mediaPool: number, properties: Omit<ClipBank, 'frames'>) {
+		super(properties)
+
+		this.clipId = mediaPool
 	}
 
-	applyToState (state: AtemState) {
-		const newProps = { ...this.properties }
-		if (state.media.clipPool[this.mediaPool]) {
-			newProps.frames = state.media.clipPool[this.mediaPool].frames
+	public static deserialize (rawCommand: Buffer) {
+		const mediaPool = rawCommand.readUInt8(0)
+		const properties = {
+			isUsed: rawCommand.readUInt8(1) === 1,
+			name: Util.bufToNullTerminatedString(rawCommand, 2, 64),
+			frameCount: rawCommand.readUInt16BE(66)
 		}
-		state.media.clipPool[this.mediaPool] = newProps
-		return `media.clipPool.${this.mediaPool}`
+
+		return new MediaPoolClipDescriptionCommand(mediaPool, properties)
+	}
+
+	public applyToState (state: AtemState) {
+		// TODO - validate ids
+
+		state.media.clipPool[this.clipId] = {
+			...this.properties,
+			frames: AtemStateUtil.getClip(state, this.clipId).frames // TODO - lengthen/shorten array of frames?
+		}
+		return `media.clipPool.${this.clipId}`
 	}
 }

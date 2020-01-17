@@ -1,12 +1,17 @@
-import AbstractCommand from '../AbstractCommand'
+import { BasicWritableCommand } from '../CommandBase'
 
-export class AutoTransitionCommand extends AbstractCommand {
-	rawName = 'DAut'
-	mixEffect: number
+export class AutoTransitionCommand extends BasicWritableCommand<null> {
+	public static readonly rawName = 'DAut'
 
-	properties: null
+	public readonly mixEffect: number
 
-	serialize () {
+	constructor (mixEffect: number) {
+		super(null)
+
+		this.mixEffect = mixEffect
+	}
+
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		return buffer

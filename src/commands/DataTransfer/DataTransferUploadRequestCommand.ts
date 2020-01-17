@@ -1,18 +1,18 @@
-import AbstractCommand from '../AbstractCommand'
+import { BasicWritableCommand } from '../CommandBase'
 import { Enums } from '../..'
 
-export class DataTransferUploadRequestCommand extends AbstractCommand {
-	rawName = 'FTSD'
+export interface DataTransferUploadRequestProps {
+	transferId: number
+	transferStoreId: number
+	transferIndex: number
+	size: number
+	mode: Enums.TransferMode
+}
 
-	properties: {
-		transferId: number,
-		transferStoreId: number,
-		transferIndex: number,
-		size: number,
-		mode: Enums.TransferMode
-	}
+export class DataTransferUploadRequestCommand extends BasicWritableCommand<DataTransferUploadRequestProps> {
+	public static readonly rawName = 'FTSD'
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(16)
 		buffer.writeUInt16BE(this.properties.transferId, 0)
 		buffer.writeUInt16BE(this.properties.transferStoreId, 2)

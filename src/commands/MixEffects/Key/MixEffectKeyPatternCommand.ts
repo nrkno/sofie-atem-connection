@@ -1,10 +1,9 @@
-import AbstractCommand from '../../AbstractCommand'
-import { AtemState } from '../../../state'
+import { WritableCommand, DeserializedCommand } from '../../CommandBase'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../../state'
 import { UpstreamKeyerPatternSettings } from '../../../state/video/upstreamKeyers'
-import { Util, Enums } from '../../..'
 
-export class MixEffectKeyPatternCommand extends AbstractCommand {
-	static MaskFlags = {
+export class MixEffectKeyPatternCommand extends WritableCommand<UpstreamKeyerPatternSettings> {
+	public static MaskFlags = {
 		style: 1 << 0,
 		size: 1 << 1,
 		symmetry: 1 << 2,
@@ -14,52 +13,73 @@ export class MixEffectKeyPatternCommand extends AbstractCommand {
 		invert: 1 << 6
 	}
 
-	rawName = 'CKPt'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: UpstreamKeyerPatternSettings
+	public static readonly rawName = 'CKPt'
 
-	serialize () {
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
+
+	constructor (mixEffect: number, upstreamKeyerId: number) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.upstreamKeyerId = upstreamKeyerId
+	}
+
+	public serialize () {
 		const buffer = Buffer.alloc(16)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 1)
 		buffer.writeUInt8(this.upstreamKeyerId, 2)
 
-		buffer.writeUInt8(this.properties.style, 3)
-		buffer.writeUInt16BE(this.properties.size, 4)
-		buffer.writeUInt16BE(this.properties.symmetry, 6)
-		buffer.writeUInt16BE(this.properties.softness, 8)
-		buffer.writeUInt16BE(this.properties.positionX, 10)
-		buffer.writeUInt16BE(this.properties.positionY, 12)
+		buffer.writeUInt8(this.properties.style || 0, 3)
+		buffer.writeUInt16BE(this.properties.size || 0, 4)
+		buffer.writeUInt16BE(this.properties.symmetry || 0, 6)
+		buffer.writeUInt16BE(this.properties.softness || 0, 8)
+		buffer.writeUInt16BE(this.properties.positionX || 0, 10)
+		buffer.writeUInt16BE(this.properties.positionY || 0, 12)
 		buffer.writeUInt8(this.properties.invert ? 1 : 0, 14)
 
 		return buffer
 	}
 }
 
-export class MixEffectKeyUpdateCommand extends AbstractCommand {
-	rawName = 'KePt'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: UpstreamKeyerPatternSettings
+export class MixEffectKeyUpdateCommand extends DeserializedCommand<UpstreamKeyerPatternSettings> {
+	public static readonly rawName = 'KePt'
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.upstreamKeyerId = Util.parseNumberBetween(rawCommand[1], 0, 3)
-		this.properties = {
-			style: Util.parseEnum<Enums.Pattern>(rawCommand[2], Enums.Pattern),
-			size: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 10000),
-			symmetry: Util.parseNumberBetween(rawCommand.readUInt16BE(6), 0, 10000),
-			softness: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 10000),
-			positionX: Util.parseNumberBetween(rawCommand.readUInt16BE(10), 0, 10000),
-			positionY: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 10000),
-			invert: rawCommand[14] === 1
-		}
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
+
+	constructor (mixEffect: number, upstreamKeyerId: number, properties: UpstreamKeyerPatternSettings) {
+		super(properties)
+
+		this.mixEffect = mixEffect
+		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	applyToState (state: AtemState) {
-		const mixEffect = state.video.getMe(this.mixEffect)
-		const upstreamKeyer = mixEffect.getUpstreamKeyer(this.upstreamKeyerId)
+	public static deserialize (rawCommand: Buffer): MixEffectKeyUpdateCommand {
+		const mixEffect = rawCommand.readUInt8(0)
+		const upstreamKeyerId = rawCommand.readUInt8(1)
+		const properties = {
+			style: rawCommand.readUInt8(2),
+			size: rawCommand.readUInt16BE(4),
+			symmetry: rawCommand.readUInt16BE(6),
+			softness: rawCommand.readUInt16BE(8),
+			positionX: rawCommand.readUInt16BE(10),
+			positionY: rawCommand.readUInt16BE(12),
+			invert: rawCommand.readUInt8(14) === 1
+		}
+
+		return new MixEffectKeyUpdateCommand(mixEffect, upstreamKeyerId, properties)
+	}
+
+	public applyToState (state: AtemState) {
+		const meInfo = state.info.mixEffects[this.mixEffect]
+		if (!meInfo || this.upstreamKeyerId >= meInfo.keyCount) {
+			throw new InvalidIdError('UpstreamKeyer', this.mixEffect, this.upstreamKeyerId)
+		}
+
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
+		const upstreamKeyer = AtemStateUtil.getUpstreamKeyer(mixEffect, this.upstreamKeyerId)
 		upstreamKeyer.patternSettings = {
 			...this.properties
 		}
