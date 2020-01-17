@@ -102,8 +102,27 @@ jobs:
       # Clean working tree, tag, and push
       - run: git config --global user.email "info@superfly.tv"
       - run: git config --global user.name "superflytvab"
-      - run: yarn release
-      - run: git push --follow-tags origin HEAD
+      - run:
+          name: Determine release type
+          command: |
+            if ! git log --format=oneline -n 1 | grep -q "\[release\]"; then
+              echo "Pre-release"
+              COMMIT_TIMESTAMP=$(git log -1 --pretty=format:%ct HEAD)
+              COMMIT_DATE=$(date -d @$COMMIT_TIMESTAMP +%Y%m%d-%H%M%S)
+              GIT_HASH=$(git rev-parse --short HEAD)
+              echo "export RELEASE_ARGS=\"--prerelease nightly-$COMMIT_DATE-$GIT_HASH --skip.changelog --skip.tag --skip.commit\"" >> $BASH_ENV
+              echo 'export PUBLISH_ARGS="--tag nightly"' >> $BASH_ENV
+              source $BASH_ENV
+            else
+              echo "Release"
+            fi
+      - run: yarn release $RELEASE_ARGS
+      - run: 
+          name: Git push
+          command: |
+            if ! [ "$RELEASE_ARGS" ]; then
+              git push --follow-tags origin HEAD
+            fi
       # Build and deploy
       - run: yarn install
       - run: yarn build
@@ -112,7 +131,52 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
           name: Publish to NPM with yarn
-          command: NEW_VERSION=$(node -p "require('./package.json').version") && yarn publish --access=public --new-version=$NEW_VERSION --network-timeout 100000
+          command: NEW_VERSION=$(node -p "require('./package.json').version") && yarn publish --access=public --new-version=$NEW_VERSION --network-timeout 100000 $PUBLISH_ARGS
+
+  prerelease:
+    docker:
+      - image: circleci/node:12
+    working_directory: ~/project
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - run:
+          name: Check release is desired
+          command: |
+            if ! git log --format=oneline -n 1 | grep -q "\[publish\]"; then
+              echo "Skip"
+              circleci-agent step halt
+            else
+              echo "Publish experimental"
+            fi
+      - add_ssh_keys:
+          fingerprints:
+            - "8d:f8:a8:b0:86:33:58:1c:fb:24:53:2b:03:73:9c:34"
+      - run: mkdir -p ~/.ssh
+      - run:
+          name: Keyscan Github
+          command: ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+      # Clean working tree, tag, and push
+      - run: git config --global user.email "info@superfly.tv"
+      - run: git config --global user.name "superflytvab"
+      - run: 
+          name: yarn release
+          command: |
+            COMMIT_TIMESTAMP=$(git log -1 --pretty=format:%ct HEAD)
+            COMMIT_DATE=$(date -d @$COMMIT_TIMESTAMP +%Y%m%d-%H%M%S)
+            GIT_HASH=$(git rev-parse --short HEAD)
+            PRERELEASE_TAG=nightly-$(echo $CIRCLE_BRANCH | sed -r 's/[^a-z0-9]+/-/gi')
+
+            yarn release --prerelease $PRERELEASE_TAG-$COMMIT_DATE-$GIT_HASH --skip.changelog --skip.tag --skip.commit
+      # Build and deploy
+      - run: yarn install
+      - run: yarn build
+      - run:
+          name: Write NPM Token to ~/.npmrc
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      - run:
+          name: Publish to NPM with yarn
+          command: NEW_VERSION=$(node -p "require('./package.json').version") && yarn publish --access=public --new-version=$NEW_VERSION --network-timeout 100000 --tag experimental
 
 workflows:
   version: 2
@@ -137,3 +201,15 @@ workflows:
             branches:
               only:
                 - master
+      - prerelease:
+          requires:
+            - test-latest(node-12)
+            - test-node-10
+            - test-node-8
+          filters:
+            tags:
+              ignore: /.*/
+            branches:
+              ignore:
+                - master
+            
