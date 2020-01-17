@@ -73,6 +73,15 @@ You can find the generated type docs [here](https://nrkno.github.io/tv-automatio
 
 ### Events
 
+- `error`
+This event will be fired when an error occurs in the connection. Node requires you to handle these errors, or your application will quit.
+
+- `info`
+This event will be fired when the connection provides some logging information.
+
+- `debug`
+This event is not useful for most users. It will emit some messages useful to figure out why some data useful mostly to library developers.
+
 - `connected`
 This event will be fired once we have connected with the ATEM.
 
