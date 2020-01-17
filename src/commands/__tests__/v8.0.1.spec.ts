@@ -32,7 +32,7 @@ describe('Commands v8.0.1', () => {
 		switch (testCase.name) {
 			// Not parsed
 			// case '_MvC':
-			// 	return
+			// 	continue
 		}
 
 		runTestForCommand(commandParser, commandConverters, i, testCase)

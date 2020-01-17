@@ -20,7 +20,7 @@ const commandConverters: CommandTestConverterSet = {
 	'_pin': {
 		idAliases: {},
 		propertyAliases: {
-			'name': (val: any) => ({ val, name: 'deviceName' })
+			'name': (val: any) => ({ val, name: 'productIdentifier' })
 		}
 	},
 	'_SSC': {
@@ -227,8 +227,11 @@ const commandConverters: CommandTestConverterSet = {
 			'index': 'index'
 		},
 		propertyAliases: {
-			'balance': (v: number) => ({ val: Math.round(v * 10) / 10 }),
+			'balance': (v: number) => ({ val: Math.round(v) }),
 			'gain': (v: number) => ({ val: Math.round(v * 100) / 100 })
+		},
+		processDeserialized: props => {
+			props.gain = Math.round(props.gain * 100) / 100
 		}
 	},
 	'CAMI': {
@@ -236,15 +239,15 @@ const commandConverters: CommandTestConverterSet = {
 			'index': 'index'
 		},
 		propertyAliases: {
-			'balance': (v: number) => ({ val: Math.round(v * 10) / 10 }),
-			'gain': (v: number) => ({ val: Math.round(v * 100) / 100 })
+			'balance': (v: number) => ({ val: Math.round(v * 200) / 200 })
+			// 'gain': (v: number) => ({ val: Math.round(v * 100) / 100 })
 		}
 	},
 	'AMMO': {
 		idAliases: {},
 		propertyAliases: {
 			'programOutFollowFadeToBlack': (val: any) => ({ val, name: 'followFadeToBlack' }),
-			'balance': (v: number) => ({ val: Math.round(v * 10) / 10 }),
+			'balance': (v: number) => ({ val: Math.round(v) }),
 			'gain': (v: number) => ({ val: Math.round(v * 100) / 100 })
 		}
 	},
@@ -254,15 +257,19 @@ const commandConverters: CommandTestConverterSet = {
 			'auxiliaries': (val: any) => ({ val, name: 'auxilliaries' }),
 			'dVE': (val: any) => ({ val, name: 'DVEs' }),
 			'hyperDecks': (val: any) => ({ val, name: 'maxHyperdecks' }),
-			'mixEffectBlocks': (val: any) => ({ val, name: 'MEs' }),
+			'mixEffectBlocks': (val: any) => ({ val, name: 'mixEffects' }),
 			'serialPort': (val: any) => ({ val, name: 'serialPorts' }),
 			'videoSources': (val: any) => ({ val, name: 'sources' }),
 			'superSource': (val: any) => ({ val, name: 'superSources' }),
 			'talkbackOverSDI': () => ({ val: 0 }) // @todo: should be fixed in atem-connection
+		}
+	},
+	'_MeC': {
+		idAliases: {
+			'index': 'index'
 		},
-		customMutate: (obj: any) => {
-			obj.hasSuperSources = obj.superSources !== 0
-			return obj
+		propertyAliases: {
+			'balance': (v: number) => ({ val: Math.round(v * 200) / 200 })
 		}
 	},
 	'FTCD': {
@@ -346,7 +353,9 @@ const commandConverters: CommandTestConverterSet = {
 			'mixEffect': 'mixEffectIndex',
 			'upstreamKeyerId': 'keyerIndex'
 		},
-		propertyAliases: {}
+		propertyAliases: {
+			'keyType': (v: number) => ({ val: v, name: 'mixEffectKeyType' })
+		}
 	},
 	'KeOn': {
 		idAliases: {
@@ -648,13 +657,9 @@ const commandConverters: CommandTestConverterSet = {
 	},
 	'MPCS': {
 		idAliases: {
-			'mediaPool': 'index'
+			'clipId': 'index'
 		},
-		propertyAliases: {},
-		customMutate: (obj: any) => {
-			obj.frames = []
-			return obj
-		}
+		propertyAliases: {}
 	},
 	'SMPC': {
 		idAliases: {
@@ -773,21 +778,34 @@ const commandConverters: CommandTestConverterSet = {
 	},
 	'KKFP': {
 		idAliases: {
-			'keyerIndex': 'upstreamKeyerId',
-			'mixEffectIndex': 'mixEffect'
+			'upstreamKeyerId': 'keyerIndex',
+			'mixEffect': 'mixEffectIndex'
 		},
 		propertyAliases: {
 			'bevelPosition': (val: any) => ({ val, name: 'borderBevelPosition' }),
 			'bevelSoftness': (val: any) => ({ val, name: 'borderBevelSoftness' }),
 			'innerSoftness': (val: any) => ({ val, name: 'borderInnerSoftness' }),
-			'innerWidth': (val: any) => ({ val, name: 'borderInnerWidth' }),
+			'innerWidth': (val: any) => ({ val: Math.round(val * 100), name: 'borderInnerWidth' }),
 			'keyFrame': (val: any) => ({ val, name: 'keyFrameId' }),
 			'outerSoftness': (val: any) => ({ val, name: 'borderOuterSoftness' }),
-			'outerWidth': (val: any) => ({ val, name: 'borderOuterWidth' }),
-			'xPosition': (val: any) => ({ val, name: 'positionX' }),
-			'xSize': (val: any) => ({ val, name: 'sizeX' }),
-			'yPosition': (val: any) => ({ val, name: 'positionY' }),
-			'ySize': (val: any) => ({ val, name: 'sizeY' })
+			'outerWidth': (val: any) => ({ val: Math.round(val * 100), name: 'borderOuterWidth' }),
+			'xPosition': (val: any) => ({ val: Math.round(val * 1000), name: 'positionX' }),
+			'xSize': (val: any) => ({ val: Math.round(val * 1000), name: 'sizeX' }),
+			'yPosition': (val: any) => ({ val: Math.round(val * 1000), name: 'positionY' }),
+			'ySize': (val: any) => ({ val: Math.round(val * 1000), name: 'sizeY' }),
+			'rotation': (val: any) => ({ val: Math.round(val * 10) }),
+			'borderHue': (val: any) => ({ val: Math.round(val * 10) }),
+			'borderLuma': (val: any) => ({ val: Math.round(val * 10) }),
+			'borderSaturation': (val: any) => ({ val: Math.round(val * 10) }),
+			'lightSourceDirection': (val: any) => ({ val: Math.round(val * 10) }),
+			'maskBottom': (val: any) => ({ val: Math.round(val * 1000) }),
+			'maskTop': (val: any) => ({ val: Math.round(val * 1000) }),
+			'maskLeft': (val: any) => ({ val: Math.round(val * 1000) }),
+			'maskRight': (val: any) => ({ val: Math.round(val * 1000) })
+		},
+		customMutate: (obj: any) => {
+			delete obj.maskEnabled
+			return obj
 		}
 	},
 	'MPCE': {
@@ -825,12 +843,9 @@ describe('Commands v7.2', () => {
 		const testCase = TestCases[i]
 		switch (testCase.name) {
 			// Temporarily ignore the failures
-			case 'AMMO':
-			case 'KKFP': // LibAtem incorrectly(?) uses doubles
-			case 'CAMI': // floating point errors I think
-			case 'AMIP': // floating point errors I think
+			case '_top': // New properties not implemented in LibAtem yet
+			case '_MvC': // Not all properties parsed
 			case 'FTSU': // Unkown props getting overwritten by generator: https://github.com/LibAtem/LibAtem/blob/master/LibAtem/Commands/DataTransfer/DataTransferDownloadRequestCommand.cs
-			case 'TDpP': // Range validation errors
 				continue
 		}
 

@@ -1,41 +1,52 @@
-import AbstractCommand from '../../AbstractCommand'
-import { AtemState } from '../../../state'
+import { DeserializedCommand, BasicWritableCommand } from '../../CommandBase'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../../state'
 import { MixTransitionSettings } from '../../../state/video'
-import { Util } from '../../..'
 
-export class TransitionMixCommand extends AbstractCommand {
-	rawName = 'CTMx'
-	mixEffect: number
+export class TransitionMixCommand extends BasicWritableCommand<MixTransitionSettings> {
+	public static readonly rawName = 'CTMx'
 
-	properties: MixTransitionSettings
+	public readonly mixEffect: number
 
-	updateProps (newProps: Partial<MixTransitionSettings>) {
-		this._updateProps(newProps)
+	constructor (mixEffect: number, rate: number) {
+		super({ rate })
+
+		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
-		buffer.writeUInt8(this.properties.rate, 1)
+		buffer.writeUInt8(this.properties.rate || 0, 1)
 		return buffer
 	}
 }
 
-export class TransitionMixUpdateCommand extends AbstractCommand {
-	rawName = 'TMxP'
-	mixEffect: number
+export class TransitionMixUpdateCommand extends DeserializedCommand<MixTransitionSettings> {
+	public static readonly rawName = 'TMxP'
 
-	properties: MixTransitionSettings
+	public readonly mixEffect: number
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
-			rate: Util.parseNumberBetween(rawCommand[1], 1, 250)
-		}
+	constructor (mixEffect: number, properties: MixTransitionSettings) {
+		super(properties)
+
+		this.mixEffect = mixEffect
 	}
 
-	applyToState (state: AtemState) {
-		const mixEffect = state.video.getMe(this.mixEffect)
+	public static deserialize (rawCommand: Buffer): TransitionMixUpdateCommand {
+		const mixEffect = rawCommand.readUInt8(0)
+		const properties = {
+			rate: rawCommand.readUInt8(1)
+		}
+
+		return new TransitionMixUpdateCommand(mixEffect, properties)
+	}
+
+	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
+			throw new InvalidIdError('MixEffect', this.mixEffect)
+		}
+
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionSettings.mix = {
 			...this.properties
 		}

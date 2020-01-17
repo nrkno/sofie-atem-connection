@@ -1,52 +1,64 @@
-import { AtemState } from '../../state'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../state'
 import { MediaPlayerSource } from '../../state/media'
-import AbstractCommand from '../AbstractCommand'
+import { WritableCommand, DeserializedCommand } from '../CommandBase'
 
-export class MediaPlayerSourceCommand extends AbstractCommand {
-	static MaskFlags = {
+export class MediaPlayerSourceCommand extends WritableCommand<MediaPlayerSource> {
+	public static MaskFlags = {
 		sourceType: 1 << 0,
 		stillIndex: 1 << 1,
 		clipIndex: 1 << 2
 	}
 
-	rawName = 'MPSS'
-	mediaPlayerId: number
+	public static readonly rawName = 'MPSS'
 
-	properties: MediaPlayerSource
+	public readonly mediaPlayerId: number
 
-	updateProps (newProps: Partial<MediaPlayerSource>) {
-		this._updateProps(newProps)
+	constructor (mediaPlayerId: number) {
+		super()
+
+		this.mediaPlayerId = mediaPlayerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(8)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mediaPlayerId, 1)
-		buffer.writeUInt8(this.properties.sourceType, 2)
-		buffer.writeUInt8(this.properties.stillIndex, 3)
-		buffer.writeUInt8(this.properties.clipIndex, 4)
+		buffer.writeUInt8(this.properties.sourceType || 0, 2)
+		buffer.writeUInt8(this.properties.stillIndex || 0, 3)
+		buffer.writeUInt8(this.properties.clipIndex || 0, 4)
 		return buffer
 	}
 }
 
-export class MediaPlayerSourceUpdateCommand extends AbstractCommand {
-	rawName = 'MPCE'
-	mediaPlayerId: number
+export class MediaPlayerSourceUpdateCommand extends DeserializedCommand<MediaPlayerSource> {
+	public static readonly rawName = 'MPCE'
 
-	properties: MediaPlayerSource
+	public readonly mediaPlayerId: number
 
-	deserialize (rawCommand: Buffer) {
-		this.mediaPlayerId = rawCommand[0]
-		this.properties = {
-			sourceType: rawCommand[1],
-			stillIndex: rawCommand[2],
-			clipIndex: rawCommand[3]
-		}
+	constructor (mediaPlayerId: number, properties: MediaPlayerSource) {
+		super(properties)
+
+		this.mediaPlayerId = mediaPlayerId
 	}
 
-	applyToState (state: AtemState) {
+	public static deserialize (rawCommand: Buffer) {
+		const mediaPlayerId = rawCommand.readUInt8(0)
+		const properties = {
+			sourceType: rawCommand.readUInt8(1),
+			stillIndex: rawCommand.readUInt8(2),
+			clipIndex: rawCommand.readUInt8(3)
+		}
+
+		return new MediaPlayerSourceUpdateCommand(mediaPlayerId, properties)
+	}
+
+	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.mediaPlayerId >= state.info.capabilities.mediaPlayers) {
+			throw new InvalidIdError('MediaPlayer', this.mediaPlayerId)
+		}
+
 		state.media.players[this.mediaPlayerId] = {
-			...state.media.players[this.mediaPlayerId],
+			...AtemStateUtil.getMediaPlayer(state, this.mediaPlayerId),
 			...this.properties
 		}
 		return `media.players.${this.mediaPlayerId}`

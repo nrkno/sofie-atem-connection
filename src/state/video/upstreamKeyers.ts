@@ -1,16 +1,14 @@
 import * as Enum from '../../enums'
 
-export interface UpstreamKeyerBase {
+export interface UpstreamKeyerBase extends UpstreamKeyerTypeSettings {
 	readonly upstreamKeyerId: number,
-	mixEffectKeyType: number,
-	flyEnabled: boolean,
 	fillSource: number,
 	cutSource: number,
-	maskEnabled: boolean,
-	maskTop: number,
-	maskBottom: number,
-	maskLeft: number,
-	maskRight: number,
+}
+
+export interface UpstreamKeyerTypeSettings {
+	mixEffectKeyType: Enum.MixEffectKeyType,
+	flyEnabled: boolean
 }
 
 export interface UpstreamKeyerMaskSettings {
@@ -51,8 +49,8 @@ export interface UpstreamKeyerDVESettings extends UpstreamKeyerDVEBase {
 	rate: number
 }
 
-export interface UpstreamKeyerFlyKeyframe extends UpstreamKeyerDVEBase {
-	keyFrameId: number
+export interface UpstreamKeyerFlyKeyframe extends Omit<UpstreamKeyerDVEBase, 'maskEnabled'> {
+	readonly keyFrameId: number
 }
 
 export interface UpstreamKeyerChromaSettings {
@@ -87,17 +85,12 @@ export interface UpstreamKeyerFlySettings {
 	readonly runToInfiniteIndex: number
 }
 
-export interface UpstreamKeyerTypeSettings {
-	keyType: Enum.MixEffectKeyType,
-	flyEnabled: boolean
-}
-
 export interface UpstreamKeyer extends UpstreamKeyerBase {
-	dveSettings: UpstreamKeyerDVESettings,
-	chromaSettings: UpstreamKeyerChromaSettings,
-	lumaSettings: UpstreamKeyerLumaSettings,
-	patternSettings: UpstreamKeyerPatternSettings,
-	flyKeyframes: Array<UpstreamKeyerFlyKeyframe>,
-	flyProperties: UpstreamKeyerFlySettings,
+	dveSettings?: UpstreamKeyerDVESettings,
+	chromaSettings?: UpstreamKeyerChromaSettings,
+	lumaSettings?: UpstreamKeyerLumaSettings,
+	patternSettings?: UpstreamKeyerPatternSettings,
+	flyKeyframes: [UpstreamKeyerFlyKeyframe | undefined, UpstreamKeyerFlyKeyframe | undefined],
+	flyProperties?: UpstreamKeyerFlySettings,
 	onAir: boolean
 }

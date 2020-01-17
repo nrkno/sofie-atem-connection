@@ -1,7 +1,7 @@
 {
 	"video": {
-		"ME": {
-			"0": {
+		"ME": [
+			{
 				"transitionProperties": {
 					"style": 0,
 					"selection": 1,
@@ -314,7 +314,7 @@
 					"remainingFrames": 25
 				}
 			},
-			"1": {
+			{
 				"transitionProperties": {
 					"style": 0,
 					"selection": 1,
@@ -627,9 +627,9 @@
 					"remainingFrames": 25
 				}
 			}
-		},
-		"downstreamKeyers": {
-			"0": {
+		],
+		"downstreamKeyers": [
+			{
 				"sources": {
 					"fillSource": 13,
 					"cutSource": 14
@@ -655,7 +655,7 @@
 				"isTowardsOnAir": false,
 				"remainingFrames": 25
 			},
-			"1": {
+			{
 				"sources": {
 					"fillSource": 15,
 					"cutSource": 16
@@ -681,19 +681,19 @@
 				"isTowardsOnAir": true,
 				"remainingFrames": 25
 			}
-		},
-		"auxilliaries": {
-			"0": 3020,
-			"1": 0,
-			"2": 6000,
-			"3": 0,
-			"4": 6000,
-			"5": 7001
-		},
-		"superSources": {
-			"0": {
-				"boxes": {
-					"0": {
+		],
+		"auxilliaries": [
+			3020,
+			0,
+			6000,
+			0,
+			6000,
+			7001
+		],
+		"superSources": [
+			{
+				"boxes": [
+					{
 						"enabled": true,
 						"source": 3,
 						"x": -1600,
@@ -705,7 +705,7 @@
 						"cropLeft": 3200,
 						"cropRight": 631
 					},
-					"1": {
+					{
 						"enabled": true,
 						"source": 0,
 						"x": 800,
@@ -717,7 +717,7 @@
 						"cropLeft": 0,
 						"cropRight": 0
 					},
-					"2": {
+					{
 						"enabled": true,
 						"source": 0,
 						"x": -800,
@@ -729,7 +729,7 @@
 						"cropLeft": 0,
 						"cropRight": 0
 					},
-					"3": {
+					{
 						"enabled": true,
 						"source": 0,
 						"x": 800,
@@ -741,7 +741,7 @@
 						"cropLeft": 0,
 						"cropRight": 0
 					}
-				},
+				],
 				"index": 0,
 				"properties": {
 					"artFillSource": 3010,
@@ -768,7 +768,7 @@
 					"borderLightSourceAltitude": 25
 				}
 			}
-		}
+		]
 	},
 	"inputs": {
 		"0": {

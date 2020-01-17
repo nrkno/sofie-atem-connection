@@ -1,19 +1,26 @@
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 
-export class DataTransferUploadContinueCommand extends AbstractCommand {
-	rawName = 'FTCD'
+export interface DataTransferUploadContinueProps {
+	transferId: number
+	chunkSize: number
+	chunkCount: number
+}
 
-	properties: {
-		transferId: number,
-		chunkSize: number,
-		chunkCount: number
-	}
+export class DataTransferUploadContinueCommand extends DeserializedCommand<DataTransferUploadContinueProps> {
+	public static readonly rawName = 'FTCD'
 
-	deserialize (rawCommand: Buffer) {
-		this.properties = {
+	public static deserialize (rawCommand: Buffer) {
+		const properties = {
 			transferId: rawCommand.readUInt16BE(0),
 			chunkSize: rawCommand.readUInt16BE(6),
 			chunkCount: rawCommand.readUInt16BE(8)
 		}
+
+		return new DataTransferUploadContinueCommand(properties)
+	}
+
+	public applyToState (): string[] {
+		// Nothing to do
+		return []
 	}
 }

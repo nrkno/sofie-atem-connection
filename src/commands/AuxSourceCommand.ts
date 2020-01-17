@@ -1,15 +1,22 @@
-import AbstractCommand from './AbstractCommand'
+import { BasicWritableCommand, DeserializedCommand } from './CommandBase'
 import { AtemState } from '../state'
 
-export class AuxSourceCommand extends AbstractCommand {
-	rawName = 'CAuS'
-	auxBus: number
+export interface AuxSourceProps {
+	source: number
+}
 
-	properties: {
-		source: number
+export class AuxSourceCommand extends BasicWritableCommand<AuxSourceProps> {
+	public static readonly rawName = 'CAuS'
+
+	public readonly auxBus: number
+
+	constructor (auxBus: number, source: number) {
+		super({ source })
+
+		this.auxBus = auxBus
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(0x01, 0)
 		buffer.writeUInt8(this.auxBus, 1)
@@ -18,22 +25,27 @@ export class AuxSourceCommand extends AbstractCommand {
 	}
 }
 
-export class AuxSourceUpdateCommand extends AbstractCommand {
-	rawName = 'AuxS'
-	auxBus: number
+export class AuxSourceUpdateCommand extends DeserializedCommand<AuxSourceProps> {
+	public static readonly rawName = 'AuxS'
 
-	properties: {
-		source: number
+	public readonly auxBus: number
+
+	constructor (auxBus: number, properties: AuxSourceProps) {
+		super(properties)
+
+		this.auxBus = auxBus
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.auxBus = rawCommand[0]
-		this.properties = {
+	public static deserialize (rawCommand: Buffer): AuxSourceUpdateCommand {
+		const auxBus = rawCommand.readUInt8(0)
+		const properties = {
 			source: rawCommand.readUInt16BE(2)
 		}
+
+		return new AuxSourceUpdateCommand(auxBus, properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.video.auxilliaries[this.auxBus] = this.properties.source
 		return `video.auxilliaries.${this.auxBus}`
 	}

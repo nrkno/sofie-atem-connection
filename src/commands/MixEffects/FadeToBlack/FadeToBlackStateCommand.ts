@@ -1,29 +1,42 @@
-import AbstractCommand from '../../AbstractCommand'
-import { AtemState } from '../../../state'
-import { Util } from '../../..'
+import { DeserializedCommand } from '../../CommandBase'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../../state'
 
-export class FadeToBlackStateCommand extends AbstractCommand {
-	rawName = 'FtbS'
-	mixEffect: number
+export interface FadeToBlackProps {
+	isFullyBlack: boolean
+	inTransition: boolean
+	remainingFrames: number
+}
 
-	properties: {
-		isFullyBlack: boolean
-		inTransition: boolean
-		remainingFrames: number
+export class FadeToBlackStateCommand extends DeserializedCommand<FadeToBlackProps> {
+	public static readonly rawName = 'FtbS'
+
+	public readonly mixEffect: number
+
+	constructor (mixEffect: number, properties: FadeToBlackProps) {
+		super(properties)
+
+		this.mixEffect = mixEffect
 	}
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
+	public static deserialize (rawCommand: Buffer) {
+		const mixEffect = rawCommand.readUInt8(0)
+		const properties = {
 			isFullyBlack: rawCommand.readUInt8(1) === 1,
 			inTransition: rawCommand.readUInt8(2) === 1,
-			remainingFrames: Util.parseNumberBetween(rawCommand.readUInt8(3), 0, 250)
+			remainingFrames: rawCommand.readUInt8(3)
 		}
+
+		return new FadeToBlackStateCommand(mixEffect, properties)
 	}
 
-	applyToState (state: AtemState) {
-		const mixEffect = state.video.getMe(this.mixEffect)
+	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
+			throw new InvalidIdError('MixEffect', this.mixEffect)
+		}
+
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.fadeToBlack = {
+			rate: 0,
 			...mixEffect.fadeToBlack,
 			...this.properties
 		}

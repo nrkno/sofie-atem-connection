@@ -1,11 +1,10 @@
-import AbstractCommand from '../AbstractCommand'
-import { AtemState } from '../../state'
-import { SuperSourceBox } from '../../state/video'
-import { Util } from '../..'
+import { WritableCommand, DeserializedCommand } from '../CommandBase'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../state'
+import { SuperSourceBox } from '../../state/video/superSource'
 import { ProtocolVersion } from '../../enums'
 
-export class SuperSourceBoxParametersCommand extends AbstractCommand {
-	static MaskFlags = {
+export class SuperSourceBoxParametersCommand extends WritableCommand<SuperSourceBox> {
+	public static MaskFlags = {
 		enabled: 1 << 0,
 		source: 1 << 1,
 		x: 1 << 2,
@@ -18,16 +17,19 @@ export class SuperSourceBoxParametersCommand extends AbstractCommand {
 		cropRight: 1 << 9
 	}
 
-	rawName = 'CSBP'
-	ssrcId: number
-	boxId: number
-	properties: SuperSourceBox
+	public static readonly rawName = 'CSBP'
 
-	updateProps (newProps: Partial<SuperSourceBox>) {
-		this._updateProps(newProps)
+	public readonly ssrcId: number
+	public readonly boxId: number
+
+	constructor (ssrcId: number, boxId: number) {
+		super()
+
+		this.ssrcId = ssrcId
+		this.boxId = boxId
 	}
 
-	serialize (version: ProtocolVersion) {
+	public serialize (version: ProtocolVersion) {
 		const buffer = Buffer.alloc(24)
 		let i = 0
 		if (version >= ProtocolVersion.V8_0) {
@@ -40,52 +42,63 @@ export class SuperSourceBoxParametersCommand extends AbstractCommand {
 		buffer.writeUInt8(this.properties.enabled ? 1 : 0, i + 3)
 
 		if (i === 1) i++ // Needs to be 2 byte aligned now
-		buffer.writeUInt16BE(this.properties.source, i + 4)
-		buffer.writeInt16BE(this.properties.x, i + 6)
-		buffer.writeInt16BE(this.properties.y, i + 8)
-		buffer.writeUInt16BE(this.properties.size, i + 10)
+		buffer.writeUInt16BE(this.properties.source || 0, i + 4)
+		buffer.writeInt16BE(this.properties.x || 0, i + 6)
+		buffer.writeInt16BE(this.properties.y || 0, i + 8)
+		buffer.writeUInt16BE(this.properties.size || 0, i + 10)
 		buffer.writeUInt8(this.properties.cropped ? 1 : 0, i + 12)
-		buffer.writeUInt16BE(this.properties.cropTop, i + 14)
-		buffer.writeUInt16BE(this.properties.cropBottom, i + 16)
-		buffer.writeUInt16BE(this.properties.cropLeft, i + 18)
-		buffer.writeUInt16BE(this.properties.cropRight, i + 20)
+		buffer.writeUInt16BE(this.properties.cropTop || 0, i + 14)
+		buffer.writeUInt16BE(this.properties.cropBottom || 0, i + 16)
+		buffer.writeUInt16BE(this.properties.cropLeft || 0, i + 18)
+		buffer.writeUInt16BE(this.properties.cropRight || 0, i + 20)
 		return buffer
 	}
 }
 
-export class SuperSourceBoxParametersUpdateCommand extends AbstractCommand {
+export class SuperSourceBoxParametersUpdateCommand extends DeserializedCommand<SuperSourceBox> {
+	public static readonly rawName = 'SSBP'
 
-	rawName = 'SSBP'
-	ssrcId: number
-	boxId: number
-	properties: SuperSourceBox
+	public readonly ssrcId: number
+	public readonly boxId: number
 
-	deserialize (rawCommand: Buffer, version: ProtocolVersion) {
+	constructor (ssrcId: number, boxId: number, properties: SuperSourceBox) {
+		super(properties)
+
+		this.ssrcId = ssrcId
+		this.boxId = boxId
+	}
+
+	public static deserialize (rawCommand: Buffer, version: ProtocolVersion): SuperSourceBoxParametersUpdateCommand {
+		let ssrcId = 0
 		let i = 0
 		if (version >= ProtocolVersion.V8_0) {
 			i = 2
-			this.ssrcId = rawCommand.readUInt8(0)
-		} else {
-			this.ssrcId = 0
+			ssrcId = rawCommand.readUInt8(0)
 		}
 
-		this.boxId = rawCommand.readUInt8(i > 0 ? 1 : 0)
-		this.properties = {
-			enabled: rawCommand[i > 0 ? 2 : 1] === 1,
+		const boxId = rawCommand.readUInt8(i > 0 ? 1 : 0)
+		const properties = {
+			enabled: rawCommand.readUInt8(i > 0 ? 2 : 1) === 1,
 			source: rawCommand.readUInt16BE(i + 2),
-			x: Util.parseNumberBetween(rawCommand.readInt16BE(i + 4), -4800, 4800),
-			y: Util.parseNumberBetween(rawCommand.readInt16BE(i + 6), -3400, 3400),
-			size: Util.parseNumberBetween(rawCommand.readUInt16BE(i + 8), 70, 1000),
-			cropped: rawCommand[i + 10] === 1,
-			cropTop: Util.parseNumberBetween(rawCommand.readUInt16BE(i + 12), 0, 18000),
-			cropBottom: Util.parseNumberBetween(rawCommand.readUInt16BE(i + 14), 0, 18000),
-			cropLeft: Util.parseNumberBetween(rawCommand.readUInt16BE(i + 16), 0, 32000),
-			cropRight: Util.parseNumberBetween(rawCommand.readUInt16BE(i + 18), 0, 32000)
+			x: rawCommand.readInt16BE(i + 4),
+			y: rawCommand.readInt16BE(i + 6),
+			size: rawCommand.readUInt16BE(i + 8),
+			cropped: rawCommand.readUInt8(i + 10) === 1,
+			cropTop: rawCommand.readUInt16BE(i + 12),
+			cropBottom: rawCommand.readUInt16BE(i + 14),
+			cropLeft: rawCommand.readUInt16BE(i + 16),
+			cropRight: rawCommand.readUInt16BE(i + 18)
 		}
+
+		return new SuperSourceBoxParametersUpdateCommand(ssrcId, boxId, properties)
 	}
 
-	applyToState (state: AtemState) {
-		const supersource = state.video.getSuperSource(this.ssrcId)
+	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.ssrcId >= state.info.capabilities.superSources) {
+			throw new InvalidIdError('SuperSource', this.ssrcId)
+		}
+
+		const supersource = AtemStateUtil.getSuperSource(state, this.ssrcId)
 		supersource.boxes[this.boxId] = {
 			...this.properties
 		}

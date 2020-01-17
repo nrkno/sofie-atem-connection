@@ -1,23 +1,20 @@
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { MacroRecorderState } from '../../state/macro'
 
-export class MacroRecordingStatusCommand extends AbstractCommand {
-	rawName = 'MRcS'
+export class MacroRecordingStatusCommand extends DeserializedCommand<MacroRecorderState> {
+	public static readonly rawName = 'MRcS'
 
-	macroIndexID: number
-	properties: MacroRecorderState
-
-	deserialize (rawCommand: Buffer) {
-		this.macroIndexID = rawCommand.readUInt16BE(2)
-
-		this.properties = {
-			isRecording: Boolean(rawCommand[0] & 1 << 0),
-			macroIndex: this.macroIndexID
+	public static deserialize (rawCommand: Buffer) {
+		const properties = {
+			isRecording: Boolean(rawCommand.readUInt8(0) & 1 << 0),
+			macroIndex: rawCommand.readUInt16BE(2)
 		}
+
+		return new MacroRecordingStatusCommand(properties)
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.macro.macroRecorder = {
 			...state.macro.macroRecorder,
 			...this.properties

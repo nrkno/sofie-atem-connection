@@ -13,21 +13,23 @@ export interface MediaPlayerSource {
 	stillIndex: number
 }
 
-export class MediaState {
-	stillPool: Array<StillFrame> = []
-	clipPool: Array<ClipBank> = []
-	players: Array<MediaPlayer & MediaPlayerSource> = []
+export type MediaPlayerState = MediaPlayer & MediaPlayerSource
+
+export interface MediaState {
+	readonly stillPool: Array<StillFrame | undefined>
+	readonly clipPool: Array<ClipBank | undefined>
+	readonly players: Array<MediaPlayerState | undefined>
 }
 
-export class StillFrame {
+export interface StillFrame {
 	isUsed: boolean
 	hash: string
 	fileName: string
 }
 
-export class ClipBank {
+export interface ClipBank {
 	isUsed: boolean
 	name: string
 	frameCount: number
-	frames: Array<StillFrame> = []
+	frames: Array<StillFrame | undefined>
 }

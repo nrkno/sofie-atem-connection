@@ -1,21 +1,25 @@
-import AbstractCommand from '../AbstractCommand'
 import { AtemState } from '../../state'
 import { Util } from '../..'
 import { AudioChannel } from '../../state/audio'
+import { WritableCommand, DeserializedCommand } from '../CommandBase'
 
-export class AudioMixerInputCommand extends AbstractCommand {
-	static MaskFlags = {
+export class AudioMixerInputCommand extends WritableCommand<AudioChannel> {
+	public static MaskFlags = {
 		mixOption: 1 << 0,
 		gain: 1 << 1,
 		balance: 1 << 2
 	}
-	rawName = 'CAMI'
-	mixEffect: number
+	public static readonly rawName = 'CAMI'
 
-	properties: Partial<AudioChannel>
-	index: number
+	public readonly index: number
 
-	serialize () {
+	constructor (index: number) {
+		super()
+
+		this.index = index
+	}
+
+	public serialize () {
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(this.index, 2)
@@ -26,26 +30,31 @@ export class AudioMixerInputCommand extends AbstractCommand {
 	}
 }
 
-export class AudioMixerInputUpdateCommand extends AbstractCommand {
-	rawName = 'AMIP'
-	mixEffect: number
+export class AudioMixerInputUpdateCommand extends DeserializedCommand<AudioChannel> {
+	public static readonly rawName = 'AMIP'
 
-	properties: Partial<AudioChannel>
-	index: number
+	public readonly index: number
 
-	deserialize (rawCommand: Buffer) {
-		this.index = rawCommand.readUInt16BE(0)
-		this.properties = {
+	constructor (index: number, properties: AudioChannel) {
+		super(properties)
+
+		this.index = index
+	}
+
+	public static deserialize (rawCommand: Buffer): AudioMixerInputUpdateCommand {
+		const index = rawCommand.readUInt16BE(0)
+		const properties = {
 			sourceType: rawCommand.readUInt8(2),
 			portType: rawCommand.readUInt8(7),
 			mixOption: rawCommand.readUInt8(8),
 			gain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(10)),
 			balance: Util.IntToBalance(rawCommand.readInt16BE(12))
 		}
+
+		return new AudioMixerInputUpdateCommand(index, properties)
 	}
 
-	applyToState (state: AtemState) {
-		// const channel = state.audio.getChannel(this.index)
+	public applyToState (state: AtemState) {
 		state.audio.channels[this.index] = {
 			...state.audio.channels[this.index],
 			...this.properties

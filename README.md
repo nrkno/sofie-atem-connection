@@ -47,25 +47,22 @@ If you want to make a contribution, feel free to open a PR.
 
 ```javascript
 const { Atem } = require('atem-connection')
-const myAtem = new Atem({ externalLog: console.log })
+const myAtem = new Atem()
+myAtem.on('info', console.log)
+myAtem.on('error', console.error)
 
 myAtem.connect('192.168.168.240')
 
 myAtem.on('connected', () => {
-	myAtem.changeProgramInput(3).then((res) => {
-		console.log(res)
-		// ProgramInputCommand {
-		// 	flag: 0,
-		// 	rawName: 'PrgI',
-		// 	mixEffect: 0,
-		// 	properties: { source: 3 },
-		// 	resolve: [Function],
-		// 	reject: [Function] }
+	myAtem.changeProgramInput(3).then(() => {
+		// Fired once the atem has acknowledged the command
+		// Note: the state likely hasnt updated yet, but will follow shortly
+		console.log('Program input set')
 	})
 	console.log(myAtem.state)
 })
 
-myAtem.on('stateChanged', function(err, state) {
+myAtem.on('stateChanged', (state, pathToChange) => {
   console.log(state); // catch the ATEM state.
 });
 ```
@@ -92,9 +89,12 @@ This should not be relied on in most usage, as the commands can and will have br
 
 ## Debug
 
-Set `debug=true` config option in order to see raw packets. This is especially useful for library developers.
+Set `debugBuffers=true` config option in order to see raw packets. This is especially useful for library developers.
 ```javascript
-const myAtem = new Atem({ debug: true, externalLog: console.log })
+const myAtem = new Atem({ debugBuffers: true })
+myAtem.on('info', console.log)
+myAtem.on('debug', console.log)
+myAtem.on('error', console.error)
 ```
 ```sh
 SEND <Buffer 10 14 53 ab 00 00 00 00 00 3a 00 00 01 00 00 00 00 00 00 00>

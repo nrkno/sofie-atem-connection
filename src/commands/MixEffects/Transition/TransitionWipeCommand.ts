@@ -1,10 +1,9 @@
-import AbstractCommand from '../../AbstractCommand'
-import { AtemState } from '../../../state'
+import { WritableCommand, DeserializedCommand } from '../../CommandBase'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../../state'
 import { WipeTransitionSettings } from '../../../state/video'
-import { Util, Enums } from '../../..'
 
-export class TransitionWipeCommand extends AbstractCommand {
-	static MaskFlags = {
+export class TransitionWipeCommand extends WritableCommand<WipeTransitionSettings> {
+	public static MaskFlags = {
 		rate: 1 << 0,
 		pattern: 1 << 1,
 		borderWidth: 1 << 2,
@@ -17,30 +16,31 @@ export class TransitionWipeCommand extends AbstractCommand {
 		flipFlop: 1 << 9
 	}
 
-	rawName = 'CTWp'
-	mixEffect: number
+	public static readonly rawName = 'CTWp'
 
-	properties: WipeTransitionSettings
+	public readonly mixEffect: number
 
-	updateProps (newProps: Partial<WipeTransitionSettings>) {
-		this._updateProps(newProps)
+	constructor (mixEffect: number) {
+		super()
+
+		this.mixEffect = mixEffect
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(20)
 		buffer.writeUInt16BE(this.flag, 0)
 
 		buffer.writeUInt8(this.mixEffect, 2)
-		buffer.writeUInt8(this.properties.rate, 3)
-		buffer.writeUInt8(this.properties.pattern, 4)
+		buffer.writeUInt8(this.properties.rate || 0, 3)
+		buffer.writeUInt8(this.properties.pattern || 0, 4)
 
-		buffer.writeUInt16BE(this.properties.borderWidth, 6)
-		buffer.writeUInt16BE(this.properties.borderInput, 8)
-		buffer.writeUInt16BE(this.properties.symmetry, 10)
+		buffer.writeUInt16BE(this.properties.borderWidth || 0, 6)
+		buffer.writeUInt16BE(this.properties.borderInput || 0, 8)
+		buffer.writeUInt16BE(this.properties.symmetry || 0, 10)
 
-		buffer.writeUInt16BE(this.properties.borderSoftness, 12)
-		buffer.writeUInt16BE(this.properties.xPosition, 14)
-		buffer.writeUInt16BE(this.properties.yPosition, 16)
+		buffer.writeUInt16BE(this.properties.borderSoftness || 0, 12)
+		buffer.writeUInt16BE(this.properties.xPosition || 0, 14)
+		buffer.writeUInt16BE(this.properties.yPosition || 0, 16)
 		buffer.writeUInt8(this.properties.reverseDirection ? 1 : 0, 18)
 		buffer.writeUInt8(this.properties.flipFlop ? 1 : 0, 19)
 
@@ -48,30 +48,41 @@ export class TransitionWipeCommand extends AbstractCommand {
 	}
 }
 
-export class TransitionWipeUpdateCommand extends AbstractCommand {
-	rawName = 'TWpP'
-	mixEffect: number
+export class TransitionWipeUpdateCommand extends DeserializedCommand<WipeTransitionSettings> {
+	public static readonly rawName = 'TWpP'
 
-	properties: WipeTransitionSettings
+	public readonly mixEffect: number
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
-			rate: Util.parseNumberBetween(rawCommand[1], 1, 250),
-			pattern: Util.parseEnum<Enums.Pattern>(rawCommand[2], Enums.Pattern),
-			borderWidth: Util.parseNumberBetween(rawCommand.readUInt16BE(4), 0, 10000),
-			borderInput: rawCommand.readUInt16BE(6),
-			symmetry: Util.parseNumberBetween(rawCommand.readUInt16BE(8), 0, 10000),
-			borderSoftness: Util.parseNumberBetween(rawCommand.readUInt16BE(10), 0, 10000),
-			xPosition: Util.parseNumberBetween(rawCommand.readUInt16BE(12), 0, 10000),
-			yPosition: Util.parseNumberBetween(rawCommand.readUInt16BE(14), 0, 10000),
-			reverseDirection: rawCommand[16] === 1,
-			flipFlop: rawCommand[17] === 1
-		}
+	constructor (mixEffect: number, properties: WipeTransitionSettings) {
+		super(properties)
+
+		this.mixEffect = mixEffect
 	}
 
-	applyToState (state: AtemState) {
-		const mixEffect = state.video.getMe(this.mixEffect)
+	public static deserialize (rawCommand: Buffer): TransitionWipeUpdateCommand {
+		const mixEffect = rawCommand.readUInt8(0)
+		const properties = {
+			rate: rawCommand.readUInt8(1),
+			pattern: rawCommand.readUInt8(2),
+			borderWidth: rawCommand.readUInt16BE(4),
+			borderInput: rawCommand.readUInt16BE(6),
+			symmetry: rawCommand.readUInt16BE(8),
+			borderSoftness: rawCommand.readUInt16BE(10),
+			xPosition: rawCommand.readUInt16BE(12),
+			yPosition: rawCommand.readUInt16BE(14),
+			reverseDirection: rawCommand.readUInt8(16) === 1,
+			flipFlop: rawCommand.readUInt8(17) === 1
+		}
+
+		return new TransitionWipeUpdateCommand(mixEffect, properties)
+	}
+
+	public applyToState (state: AtemState) {
+		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
+			throw new InvalidIdError('MixEffect', this.mixEffect)
+		}
+
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionSettings.wipe = {
 			...this.properties
 		}

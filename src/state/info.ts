@@ -1,28 +1,47 @@
 import { Model, ProtocolVersion } from '../enums'
 
-export interface VersionProps {
-	readonly major: number
-	readonly minor: number
-}
-
 export interface AtemCapabilites {
-	readonly MEs: number
+	readonly mixEffects: number
 	readonly sources: number
-	readonly colorGenerators: number
 	readonly auxilliaries: number
-	readonly talkbackOutputs: number
+	readonly mixMinusOutputs: number
 	readonly mediaPlayers: number
 	readonly serialPorts: number
 	readonly maxHyperdecks: number
 	readonly DVEs: number
 	readonly stingers: number
-	readonly hasSuperSources: boolean
 	readonly superSources: number
-	readonly talkbackOverSDI: number
+	// readonly talkbackOverSDI: number
+	readonly downstreamKeyers: number
+	readonly cameraControl: boolean
+	readonly advancedChromaKeyers: boolean
+}
+
+export interface MixEffectInfo {
+	readonly keyCount: number
 }
 
 export interface SuperSourceInfo {
-	boxCount: number
+	readonly boxCount: number
+}
+
+export interface AudioMixerInfo {
+	readonly inputs: number
+	readonly monitors: number
+}
+
+export interface MacroPoolInfo {
+	readonly macroCount: number
+}
+
+export interface MediaPoolInfo {
+	readonly stillCount: number
+	readonly clipCount: number
+}
+
+export interface MultiviewerInfo {
+	readonly count: number
+	readonly windowCount: number
 }
 
 export interface TimeInfo {
@@ -33,12 +52,17 @@ export interface TimeInfo {
 	dropFrame: boolean
 }
 
-export class DeviceInfo {
+export interface DeviceInfo {
 	apiVersion: ProtocolVersion
-	capabilities: AtemCapabilites
+	capabilities?: AtemCapabilites
 	model: Model
-	productIdentifier: string
-	superSources: SuperSourceInfo[] = []
+	productIdentifier?: string
+	superSources: Array<SuperSourceInfo | undefined>
+	mixEffects: Array<MixEffectInfo | undefined>
 	power: boolean[]
-	lastTime: TimeInfo
+	audioMixer?: AudioMixerInfo
+	macroPool?: MacroPoolInfo
+	mediaPool?: MediaPoolInfo
+	multiviewer?: MultiviewerInfo
+	lastTime?: TimeInfo
 }

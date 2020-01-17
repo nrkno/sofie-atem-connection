@@ -1,24 +1,31 @@
-import AbstractCommand from '../../AbstractCommand'
+import { WritableCommand } from '../../CommandBase'
 import { UpstreamKeyerTypeSettings } from '../../../state/video/upstreamKeyers'
 
-export class MixEffectKeyTypeSetCommand extends AbstractCommand {
-	static MaskFlags = {
-		keyType: 1 << 0,
+export class MixEffectKeyTypeSetCommand extends WritableCommand<UpstreamKeyerTypeSettings> {
+	public static MaskFlags = {
+		mixEffectKeyType: 1 << 0,
 		flyEnabled: 1 << 1
 	}
 
-	rawName = 'CKTp'
-	mixEffect: number
-	upstreamKeyerId: number
-	properties: UpstreamKeyerTypeSettings
+	public static readonly rawName = 'CKTp'
 
-	serialize () {
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
+
+	constructor (mixEffect: number, upstreamKeyerId: number) {
+		super()
+
+		this.mixEffect = mixEffect
+		this.upstreamKeyerId = upstreamKeyerId
+	}
+
+	public serialize () {
 		const buffer = Buffer.alloc(8)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 1)
 		buffer.writeUInt8(this.upstreamKeyerId, 2)
 
-		buffer.writeUInt8(this.properties.keyType, 3)
+		buffer.writeUInt8(this.properties.mixEffectKeyType || 0, 3)
 		buffer.writeUInt8(this.properties.flyEnabled ? 1 : 0, 4)
 
 		return buffer

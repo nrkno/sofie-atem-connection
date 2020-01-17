@@ -1,35 +1,50 @@
-import AbstractCommand from '../../AbstractCommand'
-import { AtemState } from '../../../state'
+import { DeserializedCommand } from '../../CommandBase'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../../state'
 import { UpstreamKeyerBase } from '../../../state/video/upstreamKeyers'
-import { Util, Enums } from '../../..'
 
-export class MixEffectKeyPropertiesGetCommand extends AbstractCommand {
-	rawName = 'KeBP'
-	mixEffect: number
-	properties: UpstreamKeyerBase
+export class MixEffectKeyPropertiesGetCommand extends DeserializedCommand<UpstreamKeyerBase> {
+	public static readonly rawName = 'KeBP'
 
-	deserialize (rawCommand: Buffer) {
-		this.mixEffect = Util.parseNumberBetween(rawCommand[0], 0, 3)
-		this.properties = {
-			upstreamKeyerId: Util.parseNumberBetween(rawCommand[1], 0, 3),
-			mixEffectKeyType: Util.parseEnum<Enums.MixEffectKeyType>(rawCommand[2], Enums.MixEffectKeyType),
-			flyEnabled: rawCommand[5] === 1,
-			fillSource: rawCommand.readUInt16BE(6),
-			cutSource: rawCommand.readUInt16BE(8),
-			maskEnabled: rawCommand[10] === 1,
-			maskTop: Util.parseNumberBetween(rawCommand.readInt16BE(12), -9000, 9000),
-			maskBottom: Util.parseNumberBetween(rawCommand.readInt16BE(14), -9000, 9000),
-			maskLeft: Util.parseNumberBetween(rawCommand.readInt16BE(16), -16000, 16000),
-			maskRight: Util.parseNumberBetween(rawCommand.readInt16BE(18), -16000, 16000)
-		}
+	public readonly mixEffect: number
+	public readonly upstreamKeyerId: number
+
+	constructor (mixEffect: number, keyer: number, properties: UpstreamKeyerBase) {
+		super(properties)
+
+		this.mixEffect = mixEffect
+		this.upstreamKeyerId = keyer
 	}
 
-	applyToState (state: AtemState) {
-		const mixEffect = state.video.getMe(this.mixEffect)
-		Object.assign(
-			mixEffect.upstreamKeyers[this.properties.upstreamKeyerId],
-			this.properties
-		)
+	public static deserialize (rawCommand: Buffer): MixEffectKeyPropertiesGetCommand {
+		const mixEffect = rawCommand.readUInt8(0)
+		const keyer = rawCommand.readUInt8(1)
+		const properties = {
+			upstreamKeyerId: keyer,
+			mixEffectKeyType: rawCommand.readUInt8(2),
+			flyEnabled: rawCommand.readUInt8(5) === 1,
+			fillSource: rawCommand.readUInt16BE(6),
+			cutSource: rawCommand.readUInt16BE(8),
+			maskEnabled: rawCommand.readUInt8(10) === 1,
+			maskTop: rawCommand.readInt16BE(12),
+			maskBottom: rawCommand.readInt16BE(14),
+			maskLeft: rawCommand.readInt16BE(16),
+			maskRight: rawCommand.readInt16BE(18)
+		}
+
+		return new MixEffectKeyPropertiesGetCommand(mixEffect, keyer, properties)
+	}
+
+	public applyToState (state: AtemState) {
+		const meInfo = state.info.mixEffects[this.mixEffect]
+		if (!meInfo || this.upstreamKeyerId >= meInfo.keyCount) {
+			throw new InvalidIdError('UpstreamKeyer', this.mixEffect, this.upstreamKeyerId)
+		}
+
+		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
+		mixEffect.upstreamKeyers[this.properties.upstreamKeyerId] = {
+			...AtemStateUtil.getUpstreamKeyer(mixEffect, this.properties.upstreamKeyerId),
+			...this.properties
+		}
 		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.properties.upstreamKeyerId}`
 	}
 }

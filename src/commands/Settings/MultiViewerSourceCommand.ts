@@ -1,51 +1,59 @@
-import AbstractCommand from '../AbstractCommand'
-import { AtemState } from '../../state'
+import { WritableCommand, DeserializedCommand } from '../CommandBase'
+import { AtemState, AtemStateUtil, InvalidIdError } from '../../state'
 import { MultiViewerSourceState } from '../../state/settings'
 
-export class MultiViewerSourceCommand extends AbstractCommand {
-	rawName = 'CMvI'
-	multiViewerId: number
-	index: number
+export class MultiViewerSourceCommand extends WritableCommand<MultiViewerSourceState> {
+	public static readonly rawName = 'CMvI'
 
-	properties: MultiViewerSourceState
+	public readonly multiViewerId: number
 
-	updateProps (newProps: Partial<MultiViewerSourceState>) {
-		this._updateProps(newProps)
+	constructor (multiviewerId: number) {
+		super()
+
+		this.multiViewerId = multiviewerId
 	}
 
-	serialize () {
+	public serialize () {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.multiViewerId, 0)
-		buffer.writeUInt8(this.properties.windowIndex, 1)
-		buffer.writeUInt16BE(this.properties.source, 2)
+		buffer.writeUInt8(this.properties.windowIndex || 0, 1)
+		buffer.writeUInt16BE(this.properties.source || 0, 2)
 		return buffer
 	}
 }
 
-export class MultiViewerSourceUpdateCommand extends AbstractCommand {
-	rawName = 'MvIn'
-	multiViewerId: number
-	index: number
+export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiViewerSourceState> {
+	public static readonly rawName = 'MvIn'
 
-	properties: MultiViewerSourceState
+	public readonly multiViewerId: number
 
-	deserialize (rawCommand: Buffer) {
-		this.index = rawCommand.readUInt8(1)
-		this.multiViewerId = rawCommand.readUInt8(0)
+	constructor (multiviewerId: number, properties: MultiViewerSourceState) {
+		super(properties)
 
-		this.properties = {
+		this.multiViewerId = multiviewerId
+	}
+
+	public static deserialize (rawCommand: Buffer): MultiViewerSourceUpdateCommand {
+		const multiViewerId = rawCommand.readUInt8(0)
+		const properties = {
 			source: rawCommand.readUInt16BE(2),
 			windowIndex: rawCommand.readUInt8(1)
 		}
+
+		return new MultiViewerSourceUpdateCommand(multiViewerId, properties)
 	}
 
-	applyToState (state: AtemState) {
-		const multiviewer = state.settings.getMultiViewer(this.multiViewerId)
-		multiviewer.windows[this.index] = {
-			...multiviewer.windows[this.index],
+	public applyToState (state: AtemState) {
+		if (!state.info.multiviewer || this.multiViewerId >= state.info.multiviewer.count) {
+			throw new InvalidIdError('MultiViewer', this.multiViewerId)
+		}
+
+		const multiviewer = AtemStateUtil.getMultiViewer(state, this.multiViewerId)
+		multiviewer.windows[this.properties.windowIndex] = {
+			...multiviewer.windows[this.properties.windowIndex],
 			...this.properties
 		}
 
-		return `settings.multiViewers.${this.multiViewerId}.windows.${this.index}`
+		return `settings.multiViewers.${this.multiViewerId}.windows.${this.properties.windowIndex}`
 	}
 }

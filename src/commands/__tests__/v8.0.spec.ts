@@ -10,7 +10,7 @@ const commandConverters: CommandTestConverterSet = {
 			'index': 'index'
 		},
 		propertyAliases: {
-			'balance': (v: number) => ({ val: Math.round(v * 10) / 10 }),
+			'balance': (v: number) => ({ val: Math.round(v) }),
 			'gain': (v: number) => ({ val: Math.round(v * 100) / 100 })
 		}
 	},
@@ -28,9 +28,10 @@ const commandConverters: CommandTestConverterSet = {
 			'auxiliaries': (val: any) => ({ val, name: 'auxilliaries' }),
 			'dVE': (val: any) => ({ val, name: 'DVEs' }),
 			'hyperDecks': (val: any) => ({ val, name: 'maxHyperdecks' }),
-			'mixEffectBlocks': (val: any) => ({ val, name: 'MEs' }),
+			'mixEffectBlocks': (val: any) => ({ val, name: 'mixEffects' }),
 			'serialPort': (val: any) => ({ val, name: 'serialPorts' }),
-			'videoSources': (val: any) => ({ val, name: 'sources' })
+			'videoSources': (val: any) => ({ val, name: 'sources' }),
+			'superSource': (val: any) => ({ val, name: 'superSources' })
 		}
 	},
 	'SSrc': {
@@ -129,8 +130,10 @@ describe('Commands v8.0', () => {
 
 		switch (testCase.name) {
 			// Not parsed
-			case '_MvC':
-				return
+			case '_top': // New properties not implemented in LibAtem yet
+			case '_MvC': // Not all properties parsed
+			case 'AMIP': // portType max value
+				continue
 		}
 
 		runTestForCommand(commandParser, commandConverters, i, testCase)

@@ -1,29 +1,28 @@
-import AbstractCommand from '../AbstractCommand'
+import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { ProtocolVersion } from '../../enums'
 import { SuperSourceInfo } from '../../state/info'
 
-export class SuperSourceConfigCommand extends AbstractCommand {
-	rawName = '_SSC'
+export class SuperSourceConfigCommand extends DeserializedCommand<SuperSourceInfo> {
+	public static readonly rawName = '_SSC'
 
-	ssrcId: number
-	properties: SuperSourceInfo
+	public readonly ssrcId: number
 
-	deserialize (rawCommand: Buffer, version: ProtocolVersion) {
+	constructor (ssrcId: number, properties: SuperSourceInfo) {
+		super(properties)
+
+		this.ssrcId = ssrcId
+	}
+
+	public static deserialize (rawCommand: Buffer, version: ProtocolVersion): SuperSourceConfigCommand {
 		if (version >= ProtocolVersion.V8_0) {
-			this.ssrcId = rawCommand[0]
-			this.properties = {
-				boxCount: rawCommand[2]
-			}
+			return new SuperSourceConfigCommand(rawCommand.readUInt8(0), { boxCount: rawCommand.readUInt8(2) })
 		} else {
-			this.ssrcId = 0
-			this.properties = {
-				boxCount: rawCommand[0]
-			}
+			return new SuperSourceConfigCommand(0, { boxCount: rawCommand.readUInt8(0) })
 		}
 	}
 
-	applyToState (state: AtemState) {
+	public applyToState (state: AtemState) {
 		state.info.superSources[this.ssrcId] = this.properties
 		return `info.superSources`
 	}
