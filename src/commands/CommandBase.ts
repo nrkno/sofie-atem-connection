@@ -62,9 +62,10 @@ export abstract class WritableCommand<T> extends BasicWritableCommand<Partial<T>
 		if (maskFlags) {
 			for (const key in newProps) {
 				const key2 = key as keyof T
-				if (key in maskFlags) {
+				const val = newProps[key]
+				if (key in maskFlags && val !== undefined) {
 					this.flag = this.flag | maskFlags[key]
-					this._properties[key2] = newProps[key]
+					this._properties[key2] = val
 					hasChanges = true
 				}
 			}
