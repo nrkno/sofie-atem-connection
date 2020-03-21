@@ -2,7 +2,7 @@ jest.mock('dgram')
 import { Socket } from '../__mocks__/dgram'
 import { AtemSocketChild, ConnectionState, PacketFlag } from '../atemSocketChild'
 import { Util } from '../..'
-import * as lolex from 'lolex'
+import * as fakeTimers from '@sinonjs/fake-timers'
 import { DEFAULT_PORT } from '../../atem'
 
 const ADDRESS = '127.0.0.1'
@@ -49,9 +49,9 @@ function createSocketChild (
 }
 
 describe('SocketChild', () => {
-	let clock: lolex.InstalledClock
+	let clock: fakeTimers.InstalledClock
 	beforeEach(() => {
-		clock = lolex.install()
+		clock = fakeTimers.install()
 	})
 	afterEach(() => {
 		clock.uninstall()

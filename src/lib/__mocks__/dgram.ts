@@ -2,7 +2,7 @@ import { EventEmitter } from 'events'
 import { SocketType, RemoteInfo } from 'dgram'
 import 'jest-extended'
 import { DEFAULT_PORT } from '../../atem'
-import { InstalledClock } from 'lolex'
+import { InstalledClock } from '@sinonjs/fake-timers'
 
 export class Socket extends EventEmitter {
 	public isOpen: boolean = false

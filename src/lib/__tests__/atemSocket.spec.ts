@@ -4,7 +4,7 @@ import { AtemSocket } from '../atemSocket'
 import { ThreadedClass, ThreadedClassManager } from 'threadedclass'
 import { Buffer } from 'buffer'
 import { CommandParser } from '../atemCommandParser'
-import * as lolex from 'lolex'
+import * as fakeTimers from '@sinonjs/fake-timers'
 import { AtemSocketChild } from '../atemSocketChild'
 // import { promisify } from 'util'
 jest.mock('../atemSocketChild')
@@ -60,7 +60,7 @@ const ThreadedClassManagerSingleton = new ThreadedClassManagerMock()
 jest.spyOn(ThreadedClassManager, 'onEvent').mockImplementation(ThreadedClassManagerSingleton.onEvent)
 
 describe('AtemSocket', () => {
-	let clock: lolex.InstalledClock
+	let clock: fakeTimers.InstalledClock
 
 	function mockClear (lite?: boolean) {
 		(AtemSocketChild as any).mockClear()
@@ -76,7 +76,7 @@ describe('AtemSocket', () => {
 		}
 	}
 	beforeEach(() => {
-		clock = lolex.install()
+		clock = fakeTimers.install()
 		mockClear()
 		ThreadedClassManagerSingleton.handlers = []
 	})
