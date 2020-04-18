@@ -27,7 +27,6 @@ export class TopologyCommand extends DeserializedCommand<AtemCapabilites> {
 			// Note: these are defined below as they can overflow in older firmwares
 			advancedChromaKeyers: false
 		}
-		console.log(rawCommand.toString('hex'))
 
 		// in 7.4?
 		if (rawCommand.length > 20) {
