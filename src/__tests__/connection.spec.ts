@@ -93,6 +93,8 @@ describe('connection', () => {
 	runTestMe1('tvshd v8.2.0', 'tvshd-v8.2.0')
 	runTestMe1('constellation v8.0.2', 'constellation-v8.0.2')
 	runTestMe1('2me v8.1', '2me-v8.1')
+	runTestMe1('2me v8.1.2', '2me-v8.1.2')
 	runTestMe1('mini v8.1', 'mini-v8.1')
+	runTestMe1('mini v8.1.1', 'mini-v8.1.1')
 	runTestMe1('1me v8.1', '1me-v8.1')
 })
