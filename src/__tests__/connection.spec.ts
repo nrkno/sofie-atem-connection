@@ -86,15 +86,18 @@ describe('connection', () => {
 	 * These tests run the payload through the parser to ensure that the commands does not error.
 	 */
 
+	runTestMe1('1me v8.1', '1me-v8.1')
+	runTestMe1('2me v8.1', '2me-v8.1')
+	runTestMe1('2me v8.1.2', '2me-v8.1.2')
 	runTestMe1('ps4k v7.2', 'ps4k-v7.2')
+	runTestMe1('1me4k v8.2', '1me4k-v8.2')
 	runTestMe1('4me4k v7.5.2', '4me4k-v7.5.2')
+	runTestMe1('4me4k v8.2', '4me4k-v8.2')
 	runTestMe1('tvshd v8.0.0', 'tvshd-v8.0.0')
 	runTestMe1('tvshd v8.1.0', 'tvshd-v8.1.0')
 	runTestMe1('tvshd v8.2.0', 'tvshd-v8.2.0')
 	runTestMe1('constellation v8.0.2', 'constellation-v8.0.2')
-	runTestMe1('2me v8.1', '2me-v8.1')
-	runTestMe1('2me v8.1.2', '2me-v8.1.2')
 	runTestMe1('mini v8.1', 'mini-v8.1')
 	runTestMe1('mini v8.1.1', 'mini-v8.1.1')
-	runTestMe1('1me v8.1', '1me-v8.1')
+	runTestMe1('mini pro v8.2', 'mini-pro-v8.2')
 })
