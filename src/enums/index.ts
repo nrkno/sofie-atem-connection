@@ -12,13 +12,15 @@ export enum Model {
 	TVSPro4K = 0x0a,
 	Constellation = 0x0b,
 	Constellation8K = 0x0c,
-	Mini = 0x0d
+	Mini = 0x0d,
+	MiniPro = 0x0e
 }
 
 export enum ProtocolVersion {
 	V7_2 = 0x00020016, // 2.22 // TODO - verify this is correct
 	V8_0 = 0x0002001C, // 2.28
-	V8_0_1 = 0x0002001D // 2.29
+	V8_0_1 = 0x0002001D, // 2.29
+	v8_1_1 = 0x0002001E // 2.30
 }
 
 export enum TransitionStyle {
