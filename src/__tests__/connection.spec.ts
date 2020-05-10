@@ -20,13 +20,6 @@ export class AtemSocketChildMock implements AtemSocketChild {
 		this.onCommandsAcknowledged = onCommandsAcknowledged
 	}
 
-	public restartConnection () {
-		return Promise.resolve()
-	}
-	public log (message: string) {
-		console.log(message)
-	}
-
 	public connect = jest.fn(() => Promise.resolve())
 	public disconnect = jest.fn(() => Promise.resolve())
 	public sendCommands = jest.fn(() => Promise.resolve())

@@ -124,7 +124,7 @@ export class AtemSocketChild {
 		})
 	}
 
-	public async restartConnection (): Promise<void> {
+	private async restartConnection (): Promise<void> {
 		// This includes a 'disconnect'
 		if (this._connectionState === ConnectionState.Established) {
 			this._connectionState = ConnectionState.Closed
@@ -143,7 +143,7 @@ export class AtemSocketChild {
 		this._connectionState = ConnectionState.SynSent
 	}
 
-	public log (message: string): void {
+	private log (message: string): void {
 		// tslint:disable-next-line: no-floating-promises
 		this.onLog(message)
 	}
