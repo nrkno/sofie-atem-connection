@@ -12,7 +12,7 @@ export class LockStateCommand extends BasicWritableCommand<LockStateProps> {
 		super({ index, locked })
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt16BE(this.properties.index, 0)
 		buffer[2] = this.properties.locked ? 1 : 0
@@ -23,7 +23,7 @@ export class LockStateCommand extends BasicWritableCommand<LockStateProps> {
 export class LockStateUpdateCommand extends DeserializedCommand<LockStateProps> {
 	public static readonly rawName = 'LKST'
 
-	public static deserialize(rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer): LockStateUpdateCommand {
 		const properties = {
 			index: rawCommand.readUInt16BE(0),
 			locked: rawCommand.readUInt8(2) === 1

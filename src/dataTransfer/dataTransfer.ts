@@ -14,10 +14,12 @@ export default abstract class DataTransfer {
 		this.storeId = storeId
 
 		// Make typescript happy
-		// tslint:disable-next-line: no-empty
-		this.resolvePromise = () => {}
-		// tslint:disable-next-line: no-empty
-		this.rejectPromise = () => {}
+		this.resolvePromise = (): void => {
+			// Ignore
+		}
+		this.rejectPromise = (): void => {
+			// Ignore
+		}
 
 		this.completionPromise = new Promise((resolve, reject) => {
 			this.resolvePromise = resolve
@@ -25,11 +27,11 @@ export default abstract class DataTransfer {
 		})
 	}
 
-	get transferId() {
+	get transferId(): number {
 		return this._transferId
 	}
 
-	get promise() {
+	get promise(): Promise<DataTransfer> {
 		return this.completionPromise
 	}
 

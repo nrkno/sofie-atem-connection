@@ -1,7 +1,7 @@
 import { AtemState, AtemStateUtil } from '../../state'
 import { ClipBank } from '../../state/media'
 import { DeserializedCommand } from '../CommandBase'
-import { Util } from '../../lib/atemUtil'
+import * as Util from '../../lib/atemUtil'
 
 export class MediaPoolClipDescriptionCommand extends DeserializedCommand<Omit<ClipBank, 'frames'>> {
 	public static readonly rawName = 'MPCS'
@@ -14,7 +14,7 @@ export class MediaPoolClipDescriptionCommand extends DeserializedCommand<Omit<Cl
 		this.clipId = mediaPool
 	}
 
-	public static deserialize(rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer): MediaPoolClipDescriptionCommand {
 		const mediaPool = rawCommand.readUInt8(0)
 		const properties = {
 			isUsed: rawCommand.readUInt8(1) === 1,
@@ -25,7 +25,7 @@ export class MediaPoolClipDescriptionCommand extends DeserializedCommand<Omit<Cl
 		return new MediaPoolClipDescriptionCommand(mediaPool, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		// TODO - validate ids
 
 		state.media.clipPool[this.clipId] = {

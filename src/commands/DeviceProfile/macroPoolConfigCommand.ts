@@ -15,7 +15,7 @@ export class MacroPoolConfigCommand extends DeserializedCommand<MacroPoolInfo> {
 		})
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		state.info.macroPool = this.properties
 		return `info.macroPool`
 	}

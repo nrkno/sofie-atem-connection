@@ -21,7 +21,7 @@ export class MixEffectKeyLumaCommand extends WritableCommand<UpstreamKeyerLumaSe
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 1)
@@ -49,7 +49,7 @@ export class MixEffectKeyLumaUpdateCommand extends DeserializedCommand<UpstreamK
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	public static deserialize(rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer): MixEffectKeyLumaUpdateCommand {
 		const mixEffect = rawCommand.readUInt8(0)
 		const upstreamKeyerId = rawCommand.readUInt8(1)
 		const properties = {
@@ -62,7 +62,7 @@ export class MixEffectKeyLumaUpdateCommand extends DeserializedCommand<UpstreamK
 		return new MixEffectKeyLumaUpdateCommand(mixEffect, upstreamKeyerId, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		const meInfo = state.info.mixEffects[this.mixEffect]
 		if (!meInfo || this.upstreamKeyerId >= meInfo.keyCount) {
 			throw new InvalidIdError('UpstreamKeyer', this.mixEffect, this.upstreamKeyerId)

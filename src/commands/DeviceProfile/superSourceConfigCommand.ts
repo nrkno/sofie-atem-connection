@@ -22,7 +22,7 @@ export class SuperSourceConfigCommand extends DeserializedCommand<SuperSourceInf
 		}
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		state.info.superSources[this.ssrcId] = this.properties
 		return `info.superSources`
 	}

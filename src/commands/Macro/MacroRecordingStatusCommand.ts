@@ -5,7 +5,7 @@ import { MacroRecorderState } from '../../state/macro'
 export class MacroRecordingStatusCommand extends DeserializedCommand<MacroRecorderState> {
 	public static readonly rawName = 'MRcS'
 
-	public static deserialize(rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer): MacroRecordingStatusCommand {
 		const properties = {
 			isRecording: Boolean(rawCommand.readUInt8(0) & (1 << 0)),
 			macroIndex: rawCommand.readUInt16BE(2)
@@ -14,7 +14,7 @@ export class MacroRecordingStatusCommand extends DeserializedCommand<MacroRecord
 		return new MacroRecordingStatusCommand(properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		state.macro.macroRecorder = {
 			...state.macro.macroRecorder,
 			...this.properties

@@ -13,7 +13,7 @@ export class VideoModeCommand extends BasicWritableCommand<VideoModeProps> {
 		super({ mode })
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.properties.mode, 0)
 		return buffer
@@ -31,7 +31,7 @@ export class VideoModeUpdateCommand extends DeserializedCommand<VideoModeProps> 
 		return new VideoModeUpdateCommand(rawCommand.readUInt8(0))
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		state.settings.videoMode = this.properties.mode
 		return `settings.videoMode`
 	}

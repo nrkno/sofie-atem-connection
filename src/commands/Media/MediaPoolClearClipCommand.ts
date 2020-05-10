@@ -7,7 +7,7 @@ export class MediaPoolClearClipCommand extends BasicWritableCommand<{ index: num
 		super({ index })
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.properties.index, 0)
 		return buffer

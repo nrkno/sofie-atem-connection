@@ -19,7 +19,7 @@ export class MediaPlayerStatusCommand extends WritableCommand<MediaPlayer> {
 		this.mediaPlayerId = mediaPlayerId
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(8)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mediaPlayerId, 1)
@@ -42,7 +42,7 @@ export class MediaPlayerStatusUpdateCommand extends DeserializedCommand<MediaPla
 		this.mediaPlayerId = mediaPlayerId
 	}
 
-	public static deserialize(rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer): MediaPlayerStatusUpdateCommand {
 		const mediaPlayerId = rawCommand.readUInt8(0)
 		const properties = {
 			playing: rawCommand.readUInt8(1) === 1,
@@ -54,7 +54,7 @@ export class MediaPlayerStatusUpdateCommand extends DeserializedCommand<MediaPla
 		return new MediaPlayerStatusUpdateCommand(mediaPlayerId, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		if (!state.info.capabilities || this.mediaPlayerId >= state.info.capabilities.mediaPlayers) {
 			throw new InvalidIdError('MediaPlayer', this.mediaPlayerId)
 		}

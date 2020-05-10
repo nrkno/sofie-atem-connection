@@ -15,7 +15,7 @@ export class PowerStatusCommand extends DeserializedCommand<boolean[]> {
 		return new PowerStatusCommand(properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		const count = state.info.power.length
 		state.info.power = this.properties.slice(0, count)
 		return `info.power`

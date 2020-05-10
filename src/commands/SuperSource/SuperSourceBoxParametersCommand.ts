@@ -29,7 +29,7 @@ export class SuperSourceBoxParametersCommand extends WritableCommand<SuperSource
 		this.boxId = boxId
 	}
 
-	public serialize(version: ProtocolVersion) {
+	public serialize(version: ProtocolVersion): Buffer {
 		const buffer = Buffer.alloc(24)
 		let i = 0
 		if (version >= ProtocolVersion.V8_0) {
@@ -93,7 +93,7 @@ export class SuperSourceBoxParametersUpdateCommand extends DeserializedCommand<S
 		return new SuperSourceBoxParametersUpdateCommand(ssrcId, boxId, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		if (!state.info.capabilities || this.ssrcId >= state.info.capabilities.superSources) {
 			throw new InvalidIdError('SuperSource', this.ssrcId)
 		}

@@ -36,7 +36,7 @@ export function listVisibleInputs(mode: 'program' | 'preview', state: AtemState,
 				}
 				const portType = input.internalPortType
 				switch (portType) {
-					case Enums.InternalPortType.SuperSource:
+					case Enums.InternalPortType.SuperSource: {
 						const ssrcId = inputId - 6000
 						const ssrc = AtemStateUtil.getSuperSource(state, ssrcId)
 						ssrc.boxes.forEach(box => {
@@ -52,11 +52,13 @@ export function listVisibleInputs(mode: 'program' | 'preview', state: AtemState,
 							}
 						}
 						break
-					case Enums.InternalPortType.MEOutput:
+					}
+					case Enums.InternalPortType.MEOutput: {
 						const nestedMeId = (inputId - (inputId % 10) - 10000) / 10 - 1
 						const nestedMeMode = (inputId - 10000) % 10 === 0 ? 'program' : 'preview'
 						_calcActiveMeInputs(nestedMeMode, state, nestedMeId).forEach(i => inputs.add(i))
 						break
+					}
 					default:
 					// Do nothing.
 				}

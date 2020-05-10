@@ -22,7 +22,7 @@ export class MixEffectKeyMaskSetCommand extends WritableCommand<UpstreamKeyerMas
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 1)

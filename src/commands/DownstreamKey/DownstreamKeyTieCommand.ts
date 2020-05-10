@@ -11,7 +11,7 @@ export class DownstreamKeyTieCommand extends BasicWritableCommand<{ tie: boolean
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.downstreamKeyerId, 0)
 		buffer.writeUInt8(this.properties.tie ? 1 : 0, 1)

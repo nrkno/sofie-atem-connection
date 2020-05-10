@@ -17,7 +17,7 @@ export class TransitionDipCommand extends WritableCommand<DipTransitionSettings>
 		this.mixEffect = mixEffect
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(8)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 1)
@@ -48,7 +48,7 @@ export class TransitionDipUpdateCommand extends DeserializedCommand<DipTransitio
 		return new TransitionDipUpdateCommand(mixEffect, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
 			throw new InvalidIdError('MixEffect', this.mixEffect)
 		}

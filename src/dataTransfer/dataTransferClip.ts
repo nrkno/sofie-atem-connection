@@ -17,7 +17,7 @@ export default class DataTransferClip extends DataTransfer {
 		this.frames = frames
 	}
 
-	public start() {
+	public start(): Commands.ISerializableCommand[] {
 		const commands: Commands.ISerializableCommand[] = []
 		commands.push(new Commands.MediaPoolClearClipCommand(this.clipIndex))
 		this.frames[this.curFrame].state = Enums.TransferState.Locked
@@ -49,7 +49,7 @@ export default class DataTransferClip extends DataTransfer {
 		return commands
 	}
 
-	get transferId() {
+	get transferId(): number {
 		return this.frames[this.curFrame].transferId
 	}
 

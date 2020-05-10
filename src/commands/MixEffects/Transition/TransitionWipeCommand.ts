@@ -26,7 +26,7 @@ export class TransitionWipeCommand extends WritableCommand<WipeTransitionSetting
 		this.mixEffect = mixEffect
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(20)
 		buffer.writeUInt16BE(this.flag, 0)
 
@@ -77,7 +77,7 @@ export class TransitionWipeUpdateCommand extends DeserializedCommand<WipeTransit
 		return new TransitionWipeUpdateCommand(mixEffect, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
 			throw new InvalidIdError('MixEffect', this.mixEffect)
 		}

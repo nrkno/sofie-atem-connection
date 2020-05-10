@@ -9,7 +9,7 @@ export class DataTransferDataCommand extends BasicWritableCommand<DataTransferDa
 	implements IDeserializedCommand {
 	public static readonly rawName = 'FTDa'
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt16BE(this.properties.transferId, 0)
 		buffer.writeUInt16BE(this.properties.body.length, 2)

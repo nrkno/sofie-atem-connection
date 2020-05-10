@@ -43,7 +43,7 @@ export class MixEffectKeyDVECommand extends WritableCommand<UpstreamKeyerDVESett
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(64)
 		buffer.writeUInt32BE(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 4)
@@ -98,7 +98,7 @@ export class MixEffectKeyDVEUpdateCommand extends DeserializedCommand<UpstreamKe
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	public static deserialize(rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer): MixEffectKeyDVEUpdateCommand {
 		const mixEffect = rawCommand.readUInt8(0)
 		const upstreamKeyerId = rawCommand.readUInt8(1)
 		const properties = {
@@ -140,7 +140,7 @@ export class MixEffectKeyDVEUpdateCommand extends DeserializedCommand<UpstreamKe
 		return new MixEffectKeyDVEUpdateCommand(mixEffect, upstreamKeyerId, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		const meInfo = state.info.mixEffects[this.mixEffect]
 		if (!meInfo || this.upstreamKeyerId >= meInfo.keyCount) {
 			throw new InvalidIdError('UpstreamKeyer', this.mixEffect, this.upstreamKeyerId)

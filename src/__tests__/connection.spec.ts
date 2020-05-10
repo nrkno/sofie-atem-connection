@@ -42,7 +42,7 @@ export class AtemSocketChildMock implements AtemSocketChild {
 	}
 )
 
-function createConnection() {
+function createConnection(): BasicAtem {
 	return new BasicAtem({
 		debugBuffers: false,
 		address: '',
@@ -55,7 +55,7 @@ function getChild(conn: BasicAtem): ThreadedClass<AtemSocketChildMock> {
 	return (conn as any).socket._socketProcess
 }
 
-function runTestMe1(name: string, filename: string) {
+function runTestMe1(name: string, filename: string): void {
 	const filePath = resolve(__dirname, `./connection/${filename}.data`)
 	const fileData = readFileSync(filePath)
 		.toString()

@@ -1,5 +1,11 @@
 import { CommandParser } from '../../lib/atemCommandParser'
-import { TestCase, runTestForCommand, CommandTestConverterSet, ensureAllCommandsCovered } from './util'
+import {
+	TestCase,
+	runTestForCommand,
+	CommandTestConverterSet,
+	ensureAllCommandsCovered,
+	PropertyAliasResult
+} from './util'
 import { ProtocolVersion } from '../../enums'
 
 const TestCases = require('./data-v7.2.json') as TestCase[]
@@ -8,10 +14,10 @@ const commandConverters: CommandTestConverterSet = {
 	_ver: {
 		idAliases: {},
 		propertyAliases: {
-			apiMajor: (v: number) => ({ val: v, name: 'major' }),
-			apiMinor: (v: number) => ({ val: v, name: 'minor' })
+			apiMajor: (v: number): PropertyAliasResult => ({ val: v, name: 'major' }),
+			apiMinor: (v: number): PropertyAliasResult => ({ val: v, name: 'minor' })
 		},
-		customMutate: (o: any) => {
+		customMutate: (o: any): any => {
 			return {
 				version: (o.major << 16) + o.minor
 			}
@@ -20,13 +26,13 @@ const commandConverters: CommandTestConverterSet = {
 	_pin: {
 		idAliases: {},
 		propertyAliases: {
-			name: (val: any) => ({ val, name: 'productIdentifier' })
+			name: (val: any): PropertyAliasResult => ({ val, name: 'productIdentifier' })
 		}
 	},
 	_SSC: {
 		idAliases: {},
 		propertyAliases: {
-			boxes: (val: any) => ({ val, name: 'boxCount' })
+			boxes: (val: any): PropertyAliasResult => ({ val, name: 'boxCount' })
 		}
 	},
 	SSBP: {
@@ -34,14 +40,14 @@ const commandConverters: CommandTestConverterSet = {
 			boxId: 'index'
 		},
 		propertyAliases: {
-			cropBottom: (v: number) => ({ val: Math.round(v * 1000) }),
-			cropTop: (v: number) => ({ val: Math.round(v * 1000) }),
-			cropLeft: (v: number) => ({ val: Math.round(v * 1000) }),
-			cropRight: (v: number) => ({ val: Math.round(v * 1000) }),
-			size: (v: number) => ({ val: Math.round(v * 1000) }),
-			positionX: (v: number) => ({ val: Math.round(v * 100), name: 'x' }),
-			positionY: (v: number) => ({ val: Math.round(v * 100), name: 'y' }),
-			inputSource: (v: number) => ({ val: v, name: 'source' })
+			cropBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			cropTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			cropLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			cropRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			size: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			positionX: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100), name: 'x' }),
+			positionY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100), name: 'y' }),
+			inputSource: (v: number): PropertyAliasResult => ({ val: v, name: 'source' })
 		}
 	},
 	CSBP: {
@@ -49,34 +55,37 @@ const commandConverters: CommandTestConverterSet = {
 			boxId: 'index'
 		},
 		propertyAliases: {
-			cropBottom: (v: number) => ({ val: Math.round(v * 1000) }),
-			cropTop: (v: number) => ({ val: Math.round(v * 1000) }),
-			cropLeft: (v: number) => ({ val: Math.round(v * 1000) }),
-			cropRight: (v: number) => ({ val: Math.round(v * 1000) }),
-			size: (v: number) => ({ val: Math.round(v * 1000) }),
-			positionX: (v: number) => ({ val: Math.round(v * 100), name: 'x' }),
-			positionY: (v: number) => ({ val: Math.round(v * 100), name: 'y' }),
-			inputSource: (v: number) => ({ val: v, name: 'source' })
+			cropBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			cropTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			cropLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			cropRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			size: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			positionX: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100), name: 'x' }),
+			positionY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100), name: 'y' }),
+			inputSource: (v: number): PropertyAliasResult => ({ val: v, name: 'source' })
 		}
 	},
 	SSrc: {
 		idAliases: {},
 		propertyAliases: {
-			artClip: (v: number) => ({ val: Math.round(v * 10) }),
-			artGain: (v: number) => ({ val: Math.round(v * 10) }),
-			borderLightSourceAltitude: (v: number) => ({ val: Math.round(v) }),
-			borderLightSourceDirection: (v: number) => ({ val: Math.round(v * 10) }),
-			borderHue: (v: number) => ({ val: Math.round(v * 10) }),
-			borderWidthIn: (v: number) => ({ val: Math.round(v * 100), name: 'borderInnerWidth' }),
-			borderLuma: (v: number) => ({ val: Math.round(v * 10) }),
-			borderWidthOut: (v: number) => ({ val: Math.round(v * 100), name: 'borderOuterWidth' }),
-			borderSaturation: (v: number) => ({ val: Math.round(v * 10) }),
-			borderSoftnessIn: (v: number) => ({ val: v, name: 'borderInnerSoftness' }),
-			borderSoftnessOut: (v: number) => ({ val: v, name: 'borderOuterSoftness' }),
-			artFillInput: (v: number) => ({ val: v, name: 'artFillSource' }),
-			artKeyInput: (v: number) => ({ val: v, name: 'artCutSource' })
+			artClip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			artGain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderLightSourceAltitude: (v: number): PropertyAliasResult => ({ val: Math.round(v) }),
+			borderLightSourceDirection: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderHue: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderWidthIn: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100), name: 'borderInnerWidth' }),
+			borderLuma: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderWidthOut: (v: number): PropertyAliasResult => ({
+				val: Math.round(v * 100),
+				name: 'borderOuterWidth'
+			}),
+			borderSaturation: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderSoftnessIn: (v: number): PropertyAliasResult => ({ val: v, name: 'borderInnerSoftness' }),
+			borderSoftnessOut: (v: number): PropertyAliasResult => ({ val: v, name: 'borderOuterSoftness' }),
+			artFillInput: (v: number): PropertyAliasResult => ({ val: v, name: 'artFillSource' }),
+			artKeyInput: (v: number): PropertyAliasResult => ({ val: v, name: 'artCutSource' })
 		},
-		customMutate: (o: any) => {
+		customMutate: (o: any): any => {
 			return {
 				properties: {
 					artFillSource: o.artFillSource,
@@ -108,15 +117,15 @@ const commandConverters: CommandTestConverterSet = {
 	CSSc: {
 		idAliases: {},
 		propertyAliases: {
-			artClip: (v: number) => ({ val: Math.round(v * 10) }),
-			artGain: (v: number) => ({ val: Math.round(v * 10) }),
-			borderLightSourceAltitude: (v: number) => ({ val: Math.round(v) }),
-			borderLightSourceDirection: (v: number) => ({ val: Math.round(v * 10) }),
-			borderHue: (v: number) => ({ val: Math.round(v * 10) }),
-			borderInnerWidth: (v: number) => ({ val: Math.round(v * 100) }),
-			borderLuma: (v: number) => ({ val: Math.round(v * 10) }),
-			borderOuterWidth: (v: number) => ({ val: Math.round(v * 100) }),
-			borderSaturation: (v: number) => ({ val: Math.round(v * 10) })
+			artClip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			artGain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderLightSourceAltitude: (v: number): PropertyAliasResult => ({ val: Math.round(v) }),
+			borderLightSourceDirection: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderHue: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderInnerWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			borderLuma: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderOuterWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			borderSaturation: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
 		}
 	},
 	DskP: {
@@ -124,15 +133,15 @@ const commandConverters: CommandTestConverterSet = {
 			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {
-			clip: (v: number) => ({ val: Math.round(v * 10) }),
-			gain: (v: number) => ({ val: Math.round(v * 10) }),
-			preMultipliedKey: (v: number) => ({ val: v, name: 'preMultiply' }),
-			maskLeft: (v: number) => ({ val: Math.round(v * 1000) }),
-			maskRight: (v: number) => ({ val: Math.round(v * 1000) }),
-			maskTop: (v: number) => ({ val: Math.round(v * 1000) }),
-			maskBottom: (v: number) => ({ val: Math.round(v * 1000) })
+			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			preMultipliedKey: (v: number): PropertyAliasResult => ({ val: v, name: 'preMultiply' }),
+			maskLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			maskRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) })
 		},
-		customMutate: (obj: any) => {
+		customMutate: (obj: any): any => {
 			obj['mask'] = {
 				enabled: obj['maskEnabled'],
 				top: obj['maskTop'],
@@ -153,9 +162,9 @@ const commandConverters: CommandTestConverterSet = {
 			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {
-			clip: (v: number) => ({ val: Math.round(v * 10) }),
-			gain: (v: number) => ({ val: Math.round(v * 10) }),
-			preMultipliedKey: (v: number) => ({ val: v, name: 'preMultiply' })
+			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			preMultipliedKey: (v: number): PropertyAliasResult => ({ val: v, name: 'preMultiply' })
 		}
 	},
 	DskS: {
@@ -199,7 +208,7 @@ const commandConverters: CommandTestConverterSet = {
 			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {
-			source: (v: number) => ({ val: v, name: 'input' })
+			source: (v: number): PropertyAliasResult => ({ val: v, name: 'input' })
 		}
 	},
 	CDsF: {
@@ -207,7 +216,7 @@ const commandConverters: CommandTestConverterSet = {
 			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {
-			source: (v: number) => ({ val: v, name: 'input' })
+			source: (v: number): PropertyAliasResult => ({ val: v, name: 'input' })
 		}
 	},
 	CDsM: {
@@ -215,11 +224,11 @@ const commandConverters: CommandTestConverterSet = {
 			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {
-			maskEnabled: (val: any) => ({ val, name: 'enabled' }),
-			maskLeft: (v: number) => ({ val: Math.round(v * 1000), name: 'left' }),
-			maskRight: (v: number) => ({ val: Math.round(v * 1000), name: 'right' }),
-			maskTop: (v: number) => ({ val: Math.round(v * 1000), name: 'top' }),
-			maskBottom: (v: number) => ({ val: Math.round(v * 1000), name: 'bottom' })
+			maskEnabled: (val: any): PropertyAliasResult => ({ val, name: 'enabled' }),
+			maskLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'left' }),
+			maskRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'right' }),
+			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'top' }),
+			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'bottom' })
 		}
 	},
 	AMIP: {
@@ -227,10 +236,10 @@ const commandConverters: CommandTestConverterSet = {
 			index: 'index'
 		},
 		propertyAliases: {
-			balance: (v: number) => ({ val: Math.round(v) }),
-			gain: (v: number) => ({ val: Math.round(v * 100) / 100 })
+			balance: (v: number): PropertyAliasResult => ({ val: Math.round(v) }),
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 })
 		},
-		processDeserialized: props => {
+		processDeserialized: (props): void => {
 			props.gain = Math.round(props.gain * 100) / 100
 		}
 	},
@@ -239,29 +248,29 @@ const commandConverters: CommandTestConverterSet = {
 			index: 'index'
 		},
 		propertyAliases: {
-			balance: (v: number) => ({ val: Math.round(v * 200) / 200 })
-			// 'gain': (v: number) => ({ val: Math.round(v * 100) / 100 })
+			balance: (v: number): PropertyAliasResult => ({ val: Math.round(v * 200) / 200 })
+			// 'gain': (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 })
 		}
 	},
 	AMMO: {
 		idAliases: {},
 		propertyAliases: {
-			programOutFollowFadeToBlack: (val: any) => ({ val, name: 'followFadeToBlack' }),
-			balance: (v: number) => ({ val: Math.round(v) }),
-			gain: (v: number) => ({ val: Math.round(v * 100) / 100 })
+			programOutFollowFadeToBlack: (val: any): PropertyAliasResult => ({ val, name: 'followFadeToBlack' }),
+			balance: (v: number): PropertyAliasResult => ({ val: Math.round(v) }),
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 })
 		}
 	},
 	_top: {
 		idAliases: {},
 		propertyAliases: {
-			auxiliaries: (val: any) => ({ val, name: 'auxilliaries' }),
-			dVE: (val: any) => ({ val, name: 'DVEs' }),
-			hyperDecks: (val: any) => ({ val, name: 'maxHyperdecks' }),
-			mixEffectBlocks: (val: any) => ({ val, name: 'mixEffects' }),
-			serialPort: (val: any) => ({ val, name: 'serialPorts' }),
-			videoSources: (val: any) => ({ val, name: 'sources' }),
-			superSource: (val: any) => ({ val, name: 'superSources' }),
-			talkbackOverSDI: () => ({ val: 0 }) // @todo: should be fixed in atem-connection
+			auxiliaries: (val: any): PropertyAliasResult => ({ val, name: 'auxilliaries' }),
+			dVE: (val: any): PropertyAliasResult => ({ val, name: 'DVEs' }),
+			hyperDecks: (val: any): PropertyAliasResult => ({ val, name: 'maxHyperdecks' }),
+			mixEffectBlocks: (val: any): PropertyAliasResult => ({ val, name: 'mixEffects' }),
+			serialPort: (val: any): PropertyAliasResult => ({ val, name: 'serialPorts' }),
+			videoSources: (val: any): PropertyAliasResult => ({ val, name: 'sources' }),
+			superSource: (val: any): PropertyAliasResult => ({ val, name: 'superSources' }),
+			talkbackOverSDI: (): PropertyAliasResult => ({ val: 0 }) // @todo: should be fixed in atem-connection
 		}
 	},
 	_MeC: {
@@ -269,13 +278,13 @@ const commandConverters: CommandTestConverterSet = {
 			index: 'index'
 		},
 		propertyAliases: {
-			balance: (v: number) => ({ val: Math.round(v * 200) / 200 })
+			balance: (v: number): PropertyAliasResult => ({ val: Math.round(v * 200) / 200 })
 		}
 	},
 	FTCD: {
 		idAliases: {},
 		propertyAliases: {},
-		customMutate: (obj: any) => {
+		customMutate: (obj: any): any => {
 			delete obj['unknown']
 			delete obj['test3']
 			return obj
@@ -284,13 +293,13 @@ const commandConverters: CommandTestConverterSet = {
 	FTFD: {
 		idAliases: {},
 		propertyAliases: {
-			filename: (val: any) => ({ val, name: 'fileName' })
+			filename: (val: any): PropertyAliasResult => ({ val, name: 'fileName' })
 		}
 	},
 	Powr: {
 		idAliases: {},
 		propertyAliases: {},
-		customMutate: (obj: any) => {
+		customMutate: (obj: any): any => {
 			return [obj.pin1, obj.pin2]
 		}
 	},
@@ -300,13 +309,13 @@ const commandConverters: CommandTestConverterSet = {
 			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			pattern: (val: any) => ({ val, name: 'style' }),
-			inverse: (val: any) => ({ val, name: 'invert' }),
-			size: (v: number) => ({ val: Math.round(v * 100) }),
-			softness: (v: number) => ({ val: Math.round(v * 100) }),
-			symmetry: (v: number) => ({ val: Math.round(v * 100) }),
-			xPosition: (v: number) => ({ val: Math.round(v * 10000), name: 'positionX' }),
-			yPosition: (v: number) => ({ val: Math.round(v * 10000), name: 'positionY' })
+			pattern: (val: any): PropertyAliasResult => ({ val, name: 'style' }),
+			inverse: (val: any): PropertyAliasResult => ({ val, name: 'invert' }),
+			size: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			softness: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			symmetry: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			xPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000), name: 'positionX' }),
+			yPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000), name: 'positionY' })
 		}
 	},
 	CKPt: {
@@ -315,13 +324,13 @@ const commandConverters: CommandTestConverterSet = {
 			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			pattern: (val: any) => ({ val, name: 'style' }),
-			inverse: (val: any) => ({ val, name: 'invert' }),
-			size: (v: number) => ({ val: Math.round(v * 100) }),
-			softness: (v: number) => ({ val: Math.round(v * 100) }),
-			symmetry: (v: number) => ({ val: Math.round(v * 100) }),
-			xPosition: (v: number) => ({ val: Math.round(v * 10000), name: 'positionX' }),
-			yPosition: (v: number) => ({ val: Math.round(v * 10000), name: 'positionY' })
+			pattern: (val: any): PropertyAliasResult => ({ val, name: 'style' }),
+			inverse: (val: any): PropertyAliasResult => ({ val, name: 'invert' }),
+			size: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			softness: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			symmetry: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			xPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000), name: 'positionX' }),
+			yPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000), name: 'positionY' })
 		}
 	},
 	KeCk: {
@@ -330,10 +339,10 @@ const commandConverters: CommandTestConverterSet = {
 			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			gain: (v: number) => ({ val: Math.round(v * 10) }),
-			hue: (v: number) => ({ val: Math.round(v * 10) }),
-			lift: (v: number) => ({ val: Math.round(v * 10) }),
-			ySuppress: (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			hue: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			lift: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			ySuppress: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
 		}
 	},
 	CKCk: {
@@ -342,10 +351,10 @@ const commandConverters: CommandTestConverterSet = {
 			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			gain: (v: number) => ({ val: Math.round(v * 10) }),
-			hue: (v: number) => ({ val: Math.round(v * 10) }),
-			lift: (v: number) => ({ val: Math.round(v * 10) }),
-			ySuppress: (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			hue: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			lift: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			ySuppress: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
 		}
 	},
 	CKTp: {
@@ -354,7 +363,7 @@ const commandConverters: CommandTestConverterSet = {
 			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			keyType: (v: number) => ({ val: v, name: 'mixEffectKeyType' })
+			keyType: (v: number): PropertyAliasResult => ({ val: v, name: 'mixEffectKeyType' })
 		}
 	},
 	KeOn: {
@@ -384,8 +393,8 @@ const commandConverters: CommandTestConverterSet = {
 			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			gain: (v: number) => ({ val: Math.round(v * 10) }),
-			clip: (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
 		}
 	},
 	CKLm: {
@@ -394,8 +403,8 @@ const commandConverters: CommandTestConverterSet = {
 			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			gain: (v: number) => ({ val: Math.round(v * 10) }),
-			clip: (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
 		}
 	},
 	KeBP: {
@@ -404,12 +413,12 @@ const commandConverters: CommandTestConverterSet = {
 			// 'upstreamKeyerId': 'keyerIndex'
 		},
 		propertyAliases: {
-			keyerIndex: (val: any) => ({ val, name: 'upstreamKeyerId' }),
-			mode: (val: any) => ({ val, name: 'mixEffectKeyType' }),
-			maskLeft: (v: number) => ({ val: Math.round(v * 1000) }),
-			maskRight: (v: number) => ({ val: Math.round(v * 1000) }),
-			maskTop: (v: number) => ({ val: Math.round(v * 1000) }),
-			maskBottom: (v: number) => ({ val: Math.round(v * 1000) })
+			keyerIndex: (val: any): PropertyAliasResult => ({ val, name: 'upstreamKeyerId' }),
+			mode: (val: any): PropertyAliasResult => ({ val, name: 'mixEffectKeyType' }),
+			maskLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			maskRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) })
 		}
 	},
 	KeDV: {
@@ -418,22 +427,22 @@ const commandConverters: CommandTestConverterSet = {
 			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			positionX: (v: number) => ({ val: Math.round(v * 1000) }),
-			positionY: (v: number) => ({ val: Math.round(v * 1000) }),
-			sizeX: (v: number) => ({ val: Math.round(v * 1000) }),
-			sizeY: (v: number) => ({ val: Math.round(v * 1000) }),
-			rotation: (v: number) => ({ val: Math.round(v * 10) }),
-			borderHue: (v: number) => ({ val: Math.round(v * 10) }),
-			borderInnerWidth: (v: number) => ({ val: Math.round(v * 100) }),
-			borderLuma: (v: number) => ({ val: Math.round(v * 10) }),
-			borderOuterWidth: (v: number) => ({ val: Math.round(v * 100) }),
-			borderSaturation: (v: number) => ({ val: Math.round(v * 10) }),
-			lightSourceDirection: (v: number) => ({ val: Math.round(v * 10) }),
-			borderShadowEnabled: (val: any) => ({ val, name: 'shadowEnabled' }),
-			maskLeft: (v: number) => ({ val: Math.round(v * 1000) }),
-			maskRight: (v: number) => ({ val: Math.round(v * 1000) }),
-			maskTop: (v: number) => ({ val: Math.round(v * 1000) }),
-			maskBottom: (v: number) => ({ val: Math.round(v * 1000) })
+			positionX: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			positionY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			sizeX: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			sizeY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			rotation: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderHue: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderInnerWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			borderLuma: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderOuterWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			borderSaturation: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			lightSourceDirection: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderShadowEnabled: (val: any): PropertyAliasResult => ({ val, name: 'shadowEnabled' }),
+			maskLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			maskRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) })
 		}
 	},
 	CKDV: {
@@ -442,22 +451,22 @@ const commandConverters: CommandTestConverterSet = {
 			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			positionX: (v: number) => ({ val: Math.round(v * 1000) }),
-			positionY: (v: number) => ({ val: Math.round(v * 1000) }),
-			sizeX: (v: number) => ({ val: Math.round(v * 1000) }),
-			sizeY: (v: number) => ({ val: Math.round(v * 1000) }),
-			rotation: (v: number) => ({ val: Math.round(v * 1000) }), // TODO - this doesnt match KeDV
-			borderHue: (v: number) => ({ val: Math.round(v * 10) }),
-			borderInnerWidth: (v: number) => ({ val: Math.round(v * 100) }),
-			borderLuma: (v: number) => ({ val: Math.round(v * 10) }),
-			borderOuterWidth: (v: number) => ({ val: Math.round(v * 100) }),
-			borderSaturation: (v: number) => ({ val: Math.round(v * 10) }),
-			lightSourceDirection: (v: number) => ({ val: Math.round(v * 10) }),
-			borderShadowEnabled: (val: any) => ({ val, name: 'shadowEnabled' }),
-			maskLeft: (v: number) => ({ val: Math.round(v * 1000) }),
-			maskRight: (v: number) => ({ val: Math.round(v * 1000) }),
-			maskTop: (v: number) => ({ val: Math.round(v * 1000) }),
-			maskBottom: (v: number) => ({ val: Math.round(v * 1000) })
+			positionX: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			positionY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			sizeX: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			sizeY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			rotation: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }), // TODO - this doesnt match KeDV
+			borderHue: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderInnerWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			borderLuma: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderOuterWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			borderSaturation: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			lightSourceDirection: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderShadowEnabled: (val: any): PropertyAliasResult => ({ val, name: 'shadowEnabled' }),
+			maskLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			maskRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) })
 		}
 	},
 	CKeC: {
@@ -473,10 +482,10 @@ const commandConverters: CommandTestConverterSet = {
 			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			maskLeft: (v: number) => ({ val: Math.round(v * 1000) }),
-			maskRight: (v: number) => ({ val: Math.round(v * 1000) }),
-			maskTop: (v: number) => ({ val: Math.round(v * 1000) }),
-			maskBottom: (v: number) => ({ val: Math.round(v * 1000) })
+			maskLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			maskRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) })
 		}
 	},
 	TDvP: {
@@ -484,8 +493,8 @@ const commandConverters: CommandTestConverterSet = {
 			mixEffect: 'index'
 		},
 		propertyAliases: {
-			gain: (v: number) => ({ val: Math.round(v * 10) }),
-			clip: (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
 		}
 	},
 	CTDv: {
@@ -493,8 +502,8 @@ const commandConverters: CommandTestConverterSet = {
 			mixEffect: 'index'
 		},
 		propertyAliases: {
-			gain: (v: number) => ({ val: Math.round(v * 10) }),
-			clip: (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
 		}
 	},
 	TStP: {
@@ -502,8 +511,8 @@ const commandConverters: CommandTestConverterSet = {
 			mixEffect: 'index'
 		},
 		propertyAliases: {
-			gain: (v: number) => ({ val: Math.round(v * 10) }),
-			clip: (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
 		}
 	},
 	CTSt: {
@@ -511,8 +520,8 @@ const commandConverters: CommandTestConverterSet = {
 			mixEffect: 'index'
 		},
 		propertyAliases: {
-			gain: (v: number) => ({ val: Math.round(v * 10) }),
-			clip: (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
 		}
 	},
 	TrPr: {
@@ -520,7 +529,7 @@ const commandConverters: CommandTestConverterSet = {
 			mixEffect: 'index'
 		},
 		propertyAliases: {
-			previewTransition: (val: any) => ({ val, name: 'preview' })
+			previewTransition: (val: any): PropertyAliasResult => ({ val, name: 'preview' })
 		}
 	},
 	CTPr: {
@@ -528,7 +537,7 @@ const commandConverters: CommandTestConverterSet = {
 			mixEffect: 'index'
 		},
 		propertyAliases: {
-			previewTransition: (val: any) => ({ val, name: 'preview' })
+			previewTransition: (val: any): PropertyAliasResult => ({ val, name: 'preview' })
 		}
 	},
 	TrSS: {
@@ -572,11 +581,11 @@ const commandConverters: CommandTestConverterSet = {
 			mixEffect: 'index'
 		},
 		propertyAliases: {
-			symmetry: (v: number) => ({ val: Math.round(v * 100) }),
-			xPosition: (v: number) => ({ val: Math.round(v * 10000) }),
-			yPosition: (v: number) => ({ val: Math.round(v * 10000) }),
-			borderSoftness: (v: number) => ({ val: Math.round(v * 100) }),
-			borderWidth: (v: number) => ({ val: Math.round(v * 100) })
+			symmetry: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			xPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
+			yPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
+			borderSoftness: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			borderWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) })
 		}
 	},
 	CTWp: {
@@ -584,11 +593,11 @@ const commandConverters: CommandTestConverterSet = {
 			mixEffect: 'index'
 		},
 		propertyAliases: {
-			symmetry: (v: number) => ({ val: Math.round(v * 100) }),
-			xPosition: (v: number) => ({ val: Math.round(v * 10000) }),
-			yPosition: (v: number) => ({ val: Math.round(v * 10000) }),
-			borderSoftness: (v: number) => ({ val: Math.round(v * 100) }),
-			borderWidth: (v: number) => ({ val: Math.round(v * 100) })
+			symmetry: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			xPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
+			yPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
+			borderSoftness: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			borderWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) })
 		}
 	},
 	TrPs: {
@@ -596,7 +605,7 @@ const commandConverters: CommandTestConverterSet = {
 			mixEffect: 'index'
 		},
 		propertyAliases: {
-			handlePosition: (v: number) => ({ val: Math.round(v * 10000) })
+			handlePosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) })
 		}
 	},
 	CTPs: {
@@ -604,19 +613,19 @@ const commandConverters: CommandTestConverterSet = {
 			mixEffect: 'index'
 		},
 		propertyAliases: {
-			handlePosition: (v: number) => ({ val: Math.round(v * 10000) })
+			handlePosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) })
 		}
 	},
 	MRPr: {
 		idAliases: {},
 		propertyAliases: {
-			index: (val: any) => ({ val, name: 'macroIndex' })
+			index: (val: any): PropertyAliasResult => ({ val, name: 'macroIndex' })
 		}
 	},
 	MRcS: {
 		idAliases: {},
 		propertyAliases: {
-			index: (val: any) => ({ val, name: 'macroIndex' })
+			index: (val: any): PropertyAliasResult => ({ val, name: 'macroIndex' })
 		}
 	},
 	MvIn: {
@@ -634,13 +643,13 @@ const commandConverters: CommandTestConverterSet = {
 	VidM: {
 		idAliases: {},
 		propertyAliases: {
-			videoMode: (val: any) => ({ val, name: 'mode' })
+			videoMode: (val: any): PropertyAliasResult => ({ val, name: 'mode' })
 		}
 	},
 	CVdM: {
 		idAliases: {},
 		propertyAliases: {
-			videoMode: (val: any) => ({ val, name: 'mode' })
+			videoMode: (val: any): PropertyAliasResult => ({ val, name: 'mode' })
 		}
 	},
 	RCPS: {
@@ -673,13 +682,13 @@ const commandConverters: CommandTestConverterSet = {
 			frameIndex: 'index'
 		},
 		propertyAliases: {
-			filename: (val: any) => ({ val, name: 'fileName' })
+			filename: (val: any): PropertyAliasResult => ({ val, name: 'fileName' })
 		}
 	},
 	MPrp: {
 		idAliases: {},
 		propertyAliases: {
-			index: (val: any) => ({ val, name: 'macroIndex' })
+			index: (val: any): PropertyAliasResult => ({ val, name: 'macroIndex' })
 		}
 	},
 	PrgI: {
@@ -769,9 +778,9 @@ const commandConverters: CommandTestConverterSet = {
 	FTDa: {
 		idAliases: {},
 		propertyAliases: {
-			body: (v: string) => ({ val: Buffer.from(v, 'base64') })
+			body: (v: string): PropertyAliasResult => ({ val: Buffer.from(v, 'base64') })
 		},
-		customMutate: (obj: any) => {
+		customMutate: (obj: any): any => {
 			obj.size = obj.body.length
 			return obj
 		}
@@ -782,28 +791,28 @@ const commandConverters: CommandTestConverterSet = {
 			mixEffect: 'mixEffectIndex'
 		},
 		propertyAliases: {
-			bevelPosition: (val: any) => ({ val, name: 'borderBevelPosition' }),
-			bevelSoftness: (val: any) => ({ val, name: 'borderBevelSoftness' }),
-			innerSoftness: (val: any) => ({ val, name: 'borderInnerSoftness' }),
-			innerWidth: (val: any) => ({ val: Math.round(val * 100), name: 'borderInnerWidth' }),
-			keyFrame: (val: any) => ({ val, name: 'keyFrameId' }),
-			outerSoftness: (val: any) => ({ val, name: 'borderOuterSoftness' }),
-			outerWidth: (val: any) => ({ val: Math.round(val * 100), name: 'borderOuterWidth' }),
-			xPosition: (val: any) => ({ val: Math.round(val * 1000), name: 'positionX' }),
-			xSize: (val: any) => ({ val: Math.round(val * 1000), name: 'sizeX' }),
-			yPosition: (val: any) => ({ val: Math.round(val * 1000), name: 'positionY' }),
-			ySize: (val: any) => ({ val: Math.round(val * 1000), name: 'sizeY' }),
-			rotation: (val: any) => ({ val: Math.round(val * 10) }),
-			borderHue: (val: any) => ({ val: Math.round(val * 10) }),
-			borderLuma: (val: any) => ({ val: Math.round(val * 10) }),
-			borderSaturation: (val: any) => ({ val: Math.round(val * 10) }),
-			lightSourceDirection: (val: any) => ({ val: Math.round(val * 10) }),
-			maskBottom: (val: any) => ({ val: Math.round(val * 1000) }),
-			maskTop: (val: any) => ({ val: Math.round(val * 1000) }),
-			maskLeft: (val: any) => ({ val: Math.round(val * 1000) }),
-			maskRight: (val: any) => ({ val: Math.round(val * 1000) })
+			bevelPosition: (val: any): PropertyAliasResult => ({ val, name: 'borderBevelPosition' }),
+			bevelSoftness: (val: any): PropertyAliasResult => ({ val, name: 'borderBevelSoftness' }),
+			innerSoftness: (val: any): PropertyAliasResult => ({ val, name: 'borderInnerSoftness' }),
+			innerWidth: (val: any): PropertyAliasResult => ({ val: Math.round(val * 100), name: 'borderInnerWidth' }),
+			keyFrame: (val: any): PropertyAliasResult => ({ val, name: 'keyFrameId' }),
+			outerSoftness: (val: any): PropertyAliasResult => ({ val, name: 'borderOuterSoftness' }),
+			outerWidth: (val: any): PropertyAliasResult => ({ val: Math.round(val * 100), name: 'borderOuterWidth' }),
+			xPosition: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000), name: 'positionX' }),
+			xSize: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000), name: 'sizeX' }),
+			yPosition: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000), name: 'positionY' }),
+			ySize: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000), name: 'sizeY' }),
+			rotation: (val: any): PropertyAliasResult => ({ val: Math.round(val * 10) }),
+			borderHue: (val: any): PropertyAliasResult => ({ val: Math.round(val * 10) }),
+			borderLuma: (val: any): PropertyAliasResult => ({ val: Math.round(val * 10) }),
+			borderSaturation: (val: any): PropertyAliasResult => ({ val: Math.round(val * 10) }),
+			lightSourceDirection: (val: any): PropertyAliasResult => ({ val: Math.round(val * 10) }),
+			maskBottom: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
+			maskTop: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
+			maskLeft: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
+			maskRight: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) })
 		},
-		customMutate: (obj: any) => {
+		customMutate: (obj: any): any => {
 			delete obj.maskEnabled
 			return obj
 		}
@@ -813,7 +822,7 @@ const commandConverters: CommandTestConverterSet = {
 			mediaPlayerId: 'index'
 		},
 		propertyAliases: {},
-		customMutate: (obj: any) => {
+		customMutate: (obj: any): any => {
 			obj.clipIndex = 0
 			obj.stillIndex = 0
 			if (obj.sourceType === 1) {

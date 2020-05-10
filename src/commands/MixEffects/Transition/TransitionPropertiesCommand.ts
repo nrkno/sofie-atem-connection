@@ -18,7 +18,7 @@ export class TransitionPropertiesCommand extends WritableCommand<TransitionPrope
 		this.mixEffect = mixEffect
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.flag, 0)
 
@@ -53,7 +53,7 @@ export class TransitionPropertiesUpdateCommand extends DeserializedCommand<Trans
 		return new TransitionPropertiesUpdateCommand(mixEffect, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
 			throw new InvalidIdError('MixEffect', this.mixEffect)
 		}

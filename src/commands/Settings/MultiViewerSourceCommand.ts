@@ -13,7 +13,7 @@ export class MultiViewerSourceCommand extends WritableCommand<MultiViewerSourceS
 		this.multiViewerId = multiviewerId
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.multiViewerId, 0)
 		buffer.writeUInt8(this.properties.windowIndex || 0, 1)
@@ -43,7 +43,7 @@ export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiVie
 		return new MultiViewerSourceUpdateCommand(multiViewerId, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		if (!state.info.multiviewer || this.multiViewerId >= state.info.multiviewer.count) {
 			throw new InvalidIdError('MultiViewer', this.multiViewerId)
 		}

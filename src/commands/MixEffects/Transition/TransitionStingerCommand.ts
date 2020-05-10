@@ -25,7 +25,7 @@ export class TransitionStingerCommand extends WritableCommand<StingerTransitionS
 		this.mixEffect = mixEffect
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(20)
 		buffer.writeUInt16BE(this.flag, 0)
 
@@ -76,7 +76,7 @@ export class TransitionStingerUpdateCommand extends DeserializedCommand<StingerT
 		return new TransitionStingerUpdateCommand(mixEffect, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
 			throw new InvalidIdError('MixEffect', this.mixEffect)
 		}

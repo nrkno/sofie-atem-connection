@@ -33,7 +33,7 @@ export class SuperSourcePropertiesCommand extends WritableCommand<SuperSourcePro
 		super()
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(36)
 
 		buffer.writeUInt32BE(this.flag, 0)
@@ -85,7 +85,7 @@ export class SuperSourcePropertiesV8Command extends WritableCommand<SuperSourceP
 		this.ssrcId = ssrcId
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(16)
 
 		buffer.writeUInt8(this.flag, 0)
@@ -131,7 +131,7 @@ export class SuperSourceBorderCommand extends WritableCommand<SuperSourceBorder>
 		this.ssrcId = ssrcId
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(24)
 
 		buffer.writeUInt16BE(this.flag, 0)
@@ -193,7 +193,7 @@ export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{
 		return new SuperSourcePropertiesUpdateCommand(properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string[] {
 		if (!state.info.capabilities || !state.info.capabilities.superSources) {
 			throw new InvalidIdError('SuperSource', 0)
 		}
@@ -232,7 +232,7 @@ export class SuperSourcePropertiesUpdateV8Command extends DeserializedCommand<Su
 		return new SuperSourcePropertiesUpdateV8Command(ssrcId, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		if (!state.info.capabilities || this.ssrcId >= state.info.capabilities.superSources) {
 			throw new InvalidIdError('SuperSource', this.ssrcId)
 		}
@@ -257,7 +257,7 @@ export class SuperSourceBorderUpdateCommand extends DeserializedCommand<SuperSou
 		this.ssrcId = ssrcId
 	}
 
-	public static deserialize(rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer): SuperSourceBorderUpdateCommand {
 		const ssrcId = rawCommand.readUInt8(0)
 		const properties = {
 			borderEnabled: rawCommand.readUInt8(1) === 1,
@@ -278,7 +278,7 @@ export class SuperSourceBorderUpdateCommand extends DeserializedCommand<SuperSou
 		return new SuperSourceBorderUpdateCommand(ssrcId, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		if (!state.info.capabilities || this.ssrcId >= state.info.capabilities.superSources) {
 			throw new InvalidIdError('SuperSource', this.ssrcId)
 		}

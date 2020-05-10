@@ -2,7 +2,7 @@ import { WritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { InputChannel } from '../../state/input'
 import { ExternalPorts, ExternalPortType } from '../../enums'
-import { Util } from '../../lib/atemUtil'
+import * as Util from '../../lib/atemUtil'
 
 export class InputPropertiesCommand extends WritableCommand<InputChannel> {
 	public static MaskFlags = {
@@ -21,7 +21,7 @@ export class InputPropertiesCommand extends WritableCommand<InputChannel> {
 		this.inputId = inputId
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(32)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(this.inputId, 2)
@@ -43,7 +43,7 @@ export class InputPropertiesUpdateCommand extends DeserializedCommand<InputChann
 		this.inputId = inputId
 	}
 
-	public static deserialize(rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer): InputPropertiesUpdateCommand {
 		const inputId = rawCommand.readUInt16BE(0)
 
 		const externalPortsMask = rawCommand.readUInt8(29)
@@ -79,7 +79,7 @@ export class InputPropertiesUpdateCommand extends DeserializedCommand<InputChann
 		return new InputPropertiesUpdateCommand(inputId, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		state.inputs[this.inputId] = {
 			...this.properties
 		}

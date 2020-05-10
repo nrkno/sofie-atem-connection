@@ -3,7 +3,7 @@ export * from './state'
 
 import * as Enums from './enums'
 import * as Commands from './commands'
-import { Util } from './lib/atemUtil'
+import * as Util from './lib/atemUtil'
 export { Enums, Commands, Util }
 export { listVisibleInputs } from './lib/tally'
 

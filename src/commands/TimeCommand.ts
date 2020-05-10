@@ -14,7 +14,7 @@ export class TimeCommand extends SymmetricalCommand<TimeInfo> {
 		})
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(8)
 		buffer.writeUInt8(this.properties.hour, 0)
 		buffer.writeUInt8(this.properties.minute, 1)
@@ -39,7 +39,7 @@ export class TimeCommand extends SymmetricalCommand<TimeInfo> {
 		return new TimeCommand(properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		state.info.lastTime = this.properties
 		return 'info.lastTime'
 	}
@@ -53,7 +53,7 @@ export class TimeRequestCommand extends BasicWritableCommand<null> {
 		super(null)
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(0)
 		return buffer
 	}

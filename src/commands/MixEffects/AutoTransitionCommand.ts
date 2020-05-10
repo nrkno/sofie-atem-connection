@@ -11,7 +11,7 @@ export class AutoTransitionCommand extends BasicWritableCommand<null> {
 		this.mixEffect = mixEffect
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		return buffer

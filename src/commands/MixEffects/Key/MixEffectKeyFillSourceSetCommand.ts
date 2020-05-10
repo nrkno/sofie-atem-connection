@@ -13,7 +13,7 @@ export class MixEffectKeyFillSourceSetCommand extends BasicWritableCommand<{ fil
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		buffer.writeUInt8(this.upstreamKeyerId, 1)

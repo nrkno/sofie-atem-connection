@@ -15,7 +15,7 @@ export class DownstreamKeyAutoCommand extends WritableCommand<{ isTowardsOnAir: 
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	public serialize(version: ProtocolVersion) {
+	public serialize(version: ProtocolVersion): Buffer {
 		const buffer = Buffer.alloc(4)
 
 		if (version >= ProtocolVersion.V8_0_1) {

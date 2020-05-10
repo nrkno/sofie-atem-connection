@@ -16,7 +16,7 @@ export class PreviewInputCommand extends BasicWritableCommand<InputSource> {
 		this.mixEffect = mixEffect
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		buffer.writeUInt16BE(this.properties.source, 2)
@@ -44,7 +44,7 @@ export class PreviewInputUpdateCommand extends DeserializedCommand<InputSource> 
 		return new PreviewInputUpdateCommand(mixEffect, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
 			throw new InvalidIdError('MixEffect', this.mixEffect)
 		}

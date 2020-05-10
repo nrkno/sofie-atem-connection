@@ -16,7 +16,7 @@ export class Socket extends EventEmitter {
 
 	public sendImpl?: (msg: Buffer) => void
 
-	public async emitMessage(clock: InstalledClock, msg: Buffer) {
+	public async emitMessage(clock: InstalledClock, msg: Buffer): Promise<void> {
 		expect(Buffer.isBuffer(msg)).toBeTruthy()
 
 		const rinfo: RemoteInfo = {
@@ -65,7 +65,7 @@ export class Socket extends EventEmitter {
 		}
 	}
 
-	public close(cb?: Function) {
+	public close(cb?: Function): void {
 		this.isOpen = false
 		if (cb) cb()
 	}

@@ -12,7 +12,7 @@ export class MacroActionCommand extends BasicWritableCommand<{ action: MacroActi
 		this.index = index
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.properties.action, 2)
 		switch (this.properties.action) {

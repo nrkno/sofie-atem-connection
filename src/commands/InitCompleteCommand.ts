@@ -7,11 +7,11 @@ export class InitCompleteCommand extends DeserializedCommand<null> {
 		super(null)
 	}
 
-	public static deserialize() {
+	public static deserialize(): InitCompleteCommand {
 		return new InitCompleteCommand()
 	}
 
-	public applyToState() {
+	public applyToState(): string {
 		return `info`
 	}
 }

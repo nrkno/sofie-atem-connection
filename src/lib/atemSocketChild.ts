@@ -1,5 +1,5 @@
 import { createSocket, Socket, RemoteInfo } from 'dgram'
-import { Util } from './atemUtil'
+import * as Util from './atemUtil'
 import * as NanoTimer from 'nanotimer'
 
 const IN_FLIGHT_TIMEOUT = 60 // ms
@@ -76,7 +76,7 @@ export class AtemSocketChild {
 		this._socket = this._createSocket()
 	}
 
-	private startTimers() {
+	private startTimers(): void {
 		if (!this._reconnectTimer) {
 			this._reconnectTimer = setInterval(async () => {
 				if (this._lastReceivedAt + CONNECTION_TIMEOUT > Date.now()) {
@@ -188,7 +188,7 @@ export class AtemSocketChild {
 		})
 	}
 
-	private _createSocket() {
+	private _createSocket(): Socket {
 		this._socket = createSocket('udp4')
 		this._socket.bind()
 		this._socket.on('message', (packet, rinfo) => this._receivePacket(packet, rinfo))
@@ -204,7 +204,7 @@ export class AtemSocketChild {
 		return this._socket
 	}
 
-	private _isPacketCoveredByAck(ackId: number, packetId: number) {
+	private _isPacketCoveredByAck(ackId: number, packetId: number): boolean {
 		const tolerance = MAX_PACKET_ID / 2
 		const pktIsShortlyBefore = packetId < ackId && packetId + tolerance > ackId
 		const pktIsShortlyAfter = packetId > ackId && packetId < ackId + tolerance
@@ -212,7 +212,7 @@ export class AtemSocketChild {
 		return packetId === ackId || ((pktIsShortlyBefore || pktIsBeforeWrap) && !pktIsShortlyAfter)
 	}
 
-	private _receivePacket(packet: Buffer, rinfo: RemoteInfo) {
+	private async _receivePacket(packet: Buffer, rinfo: RemoteInfo): Promise<void> {
 		if (this._debugBuffers) this.log(`RECV ${packet.toString('hex')}`)
 		this._lastReceivedAt = Date.now()
 		const length = packet.readUInt16BE(0) & 0x07ff
@@ -279,15 +279,15 @@ export class AtemSocketChild {
 			}
 		}
 
-		return Promise.all(ps)
+		await Promise.all(ps)
 	}
 
-	private _sendPacket(packet: Buffer) {
+	private _sendPacket(packet: Buffer): void {
 		if (this._debugBuffers) this.log(`SEND ${packet.toString('hex')}`)
 		this._socket.send(packet, 0, packet.length, this._port, this._address)
 	}
 
-	private _sendOrQueueAck() {
+	private _sendOrQueueAck(): void {
 		this._receivedWithoutAck++
 		if (this._receivedWithoutAck >= MAX_PACKET_PER_ACK) {
 			this._receivedWithoutAck = 0
@@ -309,7 +309,7 @@ export class AtemSocketChild {
 		}
 	}
 
-	private _sendAck(packetId: number) {
+	private _sendAck(packetId: number): void {
 		const opcode = PacketFlag.AckReply << 11
 		const length = 12
 		const buffer = Buffer.alloc(length, 0)
@@ -319,7 +319,7 @@ export class AtemSocketChild {
 		this._sendPacket(buffer)
 	}
 
-	private async _retransmitFrom(fromId: number) {
+	private async _retransmitFrom(fromId: number): Promise<void> {
 		// this.log(`Resending from ${fromId} to ${this._inFlight.length > 0 ? this._inFlight[this._inFlight.length - 1].packetId : '-'}`)
 
 		// The atem will ask for MAX_PACKET_ID to be retransmitted when it really wants 0

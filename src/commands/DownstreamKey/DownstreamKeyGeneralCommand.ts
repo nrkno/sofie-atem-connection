@@ -19,7 +19,7 @@ export class DownstreamKeyGeneralCommand extends WritableCommand<DownstreamKeyer
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.downstreamKeyerId, 1)

@@ -28,7 +28,7 @@ export class TransitionDVECommand extends WritableCommand<DVETransitionSettings>
 		this.mixEffect = mixEffect
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(20, 0)
 		buffer.writeUInt16BE(this.flag, 0)
 
@@ -84,7 +84,7 @@ export class TransitionDVEUpdateCommand extends DeserializedCommand<DVETransitio
 		return new TransitionDVEUpdateCommand(mixEffect, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
 			throw new InvalidIdError('MixEffect', this.mixEffect)
 		} else if (!state.info.capabilities.DVEs) {

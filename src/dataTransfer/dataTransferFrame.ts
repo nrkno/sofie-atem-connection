@@ -24,7 +24,7 @@ export default class DataTransferFrame extends DataTransfer {
 			: ''
 	}
 
-	public start() {
+	public start(): Commands.ISerializableCommand[] {
 		const command = new Commands.DataTransferUploadRequestCommand({
 			transferId: this.transferId,
 			transferStoreId: this.storeId,
@@ -56,7 +56,7 @@ export default class DataTransferFrame extends DataTransfer {
 		return commands
 	}
 
-	public gotLock() {
+	public gotLock(): Commands.ISerializableCommand[] {
 		this.state = Enums.TransferState.Locked
 		return this.start()
 	}

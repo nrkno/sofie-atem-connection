@@ -17,7 +17,7 @@ export class MixEffectBlockConfigCommand extends DeserializedCommand<MixEffectIn
 		return new MixEffectBlockConfigCommand(rawCommand.readUInt8(0), { keyCount: rawCommand.readUInt8(1) })
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		state.info.mixEffects[this.index] = this.properties
 		return `info.mixEffects`
 	}

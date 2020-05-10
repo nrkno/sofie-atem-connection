@@ -16,7 +16,7 @@ export class MediaPoolConfigCommand extends DeserializedCommand<MediaPoolInfo> {
 		})
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		state.info.mediaPool = this.properties
 		return `info.mediaPool`
 	}

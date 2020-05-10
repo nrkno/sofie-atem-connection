@@ -1,7 +1,7 @@
 import { AtemState, AtemStateUtil } from '../../state'
 import { StillFrame } from '../../state/media'
 import { DeserializedCommand } from '../CommandBase'
-import { Util } from '../../lib/atemUtil'
+import * as Util from '../../lib/atemUtil'
 
 export class MediaPoolFrameDescriptionCommand extends DeserializedCommand<StillFrame> {
 	public static readonly rawName = 'MPfe'
@@ -16,7 +16,7 @@ export class MediaPoolFrameDescriptionCommand extends DeserializedCommand<StillF
 		this.frameIndex = frameIndex
 	}
 
-	public static deserialize(rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer): MediaPoolFrameDescriptionCommand {
 		const mediaPool = rawCommand.readUInt8(0)
 		const frameIndex = rawCommand.readUInt16BE(2)
 		const properties = {

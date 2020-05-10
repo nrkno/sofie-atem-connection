@@ -11,7 +11,7 @@ export class DownstreamKeyOnAirCommand extends BasicWritableCommand<{ onAir: boo
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.downstreamKeyerId, 0)
 		buffer.writeUInt8(this.properties.onAir ? 1 : 0, 1)

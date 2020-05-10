@@ -14,7 +14,7 @@ export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKey
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	public static deserialize(rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer): DownstreamKeyStateCommand {
 		const downstreamKeyerId = rawCommand.readUInt8(0)
 		const properties = {
 			onAir: rawCommand.readUInt8(1) === 1,
@@ -26,7 +26,7 @@ export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKey
 		return new DownstreamKeyStateCommand(downstreamKeyerId, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		if (!state.info.capabilities || this.downstreamKeyerId >= state.info.capabilities.downstreamKeyers) {
 			throw new InvalidIdError('DownstreamKeyer', this.downstreamKeyerId)
 		}
@@ -51,7 +51,7 @@ export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamK
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	public static deserialize(rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer): DownstreamKeyStateV8Command {
 		const downstreamKeyerId = rawCommand.readUInt8(0)
 		const properties = {
 			onAir: rawCommand.readUInt8(1) === 1,
@@ -64,7 +64,7 @@ export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamK
 		return new DownstreamKeyStateV8Command(downstreamKeyerId, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		if (!state.info.capabilities || this.downstreamKeyerId >= state.info.capabilities.downstreamKeyers) {
 			throw new InvalidIdError('DownstreamKeyer', this.downstreamKeyerId)
 		}

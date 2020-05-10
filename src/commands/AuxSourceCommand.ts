@@ -16,7 +16,7 @@ export class AuxSourceCommand extends BasicWritableCommand<AuxSourceProps> {
 		this.auxBus = auxBus
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(0x01, 0)
 		buffer.writeUInt8(this.auxBus, 1)
@@ -45,7 +45,7 @@ export class AuxSourceUpdateCommand extends DeserializedCommand<AuxSourceProps> 
 		return new AuxSourceUpdateCommand(auxBus, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		state.video.auxilliaries[this.auxBus] = this.properties.source
 		return `video.auxilliaries.${this.auxBus}`
 	}

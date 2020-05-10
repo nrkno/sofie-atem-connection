@@ -19,10 +19,11 @@ import * as USK from './state/video/upstreamKeyers'
 import { InputChannel } from './state/input'
 import { DownstreamKeyerGeneral, DownstreamKeyerMask } from './state/video/downstreamKeyers'
 import * as DT from './dataTransfer'
-import { Util } from './lib/atemUtil'
+import * as Util from './lib/atemUtil'
 import * as Enums from './enums'
 import { AudioChannel, AudioMasterChannel } from './state/audio'
 import { listVisibleInputs } from './lib/tally'
+import DataTransfer from './dataTransfer/dataTransfer'
 
 export interface AtemOptions {
 	address?: string
@@ -98,7 +99,7 @@ export class BasicAtem extends EventEmitter {
 		})
 	}
 
-	private _onInitComplete() {
+	private _onInitComplete(): void {
 		this.dataTransferManager.startCommandSending(cmds => this.sendCommands(cmds))
 		this.emit('connected')
 	}
@@ -111,7 +112,7 @@ export class BasicAtem extends EventEmitter {
 		return this._state
 	}
 
-	public connect(address: string, port?: number) {
+	public connect(address: string, port?: number): Promise<void> {
 		return this.socket.connect(address, port)
 	}
 
@@ -147,7 +148,7 @@ export class BasicAtem extends EventEmitter {
 		return this.sendCommands([command])[0]
 	}
 
-	private _mutateState(commands: IDeserializedCommand[]) {
+	private _mutateState(commands: IDeserializedCommand[]): void {
 		// Is this the start of a new connection?
 		if (commands.find(cmd => cmd.constructor.name === Commands.VersionCommand.name)) {
 			// On start of connection, create a new state object
@@ -198,7 +199,7 @@ export class BasicAtem extends EventEmitter {
 		}
 	}
 
-	private _resolveCommands(trackingIds: number[]) {
+	private _resolveCommands(trackingIds: number[]): void {
 		trackingIds.forEach(trackingId => {
 			const sent = this._sentQueue[trackingId]
 			if (sent) {
@@ -208,7 +209,7 @@ export class BasicAtem extends EventEmitter {
 		})
 	}
 
-	private _rejectAllCommands() {
+	private _rejectAllCommands(): void {
 		// Take a copy in case the promises cause more mutations
 		const sentQueue = this._sentQueue
 		this._sentQueue = {}
@@ -222,209 +223,213 @@ export class Atem extends BasicAtem {
 		super(options)
 	}
 
-	public changeProgramInput(input: number, me = 0) {
+	public changeProgramInput(input: number, me = 0): Promise<void> {
 		const command = new Commands.ProgramInputCommand(me, input)
 		return this.sendCommand(command)
 	}
 
-	public changePreviewInput(input: number, me = 0) {
+	public changePreviewInput(input: number, me = 0): Promise<void> {
 		const command = new Commands.PreviewInputCommand(me, input)
 		return this.sendCommand(command)
 	}
 
-	public cut(me = 0) {
+	public cut(me = 0): Promise<void> {
 		const command = new Commands.CutCommand(me)
 		return this.sendCommand(command)
 	}
 
-	public autoTransition(me = 0) {
+	public autoTransition(me = 0): Promise<void> {
 		const command = new Commands.AutoTransitionCommand(me)
 		return this.sendCommand(command)
 	}
 
-	public fadeToBlack(me = 0) {
+	public fadeToBlack(me = 0): Promise<void> {
 		const command = new Commands.FadeToBlackAutoCommand(me)
 		return this.sendCommand(command)
 	}
 
-	public setFadeToBlackRate(rate: number, me = 0) {
+	public setFadeToBlackRate(rate: number, me = 0): Promise<void> {
 		const command = new Commands.FadeToBlackRateCommand(me, rate)
 		return this.sendCommand(command)
 	}
 
-	public autoDownstreamKey(key = 0, isTowardsOnAir?: boolean) {
+	public autoDownstreamKey(key = 0, isTowardsOnAir?: boolean): Promise<void> {
 		const command = new Commands.DownstreamKeyAutoCommand(key)
 		command.updateProps({ isTowardsOnAir })
 		return this.sendCommand(command)
 	}
 
-	public setDipTransitionSettings(newProps: Partial<DipTransitionSettings>, me = 0) {
+	public setDipTransitionSettings(newProps: Partial<DipTransitionSettings>, me = 0): Promise<void> {
 		const command = new Commands.TransitionDipCommand(me)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setDVETransitionSettings(newProps: Partial<DVETransitionSettings>, me = 0) {
+	public setDVETransitionSettings(newProps: Partial<DVETransitionSettings>, me = 0): Promise<void> {
 		const command = new Commands.TransitionDVECommand(me)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setMixTransitionSettings(newProps: Pick<MixTransitionSettings, 'rate'>, me = 0) {
+	public setMixTransitionSettings(newProps: Pick<MixTransitionSettings, 'rate'>, me = 0): Promise<void> {
 		const command = new Commands.TransitionMixCommand(me, newProps.rate)
 		return this.sendCommand(command)
 	}
 
-	public setTransitionPosition(position: number, me = 0) {
+	public setTransitionPosition(position: number, me = 0): Promise<void> {
 		const command = new Commands.TransitionPositionCommand(me, position)
 		return this.sendCommand(command)
 	}
 
-	public previewTransition(on: boolean, me = 0) {
+	public previewTransition(on: boolean, me = 0): Promise<void> {
 		const command = new Commands.PreviewTransitionCommand(me, on)
 		return this.sendCommand(command)
 	}
 
-	public setTransitionStyle(newProps: Partial<TransitionProperties>, me = 0) {
+	public setTransitionStyle(newProps: Partial<TransitionProperties>, me = 0): Promise<void> {
 		const command = new Commands.TransitionPropertiesCommand(me)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setStingerTransitionSettings(newProps: Partial<StingerTransitionSettings>, me = 0) {
+	public setStingerTransitionSettings(newProps: Partial<StingerTransitionSettings>, me = 0): Promise<void> {
 		const command = new Commands.TransitionStingerCommand(me)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setWipeTransitionSettings(newProps: Partial<WipeTransitionSettings>, me = 0) {
+	public setWipeTransitionSettings(newProps: Partial<WipeTransitionSettings>, me = 0): Promise<void> {
 		const command = new Commands.TransitionWipeCommand(me)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setAuxSource(source: number, bus = 0) {
+	public setAuxSource(source: number, bus = 0): Promise<void> {
 		const command = new Commands.AuxSourceCommand(bus, source)
 		return this.sendCommand(command)
 	}
 
-	public setDownstreamKeyTie(tie: boolean, key = 0) {
+	public setDownstreamKeyTie(tie: boolean, key = 0): Promise<void> {
 		const command = new Commands.DownstreamKeyTieCommand(key, tie)
 		return this.sendCommand(command)
 	}
 
-	public setDownstreamKeyOnAir(onAir: boolean, key = 0) {
+	public setDownstreamKeyOnAir(onAir: boolean, key = 0): Promise<void> {
 		const command = new Commands.DownstreamKeyOnAirCommand(key, onAir)
 		return this.sendCommand(command)
 	}
 
-	public setDownstreamKeyCutSource(input: number, key = 0) {
+	public setDownstreamKeyCutSource(input: number, key = 0): Promise<void> {
 		const command = new Commands.DownstreamKeyCutSourceCommand(key, input)
 		return this.sendCommand(command)
 	}
 
-	public setDownstreamKeyFillSource(input: number, key = 0) {
+	public setDownstreamKeyFillSource(input: number, key = 0): Promise<void> {
 		const command = new Commands.DownstreamKeyFillSourceCommand(key, input)
 		return this.sendCommand(command)
 	}
 
-	public setDownstreamKeyGeneralProperties(props: Partial<DownstreamKeyerGeneral>, key = 0) {
+	public setDownstreamKeyGeneralProperties(props: Partial<DownstreamKeyerGeneral>, key = 0): Promise<void> {
 		const command = new Commands.DownstreamKeyGeneralCommand(key)
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
 
-	public setDownstreamKeyMaskSettings(props: Partial<DownstreamKeyerMask>, key = 0) {
+	public setDownstreamKeyMaskSettings(props: Partial<DownstreamKeyerMask>, key = 0): Promise<void> {
 		const command = new Commands.DownstreamKeyMaskCommand(key)
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
 
-	public setDownstreamKeyRate(rate: number, key = 0) {
+	public setDownstreamKeyRate(rate: number, key = 0): Promise<void> {
 		const command = new Commands.DownstreamKeyRateCommand(key, rate)
 		return this.sendCommand(command)
 	}
 
-	public setTime(hour: number, minute: number, second: number, frame: number) {
+	public setTime(hour: number, minute: number, second: number, frame: number): Promise<void> {
 		const command = new Commands.TimeCommand({ hour, minute, second, frame })
 		return this.sendCommand(command)
 	}
 
-	public requestTime() {
+	public requestTime(): Promise<void> {
 		const command = new Commands.TimeRequestCommand()
 		return this.sendCommand(command)
 	}
 
-	public macroContinue() {
+	public macroContinue(): Promise<void> {
 		const command = new Commands.MacroActionCommand(0, Enums.MacroAction.Continue)
 		return this.sendCommand(command)
 	}
 
-	public macroDelete(index = 0) {
+	public macroDelete(index = 0): Promise<void> {
 		const command = new Commands.MacroActionCommand(index, Enums.MacroAction.Delete)
 		return this.sendCommand(command)
 	}
 
-	public macroInsertUserWait() {
+	public macroInsertUserWait(): Promise<void> {
 		const command = new Commands.MacroActionCommand(0, Enums.MacroAction.InsertUserWait)
 		return this.sendCommand(command)
 	}
 
-	public macroRun(index = 0) {
+	public macroRun(index = 0): Promise<void> {
 		const command = new Commands.MacroActionCommand(index, Enums.MacroAction.Run)
 		return this.sendCommand(command)
 	}
 
-	public macroStop() {
+	public macroStop(): Promise<void> {
 		const command = new Commands.MacroActionCommand(0, Enums.MacroAction.Stop)
 		return this.sendCommand(command)
 	}
 
-	public macroStopRecord() {
+	public macroStopRecord(): Promise<void> {
 		const command = new Commands.MacroActionCommand(0, Enums.MacroAction.StopRecord)
 		return this.sendCommand(command)
 	}
 
-	public setMultiViewerSource(newProps: Partial<MultiViewerSourceState>, mv = 0) {
+	public setMultiViewerSource(newProps: Partial<MultiViewerSourceState>, mv = 0): Promise<void> {
 		const command = new Commands.MultiViewerSourceCommand(mv)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setMediaPlayerSettings(newProps: Partial<MediaPlayer>, player = 0) {
+	public setMediaPlayerSettings(newProps: Partial<MediaPlayer>, player = 0): Promise<void> {
 		const command = new Commands.MediaPlayerStatusCommand(player)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setMediaPlayerSource(newProps: Partial<MediaPlayerSource>, player = 0) {
+	public setMediaPlayerSource(newProps: Partial<MediaPlayerSource>, player = 0): Promise<void> {
 		const command = new Commands.MediaPlayerSourceCommand(player)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setMediaClip(index: number, name: string, frames = 1) {
+	public setMediaClip(index: number, name: string, frames = 1): Promise<void> {
 		const command = new Commands.MediaPoolSetClipCommand({ index, name, frames })
 		return this.sendCommand(command)
 	}
 
-	public clearMediaPoolClip(clipId: number) {
+	public clearMediaPoolClip(clipId: number): Promise<void> {
 		const command = new Commands.MediaPoolClearClipCommand(clipId)
 		return this.sendCommand(command)
 	}
 
-	public clearMediaPoolStill(stillId: number) {
+	public clearMediaPoolStill(stillId: number): Promise<void> {
 		const command = new Commands.MediaPoolClearStillCommand(stillId)
 		return this.sendCommand(command)
 	}
 
-	public setSuperSourceBoxSettings(newProps: Partial<SuperSource.SuperSourceBox>, box = 0, ssrcId = 0) {
+	public setSuperSourceBoxSettings(
+		newProps: Partial<SuperSource.SuperSourceBox>,
+		box = 0,
+		ssrcId = 0
+	): Promise<void> {
 		const command = new Commands.SuperSourceBoxParametersCommand(ssrcId, box)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setSuperSourceProperties(newProps: Partial<SuperSource.SuperSourceProperties>, ssrcId = 0) {
+	public setSuperSourceProperties(newProps: Partial<SuperSource.SuperSourceProperties>, ssrcId = 0): Promise<void> {
 		if (this.state && this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
 			const command = new Commands.SuperSourcePropertiesV8Command(ssrcId)
 			command.updateProps(newProps)
@@ -436,7 +441,7 @@ export class Atem extends BasicAtem {
 		}
 	}
 
-	public setSuperSourceBorder(newProps: Partial<SuperSource.SuperSourceBorder>, ssrcId = 0) {
+	public setSuperSourceBorder(newProps: Partial<SuperSource.SuperSourceBorder>, ssrcId = 0): Promise<void> {
 		if (this.state && this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
 			const command = new Commands.SuperSourceBorderCommand(ssrcId)
 			command.updateProps(newProps)
@@ -448,64 +453,84 @@ export class Atem extends BasicAtem {
 		}
 	}
 
-	public setInputSettings(newProps: Partial<InputChannel>, input = 0) {
+	public setInputSettings(newProps: Partial<InputChannel>, input = 0): Promise<void> {
 		const command = new Commands.InputPropertiesCommand(input)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setUpstreamKeyerChromaSettings(newProps: Partial<USK.UpstreamKeyerChromaSettings>, me = 0, keyer = 0) {
+	public setUpstreamKeyerChromaSettings(
+		newProps: Partial<USK.UpstreamKeyerChromaSettings>,
+		me = 0,
+		keyer = 0
+	): Promise<void> {
 		const command = new Commands.MixEffectKeyChromaCommand(me, keyer)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setUpstreamKeyerCutSource(cutSource: number, me = 0, keyer = 0) {
+	public setUpstreamKeyerCutSource(cutSource: number, me = 0, keyer = 0): Promise<void> {
 		const command = new Commands.MixEffectKeyCutSourceSetCommand(me, keyer, cutSource)
 		return this.sendCommand(command)
 	}
 
-	public setUpstreamKeyerFillSource(fillSource: number, me = 0, keyer = 0) {
+	public setUpstreamKeyerFillSource(fillSource: number, me = 0, keyer = 0): Promise<void> {
 		const command = new Commands.MixEffectKeyFillSourceSetCommand(me, keyer, fillSource)
 		return this.sendCommand(command)
 	}
 
-	public setUpstreamKeyerDVESettings(newProps: Partial<USK.UpstreamKeyerDVESettings>, me = 0, keyer = 0) {
+	public setUpstreamKeyerDVESettings(
+		newProps: Partial<USK.UpstreamKeyerDVESettings>,
+		me = 0,
+		keyer = 0
+	): Promise<void> {
 		const command = new Commands.MixEffectKeyDVECommand(me, keyer)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setUpstreamKeyerLumaSettings(newProps: Partial<USK.UpstreamKeyerLumaSettings>, me = 0, keyer = 0) {
+	public setUpstreamKeyerLumaSettings(
+		newProps: Partial<USK.UpstreamKeyerLumaSettings>,
+		me = 0,
+		keyer = 0
+	): Promise<void> {
 		const command = new Commands.MixEffectKeyLumaCommand(me, keyer)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setUpstreamKeyerMaskSettings(newProps: Partial<USK.UpstreamKeyerMaskSettings>, me = 0, keyer = 0) {
+	public setUpstreamKeyerMaskSettings(
+		newProps: Partial<USK.UpstreamKeyerMaskSettings>,
+		me = 0,
+		keyer = 0
+	): Promise<void> {
 		const command = new Commands.MixEffectKeyMaskSetCommand(me, keyer)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setUpstreamKeyerPatternSettings(newProps: Partial<USK.UpstreamKeyerPatternSettings>, me = 0, keyer = 0) {
+	public setUpstreamKeyerPatternSettings(
+		newProps: Partial<USK.UpstreamKeyerPatternSettings>,
+		me = 0,
+		keyer = 0
+	): Promise<void> {
 		const command = new Commands.MixEffectKeyPatternCommand(me, keyer)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public setUpstreamKeyerOnAir(onAir: boolean, me = 0, keyer = 0) {
+	public setUpstreamKeyerOnAir(onAir: boolean, me = 0, keyer = 0): Promise<void> {
 		const command = new Commands.MixEffectKeyOnAirCommand(me, keyer, onAir)
 		return this.sendCommand(command)
 	}
 
-	public setUpstreamKeyerType(newProps: Partial<USK.UpstreamKeyerTypeSettings>, me = 0, keyer = 0) {
+	public setUpstreamKeyerType(newProps: Partial<USK.UpstreamKeyerTypeSettings>, me = 0, keyer = 0): Promise<void> {
 		const command = new Commands.MixEffectKeyTypeSetCommand(me, keyer)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
-	public uploadStill(index: number, data: Buffer, name: string, description: string) {
+	public uploadStill(index: number, data: Buffer, name: string, description: string): Promise<DataTransfer> {
 		if (!this.state) return Promise.reject()
 		const resolution = Util.getResolution(this.state.settings.videoMode)
 		return this.dataTransferManager.uploadStill(
@@ -516,7 +541,7 @@ export class Atem extends BasicAtem {
 		)
 	}
 
-	public uploadClip(index: number, frames: Array<Buffer>, name: string) {
+	public uploadClip(index: number, frames: Array<Buffer>, name: string): Promise<DataTransfer> {
 		if (!this.state) return Promise.reject()
 		const resolution = Util.getResolution(this.state.settings.videoMode)
 		const data: Array<Buffer> = []
@@ -526,41 +551,41 @@ export class Atem extends BasicAtem {
 		return this.dataTransferManager.uploadClip(index, data, name)
 	}
 
-	public uploadAudio(index: number, data: Buffer, name: string) {
+	public uploadAudio(index: number, data: Buffer, name: string): Promise<DataTransfer> {
 		return this.dataTransferManager.uploadAudio(index, Util.convertWAVToRaw(data), name)
 	}
 
-	public setAudioMixerInputMixOption(index: number, mixOption: Enums.AudioMixOption) {
+	public setAudioMixerInputMixOption(index: number, mixOption: Enums.AudioMixOption): Promise<void> {
 		const command = new Commands.AudioMixerInputCommand(index)
 		command.updateProps({ mixOption })
 		return this.sendCommand(command)
 	}
 
-	public setAudioMixerInputGain(index: number, gain: number) {
+	public setAudioMixerInputGain(index: number, gain: number): Promise<void> {
 		const command = new Commands.AudioMixerInputCommand(index)
 		command.updateProps({ gain })
 		return this.sendCommand(command)
 	}
 
-	public setAudioMixerInputBalance(index: number, balance: number) {
+	public setAudioMixerInputBalance(index: number, balance: number): Promise<void> {
 		const command = new Commands.AudioMixerInputCommand(index)
 		command.updateProps({ balance })
 		return this.sendCommand(command)
 	}
 
-	public setAudioMixerInputProps(index: number, props: Partial<AudioChannel>) {
+	public setAudioMixerInputProps(index: number, props: Partial<AudioChannel>): Promise<void> {
 		const command = new Commands.AudioMixerInputCommand(index)
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
 
-	public setAudioMixerMasterGain(gain: number) {
+	public setAudioMixerMasterGain(gain: number): Promise<void> {
 		const command = new Commands.AudioMixerMasterCommand()
 		command.updateProps({ gain })
 		return this.sendCommand(command)
 	}
 
-	public setAudioMixerMasterProps(props: Partial<AudioMasterChannel>) {
+	public setAudioMixerMasterProps(props: Partial<AudioMasterChannel>): Promise<void> {
 		const command = new Commands.AudioMixerMasterCommand()
 		command.updateProps(props)
 		return this.sendCommand(command)

@@ -1,6 +1,6 @@
-import { AtemStateUtil } from '../state'
+import { AtemStateUtil, AtemState } from '../state'
 
-export function createEmptyState() {
+export function createEmptyState(): AtemState {
 	const state = AtemStateUtil.Create()
 
 	// These should be the maximum supported by any device.

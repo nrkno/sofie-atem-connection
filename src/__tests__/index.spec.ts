@@ -13,7 +13,7 @@ test('Simple test', async () => {
 	}
 })
 
-function createConnection(apiVersion: Enums.ProtocolVersion) {
+function createConnection(apiVersion: Enums.ProtocolVersion): Atem {
 	const conn = new Atem({ debugBuffers: true, disableMultithreaded: true })
 
 	// Create a state object

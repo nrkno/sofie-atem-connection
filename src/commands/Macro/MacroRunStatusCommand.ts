@@ -5,7 +5,7 @@ import { MacroPlayerState } from '../../state/macro'
 export class MacroRunStatusCommand extends DeserializedCommand<MacroPlayerState> {
 	public static readonly rawName = 'MRPr'
 
-	public static deserialize(rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer): MacroRunStatusCommand {
 		const properties = {
 			isRunning: Boolean(rawCommand.readUInt8(0) & (1 << 0)),
 			isWaiting: Boolean(rawCommand.readUInt8(0) & (1 << 1)),
@@ -16,7 +16,7 @@ export class MacroRunStatusCommand extends DeserializedCommand<MacroPlayerState>
 		return new MacroRunStatusCommand(properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		state.macro.macroPlayer = {
 			...state.macro.macroPlayer,
 			...this.properties

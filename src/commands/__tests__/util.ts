@@ -4,11 +4,15 @@ import { IDeserializedCommand, ISerializableCommand, SymmetricalCommand } from '
 import { createEmptyState } from '../../__tests__/util'
 
 export type CommandTestConverterSet = { [key: string]: CommandTestConverter }
+export interface PropertyAliasResult {
+	name?: string
+	val: any
+}
 export interface CommandTestConverter {
 	/** Internal name to LibAtem name */
 	idAliases: { [internalName: string]: string }
 	/** LibAtem name to Internal name & mutated value */
-	propertyAliases: { [key: string]: (v: any) => { name?: string; val: any } }
+	propertyAliases: { [key: string]: (v: any) => PropertyAliasResult }
 	customMutate?: (v: any) => any
 	/** pre-process deserialized command */
 	processDeserialized?: (v: any) => void
@@ -26,7 +30,7 @@ export function runTestForCommand(
 	i: number,
 	testCase: TestCase,
 	allowUnknown?: boolean
-) {
+): void {
 	const cmdConstructor = commandParser.commandFromRawName(testCase.name)
 	if (!cmdConstructor && allowUnknown) return
 
@@ -122,7 +126,7 @@ export function runTestForCommand(
 					}
 				}
 
-				const hexStr = (buf: Buffer) => {
+				const hexStr = (buf: Buffer): string => {
 					const str = buf.toString('hex')
 					let str2 = ''
 					for (let i = 0; i < str.length; i += 2) {
@@ -148,7 +152,7 @@ export function runTestForCommand(
 	}
 }
 
-export function ensureAllCommandsCovered(commandParser: CommandParser, testCases: Array<TestCase>) {
+export function ensureAllCommandsCovered(commandParser: CommandParser, testCases: Array<TestCase>): void {
 	test('Ensure all commands tested', () => {
 		// Verify that all commands were tested
 		const expectUndefined = commandParser.version === ProtocolVersion.V7_2

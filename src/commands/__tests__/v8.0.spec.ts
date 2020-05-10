@@ -1,5 +1,11 @@
 import { CommandParser } from '../../lib/atemCommandParser'
-import { TestCase, runTestForCommand, CommandTestConverterSet, ensureAllCommandsCovered } from './util'
+import {
+	TestCase,
+	runTestForCommand,
+	CommandTestConverterSet,
+	ensureAllCommandsCovered,
+	PropertyAliasResult
+} from './util'
 import { ProtocolVersion } from '../../enums'
 
 const TestCases = require('./data-v8.0.json') as TestCase[]
@@ -10,8 +16,8 @@ const commandConverters: CommandTestConverterSet = {
 			index: 'index'
 		},
 		propertyAliases: {
-			balance: (v: number) => ({ val: Math.round(v) }),
-			gain: (v: number) => ({ val: Math.round(v * 100) / 100 })
+			balance: (v: number): PropertyAliasResult => ({ val: Math.round(v) }),
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 })
 		}
 	},
 	_SSC: {
@@ -19,19 +25,19 @@ const commandConverters: CommandTestConverterSet = {
 			ssrcId: 'sSrcId'
 		},
 		propertyAliases: {
-			boxes: (val: any) => ({ val, name: 'boxCount' })
+			boxes: (val: any): PropertyAliasResult => ({ val, name: 'boxCount' })
 		}
 	},
 	_top: {
 		idAliases: {},
 		propertyAliases: {
-			auxiliaries: (val: any) => ({ val, name: 'auxilliaries' }),
-			dVE: (val: any) => ({ val, name: 'DVEs' }),
-			hyperDecks: (val: any) => ({ val, name: 'maxHyperdecks' }),
-			mixEffectBlocks: (val: any) => ({ val, name: 'mixEffects' }),
-			serialPort: (val: any) => ({ val, name: 'serialPorts' }),
-			videoSources: (val: any) => ({ val, name: 'sources' }),
-			superSource: (val: any) => ({ val, name: 'superSources' })
+			auxiliaries: (val: any): PropertyAliasResult => ({ val, name: 'auxilliaries' }),
+			dVE: (val: any): PropertyAliasResult => ({ val, name: 'DVEs' }),
+			hyperDecks: (val: any): PropertyAliasResult => ({ val, name: 'maxHyperdecks' }),
+			mixEffectBlocks: (val: any): PropertyAliasResult => ({ val, name: 'mixEffects' }),
+			serialPort: (val: any): PropertyAliasResult => ({ val, name: 'serialPorts' }),
+			videoSources: (val: any): PropertyAliasResult => ({ val, name: 'sources' }),
+			superSource: (val: any): PropertyAliasResult => ({ val, name: 'superSources' })
 		}
 	},
 	SSrc: {
@@ -39,10 +45,10 @@ const commandConverters: CommandTestConverterSet = {
 			ssrcId: 'sSrcId'
 		},
 		propertyAliases: {
-			artClip: (v: number) => ({ val: Math.round(v * 10) }),
-			artGain: (v: number) => ({ val: Math.round(v * 10) }),
-			artFillInput: (v: number) => ({ val: v, name: 'artFillSource' }),
-			artKeyInput: (v: number) => ({ val: v, name: 'artCutSource' })
+			artClip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			artGain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			artFillInput: (v: number): PropertyAliasResult => ({ val: v, name: 'artFillSource' }),
+			artKeyInput: (v: number): PropertyAliasResult => ({ val: v, name: 'artCutSource' })
 		}
 	},
 	CSSc: {
@@ -50,8 +56,8 @@ const commandConverters: CommandTestConverterSet = {
 			ssrcId: 'sSrcId'
 		},
 		propertyAliases: {
-			artClip: (v: number) => ({ val: Math.round(v * 10) }),
-			artGain: (v: number) => ({ val: Math.round(v * 10) })
+			artClip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			artGain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
 		}
 	},
 	SSBd: {
@@ -59,15 +65,18 @@ const commandConverters: CommandTestConverterSet = {
 			ssrcId: 'sSrcId'
 		},
 		propertyAliases: {
-			borderLightSourceAltitude: (v: number) => ({ val: Math.round(v) }),
-			borderLightSourceDirection: (v: number) => ({ val: Math.round(v * 10) }),
-			borderHue: (v: number) => ({ val: Math.round(v * 10) }),
-			borderWidthIn: (v: number) => ({ val: Math.round(v * 100), name: 'borderInnerWidth' }),
-			borderLuma: (v: number) => ({ val: Math.round(v * 10) }),
-			borderWidthOut: (v: number) => ({ val: Math.round(v * 100), name: 'borderOuterWidth' }),
-			borderSaturation: (v: number) => ({ val: Math.round(v * 10) }),
-			borderSoftnessIn: (v: number) => ({ val: v, name: 'borderInnerSoftness' }),
-			borderSoftnessOut: (v: number) => ({ val: v, name: 'borderOuterSoftness' })
+			borderLightSourceAltitude: (v: number): PropertyAliasResult => ({ val: Math.round(v) }),
+			borderLightSourceDirection: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderHue: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderWidthIn: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100), name: 'borderInnerWidth' }),
+			borderLuma: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderWidthOut: (v: number): PropertyAliasResult => ({
+				val: Math.round(v * 100),
+				name: 'borderOuterWidth'
+			}),
+			borderSaturation: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderSoftnessIn: (v: number): PropertyAliasResult => ({ val: v, name: 'borderInnerSoftness' }),
+			borderSoftnessOut: (v: number): PropertyAliasResult => ({ val: v, name: 'borderOuterSoftness' })
 		}
 	},
 	CSBd: {
@@ -75,13 +84,13 @@ const commandConverters: CommandTestConverterSet = {
 			ssrcId: 'sSrcId'
 		},
 		propertyAliases: {
-			borderLightSourceAltitude: (v: number) => ({ val: Math.round(v) }),
-			borderLightSourceDirection: (v: number) => ({ val: Math.round(v * 10) }),
-			borderHue: (v: number) => ({ val: Math.round(v * 10) }),
-			borderInnerWidth: (v: number) => ({ val: Math.round(v * 100) }),
-			borderLuma: (v: number) => ({ val: Math.round(v * 10) }),
-			borderOuterWidth: (v: number) => ({ val: Math.round(v * 100) }),
-			borderSaturation: (v: number) => ({ val: Math.round(v * 10) })
+			borderLightSourceAltitude: (v: number): PropertyAliasResult => ({ val: Math.round(v) }),
+			borderLightSourceDirection: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderHue: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderInnerWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			borderLuma: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			borderOuterWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			borderSaturation: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
 		}
 	},
 	SSBP: {
@@ -90,14 +99,14 @@ const commandConverters: CommandTestConverterSet = {
 			boxId: 'boxIndex'
 		},
 		propertyAliases: {
-			cropBottom: (v: number) => ({ val: Math.round(v * 1000) }),
-			cropTop: (v: number) => ({ val: Math.round(v * 1000) }),
-			cropLeft: (v: number) => ({ val: Math.round(v * 1000) }),
-			cropRight: (v: number) => ({ val: Math.round(v * 1000) }),
-			size: (v: number) => ({ val: Math.round(v * 1000) }),
-			positionX: (v: number) => ({ val: Math.round(v * 100), name: 'x' }),
-			positionY: (v: number) => ({ val: Math.round(v * 100), name: 'y' }),
-			inputSource: (v: number) => ({ val: v, name: 'source' })
+			cropBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			cropTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			cropLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			cropRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			size: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			positionX: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100), name: 'x' }),
+			positionY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100), name: 'y' }),
+			inputSource: (v: number): PropertyAliasResult => ({ val: v, name: 'source' })
 		}
 	},
 	CSBP: {
@@ -106,14 +115,14 @@ const commandConverters: CommandTestConverterSet = {
 			boxId: 'boxIndex'
 		},
 		propertyAliases: {
-			cropBottom: (v: number) => ({ val: Math.round(v * 1000) }),
-			cropTop: (v: number) => ({ val: Math.round(v * 1000) }),
-			cropLeft: (v: number) => ({ val: Math.round(v * 1000) }),
-			cropRight: (v: number) => ({ val: Math.round(v * 1000) }),
-			size: (v: number) => ({ val: Math.round(v * 1000) }),
-			positionX: (v: number) => ({ val: Math.round(v * 100), name: 'x' }),
-			positionY: (v: number) => ({ val: Math.round(v * 100), name: 'y' }),
-			inputSource: (v: number) => ({ val: v, name: 'source' })
+			cropBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			cropTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			cropLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			cropRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			size: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			positionX: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100), name: 'x' }),
+			positionY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100), name: 'y' }),
+			inputSource: (v: number): PropertyAliasResult => ({ val: v, name: 'source' })
 		}
 	}
 }

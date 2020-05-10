@@ -2,8 +2,9 @@ import * as DataTransferCommands from '../../commands/DataTransfer'
 import { readFileSync } from 'fs'
 import * as path from 'path'
 import { DataTransferManager } from '..'
+import { Commands } from '../..'
 
-function specToCommandClass(spec: any) {
+function specToCommandClass(spec: any): Commands.IDeserializedCommand | undefined {
 	for (const commandName in DataTransferCommands) {
 		if (spec.name === commandName) {
 			const cmdCons = (DataTransferCommands as any)[commandName]
@@ -15,7 +16,7 @@ function specToCommandClass(spec: any) {
 	return undefined
 }
 
-function mangleCommand(cmd: any, dir: string) {
+function mangleCommand(cmd: any, dir: string): any {
 	const props = { ...cmd.properties }
 	Object.keys(props).forEach(k => {
 		if (Buffer.isBuffer(props[k])) {
@@ -30,7 +31,7 @@ function mangleCommand(cmd: any, dir: string) {
 	}
 }
 
-function runDataTransferTest(spec: any) {
+function runDataTransferTest(spec: any): DataTransferManager {
 	const manager = new DataTransferManager()
 	manager.startCommandSending(cmds =>
 		cmds.map(cmd => {

@@ -7,7 +7,7 @@ import { DEFAULT_PORT } from '../../atem'
 
 const ADDRESS = '127.0.0.1'
 
-function getSocket(child: AtemSocketChild) {
+function getSocket(child: AtemSocketChild): Socket {
 	const socket = (child as any)._socket as Socket
 	expect(socket).toBeTruthy()
 	expect(socket.isOpen).toBeTruthy()
@@ -16,13 +16,13 @@ function getSocket(child: AtemSocketChild) {
 
 	return socket
 }
-function getState(child: AtemSocketChild) {
+function getState(child: AtemSocketChild): ConnectionState {
 	return (child as any)._connectionState as ConnectionState
 }
-function getInflightIds(child: AtemSocketChild) {
+function getInflightIds(child: AtemSocketChild): number[] {
 	return (child as any)._inFlight.map((p: any) => p.packetId)
 }
-function fakeConnect(child: AtemSocketChild) {
+function fakeConnect(child: AtemSocketChild): void {
 	const child2 = child as any
 	child2._connectionState = ConnectionState.Established
 	child2._address = '127.0.0.1'
@@ -33,18 +33,18 @@ function createSocketChild(
 	onCommandsReceived?: (payload: Buffer, packetId: number) => Promise<void>,
 	onCommandsAcknowledged?: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>,
 	onDisconnect?: () => Promise<void>
-) {
+): AtemSocketChild {
 	return new AtemSocketChild(
 		{
 			address: ADDRESS,
 			port: DEFAULT_PORT,
 			debugBuffers: false
 		},
-		onDisconnect || (() => Promise.resolve()),
+		onDisconnect || ((): Promise<void> => Promise.resolve()),
 		// async msg => { console.log(msg) },
-		() => Promise.resolve(),
-		onCommandsReceived || (() => Promise.resolve()),
-		onCommandsAcknowledged || (() => Promise.resolve())
+		(): Promise<void> => Promise.resolve(),
+		onCommandsReceived || ((): Promise<void> => Promise.resolve()),
+		onCommandsAcknowledged || ((): Promise<void> => Promise.resolve())
 	)
 }
 
@@ -63,7 +63,7 @@ describe('SocketChild', () => {
 			const socket = getSocket(child)
 
 			let receivedPacket = false
-			socket.sendImpl = (msg: Buffer) => {
+			socket.sendImpl = (msg: Buffer): void => {
 				if (!receivedPacket) {
 					expect(msg).toEqual(Util.COMMAND_CONNECT_HELLO)
 					receivedPacket = true
@@ -84,7 +84,7 @@ describe('SocketChild', () => {
 			expect(getState(child)).toEqual(ConnectionState.SynSent)
 
 			receivedPacket = false
-			socket.sendImpl = (msg: Buffer) => {
+			socket.sendImpl = (msg: Buffer): void => {
 				if (!receivedPacket) {
 					expect(msg).toEqual(
 						Buffer.from([0x80, 0x0c, 0x53, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
@@ -137,7 +137,7 @@ describe('SocketChild', () => {
 		}
 	})
 
-	function genAckRequestMessage(pktId: number, extraLength?: number) {
+	function genAckRequestMessage(pktId: number, extraLength?: number): Buffer {
 		const buffer = Buffer.from([
 			0x08,
 			0x0c + (extraLength || 0), // Length & Type
@@ -165,7 +165,7 @@ describe('SocketChild', () => {
 
 			const acked: number[] = []
 			let gotUnknown = false
-			socket.sendImpl = (msg: Buffer) => {
+			socket.sendImpl = (msg: Buffer): void => {
 				const opcode = msg.readUInt8(0) >> 3
 				if (opcode & PacketFlag.AckReply) {
 					acked.push(msg.readUInt16BE(4))
@@ -207,7 +207,7 @@ describe('SocketChild', () => {
 
 			let acked: number[] = []
 			let gotUnknown = false
-			socket.sendImpl = (msg: Buffer) => {
+			socket.sendImpl = (msg: Buffer): void => {
 				const opcode = msg.readUInt8(0) >> 3
 				if (opcode & PacketFlag.AckReply) {
 					acked.push(msg.readUInt16BE(4))
@@ -256,7 +256,7 @@ describe('SocketChild', () => {
 			const socket = getSocket(child)
 
 			let gotUnknown = false
-			socket.sendImpl = (_msg: Buffer) => {
+			socket.sendImpl = (_msg: Buffer): void => {
 				gotUnknown = true
 				// Shouldnt get any other sends
 				expect(false).toBeTruthy()
@@ -311,7 +311,7 @@ describe('SocketChild', () => {
 			;(child as any)._lastReceivedPacketId = 32766 // 32767 is max
 
 			let gotUnknown = false
-			socket.sendImpl = (_msg: Buffer) => {
+			socket.sendImpl = (_msg: Buffer): void => {
 				gotUnknown = true
 				// Shouldnt get any other sends
 				expect(false).toBeTruthy()
@@ -383,7 +383,7 @@ describe('SocketChild', () => {
 			;(child as any)._nextSendPacketId = 123
 
 			let received: Array<{ id: number; payload: Buffer }> = []
-			socket.sendImpl = (msg: Buffer) => {
+			socket.sendImpl = (msg: Buffer): void => {
 				const opcode = msg.readUInt8(0) >> 3
 				expect(opcode).toEqual(PacketFlag.AckRequest)
 
@@ -429,7 +429,7 @@ describe('SocketChild', () => {
 		}
 	})
 
-	function genAckCommandMessage(pktId: number) {
+	function genAckCommandMessage(pktId: number): Buffer {
 		const buffer = Buffer.from([
 			0x80,
 			0x0c, // Length & Type
@@ -460,7 +460,7 @@ describe('SocketChild', () => {
 			;(child as any)._nextSendPacketId = 123
 
 			let received: number[] = []
-			socket.sendImpl = (msg: Buffer) => {
+			socket.sendImpl = (msg: Buffer): void => {
 				const opcode = msg.readUInt8(0) >> 3
 				expect(opcode).toEqual(PacketFlag.AckRequest)
 
@@ -519,7 +519,7 @@ describe('SocketChild', () => {
 			;(child as any)._nextSendPacketId = 32764 // 32767 is max
 
 			let received: number[] = []
-			socket.sendImpl = (msg: Buffer) => {
+			socket.sendImpl = (msg: Buffer): void => {
 				const opcode = msg.readUInt8(0) >> 3
 				expect(opcode).toEqual(PacketFlag.AckRequest)
 
@@ -583,7 +583,7 @@ describe('SocketChild', () => {
 			;(child as any)._nextSendPacketId = 32764 // 32767 is max
 
 			let received: number[] = []
-			socket.sendImpl = (msg: Buffer) => {
+			socket.sendImpl = (msg: Buffer): void => {
 				const opcode = msg.readUInt8(0) >> 3
 				expect(opcode).toEqual(PacketFlag.AckRequest)
 
@@ -649,7 +649,7 @@ describe('SocketChild', () => {
 		}
 	})
 
-	function genRetransmitRequestCommandMessage(pktId: number) {
+	function genRetransmitRequestCommandMessage(pktId: number): Buffer {
 		const buffer = Buffer.from([
 			0x40,
 			0x0c, // Length & Type
@@ -680,7 +680,7 @@ describe('SocketChild', () => {
 			;(child as any)._nextSendPacketId = 32764 // 32767 is max
 
 			let received: number[] = []
-			socket.sendImpl = (msg: Buffer) => {
+			socket.sendImpl = (msg: Buffer): void => {
 				const opcode = msg.readUInt8(0) >> 3
 				expect(opcode).toEqual(PacketFlag.AckRequest)
 

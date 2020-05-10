@@ -7,6 +7,7 @@ import DataTransferStill from './dataTransferStill'
 import DataTransferClip from './dataTransferClip'
 import DataTransferAudio from './dataTransferAudio'
 import { ISerializableCommand } from '../commands/CommandBase'
+import DataTransfer from './dataTransfer'
 
 const MAX_PACKETS_TO_SEND_PER_TICK = 10
 const MAX_TRANSFER_INDEX = (1 << 16) - 1 // Inclusive maximum
@@ -25,7 +26,7 @@ export class DataTransferManager {
 
 	private transferIndex = 0
 
-	public startCommandSending(sendCommands: (cmds: ISerializableCommand[]) => Array<Promise<void>>) {
+	public startCommandSending(sendCommands: (cmds: ISerializableCommand[]) => Array<Promise<void>>): void {
 		if (!this.interval) {
 			// New connection means a new queue
 			this.commandQueue.splice(0, this.commandQueue.length)
@@ -49,7 +50,7 @@ export class DataTransferManager {
 			})
 		}
 	}
-	public stopCommandSending() {
+	public stopCommandSending(): void {
 		if (this.exitUnsubscribe) {
 			this.exitUnsubscribe()
 			this.exitUnsubscribe = undefined
@@ -60,7 +61,7 @@ export class DataTransferManager {
 		}
 	}
 
-	public handleCommand(command: Commands.IDeserializedCommand) {
+	public handleCommand(command: Commands.IDeserializedCommand): void {
 		const allLocks = [this.stillsLock, ...this.clipLocks]
 
 		// try to establish the associated DataLock:
@@ -114,31 +115,31 @@ export class DataTransferManager {
 		}
 	}
 
-	public uploadStill(index: number, data: Buffer, name: string, description: string) {
+	public uploadStill(index: number, data: Buffer, name: string, description: string): Promise<DataTransfer> {
 		const transfer = new DataTransferStill(this.nextTransferIndex, index, data, name, description)
 		return this.stillsLock.enqueue(transfer)
 	}
 
-	public async uploadClip(index: number, data: Array<Buffer>, name: string) {
+	public uploadClip(index: number, data: Array<Buffer>, name: string): Promise<DataTransfer> {
 		const frames = data.map((frame, id) => new DataTransferFrame(this.nextTransferIndex, 1 + index, id, frame))
 		const transfer = new DataTransferClip(index, name, frames)
-		const lock = await this.getClipLock(index)
+		const lock = this.getClipLock(index)
 		return lock.enqueue(transfer)
 	}
 
-	public async uploadAudio(index: number, data: Buffer, name: string) {
+	public uploadAudio(index: number, data: Buffer, name: string): Promise<DataTransfer> {
 		const transfer = new DataTransferAudio(this.nextTransferIndex, 1 + index, data, name)
-		const lock = await this.getClipLock(index)
+		const lock = this.getClipLock(index)
 		return lock.enqueue(transfer)
 	}
 
-	private get nextTransferIndex() {
+	private get nextTransferIndex(): number {
 		const index = this.transferIndex++
 		if (this.transferIndex > MAX_TRANSFER_INDEX) this.transferIndex = 0
 		return index
 	}
 
-	private async getClipLock(index: number) {
+	private getClipLock(index: number): DataLock {
 		const lock = this.clipLocks[index]
 		if (lock) {
 			return lock

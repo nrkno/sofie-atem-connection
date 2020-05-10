@@ -24,7 +24,7 @@ export class InvalidIdError extends Error {
 		Object.setPrototypeOf(this, new.target.prototype)
 	}
 
-	private static BuildErrorString(message: string, ids: number[]) {
+	private static BuildErrorString(message: string, ids: number[]): string {
 		if (ids && ids.length > 0) {
 			return `${message} ${ids.join('-')} is not valid`
 		} else {

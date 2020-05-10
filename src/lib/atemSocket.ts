@@ -3,7 +3,7 @@ import { CommandParser } from './atemCommandParser'
 import exitHook = require('exit-hook')
 import { VersionCommand, ISerializableCommand, IDeserializedCommand } from '../commands'
 import { DEFAULT_PORT } from '../atem'
-import { threadedClass, ThreadedClass, ThreadedClassManager } from 'threadedclass'
+import { threadedClass, ThreadedClass, ThreadedClassManager, Promisify } from 'threadedclass'
 import { AtemSocketChild } from './atemSocketChild'
 
 export interface AtemSocketOptions {
@@ -62,7 +62,7 @@ export class AtemSocket extends EventEmitter {
 		}
 	}
 
-	public async destroy() {
+	public async destroy(): Promise<void> {
 		await this.disconnect()
 		if (this._socketProcess) {
 			await ThreadedClassManager.destroy(this._socketProcess)
@@ -92,7 +92,7 @@ export class AtemSocket extends EventEmitter {
 	): Promise<void> {
 		if (this._socketProcess) {
 			const commands2 = commands.map(cmd => {
-				if (typeof (cmd.rawCommand as any).serialize !== 'function') {
+				if (typeof cmd.rawCommand.serialize !== 'function') {
 					throw new Error(`Command ${cmd.rawCommand.constructor.name} is not serializable`)
 				}
 
@@ -113,7 +113,7 @@ export class AtemSocket extends EventEmitter {
 		}
 	}
 
-	private async _createSocketProcess() {
+	private async _createSocketProcess(): Promise<Promisify<AtemSocketChild>> {
 		const socketProcess = await threadedClass<AtemSocketChild, typeof AtemSocketChild>(
 			'./atemSocketChild',
 			AtemSocketChild,
@@ -123,14 +123,14 @@ export class AtemSocket extends EventEmitter {
 					port: this._port,
 					debugBuffers: this._debugBuffers
 				},
-				async () => {
+				async (): Promise<void> => {
 					this.emit('disconnect')
 				}, // onDisconnect
-				async (message: string) => {
+				async (message: string): Promise<void> => {
 					this.emit('info', message)
 				}, // onLog
-				async (payload: Buffer) => this._parseCommands(Buffer.from(payload)), // onCommandsReceived
-				async (ids: Array<{ packetId: number; trackingId: number }>) => {
+				async (payload: Buffer): Promise<void> => this._parseCommands(Buffer.from(payload)), // onCommandsReceived
+				async (ids: Array<{ packetId: number; trackingId: number }>): Promise<void> => {
 					this.emit(
 						'commandsAck',
 						ids.map(id => id.trackingId)
@@ -158,7 +158,7 @@ export class AtemSocket extends EventEmitter {
 		return socketProcess
 	}
 
-	private _parseCommands(buffer: Buffer) {
+	private _parseCommands(buffer: Buffer): void {
 		const parsedCommands: IDeserializedCommand[] = []
 
 		while (buffer.length > 8) {

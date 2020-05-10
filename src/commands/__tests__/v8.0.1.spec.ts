@@ -29,13 +29,13 @@ describe('Commands v8.0.1', () => {
 		const testCase = TestCases[i]
 		// console.log(testCase)
 
-		switch (
-			testCase.name
-			// Not parsed
-			// case '_MvC':
-			// 	continue
-		) {
-		}
+		// switch (
+		// 	testCase.name
+		// 	// Not parsed
+		// 	// case '_MvC':
+		// 	// 	continue
+		// ) {
+		// }
 
 		runTestForCommand(commandParser, commandConverters, i, testCase)
 	}

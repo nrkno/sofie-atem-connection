@@ -18,7 +18,7 @@ export class MultiviewerConfigCommand extends DeserializedCommand<MultiviewerInf
 		})
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		state.info.multiviewer = this.properties
 		return `info.multiviewer`
 	}

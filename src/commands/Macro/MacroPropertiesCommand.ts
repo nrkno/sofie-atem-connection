@@ -1,7 +1,7 @@
 import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { MacroPropertiesState } from '../../state/macro'
-import { Util } from '../../lib/atemUtil'
+import * as Util from '../../lib/atemUtil'
 
 export class MacroPropertiesCommand extends DeserializedCommand<MacroPropertiesState> {
 	public static readonly rawName = 'MPrp'
@@ -37,7 +37,7 @@ export class MacroPropertiesCommand extends DeserializedCommand<MacroPropertiesS
 		return new MacroPropertiesCommand(macroIndexID, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		state.macro.macroProperties[this.macroIndexID] = {
 			...state.macro.macroProperties[this.macroIndexID],
 			...this.properties

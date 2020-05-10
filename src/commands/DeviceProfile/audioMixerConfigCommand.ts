@@ -16,7 +16,7 @@ export class AudioMixerConfigCommand extends DeserializedCommand<AudioMixerInfo>
 		})
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		state.info.audioMixer = this.properties
 		return `info.audioMixer`
 	}

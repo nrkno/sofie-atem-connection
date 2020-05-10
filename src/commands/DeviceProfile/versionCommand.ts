@@ -9,13 +9,13 @@ export class VersionCommand extends DeserializedCommand<{ version: ProtocolVersi
 		super({ version })
 	}
 
-	public static deserialize(rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer): VersionCommand {
 		const version = rawCommand.readUInt32BE(0)
 
 		return new VersionCommand(version)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		state.info.apiVersion = this.properties.version
 		return `info.apiVersion`
 	}

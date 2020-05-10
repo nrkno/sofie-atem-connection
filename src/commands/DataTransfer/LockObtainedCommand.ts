@@ -7,7 +7,7 @@ export class LockObtainedCommand extends DeserializedCommand<{ index: number }> 
 		super({ index })
 	}
 
-	public static deserialize(rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer): LockObtainedCommand {
 		const index = rawCommand.readUInt16BE(0)
 
 		return new LockObtainedCommand(index)

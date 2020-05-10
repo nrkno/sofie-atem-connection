@@ -19,7 +19,7 @@ export class AudioMixerInputCommand extends WritableCommand<AudioChannel> {
 		this.index = index
 	}
 
-	public serialize() {
+	public serialize(): Buffer {
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(this.index, 2)
@@ -54,7 +54,7 @@ export class AudioMixerInputUpdateCommand extends DeserializedCommand<AudioChann
 		return new AudioMixerInputUpdateCommand(index, properties)
 	}
 
-	public applyToState(state: AtemState) {
+	public applyToState(state: AtemState): string {
 		state.audio.channels[this.index] = {
 			...state.audio.channels[this.index],
 			...this.properties
