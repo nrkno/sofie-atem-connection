@@ -22,13 +22,13 @@ export class TransitionDVECommand extends WritableCommand<DVETransitionSettings>
 
 	public readonly mixEffect: number
 
-	constructor (mixEffect: number) {
+	constructor(mixEffect: number) {
 		super()
 
 		this.mixEffect = mixEffect
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(20, 0)
 		buffer.writeUInt16BE(this.flag, 0)
 
@@ -57,20 +57,20 @@ export class TransitionDVEUpdateCommand extends DeserializedCommand<DVETransitio
 
 	public readonly mixEffect: number
 
-	constructor (mixEffect: number, properties: DVETransitionSettings) {
+	constructor(mixEffect: number, properties: DVETransitionSettings) {
 		super(properties)
 
 		this.mixEffect = mixEffect
 	}
 
-	public static deserialize (rawCommand: Buffer): TransitionDVEUpdateCommand {
+	public static deserialize(rawCommand: Buffer): TransitionDVEUpdateCommand {
 		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
 			rate: rawCommand.readUInt8(1),
 			logoRate: rawCommand.readUInt8(2),
 			style: rawCommand.readUInt8(3),
-			fillSource: rawCommand.readUInt8(4) << 8 | (rawCommand.readUInt8(5) & 0xff),
-			keySource: rawCommand.readUInt8(6) << 8 | (rawCommand.readUInt8(7) & 0xff),
+			fillSource: (rawCommand.readUInt8(4) << 8) | (rawCommand.readUInt8(5) & 0xff),
+			keySource: (rawCommand.readUInt8(6) << 8) | (rawCommand.readUInt8(7) & 0xff),
 
 			enableKey: rawCommand.readUInt8(8) === 1,
 			preMultiplied: rawCommand.readUInt8(9) === 1,
@@ -84,7 +84,7 @@ export class TransitionDVEUpdateCommand extends DeserializedCommand<DVETransitio
 		return new TransitionDVEUpdateCommand(mixEffect, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
 			throw new InvalidIdError('MixEffect', this.mixEffect)
 		} else if (!state.info.capabilities.DVEs) {

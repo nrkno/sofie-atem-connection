@@ -5,11 +5,11 @@ import { MultiviewerInfo } from '../../state/info'
 export class MultiviewerConfigCommand extends DeserializedCommand<MultiviewerInfo> {
 	public static readonly rawName = '_MvC'
 
-	constructor (properties: MultiviewerInfo) {
+	constructor(properties: MultiviewerInfo) {
 		super(properties)
 	}
 
-	public static deserialize (rawCommand: Buffer): MultiviewerConfigCommand {
+	public static deserialize(rawCommand: Buffer): MultiviewerConfigCommand {
 		return new MultiviewerConfigCommand({
 			count: rawCommand.readUInt8(0),
 			windowCount: rawCommand.readUInt8(1)
@@ -18,7 +18,7 @@ export class MultiviewerConfigCommand extends DeserializedCommand<MultiviewerInf
 		})
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		state.info.multiviewer = this.properties
 		return `info.multiviewer`
 	}

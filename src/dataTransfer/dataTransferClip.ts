@@ -9,7 +9,7 @@ export default class DataTransferClip extends DataTransfer {
 	public readonly name: string
 	public curFrame = 0
 
-	constructor (clipIndex: number, name: string, frames: Array<DataTransferFrame>) {
+	constructor(clipIndex: number, name: string, frames: Array<DataTransferFrame>) {
 		super(0, 1 + clipIndex)
 
 		this.clipIndex = clipIndex
@@ -17,7 +17,7 @@ export default class DataTransferClip extends DataTransfer {
 		this.frames = frames
 	}
 
-	public start () {
+	public start() {
 		const commands: Commands.ISerializableCommand[] = []
 		commands.push(new Commands.MediaPoolClearClipCommand(this.clipIndex))
 		this.frames[this.curFrame].state = Enums.TransferState.Locked
@@ -25,7 +25,7 @@ export default class DataTransferClip extends DataTransfer {
 		return commands
 	}
 
-	public handleCommand (command: Commands.IDeserializedCommand): Commands.ISerializableCommand[] {
+	public handleCommand(command: Commands.IDeserializedCommand): Commands.ISerializableCommand[] {
 		const commands: Commands.ISerializableCommand[] = []
 
 		commands.push(...this.frames[this.curFrame].handleCommand(command))
@@ -49,11 +49,11 @@ export default class DataTransferClip extends DataTransfer {
 		return commands
 	}
 
-	get transferId () {
+	get transferId() {
 		return this.frames[this.curFrame].transferId
 	}
 
-	public gotLock (): Commands.ISerializableCommand[] {
+	public gotLock(): Commands.ISerializableCommand[] {
 		this.state = Enums.TransferState.Locked
 		return this.start()
 	}

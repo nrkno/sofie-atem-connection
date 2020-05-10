@@ -8,13 +8,13 @@ export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKey
 
 	public readonly downstreamKeyerId: number
 
-	constructor (downstreamKeyerId: number, properties: DownstreamKeyerBase) {
+	constructor(downstreamKeyerId: number, properties: DownstreamKeyerBase) {
 		super(properties)
 
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	public static deserialize (rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer) {
 		const downstreamKeyerId = rawCommand.readUInt8(0)
 		const properties = {
 			onAir: rawCommand.readUInt8(1) === 1,
@@ -26,7 +26,7 @@ export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKey
 		return new DownstreamKeyStateCommand(downstreamKeyerId, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.capabilities || this.downstreamKeyerId >= state.info.capabilities.downstreamKeyers) {
 			throw new InvalidIdError('DownstreamKeyer', this.downstreamKeyerId)
 		}
@@ -45,13 +45,13 @@ export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamK
 
 	public readonly downstreamKeyerId: number
 
-	constructor (downstreamKeyerId: number, properties: DownstreamKeyerBase) {
+	constructor(downstreamKeyerId: number, properties: DownstreamKeyerBase) {
 		super(properties)
 
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	public static deserialize (rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer) {
 		const downstreamKeyerId = rawCommand.readUInt8(0)
 		const properties = {
 			onAir: rawCommand.readUInt8(1) === 1,
@@ -64,7 +64,7 @@ export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamK
 		return new DownstreamKeyStateV8Command(downstreamKeyerId, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.capabilities || this.downstreamKeyerId >= state.info.capabilities.downstreamKeyers) {
 			throw new InvalidIdError('DownstreamKeyer', this.downstreamKeyerId)
 		}

@@ -10,15 +10,21 @@ export default class DataTransferFrame extends DataTransfer {
 
 	private _sent = 0
 
-	constructor (transferId: number, storeId: number, frameId: number, data: Buffer) {
+	constructor(transferId: number, storeId: number, frameId: number, data: Buffer) {
 		super(transferId, storeId)
 
 		this.frameId = frameId
 		this.data = data
-		this.hash = this.data ? crypto.createHash('md5').update(this.data).digest().toString() : ''
+		this.hash = this.data
+			? crypto
+					.createHash('md5')
+					.update(this.data)
+					.digest()
+					.toString()
+			: ''
 	}
 
-	public start () {
+	public start() {
 		const command = new Commands.DataTransferUploadRequestCommand({
 			transferId: this.transferId,
 			transferStoreId: this.storeId,
@@ -26,14 +32,14 @@ export default class DataTransferFrame extends DataTransfer {
 			size: this.data.length,
 			mode: Enums.TransferMode.Write
 		})
-		return [ command ]
+		return [command]
 	}
 
-	public sendDescription (): Commands.ISerializableCommand {
+	public sendDescription(): Commands.ISerializableCommand {
 		return new Commands.DataTransferFileDescriptionCommand({ fileHash: this.hash, transferId: this.transferId })
 	}
 
-	public handleCommand (command: Commands.IDeserializedCommand): Commands.ISerializableCommand[] {
+	public handleCommand(command: Commands.IDeserializedCommand): Commands.ISerializableCommand[] {
 		const commands: Commands.ISerializableCommand[] = []
 		if (command.constructor.name === Commands.DataTransferUploadContinueCommand.name) {
 			if (this.state === Enums.TransferState.Locked) {
@@ -50,12 +56,12 @@ export default class DataTransferFrame extends DataTransfer {
 		return commands
 	}
 
-	public gotLock () {
+	public gotLock() {
 		this.state = Enums.TransferState.Locked
 		return this.start()
 	}
 
-	private queueCommand (chunkCount: number, chunkSize: number): Commands.ISerializableCommand[] {
+	private queueCommand(chunkCount: number, chunkSize: number): Commands.ISerializableCommand[] {
 		const commands: Commands.ISerializableCommand[] = []
 
 		chunkSize += -4

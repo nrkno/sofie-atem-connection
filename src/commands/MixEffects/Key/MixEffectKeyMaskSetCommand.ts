@@ -15,14 +15,14 @@ export class MixEffectKeyMaskSetCommand extends WritableCommand<UpstreamKeyerMas
 	public readonly mixEffect: number
 	public readonly upstreamKeyerId: number
 
-	constructor (mixEffect: number, upstreamKeyerId: number) {
+	constructor(mixEffect: number, upstreamKeyerId: number) {
 		super()
 
 		this.mixEffect = mixEffect
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 1)

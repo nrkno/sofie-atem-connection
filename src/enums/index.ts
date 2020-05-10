@@ -17,8 +17,8 @@ export enum Model {
 
 export enum ProtocolVersion {
 	V7_2 = 0x00020016, // 2.22 // TODO - verify this is correct
-	V8_0 = 0x0002001C, // 2.28
-	V8_0_1 = 0x0002001D, // 2.29
+	V8_0 = 0x0002001c, // 2.28
+	V8_0_1 = 0x0002001d, // 2.29
 	V8_1_1 = 0x0002001e // 2.30
 }
 
@@ -31,7 +31,7 @@ export enum TransitionStyle {
 }
 
 export enum DVEEffect {
-	SwooshTopLeft= 0,
+	SwooshTopLeft = 0,
 	SwooshTop = 1,
 	SwooshTopRight = 2,
 	SwooshLeft = 3,

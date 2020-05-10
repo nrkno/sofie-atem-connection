@@ -9,16 +9,13 @@ import { AtemState } from '../state'
 export class PowerStatusCommand extends DeserializedCommand<boolean[]> {
 	public static readonly rawName = 'Powr'
 
-	public static deserialize (rawCommand: Buffer): PowerStatusCommand {
-		const properties = [
-			Boolean(rawCommand.readUInt8(0) & 1 << 0),
-			Boolean(rawCommand.readUInt8(0) & 1 << 1)
-		]
+	public static deserialize(rawCommand: Buffer): PowerStatusCommand {
+		const properties = [Boolean(rawCommand.readUInt8(0) & (1 << 0)), Boolean(rawCommand.readUInt8(0) & (1 << 1))]
 
 		return new PowerStatusCommand(properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		const count = state.info.power.length
 		state.info.power = this.properties.slice(0, count)
 		return `info.power`

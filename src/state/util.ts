@@ -5,7 +5,7 @@ import { MediaPlayerState, ClipBank } from './media'
 import { MixEffect, SuperSource, DSK, USK } from './video'
 
 export namespace AtemStateUtil {
-	export function Create (): AtemState {
+	export function Create(): AtemState {
 		return {
 			info: {
 				apiVersion: 0,
@@ -49,16 +49,16 @@ export namespace AtemStateUtil {
 		}
 	}
 
-	export function getMultiViewer (state: AtemState, index: number): MultiViewer {
+	export function getMultiViewer(state: AtemState, index: number): MultiViewer {
 		const multiViewer = state.settings.multiViewers[index]
 		if (!multiViewer) {
-			return state.settings.multiViewers[index] = { index, windows: [] }
+			return (state.settings.multiViewers[index] = { index, windows: [] })
 		}
 
 		return multiViewer
 	}
 
-	export function getMediaPlayer (state: AtemState, index: number, dontCreate?: boolean): MediaPlayerState {
+	export function getMediaPlayer(state: AtemState, index: number, dontCreate?: boolean): MediaPlayerState {
 		let player = state.media.players[index]
 		if (!player) {
 			player = {
@@ -79,21 +79,21 @@ export namespace AtemStateUtil {
 		return player
 	}
 
-	export function getClip (state: AtemState, index: number): ClipBank {
+	export function getClip(state: AtemState, index: number): ClipBank {
 		const clip = state.media.clipPool[index]
 		if (!clip) {
-			return state.media.clipPool[index] = {
+			return (state.media.clipPool[index] = {
 				isUsed: false,
 				name: '',
 				frameCount: 0,
 				frames: []
-			}
+			})
 		}
 
 		return clip
 	}
 
-	export function getMixEffect (state: AtemState, index: number, dontCreate?: boolean): MixEffect {
+	export function getMixEffect(state: AtemState, index: number, dontCreate?: boolean): MixEffect {
 		let me = state.video.mixEffects[index]
 		if (!me) {
 			me = {
@@ -122,12 +122,12 @@ export namespace AtemStateUtil {
 		return me
 	}
 
-	export function getSuperSource (state: AtemState, index: number, dontCreate?: boolean): SuperSource.SuperSource {
+	export function getSuperSource(state: AtemState, index: number, dontCreate?: boolean): SuperSource.SuperSource {
 		let ssrc = state.video.superSources[index]
 		if (!ssrc) {
 			ssrc = {
 				index,
-				boxes: [ undefined, undefined, undefined, undefined ]
+				boxes: [undefined, undefined, undefined, undefined]
 			}
 
 			if (!dontCreate) {
@@ -138,7 +138,7 @@ export namespace AtemStateUtil {
 		return ssrc
 	}
 
-	export function getDownstreamKeyer (state: AtemState, index: number, dontCreate?: boolean): DSK.DownstreamKeyer {
+	export function getDownstreamKeyer(state: AtemState, index: number, dontCreate?: boolean): DSK.DownstreamKeyer {
 		let dsk = state.video.downstreamKeyers[index]
 		if (!dsk) {
 			dsk = {
@@ -156,7 +156,7 @@ export namespace AtemStateUtil {
 		return dsk
 	}
 
-	export function getUpstreamKeyer (mixEffect: MixEffect, index: number, dontCreate?: boolean): USK.UpstreamKeyer {
+	export function getUpstreamKeyer(mixEffect: MixEffect, index: number, dontCreate?: boolean): USK.UpstreamKeyer {
 		let usk = mixEffect.upstreamKeyers[index]
 		if (!usk) {
 			usk = {

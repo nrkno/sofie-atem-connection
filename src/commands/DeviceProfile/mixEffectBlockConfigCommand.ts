@@ -7,17 +7,17 @@ export class MixEffectBlockConfigCommand extends DeserializedCommand<MixEffectIn
 
 	public readonly index: number
 
-	constructor (index: number, properties: MixEffectInfo) {
+	constructor(index: number, properties: MixEffectInfo) {
 		super(properties)
 
 		this.index = index
 	}
 
-	public static deserialize (rawCommand: Buffer): MixEffectBlockConfigCommand {
+	public static deserialize(rawCommand: Buffer): MixEffectBlockConfigCommand {
 		return new MixEffectBlockConfigCommand(rawCommand.readUInt8(0), { keyCount: rawCommand.readUInt8(1) })
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		state.info.mixEffects[this.index] = this.properties
 		return `info.mixEffects`
 	}

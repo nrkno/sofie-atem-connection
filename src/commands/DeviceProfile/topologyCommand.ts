@@ -6,7 +6,7 @@ import { ProtocolVersion } from '../../enums'
 export class TopologyCommand extends DeserializedCommand<AtemCapabilites> {
 	public static readonly rawName = '_top'
 
-	public static deserialize (rawCommand: Buffer, version: ProtocolVersion) {
+	public static deserialize(rawCommand: Buffer, version: ProtocolVersion) {
 		const v230offset = version > ProtocolVersion.V8_0_1 ? 1 : 0
 		const properties = {
 			mixEffects: rawCommand.readUInt8(0),
@@ -36,7 +36,7 @@ export class TopologyCommand extends DeserializedCommand<AtemCapabilites> {
 		return new TopologyCommand(properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		state.info.capabilities = {
 			...state.info.capabilities,
 			...this.properties

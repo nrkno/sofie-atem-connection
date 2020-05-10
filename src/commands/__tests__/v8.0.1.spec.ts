@@ -5,15 +5,15 @@ import { ProtocolVersion } from '../../enums'
 const TestCases = require('./data-v8.0.1.json') as TestCase[]
 
 const commandConverters: CommandTestConverterSet = {
-	'DDsA': {
+	DDsA: {
 		idAliases: {
-			'downstreamKeyerId': 'index'
+			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {}
 	},
-	'DskS': {
+	DskS: {
 		idAliases: {
-			'downstreamKeyerId': 'index'
+			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {}
 	}
@@ -29,10 +29,12 @@ describe('Commands v8.0.1', () => {
 		const testCase = TestCases[i]
 		// console.log(testCase)
 
-		switch (testCase.name) {
+		switch (
+			testCase.name
 			// Not parsed
 			// case '_MvC':
 			// 	continue
+		) {
 		}
 
 		runTestForCommand(commandParser, commandConverters, i, testCase)

@@ -1,12 +1,7 @@
-import {
-	ExternalPortType,
-	InternalPortType,
-	MeAvailability,
-	SourceAvailability
-} from '../enums'
+import { ExternalPortType, InternalPortType, MeAvailability, SourceAvailability } from '../enums'
 
 export interface InputChannel {
-	readonly inputId: number,
+	readonly inputId: number
 	longName: string
 	shortName: string
 	isExternal: boolean

@@ -23,9 +23,9 @@ export class DataTransferManager {
 	private interval?: NodeJS.Timer
 	private exitUnsubscribe?: () => void
 
-	private transferIndex: number = 0
+	private transferIndex = 0
 
-	public startCommandSending (sendCommands: (cmds: ISerializableCommand[]) => Array<Promise<void>>) {
+	public startCommandSending(sendCommands: (cmds: ISerializableCommand[]) => Array<Promise<void>>) {
 		if (!this.interval) {
 			// New connection means a new queue
 			this.commandQueue.splice(0, this.commandQueue.length)
@@ -37,7 +37,7 @@ export class DataTransferManager {
 
 				const commandsToSend = this.commandQueue.splice(0, MAX_PACKETS_TO_SEND_PER_TICK)
 				// The only way commands are rejected is if the connection dies, so if any reject then we fail
-				Promise.all(sendCommands(commandsToSend)).catch((e) => {
+				Promise.all(sendCommands(commandsToSend)).catch(e => {
 					// TODO - handle this better. it should kill/restart the upload. and should also be logged in some way
 					console.log(`Transfer send error: ${e}`)
 				})
@@ -49,7 +49,7 @@ export class DataTransferManager {
 			})
 		}
 	}
-	public stopCommandSending () {
+	public stopCommandSending() {
 		if (this.exitUnsubscribe) {
 			this.exitUnsubscribe()
 			this.exitUnsubscribe = undefined
@@ -60,18 +60,25 @@ export class DataTransferManager {
 		}
 	}
 
-	public handleCommand (command: Commands.IDeserializedCommand) {
-		const allLocks = [ this.stillsLock, ...this.clipLocks ]
+	public handleCommand(command: Commands.IDeserializedCommand) {
+		const allLocks = [this.stillsLock, ...this.clipLocks]
 
 		// try to establish the associated DataLock:
 		let lock: DataLock | undefined
-		if (command.constructor.name === Commands.LockObtainedCommand.name || command.constructor.name === Commands.LockStateUpdateCommand.name) {
+		if (
+			command.constructor.name === Commands.LockObtainedCommand.name ||
+			command.constructor.name === Commands.LockStateUpdateCommand.name
+		) {
 			lock = allLocks[command.properties.index]
 		} else if (typeof command.properties.storeId === 'number') {
 			lock = allLocks[command.properties.storeId]
 		} else if (command.properties.transferId !== undefined || command.properties.transferIndex !== undefined) {
 			for (const _lock of allLocks) {
-				if (_lock.activeTransfer && (_lock.activeTransfer.transferId === command.properties.transferId || _lock.activeTransfer.transferId === command.properties.transferIndex)) {
+				if (
+					_lock.activeTransfer &&
+					(_lock.activeTransfer.transferId === command.properties.transferId ||
+						_lock.activeTransfer.transferId === command.properties.transferIndex)
+				) {
 					lock = _lock
 				}
 			}
@@ -107,31 +114,31 @@ export class DataTransferManager {
 		}
 	}
 
-	public uploadStill (index: number, data: Buffer, name: string, description: string) {
+	public uploadStill(index: number, data: Buffer, name: string, description: string) {
 		const transfer = new DataTransferStill(this.nextTransferIndex, index, data, name, description)
 		return this.stillsLock.enqueue(transfer)
 	}
 
-	public async uploadClip (index: number, data: Array<Buffer>, name: string) {
+	public async uploadClip(index: number, data: Array<Buffer>, name: string) {
 		const frames = data.map((frame, id) => new DataTransferFrame(this.nextTransferIndex, 1 + index, id, frame))
 		const transfer = new DataTransferClip(index, name, frames)
 		const lock = await this.getClipLock(index)
 		return lock.enqueue(transfer)
 	}
 
-	public async uploadAudio (index: number, data: Buffer, name: string) {
+	public async uploadAudio(index: number, data: Buffer, name: string) {
 		const transfer = new DataTransferAudio(this.nextTransferIndex, 1 + index, data, name)
 		const lock = await this.getClipLock(index)
 		return lock.enqueue(transfer)
 	}
 
-	private get nextTransferIndex () {
+	private get nextTransferIndex() {
 		const index = this.transferIndex++
 		if (this.transferIndex > MAX_TRANSFER_INDEX) this.transferIndex = 0
 		return index
 	}
 
-	private async getClipLock (index: number) {
+	private async getClipLock(index: number) {
 		const lock = this.clipLocks[index]
 		if (lock) {
 			return lock

@@ -29,11 +29,11 @@ export class SuperSourcePropertiesCommand extends WritableCommand<SuperSourcePro
 	}
 	public static readonly rawName = 'CSSc'
 
-	constructor () {
+	constructor() {
 		super()
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(36)
 
 		buffer.writeUInt32BE(this.flag, 0)
@@ -79,13 +79,13 @@ export class SuperSourcePropertiesV8Command extends WritableCommand<SuperSourceP
 
 	public readonly ssrcId: number
 
-	constructor (ssrcId: number) {
+	constructor(ssrcId: number) {
 		super()
 
 		this.ssrcId = ssrcId
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(16)
 
 		buffer.writeUInt8(this.flag, 0)
@@ -125,13 +125,13 @@ export class SuperSourceBorderCommand extends WritableCommand<SuperSourceBorder>
 
 	public readonly ssrcId: number
 
-	constructor (ssrcId: number) {
+	constructor(ssrcId: number) {
 		super()
 
 		this.ssrcId = ssrcId
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(24)
 
 		buffer.writeUInt16BE(this.flag, 0)
@@ -155,10 +155,13 @@ export class SuperSourceBorderCommand extends WritableCommand<SuperSourceBorder>
 	}
 }
 
-export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{ properties: SuperSourceProperties, border: SuperSourceBorder }> {
+export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{
+	properties: SuperSourceProperties
+	border: SuperSourceBorder
+}> {
 	public static readonly rawName = 'SSrc'
 
-	public static deserialize (rawCommand: Buffer): SuperSourcePropertiesUpdateCommand {
+	public static deserialize(rawCommand: Buffer): SuperSourcePropertiesUpdateCommand {
 		const properties = {
 			properties: {
 				artFillSource: rawCommand.readUInt16BE(0),
@@ -190,7 +193,7 @@ export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{ pr
 		return new SuperSourcePropertiesUpdateCommand(properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.capabilities || !state.info.capabilities.superSources) {
 			throw new InvalidIdError('SuperSource', 0)
 		}
@@ -198,10 +201,7 @@ export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{ pr
 		const supersource = AtemStateUtil.getSuperSource(state, 0)
 		supersource.properties = this.properties.properties
 		supersource.border = this.properties.border
-		return [
-			`video.superSources.0.properties`,
-			`video.superSources.0.border`
-		]
+		return [`video.superSources.0.properties`, `video.superSources.0.border`]
 	}
 }
 
@@ -211,13 +211,13 @@ export class SuperSourcePropertiesUpdateV8Command extends DeserializedCommand<Su
 
 	public readonly ssrcId: number
 
-	constructor (ssrcId: number, properties: SuperSourceProperties) {
+	constructor(ssrcId: number, properties: SuperSourceProperties) {
 		super(properties)
 
 		this.ssrcId = ssrcId
 	}
 
-	public static deserialize (rawCommand: Buffer): SuperSourcePropertiesUpdateV8Command {
+	public static deserialize(rawCommand: Buffer): SuperSourcePropertiesUpdateV8Command {
 		const ssrcId = rawCommand.readUInt8(0)
 		const properties = {
 			artFillSource: rawCommand.readUInt16BE(2),
@@ -232,7 +232,7 @@ export class SuperSourcePropertiesUpdateV8Command extends DeserializedCommand<Su
 		return new SuperSourcePropertiesUpdateV8Command(ssrcId, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.capabilities || this.ssrcId >= state.info.capabilities.superSources) {
 			throw new InvalidIdError('SuperSource', this.ssrcId)
 		}
@@ -251,13 +251,13 @@ export class SuperSourceBorderUpdateCommand extends DeserializedCommand<SuperSou
 
 	public readonly ssrcId: number
 
-	constructor (ssrcId: number, properties: SuperSourceBorder) {
+	constructor(ssrcId: number, properties: SuperSourceBorder) {
 		super(properties)
 
 		this.ssrcId = ssrcId
 	}
 
-	public static deserialize (rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer) {
 		const ssrcId = rawCommand.readUInt8(0)
 		const properties = {
 			borderEnabled: rawCommand.readUInt8(1) === 1,
@@ -278,7 +278,7 @@ export class SuperSourceBorderUpdateCommand extends DeserializedCommand<SuperSou
 		return new SuperSourceBorderUpdateCommand(ssrcId, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.capabilities || this.ssrcId >= state.info.capabilities.superSources) {
 			throw new InvalidIdError('SuperSource', this.ssrcId)
 		}

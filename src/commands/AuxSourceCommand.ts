@@ -10,13 +10,13 @@ export class AuxSourceCommand extends BasicWritableCommand<AuxSourceProps> {
 
 	public readonly auxBus: number
 
-	constructor (auxBus: number, source: number) {
+	constructor(auxBus: number, source: number) {
 		super({ source })
 
 		this.auxBus = auxBus
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(0x01, 0)
 		buffer.writeUInt8(this.auxBus, 1)
@@ -30,13 +30,13 @@ export class AuxSourceUpdateCommand extends DeserializedCommand<AuxSourceProps> 
 
 	public readonly auxBus: number
 
-	constructor (auxBus: number, properties: AuxSourceProps) {
+	constructor(auxBus: number, properties: AuxSourceProps) {
 		super(properties)
 
 		this.auxBus = auxBus
 	}
 
-	public static deserialize (rawCommand: Buffer): AuxSourceUpdateCommand {
+	public static deserialize(rawCommand: Buffer): AuxSourceUpdateCommand {
 		const auxBus = rawCommand.readUInt8(0)
 		const properties = {
 			source: rawCommand.readUInt16BE(2)
@@ -45,7 +45,7 @@ export class AuxSourceUpdateCommand extends DeserializedCommand<AuxSourceProps> 
 		return new AuxSourceUpdateCommand(auxBus, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		state.video.auxilliaries[this.auxBus] = this.properties.source
 		return `video.auxilliaries.${this.auxBus}`
 	}

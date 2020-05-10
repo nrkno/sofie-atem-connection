@@ -3,7 +3,7 @@ import { DeserializedCommand } from '../CommandBase'
 export class DataTransferCompleteCommand extends DeserializedCommand<{ transferId: number }> {
 	public static readonly rawName = 'FTDC'
 
-	public static deserialize (rawCommand: Buffer): DataTransferCompleteCommand {
+	public static deserialize(rawCommand: Buffer): DataTransferCompleteCommand {
 		const properties = {
 			transferId: rawCommand.readUInt16BE(0)
 		}
@@ -11,7 +11,7 @@ export class DataTransferCompleteCommand extends DeserializedCommand<{ transferI
 		return new DataTransferCompleteCommand(properties)
 	}
 
-	public applyToState (): string[] {
+	public applyToState(): string[] {
 		// Nothing to do
 		return []
 	}

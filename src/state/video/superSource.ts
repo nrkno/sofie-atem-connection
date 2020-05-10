@@ -41,7 +41,12 @@ export interface SuperSourceBorder {
 
 export interface SuperSource {
 	readonly index: number
-	readonly boxes: [SuperSourceBox | undefined, SuperSourceBox | undefined, SuperSourceBox | undefined, SuperSourceBox | undefined]
+	readonly boxes: [
+		SuperSourceBox | undefined,
+		SuperSourceBox | undefined,
+		SuperSourceBox | undefined,
+		SuperSourceBox | undefined
+	]
 	properties?: SuperSourceProperties
 	border?: SuperSourceBorder
 }

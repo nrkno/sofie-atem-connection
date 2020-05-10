@@ -3,7 +3,7 @@ import { readFileSync } from 'fs'
 import * as path from 'path'
 import { DataTransferManager } from '..'
 
-function specToCommandClass (spec: any) {
+function specToCommandClass(spec: any) {
 	for (const commandName in DataTransferCommands) {
 		if (spec.name === commandName) {
 			const cmdCons = (DataTransferCommands as any)[commandName]
@@ -15,7 +15,7 @@ function specToCommandClass (spec: any) {
 	return undefined
 }
 
-function mangleCommand (cmd: any, dir: string) {
+function mangleCommand(cmd: any, dir: string) {
 	const props = { ...cmd.properties }
 	Object.keys(props).forEach(k => {
 		if (Buffer.isBuffer(props[k])) {
@@ -30,23 +30,25 @@ function mangleCommand (cmd: any, dir: string) {
 	}
 }
 
-function runDataTransferTest (spec: any) {
+function runDataTransferTest(spec: any) {
 	const manager = new DataTransferManager()
-	manager.startCommandSending(cmds => cmds.map(cmd => {
-		const expectedCmd = spec.shift()
-		const gotCmd = mangleCommand(cmd, 'send')
-		expect(expectedCmd).toEqual(gotCmd)
+	manager.startCommandSending(cmds =>
+		cmds.map(cmd => {
+			const expectedCmd = spec.shift()
+			const gotCmd = mangleCommand(cmd, 'send')
+			expect(expectedCmd).toEqual(gotCmd)
 
-		while (spec.length > 0) {
-			if (spec[0].direction !== 'recv') break
-			const nextCmd = spec.shift()
-			const nextCmd2 = specToCommandClass(nextCmd)
-			if (!nextCmd2) throw new Error(`Failed specToCommandClass ${nextCmd.name}`)
-			manager.handleCommand(nextCmd2)
-		}
+			while (spec.length > 0) {
+				if (spec[0].direction !== 'recv') break
+				const nextCmd = spec.shift()
+				const nextCmd2 = specToCommandClass(nextCmd)
+				if (!nextCmd2) throw new Error(`Failed specToCommandClass ${nextCmd.name}`)
+				manager.handleCommand(nextCmd2)
+			}
 
-		return Promise.resolve()
-	}))
+			return Promise.resolve()
+		})
+	)
 	return manager
 }
 

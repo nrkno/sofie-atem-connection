@@ -12,14 +12,14 @@ export class MixEffectKeyTypeSetCommand extends WritableCommand<UpstreamKeyerTyp
 	public readonly mixEffect: number
 	public readonly upstreamKeyerId: number
 
-	constructor (mixEffect: number, upstreamKeyerId: number) {
+	constructor(mixEffect: number, upstreamKeyerId: number) {
 		super()
 
 		this.mixEffect = mixEffect
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(8)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 1)

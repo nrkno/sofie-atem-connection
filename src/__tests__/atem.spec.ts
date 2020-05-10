@@ -67,7 +67,6 @@ describe('Atem', () => {
 
 			expect(socket.connect).toHaveBeenCalledTimes(1)
 			expect(socket.connect).toHaveBeenCalledWith('127.9.8.7', 98)
-
 		} finally {
 			cleanupAtem(conn)
 		}
@@ -87,7 +86,6 @@ describe('Atem', () => {
 
 			expect(socket.disconnect).toHaveBeenCalledTimes(1)
 			expect(socket.disconnect).toHaveBeenCalledWith()
-
 		} finally {
 			cleanupAtem(conn)
 		}
@@ -119,10 +117,12 @@ describe('Atem', () => {
 			expect(Object.keys(sentQueue)).toHaveLength(1)
 
 			expect(socket.sendCommands).toHaveBeenCalledTimes(1)
-			expect(socket.sendCommands).toHaveBeenCalledWith([{
-				rawCommand: cmd,
-				trackingId: 124
-			}])
+			expect(socket.sendCommands).toHaveBeenCalledWith([
+				{
+					rawCommand: cmd,
+					trackingId: 124
+				}
+			])
 
 			// Trigger the ack, and it should switfy resolve
 			socket.emit('commandsAck', [124])
@@ -160,10 +160,12 @@ describe('Atem', () => {
 
 			// Send command should be called
 			expect(socket.sendCommands).toHaveBeenCalledTimes(1)
-			expect(socket.sendCommands).toHaveBeenCalledWith([{
-				rawCommand: cmd,
-				trackingId: 124
-			}])
+			expect(socket.sendCommands).toHaveBeenCalledWith([
+				{
+					rawCommand: cmd,
+					trackingId: 124
+				}
+			])
 
 			expect(Object.keys(sentQueue)).toHaveLength(0)
 
@@ -181,5 +183,4 @@ describe('Atem', () => {
 			cleanupAtem(conn)
 		}
 	}, 500)
-
 })

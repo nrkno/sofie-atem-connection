@@ -11,12 +11,12 @@ export class AudioMixerMasterCommand extends WritableCommand<AudioMasterChannel>
 	}
 	public static readonly rawName = 'CAMM'
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(8)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(Util.DecibelToUInt16BE(this.properties.gain || 0), 2)
 		buffer.writeInt16BE(Util.BalanceToInt(this.properties.balance || 0), 4)
-		buffer.writeUInt8(this.properties.followFadeToBlack ? 0x01 : 0x00 , 6) // Note: I never got this one to work
+		buffer.writeUInt8(this.properties.followFadeToBlack ? 0x01 : 0x00, 6) // Note: I never got this one to work
 		return buffer
 	}
 }
@@ -24,7 +24,7 @@ export class AudioMixerMasterCommand extends WritableCommand<AudioMasterChannel>
 export class AudioMixerMasterUpdateCommand extends DeserializedCommand<AudioMasterChannel> {
 	public static readonly rawName = 'AMMO'
 
-	public static deserialize (rawCommand: Buffer): AudioMixerMasterUpdateCommand {
+	public static deserialize(rawCommand: Buffer): AudioMixerMasterUpdateCommand {
 		const properties = {
 			gain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(0)),
 			balance: Util.IntToBalance(rawCommand.readInt16BE(2)),
@@ -34,7 +34,7 @@ export class AudioMixerMasterUpdateCommand extends DeserializedCommand<AudioMast
 		return new AudioMixerMasterUpdateCommand(properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		state.audio.master = {
 			...state.audio.master,
 			...this.properties

@@ -9,13 +9,13 @@ export class DownstreamKeyAutoCommand extends WritableCommand<{ isTowardsOnAir: 
 
 	public readonly downstreamKeyerId: number
 
-	constructor (downstreamKeyerId: number) {
+	constructor(downstreamKeyerId: number) {
 		super()
 
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	public serialize (version: ProtocolVersion) {
+	public serialize(version: ProtocolVersion) {
 		const buffer = Buffer.alloc(4)
 
 		if (version >= ProtocolVersion.V8_0_1) {

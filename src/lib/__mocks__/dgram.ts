@@ -5,18 +5,18 @@ import { DEFAULT_PORT } from '../../atem'
 import { InstalledClock } from '@sinonjs/fake-timers'
 
 export class Socket extends EventEmitter {
-	public isOpen: boolean = false
+	public isOpen = false
 
 	public expectedAddress?: string
 	public expectedPort?: number
 
-	constructor () {
+	constructor() {
 		super()
 	}
 
 	public sendImpl?: (msg: Buffer) => void
 
-	public async emitMessage (clock: InstalledClock, msg: Buffer) {
+	public async emitMessage(clock: InstalledClock, msg: Buffer) {
 		expect(Buffer.isBuffer(msg)).toBeTruthy()
 
 		const rinfo: RemoteInfo = {
@@ -30,7 +30,7 @@ export class Socket extends EventEmitter {
 		await clock.tickAsync(0)
 	}
 
-	public bind (port?: number, address?: string, callback?: () => void): void {
+	public bind(port?: number, address?: string, callback?: () => void): void {
 		expect(port).toBeUndefined()
 		expect(address).toBeUndefined()
 		expect(callback).toBeUndefined()
@@ -38,7 +38,14 @@ export class Socket extends EventEmitter {
 		this.isOpen = true
 	}
 
-	public send (msg: string | Uint8Array, offset: number, length: number, port: number, address?: string, callback?: (error: Error | null, bytes: number) => void): void {
+	public send(
+		msg: string | Uint8Array,
+		offset: number,
+		length: number,
+		port: number,
+		address?: string,
+		callback?: (error: Error | null, bytes: number) => void
+	): void {
 		expect(Buffer.isBuffer(msg)).toBeTruthy()
 		expect(offset).toBeNumber()
 		expect(length).toBeNumber()
@@ -58,13 +65,13 @@ export class Socket extends EventEmitter {
 		}
 	}
 
-	public close (cb?: Function) {
+	public close(cb?: Function) {
 		this.isOpen = false
 		if (cb) cb()
 	}
 }
 
-export function createSocket (type: SocketType, callback?: (msg: Buffer, rinfo: RemoteInfo) => void): Socket {
+export function createSocket(type: SocketType, callback?: (msg: Buffer, rinfo: RemoteInfo) => void): Socket {
 	expect(type).toEqual('udp4')
 	expect(callback).toBeUndefined()
 

@@ -7,13 +7,13 @@ export class DownstreamKeySourcesCommand extends DeserializedCommand<DownstreamK
 
 	public readonly downstreamKeyerId: number
 
-	constructor (downstreamKeyerId: number, properties: DownstreamKeyer['sources']) {
+	constructor(downstreamKeyerId: number, properties: DownstreamKeyer['sources']) {
 		super(properties)
 
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	public static deserialize (rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer) {
 		const downstreamKeyerId = rawCommand.readUInt8(0)
 		const properties = {
 			fillSource: rawCommand.readUInt16BE(2),
@@ -23,7 +23,7 @@ export class DownstreamKeySourcesCommand extends DeserializedCommand<DownstreamK
 		return new DownstreamKeySourcesCommand(downstreamKeyerId, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.capabilities || this.downstreamKeyerId >= state.info.capabilities.downstreamKeyers) {
 			throw new InvalidIdError('DownstreamKeyer', this.downstreamKeyerId)
 		}

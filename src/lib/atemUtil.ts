@@ -3,29 +3,44 @@ import { Enums } from '..'
 import WaveFile = require('wavefile')
 
 export namespace Util {
-	export function bufToBase64String (buffer: Buffer, start: number, length: number): string {
+	export function bufToBase64String(buffer: Buffer, start: number, length: number): string {
 		return buffer.toString('base64', start, start + length)
 	}
 
-	export function bufToNullTerminatedString (buffer: Buffer, start: number, length: number): string {
+	export function bufToNullTerminatedString(buffer: Buffer, start: number, length: number): string {
 		const slice = buffer.slice(start, start + length)
 		const nullIndex = slice.indexOf('\0')
 		return slice.toString('ascii', 0, nullIndex < 0 ? slice.length : nullIndex)
 	}
 
 	export const COMMAND_CONNECT_HELLO = Buffer.from([
-		0x10, 0x14, 0x53, 0xAB,
-		0x00, 0x00, 0x00, 0x00,
-		0x00, 0x3A, 0x00, 0x00,
-		0x01, 0x00, 0x00, 0x00,
-		0x00, 0x00, 0x00, 0x00
+		0x10,
+		0x14,
+		0x53,
+		0xab,
+		0x00,
+		0x00,
+		0x00,
+		0x00,
+		0x00,
+		0x3a,
+		0x00,
+		0x00,
+		0x01,
+		0x00,
+		0x00,
+		0x00,
+		0x00,
+		0x00,
+		0x00,
+		0x00
 	])
 
 	/**
 	 * @todo: BALTE - 2018-5-24:
 	 * Create util functions that handle proper colour spaces in UHD.
 	 */
-	export function convertRGBAToYUV422 (width: number, height: number, data: Buffer) {
+	export function convertRGBAToYUV422(width: number, height: number, data: Buffer) {
 		// BT.709 or BT.601
 		const KR = height >= 720 ? 0.2126 : 0.299
 		const KB = height >= 720 ? 0.0722 : 0.114
@@ -41,13 +56,13 @@ export namespace Util {
 		const YOffset = 16 << 8
 		const CbCrOffset = 128 << 8
 
-		const KRoKBi = KR / KBi * HalfCbCrRange
-		const KGoKBi = KG / KBi * HalfCbCrRange
-		const KBoKRi = KB / KRi * HalfCbCrRange
-		const KGoKRi = KG / KRi * HalfCbCrRange
+		const KRoKBi = (KR / KBi) * HalfCbCrRange
+		const KGoKBi = (KG / KBi) * HalfCbCrRange
+		const KBoKRi = (KB / KRi) * HalfCbCrRange
+		const KGoKRi = (KG / KRi) * HalfCbCrRange
 
 		const genColor = (rawA: number, uv16: number, y16: number) => {
-			const a = ((rawA << 2) * 219 / 255) + (16 << 2)
+			const a = ((rawA << 2) * 219) / 255 + (16 << 2)
 			const y = Math.round(y16) >> 6
 			const uv = Math.round(uv16) >> 6
 
@@ -78,7 +93,7 @@ export namespace Util {
 		return buffer
 	}
 
-	export function getResolution (videoMode: Enums.VideoMode) {
+	export function getResolution(videoMode: Enums.VideoMode) {
 		const PAL = [720, 576]
 		const NTSC = [640, 480]
 		const HD = [1280, 720]
@@ -87,17 +102,32 @@ export namespace Util {
 		// TODO - add 8k options
 
 		const enumToResolution = [
-			NTSC, PAL, NTSC, PAL,
-			HD, HD,
-			FHD, FHD, FHD, FHD, FHD, FHD, FHD, FHD,
-			UHD, UHD, UHD, UHD,
-			UHD, UHD
+			NTSC,
+			PAL,
+			NTSC,
+			PAL,
+			HD,
+			HD,
+			FHD,
+			FHD,
+			FHD,
+			FHD,
+			FHD,
+			FHD,
+			FHD,
+			FHD,
+			UHD,
+			UHD,
+			UHD,
+			UHD,
+			UHD,
+			UHD
 		]
 
 		return enumToResolution[videoMode]
 	}
 
-	export function convertWAVToRaw (inputBuffer: Buffer) {
+	export function convertWAVToRaw(inputBuffer: Buffer) {
 		const wav = new (WaveFile as any)(inputBuffer)
 
 		if (wav.fmt.bitsPerSample !== 24) {
@@ -118,20 +148,20 @@ export namespace Util {
 		return buffer2
 	}
 
-	export function UInt16BEToDecibel (input: number) {
+	export function UInt16BEToDecibel(input: number) {
 		// 0 = -inf, 32768 = 0, 65381 = +6db
-		return Math.round((Math.log10(input / 32768) * 20) * 100) / 100
+		return Math.round(Math.log10(input / 32768) * 20 * 100) / 100
 	}
 
-	export function DecibelToUInt16BE (input: number) {
+	export function DecibelToUInt16BE(input: number) {
 		return Math.floor(Math.pow(10, input / 20) * 32768)
 	}
 
-	export function IntToBalance (input: number): number {
+	export function IntToBalance(input: number): number {
 		// -100000 = -50, 0x0000 = 0, 0x2710 = +50
 		return Math.round(input / 200)
 	}
-	export function BalanceToInt (input: number): number {
+	export function BalanceToInt(input: number): number {
 		return Math.round(input * 200)
 	}
 }

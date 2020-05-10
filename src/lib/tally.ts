@@ -8,7 +8,7 @@ import * as Enums from '../enums'
  * Useful for any code which needs a full list of all
  * sources present in Preview and/or Program.
  */
-export function listVisibleInputs (mode: 'program' | 'preview', state: AtemState, me = 0): number[] {
+export function listVisibleInputs(mode: 'program' | 'preview', state: AtemState, me = 0): number[] {
 	const inputs = new Set<number>()
 
 	// Start with the basics: the surface level of what is in the target ME.
@@ -26,45 +26,49 @@ export function listVisibleInputs (mode: 'program' | 'preview', state: AtemState
 		// be in a hot code path and get called many many times a second,
 		// every time the ATEM's state updates.
 		lastSize = inputs.size
-		Array.from(inputs).slice(lastProcessed).forEach(inputId => {
-			const input = state.inputs[inputId]
-			if (!input) {
-				// Data isn't hydrated yet, we'll get 'em next time.
-				return
-			}
-			const portType = input.internalPortType
-			switch (portType) {
-				case Enums.InternalPortType.SuperSource:
-					const ssrcId = inputId - 6000
-					const ssrc = AtemStateUtil.getSuperSource(state, ssrcId)
-					ssrc.boxes.forEach(box => {
-						if (box && box.enabled) {
-							inputs.add(box.source)
-						}
-					})
+		Array.from(inputs)
+			.slice(lastProcessed)
+			.forEach(inputId => {
+				const input = state.inputs[inputId]
+				if (!input) {
+					// Data isn't hydrated yet, we'll get 'em next time.
+					return
+				}
+				const portType = input.internalPortType
+				switch (portType) {
+					case Enums.InternalPortType.SuperSource:
+						const ssrcId = inputId - 6000
+						const ssrc = AtemStateUtil.getSuperSource(state, ssrcId)
+						ssrc.boxes.forEach(box => {
+							if (box && box.enabled) {
+								inputs.add(box.source)
+							}
+						})
 
-					if (ssrc.properties) {
-						inputs.add(ssrc.properties.artFillSource)
-						if (ssrc.properties.artOption === Enums.SuperSourceArtOption.Foreground) {
-							inputs.add(ssrc.properties.artCutSource)
+						if (ssrc.properties) {
+							inputs.add(ssrc.properties.artFillSource)
+							if (ssrc.properties.artOption === Enums.SuperSourceArtOption.Foreground) {
+								inputs.add(ssrc.properties.artCutSource)
+							}
 						}
-					}
-					break
-				case Enums.InternalPortType.MEOutput:
-					const nestedMeId = ((inputId - (inputId % 10)) - 10000) / 10 - 1
-					const nestedMeMode = (inputId - 10000) % 10 === 0 ? 'program' : 'preview'
-					_calcActiveMeInputs(nestedMeMode, state, nestedMeId).forEach(i => inputs.add(i))
-					break
-				default:
+						break
+					case Enums.InternalPortType.MEOutput:
+						const nestedMeId = (inputId - (inputId % 10) - 10000) / 10 - 1
+						const nestedMeMode = (inputId - 10000) % 10 === 0 ? 'program' : 'preview'
+						_calcActiveMeInputs(nestedMeMode, state, nestedMeId).forEach(i => inputs.add(i))
+						break
+					default:
 					// Do nothing.
-			}
-		})
+				}
+			})
 		lastProcessed = inputs.size - 1
 	} while (inputs.size !== lastSize)
 
 	// undefined sometimes sneaks its way in here.
 	// Don't know why.
-	return Array.from(inputs).filter((i: unknown) => typeof i === 'number').sort((a, b) => a - b)
+	return Array.from(inputs)
+		.filter((i: unknown) => typeof i === 'number')
+		.sort((a, b) => a - b)
 }
 
 /**
@@ -73,7 +77,7 @@ export function listVisibleInputs (mode: 'program' | 'preview', state: AtemState
  * it gets called multiple times, and gets called in a loop.
  * Breaking it out made listVisibleInputs much easier to read.
  */
-function _calcActiveMeInputs (mode: 'program' | 'preview', state: AtemState, meId: number): number[] {
+function _calcActiveMeInputs(mode: 'program' | 'preview', state: AtemState, meId: number): number[] {
 	const inputs = new Set<number>()
 	const meRef = AtemStateUtil.getMixEffect(state, meId)
 
@@ -86,64 +90,69 @@ function _calcActiveMeInputs (mode: 'program' | 'preview', state: AtemState, meI
 	}
 
 	// Upstream Keyers
-	meRef.upstreamKeyers.filter(usk => {
-		if (usk) {
-			const keyerMask = 1 << (usk.upstreamKeyerId + 1)
-			const isPartOfTransition = meRef.transitionProperties.selection & keyerMask
-			if (mode === 'program') {
-				if (meRef.inTransition) {
-					return usk.onAir || isPartOfTransition
+	meRef.upstreamKeyers
+		.filter(usk => {
+			if (usk) {
+				const keyerMask = 1 << (usk.upstreamKeyerId + 1)
+				const isPartOfTransition = meRef.transitionProperties.selection & keyerMask
+				if (mode === 'program') {
+					if (meRef.inTransition) {
+						return usk.onAir || isPartOfTransition
+					}
+
+					return usk.onAir
 				}
 
-				return usk.onAir
+				return (isPartOfTransition && !usk.onAir) || (usk.onAir && !isPartOfTransition)
+			} else {
+				return false
 			}
+		})
+		.forEach(usk => {
+			if (usk) {
+				inputs.add(usk.fillSource)
 
-			return (isPartOfTransition && !usk.onAir) || (usk.onAir && !isPartOfTransition)
-		} else {
-			return false
-		}
-	}).forEach(usk => {
-		if (usk) {
-			inputs.add(usk.fillSource)
-
-			// This is the only USK type that actually uses the cutSource.
-			if (usk.mixEffectKeyType === Enums.MixEffectKeyType.Luma) {
-				inputs.add(usk.cutSource)
+				// This is the only USK type that actually uses the cutSource.
+				if (usk.mixEffectKeyType === Enums.MixEffectKeyType.Luma) {
+					inputs.add(usk.cutSource)
+				}
 			}
-		}
-	})
+		})
 
 	// DSKs only show up on ME 1,
 	// so we only add them if that's the ME we are currently processing.
 	if (meId === 0) {
-		state.video.downstreamKeyers.filter(dsk => {
-			if (dsk) {
-				if (mode === 'program') {
-					return dsk.onAir || dsk.inTransition
-				}
+		state.video.downstreamKeyers
+			.filter(dsk => {
+				if (dsk) {
+					if (mode === 'program') {
+						return dsk.onAir || dsk.inTransition
+					}
 
-				if (!dsk.properties) {
-					// Data isn't hydrated yet, we'll get 'em next time.
+					if (!dsk.properties) {
+						// Data isn't hydrated yet, we'll get 'em next time.
+						return false
+					}
+
+					return dsk.properties.tie && !dsk.onAir
+				} else {
 					return false
 				}
-
-				return dsk.properties.tie && !dsk.onAir
-			} else {
-				return false
-			}
-		}).forEach(dsk => {
-			if (dsk && dsk.sources) {
-				inputs.add(dsk.sources.fillSource)
-				inputs.add(dsk.sources.cutSource)
-			}
-		})
+			})
+			.forEach(dsk => {
+				if (dsk && dsk.sources) {
+					inputs.add(dsk.sources.fillSource)
+					inputs.add(dsk.sources.cutSource)
+				}
+			})
 	}
 
 	// Compute what sources are currently participating in a transition.
 	const isTransitionInProgram = mode === 'program' && meRef.inTransition
 	const isTransitionInPreview = mode === 'preview' && meRef.transitionPreview && meRef.transitionPosition > 0
 	if (isTransitionInProgram || isTransitionInPreview) {
-		if (meRef.transitionProperties.selection & 1) { // Includes background
+		if (meRef.transitionProperties.selection & 1) {
+			// Includes background
 			inputs.add(meRef.previewInput)
 		}
 
@@ -179,17 +188,17 @@ function _calcActiveMeInputs (mode: 'program' | 'preview', state: AtemState, meI
 			case Enums.TransitionStyle.STING:
 				if (meRef.transitionSettings.stinger) {
 					const mediaPlayerIndex = meRef.transitionSettings.stinger.source
-					const fillInputId = 3000 + (mediaPlayerIndex * 10)
+					const fillInputId = 3000 + mediaPlayerIndex * 10
 					const keyInputId = fillInputId + 1
 					inputs.add(fillInputId)
 					inputs.add(keyInputId)
 				}
 				break
 			default:
-				// Do nothing.
-				// This is the code path that MIX will take.
-				// It's already handled above when we add the previewInput
-				// to the activeInputs array.
+			// Do nothing.
+			// This is the code path that MIX will take.
+			// It's already handled above when we add the previewInput
+			// to the activeInputs array.
 		}
 	}
 

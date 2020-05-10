@@ -8,13 +8,13 @@ export class SuperSourceConfigCommand extends DeserializedCommand<SuperSourceInf
 
 	public readonly ssrcId: number
 
-	constructor (ssrcId: number, properties: SuperSourceInfo) {
+	constructor(ssrcId: number, properties: SuperSourceInfo) {
 		super(properties)
 
 		this.ssrcId = ssrcId
 	}
 
-	public static deserialize (rawCommand: Buffer, version: ProtocolVersion): SuperSourceConfigCommand {
+	public static deserialize(rawCommand: Buffer, version: ProtocolVersion): SuperSourceConfigCommand {
 		if (version >= ProtocolVersion.V8_0) {
 			return new SuperSourceConfigCommand(rawCommand.readUInt8(0), { boxCount: rawCommand.readUInt8(2) })
 		} else {
@@ -22,7 +22,7 @@ export class SuperSourceConfigCommand extends DeserializedCommand<SuperSourceInf
 		}
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		state.info.superSources[this.ssrcId] = this.properties
 		return `info.superSources`
 	}

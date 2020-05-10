@@ -4,7 +4,7 @@ import { ProtocolVersion } from '../enums'
 export interface IDeserializedCommand {
 	properties: any
 
-	applyToState (state: AtemState): string | string[]
+	applyToState(state: AtemState): string | string[]
 }
 
 export abstract class DeserializedCommand<T> implements IDeserializedCommand {
@@ -13,15 +13,15 @@ export abstract class DeserializedCommand<T> implements IDeserializedCommand {
 
 	public readonly properties: Readonly<T>
 
-	constructor (properties: T) {
+	constructor(properties: T) {
 		this.properties = properties
 	}
 
-	public abstract applyToState (state: AtemState): string | string[]
+	public abstract applyToState(state: AtemState): string | string[]
 }
 
 export interface ISerializableCommand {
-	serialize (version: ProtocolVersion): Buffer
+	serialize(version: ProtocolVersion): Buffer
 }
 
 export abstract class BasicWritableCommand<T> implements ISerializableCommand {
@@ -30,15 +30,15 @@ export abstract class BasicWritableCommand<T> implements ISerializableCommand {
 
 	protected _properties: T
 
-	public get properties (): Readonly<T> {
+	public get properties(): Readonly<T> {
 		return this._properties
 	}
 
-	constructor (properties: T) {
+	constructor(properties: T) {
 		this._properties = properties
 	}
 
-	public abstract serialize (version: ProtocolVersion): Buffer
+	public abstract serialize(version: ProtocolVersion): Buffer
 }
 
 export abstract class WritableCommand<T> extends BasicWritableCommand<Partial<T>> {
@@ -46,17 +46,17 @@ export abstract class WritableCommand<T> extends BasicWritableCommand<Partial<T>
 
 	public flag: number
 
-	constructor () {
+	constructor() {
 		super({})
 
 		this.flag = 0
 	}
 
-	public updateProps (newProps: Partial<T>): boolean {
+	public updateProps(newProps: Partial<T>): boolean {
 		return this._updateProps(newProps)
 	}
 
-	protected _updateProps (newProps: { [key: string]: any }): boolean {
+	protected _updateProps(newProps: { [key: string]: any }): boolean {
 		const maskFlags = (this.constructor as any).MaskFlags as { [key: string]: number }
 		let hasChanges = false
 		if (maskFlags) {
@@ -75,5 +75,5 @@ export abstract class WritableCommand<T> extends BasicWritableCommand<Partial<T>
 }
 
 export abstract class SymmetricalCommand<T> extends DeserializedCommand<T> implements ISerializableCommand {
-	public abstract serialize (version: ProtocolVersion): Buffer
+	public abstract serialize(version: ProtocolVersion): Buffer
 }

@@ -11,13 +11,13 @@ export class TransitionDipCommand extends WritableCommand<DipTransitionSettings>
 
 	public readonly mixEffect: number
 
-	constructor (mixEffect: number) {
+	constructor(mixEffect: number) {
 		super()
 
 		this.mixEffect = mixEffect
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(8)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 1)
@@ -32,23 +32,23 @@ export class TransitionDipUpdateCommand extends DeserializedCommand<DipTransitio
 
 	public readonly mixEffect: number
 
-	constructor (mixEffect: number, properties: DipTransitionSettings) {
+	constructor(mixEffect: number, properties: DipTransitionSettings) {
 		super(properties)
 
 		this.mixEffect = mixEffect
 	}
 
-	public static deserialize (rawCommand: Buffer): TransitionDipUpdateCommand {
+	public static deserialize(rawCommand: Buffer): TransitionDipUpdateCommand {
 		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
 			rate: rawCommand.readUInt8(1),
-			input: rawCommand.readUInt8(2) << 8 | (rawCommand.readUInt8(3) & 0xFF)
+			input: (rawCommand.readUInt8(2) << 8) | (rawCommand.readUInt8(3) & 0xff)
 		}
 
 		return new TransitionDipUpdateCommand(mixEffect, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
 			throw new InvalidIdError('MixEffect', this.mixEffect)
 		}

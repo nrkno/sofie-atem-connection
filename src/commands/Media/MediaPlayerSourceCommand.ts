@@ -13,13 +13,13 @@ export class MediaPlayerSourceCommand extends WritableCommand<MediaPlayerSource>
 
 	public readonly mediaPlayerId: number
 
-	constructor (mediaPlayerId: number) {
+	constructor(mediaPlayerId: number) {
 		super()
 
 		this.mediaPlayerId = mediaPlayerId
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(8)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mediaPlayerId, 1)
@@ -35,13 +35,13 @@ export class MediaPlayerSourceUpdateCommand extends DeserializedCommand<MediaPla
 
 	public readonly mediaPlayerId: number
 
-	constructor (mediaPlayerId: number, properties: MediaPlayerSource) {
+	constructor(mediaPlayerId: number, properties: MediaPlayerSource) {
 		super(properties)
 
 		this.mediaPlayerId = mediaPlayerId
 	}
 
-	public static deserialize (rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer) {
 		const mediaPlayerId = rawCommand.readUInt8(0)
 		const properties = {
 			sourceType: rawCommand.readUInt8(1),
@@ -52,7 +52,7 @@ export class MediaPlayerSourceUpdateCommand extends DeserializedCommand<MediaPla
 		return new MediaPlayerSourceUpdateCommand(mediaPlayerId, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.capabilities || this.mediaPlayerId >= state.info.capabilities.mediaPlayers) {
 			throw new InvalidIdError('MediaPlayer', this.mediaPlayerId)
 		}

@@ -12,13 +12,13 @@ export default class DataLock {
 
 	private queueCommand: (cmd: Commands.ISerializableCommand) => void
 
-	constructor (storeId: number, queueCommand: (cmd: Commands.ISerializableCommand) => void) {
+	constructor(storeId: number, queueCommand: (cmd: Commands.ISerializableCommand) => void) {
 		this.storeId = storeId
 		this.queueCommand = queueCommand
 		this.isLocked = false
 	}
 
-	public enqueue (transfer: DataTransfer) {
+	public enqueue(transfer: DataTransfer) {
 		this.taskQueue.push(transfer)
 		if (!this.activeTransfer) {
 			this.dequeueAndRun()
@@ -27,8 +27,11 @@ export default class DataLock {
 		return transfer.promise
 	}
 
-	private dequeueAndRun () {
-		if ((this.activeTransfer === undefined || this.activeTransfer.state === Enums.TransferState.Finished) && this.taskQueue.length > 0) {
+	private dequeueAndRun() {
+		if (
+			(this.activeTransfer === undefined || this.activeTransfer.state === Enums.TransferState.Finished) &&
+			this.taskQueue.length > 0
+		) {
 			this.activeTransfer = this.taskQueue.shift()
 
 			if (this.isLocked) {
@@ -40,14 +43,14 @@ export default class DataLock {
 		}
 	}
 
-	public lockObtained () {
+	public lockObtained() {
 		this.isLocked = true
 		if (this.activeTransfer && this.activeTransfer.state === Enums.TransferState.Queued) {
 			this.activeTransfer.gotLock().forEach(cmd => this.queueCommand(cmd))
 		}
 	}
 
-	public lostLock () {
+	public lostLock() {
 		this.isLocked = false
 		if (this.activeTransfer) {
 			if (this.activeTransfer.state === Enums.TransferState.Finished) {
@@ -62,21 +65,23 @@ export default class DataLock {
 		this.dequeueAndRun()
 	}
 
-	public updateLock (locked: boolean) {
+	public updateLock(locked: boolean) {
 		this.isLocked = locked
 	}
 
-	public transferFinished () {
+	public transferFinished() {
 		this.queueCommand(new Commands.LockStateCommand(this.storeId, false))
 	}
 
-	public transferErrored (code: number) {
+	public transferErrored(code: number) {
 		if (this.activeTransfer) {
 			switch (code) {
 				case 1: // Probably means "retry".
 					if (this.activeTransfer instanceof DataTransferClip) {
 						// Retry the last frame.
-						this.activeTransfer.frames[this.activeTransfer.curFrame].start().forEach(cmd => this.queueCommand(cmd))
+						this.activeTransfer.frames[this.activeTransfer.curFrame]
+							.start()
+							.forEach(cmd => this.queueCommand(cmd))
 					} else {
 						// Retry the entire transfer.
 						this.activeTransfer.start().forEach(cmd => this.queueCommand(cmd))

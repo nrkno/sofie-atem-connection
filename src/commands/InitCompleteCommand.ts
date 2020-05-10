@@ -3,15 +3,15 @@ import { DeserializedCommand } from './CommandBase'
 export class InitCompleteCommand extends DeserializedCommand<null> {
 	public static readonly rawName = 'InCm'
 
-	constructor () {
+	constructor() {
 		super(null)
 	}
 
-	public static deserialize () {
+	public static deserialize() {
 		return new InitCompleteCommand()
 	}
 
-	public applyToState () {
+	public applyToState() {
 		return `info`
 	}
 }

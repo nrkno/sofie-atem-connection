@@ -8,7 +8,7 @@ export interface CommandTestConverter {
 	/** Internal name to LibAtem name */
 	idAliases: { [internalName: string]: string }
 	/** LibAtem name to Internal name & mutated value */
-	propertyAliases: { [key: string]: (v: any) => { name?: string, val: any } }
+	propertyAliases: { [key: string]: (v: any) => { name?: string; val: any } }
 	customMutate?: (v: any) => any
 	/** pre-process deserialized command */
 	processDeserialized?: (v: any) => void
@@ -20,7 +20,13 @@ export interface TestCase {
 	command: { [key: string]: any }
 }
 
-export function runTestForCommand (commandParser: CommandParser, commandConverters: CommandTestConverterSet, i: number, testCase: TestCase, allowUnknown?: boolean) {
+export function runTestForCommand(
+	commandParser: CommandParser,
+	commandConverters: CommandTestConverterSet,
+	i: number,
+	testCase: TestCase,
+	allowUnknown?: boolean
+) {
 	const cmdConstructor = commandParser.commandFromRawName(testCase.name)
 	if (!cmdConstructor && allowUnknown) return
 
@@ -38,7 +44,9 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 		let mutatedCommand: { [key: string]: any } = {}
 		for (const key in testCase.command) {
 			const newKey = key[0].toLowerCase() + key.substring(1)
-			const propConv = converter ? converter.propertyAliases[`${name}.${newKey}`] || converter.propertyAliases[newKey] : undefined
+			const propConv = converter
+				? converter.propertyAliases[`${name}.${newKey}`] || converter.propertyAliases[newKey]
+				: undefined
 			const newProp = propConv ? propConv(testCase.command[key]) : { val: testCase.command[key] }
 
 			mutatedCommand[newProp.name || newKey] = newProp.val
@@ -51,7 +59,10 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 		if (typeof cmdConstructor.deserialize === 'function') {
 			matchedCase = true
 			test(`Test #${i}: ${testCase.name} - Deserialize`, () => {
-				const cmd: IDeserializedCommand = cmdConstructor.deserialize(buffer.slice(0, length).slice(8), commandParser.version)
+				const cmd: IDeserializedCommand = cmdConstructor.deserialize(
+					buffer.slice(0, length).slice(8),
+					commandParser.version
+				)
 
 				// delete cmd.flag // Anything deserialized will never have flags
 				// delete (cmd as any).rawCommand
@@ -84,8 +95,8 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 			test(`Test #${i}: ${testCase.name} - Serialize`, () => {
 				if (converter) {
 					for (const id of Object.keys(converter.idAliases)) {
-						const id2 = converter.idAliases[id];
-						(cmd as any)[id] = mutatedCommand[id2]
+						const id2 = converter.idAliases[id]
+						;(cmd as any)[id] = mutatedCommand[id2]
 						delete mutatedCommand[id2]
 					}
 				}
@@ -116,7 +127,7 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 					let str2 = ''
 					for (let i = 0; i < str.length; i += 2) {
 						str2 += str[i + 0] + str[i + 1]
-						str2 += (i % 16 === 14) ? '\n' : '-'
+						str2 += i % 16 === 14 ? '\n' : '-'
 					}
 					return str2.substring(0, str2.length - 1)
 				}
@@ -137,7 +148,7 @@ export function runTestForCommand (commandParser: CommandParser, commandConverte
 	}
 }
 
-export function ensureAllCommandsCovered (commandParser: CommandParser, testCases: Array<TestCase>) {
+export function ensureAllCommandsCovered(commandParser: CommandParser, testCases: Array<TestCase>) {
 	test('Ensure all commands tested', () => {
 		// Verify that all commands were tested
 		const expectUndefined = commandParser.version === ProtocolVersion.V7_2
@@ -151,7 +162,9 @@ export function ensureAllCommandsCovered (commandParser: CommandParser, testCase
 		}
 
 		// knownNames = Object.keys(commandParser.commands).sort()
-		const testNames = Array.from(new Set(testCases.map(c => c.name))).filter(n => knownNames.indexOf(n) !== -1).sort()
+		const testNames = Array.from(new Set(testCases.map(c => c.name)))
+			.filter(n => knownNames.indexOf(n) !== -1)
+			.sort()
 
 		// Temporarily ignore these missing cases
 		knownNames = knownNames.filter(n => n !== 'InCm' && n !== 'InPr' && n !== 'KeFS' && n !== 'TlSr')

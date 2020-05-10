@@ -9,7 +9,7 @@ export interface DataTransferUploadContinueProps {
 export class DataTransferUploadContinueCommand extends DeserializedCommand<DataTransferUploadContinueProps> {
 	public static readonly rawName = 'FTCD'
 
-	public static deserialize (rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer) {
 		const properties = {
 			transferId: rawCommand.readUInt16BE(0),
 			chunkSize: rawCommand.readUInt16BE(6),
@@ -19,7 +19,7 @@ export class DataTransferUploadContinueCommand extends DeserializedCommand<DataT
 		return new DataTransferUploadContinueCommand(properties)
 	}
 
-	public applyToState (): string[] {
+	public applyToState(): string[] {
 		// Nothing to do
 		return []
 	}

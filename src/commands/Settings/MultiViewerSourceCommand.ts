@@ -7,13 +7,13 @@ export class MultiViewerSourceCommand extends WritableCommand<MultiViewerSourceS
 
 	public readonly multiViewerId: number
 
-	constructor (multiviewerId: number) {
+	constructor(multiviewerId: number) {
 		super()
 
 		this.multiViewerId = multiviewerId
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.multiViewerId, 0)
 		buffer.writeUInt8(this.properties.windowIndex || 0, 1)
@@ -27,13 +27,13 @@ export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiVie
 
 	public readonly multiViewerId: number
 
-	constructor (multiviewerId: number, properties: MultiViewerSourceState) {
+	constructor(multiviewerId: number, properties: MultiViewerSourceState) {
 		super(properties)
 
 		this.multiViewerId = multiviewerId
 	}
 
-	public static deserialize (rawCommand: Buffer): MultiViewerSourceUpdateCommand {
+	public static deserialize(rawCommand: Buffer): MultiViewerSourceUpdateCommand {
 		const multiViewerId = rawCommand.readUInt8(0)
 		const properties = {
 			source: rawCommand.readUInt16BE(2),
@@ -43,7 +43,7 @@ export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiVie
 		return new MultiViewerSourceUpdateCommand(multiViewerId, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.multiviewer || this.multiViewerId >= state.info.multiviewer.count) {
 			throw new InvalidIdError('MultiViewer', this.multiViewerId)
 		}

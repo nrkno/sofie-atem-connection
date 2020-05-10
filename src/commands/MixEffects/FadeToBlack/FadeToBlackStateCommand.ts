@@ -12,13 +12,13 @@ export class FadeToBlackStateCommand extends DeserializedCommand<FadeToBlackProp
 
 	public readonly mixEffect: number
 
-	constructor (mixEffect: number, properties: FadeToBlackProps) {
+	constructor(mixEffect: number, properties: FadeToBlackProps) {
 		super(properties)
 
 		this.mixEffect = mixEffect
 	}
 
-	public static deserialize (rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer) {
 		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
 			isFullyBlack: rawCommand.readUInt8(1) === 1,
@@ -29,7 +29,7 @@ export class FadeToBlackStateCommand extends DeserializedCommand<FadeToBlackProp
 		return new FadeToBlackStateCommand(mixEffect, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
 			throw new InvalidIdError('MixEffect', this.mixEffect)
 		}

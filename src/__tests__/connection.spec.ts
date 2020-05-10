@@ -11,9 +11,14 @@ export class AtemSocketChildMock implements AtemSocketChild {
 	public onDisconnect: () => Promise<void>
 	public onLog: (message: string) => Promise<void>
 	public onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>
-	public onCommandsAcknowledged: (ids: Array<{ packetId: number, trackingId: number }>) => Promise<void>
+	public onCommandsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
 
-	constructor (onDisconnect: () => Promise<void>, onLog: (message: string) => Promise<void>, onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>, onCommandsAcknowledged: (ids: Array<{ packetId: number, trackingId: number }>) => Promise<void>) {
+	constructor(
+		onDisconnect: () => Promise<void>,
+		onLog: (message: string) => Promise<void>,
+		onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>,
+		onCommandsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
+	) {
 		this.onDisconnect = onDisconnect
 		this.onLog = onLog
 		this.onCommandsReceived = onCommandsReceived
@@ -25,11 +30,19 @@ export class AtemSocketChildMock implements AtemSocketChild {
 	public sendCommands = jest.fn(() => Promise.resolve())
 }
 
-(AtemSocketChild as any).mockImplementation((_opts: any, onDisconnect: () => Promise<void>, onLog: (message: string) => Promise<void>, onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>, onCommandsAcknowledged: (ids: Array<{ packetId: number, trackingId: number }>) => Promise<void>) => {
-	return new AtemSocketChildMock(onDisconnect, onLog, onCommandsReceived, onCommandsAcknowledged)
-})
+(AtemSocketChild as any).mockImplementation(
+	(
+		_opts: any,
+		onDisconnect: () => Promise<void>,
+		onLog: (message: string) => Promise<void>,
+		onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>,
+		onCommandsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
+	) => {
+		return new AtemSocketChildMock(onDisconnect, onLog, onCommandsReceived, onCommandsAcknowledged)
+	}
+)
 
-function createConnection () {
+function createConnection() {
 	return new BasicAtem({
 		debugBuffers: false,
 		address: '',
@@ -38,13 +51,15 @@ function createConnection () {
 	})
 }
 
-function getChild (conn: BasicAtem): ThreadedClass<AtemSocketChildMock> {
+function getChild(conn: BasicAtem): ThreadedClass<AtemSocketChildMock> {
 	return (conn as any).socket._socketProcess
 }
 
-function runTestMe1 (name: string, filename: string) {
+function runTestMe1(name: string, filename: string) {
 	const filePath = resolve(__dirname, `./connection/${filename}.data`)
-	const fileData = readFileSync(filePath).toString().split('\n')
+	const fileData = readFileSync(filePath)
+		.toString()
+		.split('\n')
 
 	test(`${name}`, async () => {
 		const conn = createConnection()

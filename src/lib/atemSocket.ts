@@ -38,7 +38,7 @@ export class AtemSocket extends EventEmitter {
 		((event: 'commandsReceived', cmds: IDeserializedCommand[]) => boolean) &
 		((event: 'commandsAck', trackingIds: number[]) => boolean)
 
-	constructor (options: AtemSocketOptions) {
+	constructor(options: AtemSocketOptions) {
 		super()
 		this._address = options.address
 		this._port = options.port
@@ -46,7 +46,7 @@ export class AtemSocket extends EventEmitter {
 		this._disableMultithreaded = options.disableMultithreaded
 	}
 
-	public async connect (address?: string, port?: number): Promise<void> {
+	public async connect(address?: string, port?: number): Promise<void> {
 		if (address) {
 			this._address = address
 		}
@@ -62,7 +62,7 @@ export class AtemSocket extends EventEmitter {
 		}
 	}
 
-	public async destroy () {
+	public async destroy() {
 		await this.disconnect()
 		if (this._socketProcess) {
 			await ThreadedClassManager.destroy(this._socketProcess)
@@ -74,20 +74,22 @@ export class AtemSocket extends EventEmitter {
 		}
 	}
 
-	public async disconnect (): Promise<void> {
+	public async disconnect(): Promise<void> {
 		if (this._socketProcess) {
 			await this._socketProcess.disconnect()
 		}
 	}
 
-	get nextCommandTrackingId (): number {
+	get nextCommandTrackingId(): number {
 		if (this._nextCommandTrackingId >= Number.MAX_SAFE_INTEGER) {
 			this._nextCommandTrackingId = 0
 		}
 		return ++this._nextCommandTrackingId
 	}
 
-	public async sendCommands (commands: Array<{ rawCommand: ISerializableCommand, trackingId: number}>): Promise<void> {
+	public async sendCommands(
+		commands: Array<{ rawCommand: ISerializableCommand; trackingId: number }>
+	): Promise<void> {
 		if (this._socketProcess) {
 			const commands2 = commands.map(cmd => {
 				if (typeof (cmd.rawCommand as any).serialize !== 'function') {
@@ -95,7 +97,8 @@ export class AtemSocket extends EventEmitter {
 				}
 
 				const payload = cmd.rawCommand.serialize(this._commandParser.version)
-				if (this._debugBuffers) this.emit('debug', `PAYLOAD ${cmd.rawCommand.constructor.name} ${payload.toString('hex')}`)
+				if (this._debugBuffers)
+					this.emit('debug', `PAYLOAD ${cmd.rawCommand.constructor.name} ${payload.toString('hex')}`)
 
 				return {
 					payload: [...payload],
@@ -110,23 +113,37 @@ export class AtemSocket extends EventEmitter {
 		}
 	}
 
-	private async _createSocketProcess () {
-		const socketProcess = await threadedClass<AtemSocketChild, typeof AtemSocketChild>('./atemSocketChild', AtemSocketChild, [
+	private async _createSocketProcess() {
+		const socketProcess = await threadedClass<AtemSocketChild, typeof AtemSocketChild>(
+			'./atemSocketChild',
+			AtemSocketChild,
+			[
+				{
+					address: this._address,
+					port: this._port,
+					debugBuffers: this._debugBuffers
+				},
+				async () => {
+					this.emit('disconnect')
+				}, // onDisconnect
+				async (message: string) => {
+					this.emit('info', message)
+				}, // onLog
+				async (payload: Buffer) => this._parseCommands(Buffer.from(payload)), // onCommandsReceived
+				async (ids: Array<{ packetId: number; trackingId: number }>) => {
+					this.emit(
+						'commandsAck',
+						ids.map(id => id.trackingId)
+					)
+				} // onCommandsAcknowledged
+			],
 			{
-				address: this._address,
-				port: this._port,
-				debugBuffers: this._debugBuffers
-			},
-			async () => { this.emit('disconnect') }, // onDisconnect
-			async (message: string) => { this.emit('info', message) }, // onLog
-			async (payload: Buffer) => this._parseCommands(Buffer.from(payload)), // onCommandsReceived
-			async (ids: Array<{ packetId: number, trackingId: number }>) => { this.emit('commandsAck', ids.map(id => id.trackingId)) } // onCommandsAcknowledged
-		], {
-			instanceName: 'atem-connection',
-			freezeLimit: 200,
-			autoRestart: true,
-			disableMultithreading: this._disableMultithreaded
-		})
+				instanceName: 'atem-connection',
+				freezeLimit: 200,
+				autoRestart: true,
+				disableMultithreading: this._disableMultithreaded
+			}
+		)
 
 		ThreadedClassManager.onEvent(socketProcess, 'restarted', () => {
 			this.emit('disconnect')
@@ -141,7 +158,7 @@ export class AtemSocket extends EventEmitter {
 		return socketProcess
 	}
 
-	private _parseCommands (buffer: Buffer) {
+	private _parseCommands(buffer: Buffer) {
 		const parsedCommands: IDeserializedCommand[] = []
 
 		while (buffer.length > 8) {
@@ -156,9 +173,13 @@ export class AtemSocket extends EventEmitter {
 			const cmdConstructor = this._commandParser.commandFromRawName(name)
 			if (cmdConstructor && typeof cmdConstructor.deserialize === 'function') {
 				try {
-					const cmd: IDeserializedCommand = cmdConstructor.deserialize(buffer.slice(0, length).slice(8), this._commandParser.version)
+					const cmd: IDeserializedCommand = cmdConstructor.deserialize(
+						buffer.slice(0, length).slice(8),
+						this._commandParser.version
+					)
 
-					if (cmdConstructor.name === VersionCommand.name) { // init started
+					if (cmdConstructor.name === VersionCommand.name) {
+						// init started
 						const verCmd = cmd as VersionCommand
 						this._commandParser.version = verCmd.properties.version
 					}

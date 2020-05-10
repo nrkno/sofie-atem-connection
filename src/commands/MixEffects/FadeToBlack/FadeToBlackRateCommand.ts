@@ -6,13 +6,13 @@ export class FadeToBlackRateCommand extends BasicWritableCommand<{ rate: number 
 
 	public readonly mixEffect: number
 
-	constructor (mixEffect: number, rate: number) {
+	constructor(mixEffect: number, rate: number) {
 		super({ rate })
 
 		this.mixEffect = mixEffect
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(1, 0)
 		buffer.writeUInt8(this.mixEffect, 1)
@@ -26,20 +26,20 @@ export class FadeToBlackRateUpdateCommand extends DeserializedCommand<{ rate: nu
 
 	public readonly mixEffect: number
 
-	constructor (mixEffect: number, rate: number) {
+	constructor(mixEffect: number, rate: number) {
 		super({ rate })
 
 		this.mixEffect = mixEffect
 	}
 
-	public static deserialize (rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer) {
 		const mixEffect = rawCommand.readUInt8(0)
 		const rate = rawCommand.readUInt8(1)
 
 		return new FadeToBlackRateUpdateCommand(mixEffect, rate)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
 			throw new InvalidIdError('MixEffect', this.mixEffect)
 		}

@@ -5,11 +5,11 @@ import { ProtocolVersion } from '../../enums'
 const TestCases = require('./data-v7.2.json') as TestCase[]
 
 const commandConverters: CommandTestConverterSet = {
-	'_ver': {
+	_ver: {
 		idAliases: {},
 		propertyAliases: {
-			'apiMajor': (v: number) => ({ val: v, name: 'major' }),
-			'apiMinor': (v: number) => ({ val: v, name: 'minor' })
+			apiMajor: (v: number) => ({ val: v, name: 'major' }),
+			apiMinor: (v: number) => ({ val: v, name: 'minor' })
 		},
 		customMutate: (o: any) => {
 			return {
@@ -17,64 +17,64 @@ const commandConverters: CommandTestConverterSet = {
 			}
 		}
 	},
-	'_pin': {
+	_pin: {
 		idAliases: {},
 		propertyAliases: {
-			'name': (val: any) => ({ val, name: 'productIdentifier' })
+			name: (val: any) => ({ val, name: 'productIdentifier' })
 		}
 	},
-	'_SSC': {
+	_SSC: {
 		idAliases: {},
 		propertyAliases: {
-			'boxes': (val: any) => ({ val, name: 'boxCount' })
+			boxes: (val: any) => ({ val, name: 'boxCount' })
 		}
 	},
-	'SSBP': {
+	SSBP: {
 		idAliases: {
-			'boxId': 'index'
+			boxId: 'index'
 		},
 		propertyAliases: {
-			'cropBottom': (v: number) => ({ val: Math.round(v * 1000) }),
-			'cropTop': (v: number) => ({ val: Math.round(v * 1000) }),
-			'cropLeft': (v: number) => ({ val: Math.round(v * 1000) }),
-			'cropRight': (v: number) => ({ val: Math.round(v * 1000) }),
-			'size': (v: number) => ({ val: Math.round(v * 1000) }),
-			'positionX': (v: number) => ({ val: Math.round(v * 100), name: 'x' }),
-			'positionY': (v: number) => ({ val: Math.round(v * 100), name: 'y' }),
-			'inputSource': (v: number) => ({ val: v, name: 'source' })
+			cropBottom: (v: number) => ({ val: Math.round(v * 1000) }),
+			cropTop: (v: number) => ({ val: Math.round(v * 1000) }),
+			cropLeft: (v: number) => ({ val: Math.round(v * 1000) }),
+			cropRight: (v: number) => ({ val: Math.round(v * 1000) }),
+			size: (v: number) => ({ val: Math.round(v * 1000) }),
+			positionX: (v: number) => ({ val: Math.round(v * 100), name: 'x' }),
+			positionY: (v: number) => ({ val: Math.round(v * 100), name: 'y' }),
+			inputSource: (v: number) => ({ val: v, name: 'source' })
 		}
 	},
-	'CSBP': {
+	CSBP: {
 		idAliases: {
-			'boxId': 'index'
+			boxId: 'index'
 		},
 		propertyAliases: {
-			'cropBottom': (v: number) => ({ val: Math.round(v * 1000) }),
-			'cropTop': (v: number) => ({ val: Math.round(v * 1000) }),
-			'cropLeft': (v: number) => ({ val: Math.round(v * 1000) }),
-			'cropRight': (v: number) => ({ val: Math.round(v * 1000) }),
-			'size': (v: number) => ({ val: Math.round(v * 1000) }),
-			'positionX': (v: number) => ({ val: Math.round(v * 100), name: 'x' }),
-			'positionY': (v: number) => ({ val: Math.round(v * 100), name: 'y' }),
-			'inputSource': (v: number) => ({ val: v, name: 'source' })
+			cropBottom: (v: number) => ({ val: Math.round(v * 1000) }),
+			cropTop: (v: number) => ({ val: Math.round(v * 1000) }),
+			cropLeft: (v: number) => ({ val: Math.round(v * 1000) }),
+			cropRight: (v: number) => ({ val: Math.round(v * 1000) }),
+			size: (v: number) => ({ val: Math.round(v * 1000) }),
+			positionX: (v: number) => ({ val: Math.round(v * 100), name: 'x' }),
+			positionY: (v: number) => ({ val: Math.round(v * 100), name: 'y' }),
+			inputSource: (v: number) => ({ val: v, name: 'source' })
 		}
 	},
-	'SSrc': {
+	SSrc: {
 		idAliases: {},
 		propertyAliases: {
-			'artClip': (v: number) => ({ val: Math.round(v * 10) }),
-			'artGain': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderLightSourceAltitude': (v: number) => ({ val: Math.round(v) }),
-			'borderLightSourceDirection': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderHue': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderWidthIn': (v: number) => ({ val: Math.round(v * 100), name: 'borderInnerWidth' }),
-			'borderLuma': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderWidthOut': (v: number) => ({ val: Math.round(v * 100), name: 'borderOuterWidth' }),
-			'borderSaturation': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderSoftnessIn': (v: number) => ({ val: v, name: 'borderInnerSoftness' }),
-			'borderSoftnessOut': (v: number) => ({ val: v, name: 'borderOuterSoftness' }),
-			'artFillInput': (v: number) => ({ val: v, name: 'artFillSource' }),
-			'artKeyInput': (v: number) => ({ val: v, name: 'artCutSource' })
+			artClip: (v: number) => ({ val: Math.round(v * 10) }),
+			artGain: (v: number) => ({ val: Math.round(v * 10) }),
+			borderLightSourceAltitude: (v: number) => ({ val: Math.round(v) }),
+			borderLightSourceDirection: (v: number) => ({ val: Math.round(v * 10) }),
+			borderHue: (v: number) => ({ val: Math.round(v * 10) }),
+			borderWidthIn: (v: number) => ({ val: Math.round(v * 100), name: 'borderInnerWidth' }),
+			borderLuma: (v: number) => ({ val: Math.round(v * 10) }),
+			borderWidthOut: (v: number) => ({ val: Math.round(v * 100), name: 'borderOuterWidth' }),
+			borderSaturation: (v: number) => ({ val: Math.round(v * 10) }),
+			borderSoftnessIn: (v: number) => ({ val: v, name: 'borderInnerSoftness' }),
+			borderSoftnessOut: (v: number) => ({ val: v, name: 'borderOuterSoftness' }),
+			artFillInput: (v: number) => ({ val: v, name: 'artFillSource' }),
+			artKeyInput: (v: number) => ({ val: v, name: 'artCutSource' })
 		},
 		customMutate: (o: any) => {
 			return {
@@ -105,32 +105,32 @@ const commandConverters: CommandTestConverterSet = {
 			}
 		}
 	},
-	'CSSc': {
+	CSSc: {
 		idAliases: {},
 		propertyAliases: {
-			'artClip': (v: number) => ({ val: Math.round(v * 10) }),
-			'artGain': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderLightSourceAltitude': (v: number) => ({ val: Math.round(v) }),
-			'borderLightSourceDirection': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderHue': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderInnerWidth': (v: number) => ({ val: Math.round(v * 100) }),
-			'borderLuma': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderOuterWidth': (v: number) => ({ val: Math.round(v * 100) }),
-			'borderSaturation': (v: number) => ({ val: Math.round(v * 10) })
+			artClip: (v: number) => ({ val: Math.round(v * 10) }),
+			artGain: (v: number) => ({ val: Math.round(v * 10) }),
+			borderLightSourceAltitude: (v: number) => ({ val: Math.round(v) }),
+			borderLightSourceDirection: (v: number) => ({ val: Math.round(v * 10) }),
+			borderHue: (v: number) => ({ val: Math.round(v * 10) }),
+			borderInnerWidth: (v: number) => ({ val: Math.round(v * 100) }),
+			borderLuma: (v: number) => ({ val: Math.round(v * 10) }),
+			borderOuterWidth: (v: number) => ({ val: Math.round(v * 100) }),
+			borderSaturation: (v: number) => ({ val: Math.round(v * 10) })
 		}
 	},
-	'DskP': {
+	DskP: {
 		idAliases: {
-			'downstreamKeyerId': 'index'
+			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {
-			'clip': (v: number) => ({ val: Math.round(v * 10) }),
-			'gain': (v: number) => ({ val: Math.round(v * 10) }),
-			'preMultipliedKey': (v: number) => ({ val: v, name: 'preMultiply' }),
-			'maskLeft': (v: number) => ({ val: Math.round(v * 1000) }),
-			'maskRight': (v: number) => ({ val: Math.round(v * 1000) }),
-			'maskTop': (v: number) => ({ val: Math.round(v * 1000) }),
-			'maskBottom': (v: number) => ({ val: Math.round(v * 1000) })
+			clip: (v: number) => ({ val: Math.round(v * 10) }),
+			gain: (v: number) => ({ val: Math.round(v * 10) }),
+			preMultipliedKey: (v: number) => ({ val: v, name: 'preMultiply' }),
+			maskLeft: (v: number) => ({ val: Math.round(v * 1000) }),
+			maskRight: (v: number) => ({ val: Math.round(v * 1000) }),
+			maskTop: (v: number) => ({ val: Math.round(v * 1000) }),
+			maskBottom: (v: number) => ({ val: Math.round(v * 1000) })
 		},
 		customMutate: (obj: any) => {
 			obj['mask'] = {
@@ -148,131 +148,131 @@ const commandConverters: CommandTestConverterSet = {
 			return obj
 		}
 	},
-	'CDsG': {
+	CDsG: {
 		idAliases: {
-			'downstreamKeyerId': 'index'
+			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {
-			'clip': (v: number) => ({ val: Math.round(v * 10) }),
-			'gain': (v: number) => ({ val: Math.round(v * 10) }),
-			'preMultipliedKey': (v: number) => ({ val: v, name: 'preMultiply' })
+			clip: (v: number) => ({ val: Math.round(v * 10) }),
+			gain: (v: number) => ({ val: Math.round(v * 10) }),
+			preMultipliedKey: (v: number) => ({ val: v, name: 'preMultiply' })
 		}
 	},
-	'DskS': {
+	DskS: {
 		idAliases: {
-			'downstreamKeyerId': 'index'
+			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {}
 	},
-	'DskB': {
+	DskB: {
 		idAliases: {
-			'downstreamKeyerId': 'index'
+			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {}
 	},
-	'DDsA': {
+	DDsA: {
 		idAliases: {
-			'downstreamKeyerId': 'index'
+			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {}
 	},
-	'CDsT': {
+	CDsT: {
 		idAliases: {
-			'downstreamKeyerId': 'index'
+			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {}
 	},
-	'CDsR': {
+	CDsR: {
 		idAliases: {
-			'downstreamKeyerId': 'index'
+			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {}
 	},
-	'CDsL': {
+	CDsL: {
 		idAliases: {
-			'downstreamKeyerId': 'index'
+			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {}
 	},
-	'CDsC': {
+	CDsC: {
 		idAliases: {
-			'downstreamKeyerId': 'index'
+			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {
-			'source': (v: number) => ({ val: v, name: 'input' })
+			source: (v: number) => ({ val: v, name: 'input' })
 		}
 	},
-	'CDsF': {
+	CDsF: {
 		idAliases: {
-			'downstreamKeyerId': 'index'
+			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {
-			'source': (v: number) => ({ val: v, name: 'input' })
+			source: (v: number) => ({ val: v, name: 'input' })
 		}
 	},
-	'CDsM': {
+	CDsM: {
 		idAliases: {
-			'downstreamKeyerId': 'index'
+			downstreamKeyerId: 'index'
 		},
 		propertyAliases: {
-			'maskEnabled': (val: any) => ({ val, name: 'enabled' }),
-			'maskLeft': (v: number) => ({ val: Math.round(v * 1000), name: 'left' }),
-			'maskRight': (v: number) => ({ val: Math.round(v * 1000), name: 'right' }),
-			'maskTop': (v: number) => ({ val: Math.round(v * 1000), name: 'top' }),
-			'maskBottom': (v: number) => ({ val: Math.round(v * 1000), name: 'bottom' })
+			maskEnabled: (val: any) => ({ val, name: 'enabled' }),
+			maskLeft: (v: number) => ({ val: Math.round(v * 1000), name: 'left' }),
+			maskRight: (v: number) => ({ val: Math.round(v * 1000), name: 'right' }),
+			maskTop: (v: number) => ({ val: Math.round(v * 1000), name: 'top' }),
+			maskBottom: (v: number) => ({ val: Math.round(v * 1000), name: 'bottom' })
 		}
 	},
-	'AMIP': {
+	AMIP: {
 		idAliases: {
-			'index': 'index'
+			index: 'index'
 		},
 		propertyAliases: {
-			'balance': (v: number) => ({ val: Math.round(v) }),
-			'gain': (v: number) => ({ val: Math.round(v * 100) / 100 })
+			balance: (v: number) => ({ val: Math.round(v) }),
+			gain: (v: number) => ({ val: Math.round(v * 100) / 100 })
 		},
 		processDeserialized: props => {
 			props.gain = Math.round(props.gain * 100) / 100
 		}
 	},
-	'CAMI': {
+	CAMI: {
 		idAliases: {
-			'index': 'index'
+			index: 'index'
 		},
 		propertyAliases: {
-			'balance': (v: number) => ({ val: Math.round(v * 200) / 200 })
+			balance: (v: number) => ({ val: Math.round(v * 200) / 200 })
 			// 'gain': (v: number) => ({ val: Math.round(v * 100) / 100 })
 		}
 	},
-	'AMMO': {
+	AMMO: {
 		idAliases: {},
 		propertyAliases: {
-			'programOutFollowFadeToBlack': (val: any) => ({ val, name: 'followFadeToBlack' }),
-			'balance': (v: number) => ({ val: Math.round(v) }),
-			'gain': (v: number) => ({ val: Math.round(v * 100) / 100 })
+			programOutFollowFadeToBlack: (val: any) => ({ val, name: 'followFadeToBlack' }),
+			balance: (v: number) => ({ val: Math.round(v) }),
+			gain: (v: number) => ({ val: Math.round(v * 100) / 100 })
 		}
 	},
-	'_top': {
+	_top: {
 		idAliases: {},
 		propertyAliases: {
-			'auxiliaries': (val: any) => ({ val, name: 'auxilliaries' }),
-			'dVE': (val: any) => ({ val, name: 'DVEs' }),
-			'hyperDecks': (val: any) => ({ val, name: 'maxHyperdecks' }),
-			'mixEffectBlocks': (val: any) => ({ val, name: 'mixEffects' }),
-			'serialPort': (val: any) => ({ val, name: 'serialPorts' }),
-			'videoSources': (val: any) => ({ val, name: 'sources' }),
-			'superSource': (val: any) => ({ val, name: 'superSources' }),
-			'talkbackOverSDI': () => ({ val: 0 }) // @todo: should be fixed in atem-connection
+			auxiliaries: (val: any) => ({ val, name: 'auxilliaries' }),
+			dVE: (val: any) => ({ val, name: 'DVEs' }),
+			hyperDecks: (val: any) => ({ val, name: 'maxHyperdecks' }),
+			mixEffectBlocks: (val: any) => ({ val, name: 'mixEffects' }),
+			serialPort: (val: any) => ({ val, name: 'serialPorts' }),
+			videoSources: (val: any) => ({ val, name: 'sources' }),
+			superSource: (val: any) => ({ val, name: 'superSources' }),
+			talkbackOverSDI: () => ({ val: 0 }) // @todo: should be fixed in atem-connection
 		}
 	},
-	'_MeC': {
+	_MeC: {
 		idAliases: {
-			'index': 'index'
+			index: 'index'
 		},
 		propertyAliases: {
-			'balance': (v: number) => ({ val: Math.round(v * 200) / 200 })
+			balance: (v: number) => ({ val: Math.round(v * 200) / 200 })
 		}
 	},
-	'FTCD': {
+	FTCD: {
 		idAliases: {},
 		propertyAliases: {},
 		customMutate: (obj: any) => {
@@ -281,536 +281,536 @@ const commandConverters: CommandTestConverterSet = {
 			return obj
 		}
 	},
-	'FTFD': {
+	FTFD: {
 		idAliases: {},
 		propertyAliases: {
-			'filename': (val: any) => ({ val, name: 'fileName' })
+			filename: (val: any) => ({ val, name: 'fileName' })
 		}
 	},
-	'Powr': {
+	Powr: {
 		idAliases: {},
 		propertyAliases: {},
 		customMutate: (obj: any) => {
-			return [ obj.pin1, obj.pin2 ]
+			return [obj.pin1, obj.pin2]
 		}
 	},
-	'KePt': {
+	KePt: {
 		idAliases: {
-			'mixEffect': 'mixEffectIndex',
-			'upstreamKeyerId': 'keyerIndex'
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			'pattern': (val: any) => ({ val, name: 'style' }),
-			'inverse': (val: any) => ({ val, name: 'invert' }),
-			'size': (v: number) => ({ val: Math.round(v * 100) }),
-			'softness': (v: number) => ({ val: Math.round(v * 100) }),
-			'symmetry': (v: number) => ({ val: Math.round(v * 100) }),
-			'xPosition': (v: number) => ({ val: Math.round(v * 10000), name: 'positionX' }),
-			'yPosition': (v: number) => ({ val: Math.round(v * 10000), name: 'positionY' })
+			pattern: (val: any) => ({ val, name: 'style' }),
+			inverse: (val: any) => ({ val, name: 'invert' }),
+			size: (v: number) => ({ val: Math.round(v * 100) }),
+			softness: (v: number) => ({ val: Math.round(v * 100) }),
+			symmetry: (v: number) => ({ val: Math.round(v * 100) }),
+			xPosition: (v: number) => ({ val: Math.round(v * 10000), name: 'positionX' }),
+			yPosition: (v: number) => ({ val: Math.round(v * 10000), name: 'positionY' })
 		}
 	},
-	'CKPt': {
+	CKPt: {
 		idAliases: {
-			'mixEffect': 'mixEffectIndex',
-			'upstreamKeyerId': 'keyerIndex'
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			'pattern': (val: any) => ({ val, name: 'style' }),
-			'inverse': (val: any) => ({ val, name: 'invert' }),
-			'size': (v: number) => ({ val: Math.round(v * 100) }),
-			'softness': (v: number) => ({ val: Math.round(v * 100) }),
-			'symmetry': (v: number) => ({ val: Math.round(v * 100) }),
-			'xPosition': (v: number) => ({ val: Math.round(v * 10000), name: 'positionX' }),
-			'yPosition': (v: number) => ({ val: Math.round(v * 10000), name: 'positionY' })
+			pattern: (val: any) => ({ val, name: 'style' }),
+			inverse: (val: any) => ({ val, name: 'invert' }),
+			size: (v: number) => ({ val: Math.round(v * 100) }),
+			softness: (v: number) => ({ val: Math.round(v * 100) }),
+			symmetry: (v: number) => ({ val: Math.round(v * 100) }),
+			xPosition: (v: number) => ({ val: Math.round(v * 10000), name: 'positionX' }),
+			yPosition: (v: number) => ({ val: Math.round(v * 10000), name: 'positionY' })
 		}
 	},
-	'KeCk': {
+	KeCk: {
 		idAliases: {
-			'mixEffect': 'mixEffectIndex',
-			'upstreamKeyerId': 'keyerIndex'
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			'gain': (v: number) => ({ val: Math.round(v * 10) }),
-			'hue': (v: number) => ({ val: Math.round(v * 10) }),
-			'lift': (v: number) => ({ val: Math.round(v * 10) }),
-			'ySuppress': (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number) => ({ val: Math.round(v * 10) }),
+			hue: (v: number) => ({ val: Math.round(v * 10) }),
+			lift: (v: number) => ({ val: Math.round(v * 10) }),
+			ySuppress: (v: number) => ({ val: Math.round(v * 10) })
 		}
 	},
-	'CKCk': {
+	CKCk: {
 		idAliases: {
-			'mixEffect': 'mixEffectIndex',
-			'upstreamKeyerId': 'keyerIndex'
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			'gain': (v: number) => ({ val: Math.round(v * 10) }),
-			'hue': (v: number) => ({ val: Math.round(v * 10) }),
-			'lift': (v: number) => ({ val: Math.round(v * 10) }),
-			'ySuppress': (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number) => ({ val: Math.round(v * 10) }),
+			hue: (v: number) => ({ val: Math.round(v * 10) }),
+			lift: (v: number) => ({ val: Math.round(v * 10) }),
+			ySuppress: (v: number) => ({ val: Math.round(v * 10) })
 		}
 	},
-	'CKTp': {
+	CKTp: {
 		idAliases: {
-			'mixEffect': 'mixEffectIndex',
-			'upstreamKeyerId': 'keyerIndex'
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			'keyType': (v: number) => ({ val: v, name: 'mixEffectKeyType' })
+			keyType: (v: number) => ({ val: v, name: 'mixEffectKeyType' })
 		}
 	},
-	'KeOn': {
+	KeOn: {
 		idAliases: {
-			'mixEffect': 'mixEffectIndex',
-			'upstreamKeyerId': 'keyerIndex'
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {}
 	},
-	'CKOn': {
+	CKOn: {
 		idAliases: {
-			'mixEffect': 'mixEffectIndex',
-			'upstreamKeyerId': 'keyerIndex'
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {}
 	},
-	'CKeF': {
+	CKeF: {
 		idAliases: {
-			'mixEffect': 'mixEffectIndex',
-			'upstreamKeyerId': 'keyerIndex'
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {}
 	},
-	'KeLm': {
+	KeLm: {
 		idAliases: {
-			'mixEffect': 'mixEffectIndex',
-			'upstreamKeyerId': 'keyerIndex'
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			'gain': (v: number) => ({ val: Math.round(v * 10) }),
-			'clip': (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number) => ({ val: Math.round(v * 10) }),
+			clip: (v: number) => ({ val: Math.round(v * 10) })
 		}
 	},
-	'CKLm': {
+	CKLm: {
 		idAliases: {
-			'mixEffect': 'mixEffectIndex',
-			'upstreamKeyerId': 'keyerIndex'
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			'gain': (v: number) => ({ val: Math.round(v * 10) }),
-			'clip': (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number) => ({ val: Math.round(v * 10) }),
+			clip: (v: number) => ({ val: Math.round(v * 10) })
 		}
 	},
-	'KeBP': {
+	KeBP: {
 		idAliases: {
-			'mixEffect': 'mixEffectIndex'
+			mixEffect: 'mixEffectIndex'
 			// 'upstreamKeyerId': 'keyerIndex'
 		},
 		propertyAliases: {
-			'keyerIndex': (val: any) => ({ val, name: 'upstreamKeyerId' }),
-			'mode': (val: any) => ({ val, name: 'mixEffectKeyType' }),
-			'maskLeft': (v: number) => ({ val: Math.round(v * 1000) }),
-			'maskRight': (v: number) => ({ val: Math.round(v * 1000) }),
-			'maskTop': (v: number) => ({ val: Math.round(v * 1000) }),
-			'maskBottom': (v: number) => ({ val: Math.round(v * 1000) })
+			keyerIndex: (val: any) => ({ val, name: 'upstreamKeyerId' }),
+			mode: (val: any) => ({ val, name: 'mixEffectKeyType' }),
+			maskLeft: (v: number) => ({ val: Math.round(v * 1000) }),
+			maskRight: (v: number) => ({ val: Math.round(v * 1000) }),
+			maskTop: (v: number) => ({ val: Math.round(v * 1000) }),
+			maskBottom: (v: number) => ({ val: Math.round(v * 1000) })
 		}
 	},
-	'KeDV': {
+	KeDV: {
 		idAliases: {
-			'mixEffect': 'mixEffectIndex',
-			'upstreamKeyerId': 'keyerIndex'
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			'positionX': (v: number) => ({ val: Math.round(v * 1000) }),
-			'positionY': (v: number) => ({ val: Math.round(v * 1000) }),
-			'sizeX': (v: number) => ({ val: Math.round(v * 1000) }),
-			'sizeY': (v: number) => ({ val: Math.round(v * 1000) }),
-			'rotation': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderHue': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderInnerWidth': (v: number) => ({ val: Math.round(v * 100) }),
-			'borderLuma': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderOuterWidth': (v: number) => ({ val: Math.round(v * 100) }),
-			'borderSaturation': (v: number) => ({ val: Math.round(v * 10) }),
-			'lightSourceDirection': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderShadowEnabled': (val: any) => ({ val, name: 'shadowEnabled' }),
-			'maskLeft': (v: number) => ({ val: Math.round(v * 1000) }),
-			'maskRight': (v: number) => ({ val: Math.round(v * 1000) }),
-			'maskTop': (v: number) => ({ val: Math.round(v * 1000) }),
-			'maskBottom': (v: number) => ({ val: Math.round(v * 1000) })
+			positionX: (v: number) => ({ val: Math.round(v * 1000) }),
+			positionY: (v: number) => ({ val: Math.round(v * 1000) }),
+			sizeX: (v: number) => ({ val: Math.round(v * 1000) }),
+			sizeY: (v: number) => ({ val: Math.round(v * 1000) }),
+			rotation: (v: number) => ({ val: Math.round(v * 10) }),
+			borderHue: (v: number) => ({ val: Math.round(v * 10) }),
+			borderInnerWidth: (v: number) => ({ val: Math.round(v * 100) }),
+			borderLuma: (v: number) => ({ val: Math.round(v * 10) }),
+			borderOuterWidth: (v: number) => ({ val: Math.round(v * 100) }),
+			borderSaturation: (v: number) => ({ val: Math.round(v * 10) }),
+			lightSourceDirection: (v: number) => ({ val: Math.round(v * 10) }),
+			borderShadowEnabled: (val: any) => ({ val, name: 'shadowEnabled' }),
+			maskLeft: (v: number) => ({ val: Math.round(v * 1000) }),
+			maskRight: (v: number) => ({ val: Math.round(v * 1000) }),
+			maskTop: (v: number) => ({ val: Math.round(v * 1000) }),
+			maskBottom: (v: number) => ({ val: Math.round(v * 1000) })
 		}
 	},
-	'CKDV': {
+	CKDV: {
 		idAliases: {
-			'mixEffect': 'mixEffectIndex',
-			'upstreamKeyerId': 'keyerIndex'
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			'positionX': (v: number) => ({ val: Math.round(v * 1000) }),
-			'positionY': (v: number) => ({ val: Math.round(v * 1000) }),
-			'sizeX': (v: number) => ({ val: Math.round(v * 1000) }),
-			'sizeY': (v: number) => ({ val: Math.round(v * 1000) }),
-			'rotation': (v: number) => ({ val: Math.round(v * 1000) }), // TODO - this doesnt match KeDV
-			'borderHue': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderInnerWidth': (v: number) => ({ val: Math.round(v * 100) }),
-			'borderLuma': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderOuterWidth': (v: number) => ({ val: Math.round(v * 100) }),
-			'borderSaturation': (v: number) => ({ val: Math.round(v * 10) }),
-			'lightSourceDirection': (v: number) => ({ val: Math.round(v * 10) }),
-			'borderShadowEnabled': (val: any) => ({ val, name: 'shadowEnabled' }),
-			'maskLeft': (v: number) => ({ val: Math.round(v * 1000) }),
-			'maskRight': (v: number) => ({ val: Math.round(v * 1000) }),
-			'maskTop': (v: number) => ({ val: Math.round(v * 1000) }),
-			'maskBottom': (v: number) => ({ val: Math.round(v * 1000) })
+			positionX: (v: number) => ({ val: Math.round(v * 1000) }),
+			positionY: (v: number) => ({ val: Math.round(v * 1000) }),
+			sizeX: (v: number) => ({ val: Math.round(v * 1000) }),
+			sizeY: (v: number) => ({ val: Math.round(v * 1000) }),
+			rotation: (v: number) => ({ val: Math.round(v * 1000) }), // TODO - this doesnt match KeDV
+			borderHue: (v: number) => ({ val: Math.round(v * 10) }),
+			borderInnerWidth: (v: number) => ({ val: Math.round(v * 100) }),
+			borderLuma: (v: number) => ({ val: Math.round(v * 10) }),
+			borderOuterWidth: (v: number) => ({ val: Math.round(v * 100) }),
+			borderSaturation: (v: number) => ({ val: Math.round(v * 10) }),
+			lightSourceDirection: (v: number) => ({ val: Math.round(v * 10) }),
+			borderShadowEnabled: (val: any) => ({ val, name: 'shadowEnabled' }),
+			maskLeft: (v: number) => ({ val: Math.round(v * 1000) }),
+			maskRight: (v: number) => ({ val: Math.round(v * 1000) }),
+			maskTop: (v: number) => ({ val: Math.round(v * 1000) }),
+			maskBottom: (v: number) => ({ val: Math.round(v * 1000) })
 		}
 	},
-	'CKeC': {
+	CKeC: {
 		idAliases: {
-			'mixEffect': 'mixEffectIndex',
-			'upstreamKeyerId': 'keyerIndex'
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {}
 	},
-	'CKMs': {
+	CKMs: {
 		idAliases: {
-			'mixEffect': 'mixEffectIndex',
-			'upstreamKeyerId': 'keyerIndex'
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
 		},
 		propertyAliases: {
-			'maskLeft': (v: number) => ({ val: Math.round(v * 1000) }),
-			'maskRight': (v: number) => ({ val: Math.round(v * 1000) }),
-			'maskTop': (v: number) => ({ val: Math.round(v * 1000) }),
-			'maskBottom': (v: number) => ({ val: Math.round(v * 1000) })
+			maskLeft: (v: number) => ({ val: Math.round(v * 1000) }),
+			maskRight: (v: number) => ({ val: Math.round(v * 1000) }),
+			maskTop: (v: number) => ({ val: Math.round(v * 1000) }),
+			maskBottom: (v: number) => ({ val: Math.round(v * 1000) })
 		}
 	},
-	'TDvP': {
+	TDvP: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {
-			'gain': (v: number) => ({ val: Math.round(v * 10) }),
-			'clip': (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number) => ({ val: Math.round(v * 10) }),
+			clip: (v: number) => ({ val: Math.round(v * 10) })
 		}
 	},
-	'CTDv': {
+	CTDv: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {
-			'gain': (v: number) => ({ val: Math.round(v * 10) }),
-			'clip': (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number) => ({ val: Math.round(v * 10) }),
+			clip: (v: number) => ({ val: Math.round(v * 10) })
 		}
 	},
-	'TStP': {
+	TStP: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {
-			'gain': (v: number) => ({ val: Math.round(v * 10) }),
-			'clip': (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number) => ({ val: Math.round(v * 10) }),
+			clip: (v: number) => ({ val: Math.round(v * 10) })
 		}
 	},
-	'CTSt': {
+	CTSt: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {
-			'gain': (v: number) => ({ val: Math.round(v * 10) }),
-			'clip': (v: number) => ({ val: Math.round(v * 10) })
+			gain: (v: number) => ({ val: Math.round(v * 10) }),
+			clip: (v: number) => ({ val: Math.round(v * 10) })
 		}
 	},
-	'TrPr': {
+	TrPr: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {
-			'previewTransition': (val: any) => ({ val, name: 'preview' })
+			previewTransition: (val: any) => ({ val, name: 'preview' })
 		}
 	},
-	'CTPr': {
+	CTPr: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {
-			'previewTransition': (val: any) => ({ val, name: 'preview' })
+			previewTransition: (val: any) => ({ val, name: 'preview' })
 		}
 	},
-	'TrSS': {
+	TrSS: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'CTTp': {
+	CTTp: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'TMxP': {
+	TMxP: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'CTMx': {
+	CTMx: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'TDpP': {
+	TDpP: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'CTDp': {
+	CTDp: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'TWpP': {
+	TWpP: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {
-			'symmetry': (v: number) => ({ val: Math.round(v * 100) }),
-			'xPosition': (v: number) => ({ val: Math.round(v * 10000) }),
-			'yPosition': (v: number) => ({ val: Math.round(v * 10000) }),
-			'borderSoftness': (v: number) => ({ val: Math.round(v * 100) }),
-			'borderWidth': (v: number) => ({ val: Math.round(v * 100) })
+			symmetry: (v: number) => ({ val: Math.round(v * 100) }),
+			xPosition: (v: number) => ({ val: Math.round(v * 10000) }),
+			yPosition: (v: number) => ({ val: Math.round(v * 10000) }),
+			borderSoftness: (v: number) => ({ val: Math.round(v * 100) }),
+			borderWidth: (v: number) => ({ val: Math.round(v * 100) })
 		}
 	},
-	'CTWp': {
+	CTWp: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {
-			'symmetry': (v: number) => ({ val: Math.round(v * 100) }),
-			'xPosition': (v: number) => ({ val: Math.round(v * 10000) }),
-			'yPosition': (v: number) => ({ val: Math.round(v * 10000) }),
-			'borderSoftness': (v: number) => ({ val: Math.round(v * 100) }),
-			'borderWidth': (v: number) => ({ val: Math.round(v * 100) })
+			symmetry: (v: number) => ({ val: Math.round(v * 100) }),
+			xPosition: (v: number) => ({ val: Math.round(v * 10000) }),
+			yPosition: (v: number) => ({ val: Math.round(v * 10000) }),
+			borderSoftness: (v: number) => ({ val: Math.round(v * 100) }),
+			borderWidth: (v: number) => ({ val: Math.round(v * 100) })
 		}
 	},
-	'TrPs': {
+	TrPs: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {
-			'handlePosition': (v: number) => ({ val: Math.round(v * 10000) })
+			handlePosition: (v: number) => ({ val: Math.round(v * 10000) })
 		}
 	},
-	'CTPs': {
+	CTPs: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {
-			'handlePosition': (v: number) => ({ val: Math.round(v * 10000) })
+			handlePosition: (v: number) => ({ val: Math.round(v * 10000) })
 		}
 	},
-	'MRPr': {
+	MRPr: {
 		idAliases: {},
 		propertyAliases: {
-			'index': (val: any) => ({ val, name: 'macroIndex' })
+			index: (val: any) => ({ val, name: 'macroIndex' })
 		}
 	},
-	'MRcS': {
+	MRcS: {
 		idAliases: {},
 		propertyAliases: {
-			'index': (val: any) => ({ val, name: 'macroIndex' })
+			index: (val: any) => ({ val, name: 'macroIndex' })
 		}
 	},
-	'MvIn': {
+	MvIn: {
 		idAliases: {
-			'multiViewerId': 'multiviewIndex'
+			multiViewerId: 'multiviewIndex'
 		},
 		propertyAliases: {}
 	},
-	'CMvI': {
+	CMvI: {
 		idAliases: {
-			'multiViewerId': 'multiviewIndex'
+			multiViewerId: 'multiviewIndex'
 		},
 		propertyAliases: {}
 	},
-	'VidM': {
+	VidM: {
 		idAliases: {},
 		propertyAliases: {
-			'videoMode': (val: any) => ({ val, name: 'mode' })
+			videoMode: (val: any) => ({ val, name: 'mode' })
 		}
 	},
-	'CVdM': {
+	CVdM: {
 		idAliases: {},
 		propertyAliases: {
-			'videoMode': (val: any) => ({ val, name: 'mode' })
+			videoMode: (val: any) => ({ val, name: 'mode' })
 		}
 	},
-	'RCPS': {
+	RCPS: {
 		idAliases: {
-			'mediaPlayerId': 'index'
+			mediaPlayerId: 'index'
 		},
 		propertyAliases: {}
 	},
-	'SCPS': {
+	SCPS: {
 		idAliases: {
-			'mediaPlayerId': 'index'
+			mediaPlayerId: 'index'
 		},
 		propertyAliases: {}
 	},
-	'MPCS': {
+	MPCS: {
 		idAliases: {
-			'clipId': 'index'
+			clipId: 'index'
 		},
 		propertyAliases: {}
 	},
-	'SMPC': {
+	SMPC: {
 		idAliases: {
 			// 'mediaPool': 'index'
 		},
 		propertyAliases: {}
 	},
-	'MPfe': {
+	MPfe: {
 		idAliases: {
-			'mediaPool': 'bank',
-			'frameIndex': 'index'
+			mediaPool: 'bank',
+			frameIndex: 'index'
 		},
 		propertyAliases: {
-			'filename': (val: any) => ({ val, name: 'fileName' })
+			filename: (val: any) => ({ val, name: 'fileName' })
 		}
 	},
-	'MPrp': {
+	MPrp: {
 		idAliases: {},
 		propertyAliases: {
-			'index': (val: any) => ({ val, name: 'macroIndex' })
+			index: (val: any) => ({ val, name: 'macroIndex' })
 		}
 	},
-	'PrgI': {
+	PrgI: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'CPgI': {
+	CPgI: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'PrvI': {
+	PrvI: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'CPvI': {
+	CPvI: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'DCut': {
+	DCut: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'DAut': {
+	DAut: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'FtbS': {
+	FtbS: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'FtbC': {
+	FtbC: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'FtbA': {
+	FtbA: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'FtbP': {
+	FtbP: {
 		idAliases: {
-			'mixEffect': 'index'
+			mixEffect: 'index'
 		},
 		propertyAliases: {}
 	},
-	'AuxS': {
+	AuxS: {
 		idAliases: {
-			'auxBus': 'id'
+			auxBus: 'id'
 		},
 		propertyAliases: {}
 	},
-	'CAuS': {
+	CAuS: {
 		idAliases: {
-			'auxBus': 'id'
+			auxBus: 'id'
 		},
 		propertyAliases: {}
 	},
-	'CInL': {
+	CInL: {
 		idAliases: {
-			'inputId': 'id'
+			inputId: 'id'
 		},
 		propertyAliases: {}
 	},
-	'MAct': {
+	MAct: {
 		idAliases: {
-			'index': 'index'
+			index: 'index'
 		},
 		propertyAliases: {}
 	},
-	'FTDa': {
+	FTDa: {
 		idAliases: {},
 		propertyAliases: {
-			'body': (v: string) => ({ val: Buffer.from(v, 'base64') })
+			body: (v: string) => ({ val: Buffer.from(v, 'base64') })
 		},
 		customMutate: (obj: any) => {
 			obj.size = obj.body.length
 			return obj
 		}
 	},
-	'KKFP': {
+	KKFP: {
 		idAliases: {
-			'upstreamKeyerId': 'keyerIndex',
-			'mixEffect': 'mixEffectIndex'
+			upstreamKeyerId: 'keyerIndex',
+			mixEffect: 'mixEffectIndex'
 		},
 		propertyAliases: {
-			'bevelPosition': (val: any) => ({ val, name: 'borderBevelPosition' }),
-			'bevelSoftness': (val: any) => ({ val, name: 'borderBevelSoftness' }),
-			'innerSoftness': (val: any) => ({ val, name: 'borderInnerSoftness' }),
-			'innerWidth': (val: any) => ({ val: Math.round(val * 100), name: 'borderInnerWidth' }),
-			'keyFrame': (val: any) => ({ val, name: 'keyFrameId' }),
-			'outerSoftness': (val: any) => ({ val, name: 'borderOuterSoftness' }),
-			'outerWidth': (val: any) => ({ val: Math.round(val * 100), name: 'borderOuterWidth' }),
-			'xPosition': (val: any) => ({ val: Math.round(val * 1000), name: 'positionX' }),
-			'xSize': (val: any) => ({ val: Math.round(val * 1000), name: 'sizeX' }),
-			'yPosition': (val: any) => ({ val: Math.round(val * 1000), name: 'positionY' }),
-			'ySize': (val: any) => ({ val: Math.round(val * 1000), name: 'sizeY' }),
-			'rotation': (val: any) => ({ val: Math.round(val * 10) }),
-			'borderHue': (val: any) => ({ val: Math.round(val * 10) }),
-			'borderLuma': (val: any) => ({ val: Math.round(val * 10) }),
-			'borderSaturation': (val: any) => ({ val: Math.round(val * 10) }),
-			'lightSourceDirection': (val: any) => ({ val: Math.round(val * 10) }),
-			'maskBottom': (val: any) => ({ val: Math.round(val * 1000) }),
-			'maskTop': (val: any) => ({ val: Math.round(val * 1000) }),
-			'maskLeft': (val: any) => ({ val: Math.round(val * 1000) }),
-			'maskRight': (val: any) => ({ val: Math.round(val * 1000) })
+			bevelPosition: (val: any) => ({ val, name: 'borderBevelPosition' }),
+			bevelSoftness: (val: any) => ({ val, name: 'borderBevelSoftness' }),
+			innerSoftness: (val: any) => ({ val, name: 'borderInnerSoftness' }),
+			innerWidth: (val: any) => ({ val: Math.round(val * 100), name: 'borderInnerWidth' }),
+			keyFrame: (val: any) => ({ val, name: 'keyFrameId' }),
+			outerSoftness: (val: any) => ({ val, name: 'borderOuterSoftness' }),
+			outerWidth: (val: any) => ({ val: Math.round(val * 100), name: 'borderOuterWidth' }),
+			xPosition: (val: any) => ({ val: Math.round(val * 1000), name: 'positionX' }),
+			xSize: (val: any) => ({ val: Math.round(val * 1000), name: 'sizeX' }),
+			yPosition: (val: any) => ({ val: Math.round(val * 1000), name: 'positionY' }),
+			ySize: (val: any) => ({ val: Math.round(val * 1000), name: 'sizeY' }),
+			rotation: (val: any) => ({ val: Math.round(val * 10) }),
+			borderHue: (val: any) => ({ val: Math.round(val * 10) }),
+			borderLuma: (val: any) => ({ val: Math.round(val * 10) }),
+			borderSaturation: (val: any) => ({ val: Math.round(val * 10) }),
+			lightSourceDirection: (val: any) => ({ val: Math.round(val * 10) }),
+			maskBottom: (val: any) => ({ val: Math.round(val * 1000) }),
+			maskTop: (val: any) => ({ val: Math.round(val * 1000) }),
+			maskLeft: (val: any) => ({ val: Math.round(val * 1000) }),
+			maskRight: (val: any) => ({ val: Math.round(val * 1000) })
 		},
 		customMutate: (obj: any) => {
 			delete obj.maskEnabled
 			return obj
 		}
 	},
-	'MPCE': {
+	MPCE: {
 		idAliases: {
-			'mediaPlayerId': 'index'
+			mediaPlayerId: 'index'
 		},
 		propertyAliases: {},
 		customMutate: (obj: any) => {
@@ -825,9 +825,9 @@ const commandConverters: CommandTestConverterSet = {
 			return obj
 		}
 	},
-	'MPSS': {
+	MPSS: {
 		idAliases: {
-			'mediaPlayerId': 'index'
+			mediaPlayerId: 'index'
 		},
 		propertyAliases: {}
 	}

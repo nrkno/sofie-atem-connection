@@ -8,7 +8,7 @@ export interface DataTransferErrorProps {
 export class DataTransferErrorCommand extends DeserializedCommand<DataTransferErrorProps> {
 	public static readonly rawName = 'FTDE'
 
-	public static deserialize (rawCommand: Buffer): DataTransferErrorCommand {
+	public static deserialize(rawCommand: Buffer): DataTransferErrorCommand {
 		const properties = {
 			transferId: rawCommand.readUInt16BE(0),
 			errorCode: rawCommand.readUInt8(2)
@@ -17,7 +17,7 @@ export class DataTransferErrorCommand extends DeserializedCommand<DataTransferEr
 		return new DataTransferErrorCommand(properties)
 	}
 
-	public applyToState (): string[] {
+	public applyToState(): string[] {
 		// Nothing to do
 		return []
 	}

@@ -19,13 +19,13 @@ export class TransitionStingerCommand extends WritableCommand<StingerTransitionS
 
 	public readonly mixEffect: number
 
-	constructor (mixEffect: number) {
+	constructor(mixEffect: number) {
 		super()
 
 		this.mixEffect = mixEffect
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(20)
 		buffer.writeUInt16BE(this.flag, 0)
 
@@ -51,13 +51,13 @@ export class TransitionStingerUpdateCommand extends DeserializedCommand<StingerT
 
 	public readonly mixEffect: number
 
-	constructor (mixEffect: number, properties: StingerTransitionSettings) {
+	constructor(mixEffect: number, properties: StingerTransitionSettings) {
 		super(properties)
 
 		this.mixEffect = mixEffect
 	}
 
-	public static deserialize (rawCommand: Buffer): TransitionStingerUpdateCommand {
+	public static deserialize(rawCommand: Buffer): TransitionStingerUpdateCommand {
 		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
 			source: rawCommand.readUInt8(1),
@@ -67,16 +67,16 @@ export class TransitionStingerUpdateCommand extends DeserializedCommand<StingerT
 			gain: rawCommand.readUInt16BE(6),
 			invert: rawCommand.readUInt8(8) === 1,
 
-			preroll: rawCommand.readUInt8(10) << 8 | rawCommand.readUInt8(11),
-			clipDuration: rawCommand.readUInt8(12) << 8 | rawCommand.readUInt8(13),
-			triggerPoint: rawCommand.readUInt8(14) << 8 | rawCommand.readUInt8(15),
-			mixRate: rawCommand.readUInt8(16) << 8 | rawCommand.readUInt8(17)
+			preroll: (rawCommand.readUInt8(10) << 8) | rawCommand.readUInt8(11),
+			clipDuration: (rawCommand.readUInt8(12) << 8) | rawCommand.readUInt8(13),
+			triggerPoint: (rawCommand.readUInt8(14) << 8) | rawCommand.readUInt8(15),
+			mixRate: (rawCommand.readUInt8(16) << 8) | rawCommand.readUInt8(17)
 		}
 
 		return new TransitionStingerUpdateCommand(mixEffect, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
 			throw new InvalidIdError('MixEffect', this.mixEffect)
 		}

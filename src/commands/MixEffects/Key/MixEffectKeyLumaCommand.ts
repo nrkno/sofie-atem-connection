@@ -14,14 +14,14 @@ export class MixEffectKeyLumaCommand extends WritableCommand<UpstreamKeyerLumaSe
 	public readonly mixEffect: number
 	public readonly upstreamKeyerId: number
 
-	constructor (mixEffect: number, upstreamKeyerId: number) {
+	constructor(mixEffect: number, upstreamKeyerId: number) {
 		super()
 
 		this.mixEffect = mixEffect
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.mixEffect, 1)
@@ -42,14 +42,14 @@ export class MixEffectKeyLumaUpdateCommand extends DeserializedCommand<UpstreamK
 	public readonly mixEffect: number
 	public readonly upstreamKeyerId: number
 
-	constructor (mixEffect: number, upstreamKeyerId: number, properties: UpstreamKeyerLumaSettings) {
+	constructor(mixEffect: number, upstreamKeyerId: number, properties: UpstreamKeyerLumaSettings) {
 		super(properties)
 
 		this.mixEffect = mixEffect
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	public static deserialize (rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer) {
 		const mixEffect = rawCommand.readUInt8(0)
 		const upstreamKeyerId = rawCommand.readUInt8(1)
 		const properties = {
@@ -62,7 +62,7 @@ export class MixEffectKeyLumaUpdateCommand extends DeserializedCommand<UpstreamK
 		return new MixEffectKeyLumaUpdateCommand(mixEffect, upstreamKeyerId, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		const meInfo = state.info.mixEffects[this.mixEffect]
 		if (!meInfo || this.upstreamKeyerId >= meInfo.keyCount) {
 			throw new InvalidIdError('UpstreamKeyer', this.mixEffect, this.upstreamKeyerId)

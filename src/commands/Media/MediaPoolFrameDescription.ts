@@ -9,14 +9,14 @@ export class MediaPoolFrameDescriptionCommand extends DeserializedCommand<StillF
 	public readonly mediaPool: number
 	public readonly frameIndex: number
 
-	constructor (mediaPool: number, frameIndex: number, properties: StillFrame) {
+	constructor(mediaPool: number, frameIndex: number, properties: StillFrame) {
 		super(properties)
 
 		this.mediaPool = mediaPool
 		this.frameIndex = frameIndex
 	}
 
-	public static deserialize (rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer) {
 		const mediaPool = rawCommand.readUInt8(0)
 		const frameIndex = rawCommand.readUInt16BE(2)
 		const properties = {
@@ -28,7 +28,7 @@ export class MediaPoolFrameDescriptionCommand extends DeserializedCommand<StillF
 		return new MediaPoolFrameDescriptionCommand(mediaPool, frameIndex, properties)
 	}
 
-	public applyToState (state: AtemState): string | string[] {
+	public applyToState(state: AtemState): string | string[] {
 		// TODO - validate ids
 
 		if (this.mediaPool === 0) {

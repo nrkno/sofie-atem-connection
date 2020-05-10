@@ -7,14 +7,14 @@ import { SymmetricalCommand } from './CommandBase'
 export class TimeCommand extends SymmetricalCommand<TimeInfo> {
 	public static readonly rawName = 'Time'
 
-	constructor (properties: TimeInfo | Omit<TimeInfo, 'dropFrame'>) {
+	constructor(properties: TimeInfo | Omit<TimeInfo, 'dropFrame'>) {
 		super({
 			dropFrame: false,
 			...properties
 		})
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(8)
 		buffer.writeUInt8(this.properties.hour, 0)
 		buffer.writeUInt8(this.properties.minute, 1)
@@ -26,7 +26,7 @@ export class TimeCommand extends SymmetricalCommand<TimeInfo> {
 		return buffer
 	}
 
-	public static deserialize (rawCommand: Buffer): TimeCommand {
+	public static deserialize(rawCommand: Buffer): TimeCommand {
 		const properties = {
 			hour: rawCommand.readUInt8(0),
 			minute: rawCommand.readUInt8(1),
@@ -39,7 +39,7 @@ export class TimeCommand extends SymmetricalCommand<TimeInfo> {
 		return new TimeCommand(properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		state.info.lastTime = this.properties
 		return 'info.lastTime'
 	}
@@ -49,11 +49,11 @@ export class TimeRequestCommand extends BasicWritableCommand<null> {
 	public static readonly rawName = 'TiRq'
 	public static readonly minimumVersion = Enums.ProtocolVersion.V8_0
 
-	constructor () {
+	constructor() {
 		super(null)
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(0)
 		return buffer
 	}

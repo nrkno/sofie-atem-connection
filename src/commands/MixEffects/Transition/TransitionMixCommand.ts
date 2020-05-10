@@ -7,13 +7,13 @@ export class TransitionMixCommand extends BasicWritableCommand<MixTransitionSett
 
 	public readonly mixEffect: number
 
-	constructor (mixEffect: number, rate: number) {
+	constructor(mixEffect: number, rate: number) {
 		super({ rate })
 
 		this.mixEffect = mixEffect
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		buffer.writeUInt8(this.properties.rate || 0, 1)
@@ -26,13 +26,13 @@ export class TransitionMixUpdateCommand extends DeserializedCommand<MixTransitio
 
 	public readonly mixEffect: number
 
-	constructor (mixEffect: number, properties: MixTransitionSettings) {
+	constructor(mixEffect: number, properties: MixTransitionSettings) {
 		super(properties)
 
 		this.mixEffect = mixEffect
 	}
 
-	public static deserialize (rawCommand: Buffer): TransitionMixUpdateCommand {
+	public static deserialize(rawCommand: Buffer): TransitionMixUpdateCommand {
 		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
 			rate: rawCommand.readUInt8(1)
@@ -41,7 +41,7 @@ export class TransitionMixUpdateCommand extends DeserializedCommand<MixTransitio
 		return new TransitionMixUpdateCommand(mixEffect, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
 			throw new InvalidIdError('MixEffect', this.mixEffect)
 		}

@@ -9,7 +9,7 @@ export default abstract class DataTransfer {
 	public resolvePromise: (value?: DataTransfer | PromiseLike<DataTransfer> | undefined) => void
 	public rejectPromise: (reason?: any) => void
 
-	constructor (transferId: number, storeId: number) {
+	constructor(transferId: number, storeId: number) {
 		this._transferId = transferId
 		this.storeId = storeId
 
@@ -25,16 +25,16 @@ export default abstract class DataTransfer {
 		})
 	}
 
-	get transferId () {
+	get transferId() {
 		return this._transferId
 	}
 
-	get promise () {
+	get promise() {
 		return this.completionPromise
 	}
 
-	public abstract start (): Commands.ISerializableCommand[]
+	public abstract start(): Commands.ISerializableCommand[]
 
-	public abstract handleCommand (command: Commands.IDeserializedCommand): Commands.ISerializableCommand[]
-	public abstract gotLock (): Commands.ISerializableCommand[]
+	public abstract handleCommand(command: Commands.IDeserializedCommand): Commands.ISerializableCommand[]
+	public abstract gotLock(): Commands.ISerializableCommand[]
 }

@@ -13,7 +13,7 @@ test('Simple test', async () => {
 	}
 })
 
-function createConnection (apiVersion: Enums.ProtocolVersion) {
+function createConnection(apiVersion: Enums.ProtocolVersion) {
 	const conn = new Atem({ debugBuffers: true, disableMultithreaded: true })
 
 	// Create a state object
@@ -22,7 +22,6 @@ function createConnection (apiVersion: Enums.ProtocolVersion) {
 
 	// conn.on('error', () => null)
 	conn.sendCommand = jest.fn()
-
 	;(conn as any)._state = state
 
 	return conn
@@ -33,10 +32,13 @@ test('setSuperSourceProperties - 7.2', async () => {
 	try {
 		expect(conn.sendCommand).not.toHaveBeenCalled()
 
-		await conn.setSuperSourceProperties({
-			artPreMultiplied: true,
-			artOption: Enums.SuperSourceArtOption.Background
-		}, 2)
+		await conn.setSuperSourceProperties(
+			{
+				artPreMultiplied: true,
+				artOption: Enums.SuperSourceArtOption.Background
+			},
+			2
+		)
 		expect(conn.sendCommand).toHaveBeenCalledTimes(1)
 		expect(conn.sendCommand).toHaveBeenNthCalledWith(1, {
 			flag: 12,
@@ -55,10 +57,13 @@ test('setSuperSourceProperties - 8.0', async () => {
 	try {
 		expect(conn.sendCommand).not.toHaveBeenCalled()
 
-		await conn.setSuperSourceProperties({
-			artPreMultiplied: true,
-			artOption: Enums.SuperSourceArtOption.Background
-		}, 2)
+		await conn.setSuperSourceProperties(
+			{
+				artPreMultiplied: true,
+				artOption: Enums.SuperSourceArtOption.Background
+			},
+			2
+		)
 		expect(conn.sendCommand).toHaveBeenCalledTimes(1)
 		expect(conn.sendCommand).toHaveBeenNthCalledWith(1, {
 			ssrcId: 2,
@@ -78,10 +83,13 @@ test('setSuperSourceBorder - 7.2', async () => {
 	try {
 		expect(conn.sendCommand).not.toHaveBeenCalled()
 
-		await conn.setSuperSourceBorder({
-			borderBevelSoftness: 12,
-			borderLuma: 3
-		}, 2)
+		await conn.setSuperSourceBorder(
+			{
+				borderBevelSoftness: 12,
+				borderLuma: 3
+			},
+			2
+		)
 		expect(conn.sendCommand).toHaveBeenCalledTimes(1)
 		expect(conn.sendCommand).toHaveBeenNthCalledWith(1, {
 			flag: 139264,
@@ -100,10 +108,13 @@ test('setSuperSourceBorder - 8.0', async () => {
 	try {
 		expect(conn.sendCommand).not.toHaveBeenCalled()
 
-		await conn.setSuperSourceBorder({
-			borderBevelSoftness: 12,
-			borderLuma: 3
-		}, 2)
+		await conn.setSuperSourceBorder(
+			{
+				borderBevelSoftness: 12,
+				borderLuma: 3
+			},
+			2
+		)
 		expect(conn.sendCommand).toHaveBeenCalledTimes(1)
 		expect(conn.sendCommand).toHaveBeenNthCalledWith(1, {
 			ssrcId: 2,

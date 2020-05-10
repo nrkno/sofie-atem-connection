@@ -6,13 +6,13 @@ import { resolve } from 'path'
 import { AtemStateUtil, AtemState } from '../state'
 import { createEmptyState } from './util'
 
-function readJson (fileName: string) {
+function readJson(fileName: string) {
 	const filePath = resolve(__dirname, fileName)
 	const fileData = readFileSync(filePath)
 	return JSON.parse(fileData as any)
 }
 
-function loadRawState (file: string) {
+function loadRawState(file: string) {
 	const loadedState: AtemState = {
 		...AtemStateUtil.Create(),
 		...readJson(`./tally/${file}-state.json`)
@@ -31,7 +31,7 @@ function loadRawState (file: string) {
 
 	return loadedState
 }
-function loadTally (file: string) {
+function loadTally(file: string) {
 	const rawTally = readJson(`./tally/${file}-tally.json`) as Commands.TallyBySourceCommand['properties']
 
 	const program: number[] = []
@@ -52,7 +52,7 @@ function loadTally (file: string) {
 	}
 }
 
-function runTestMe1 (name: string, filename: string) {
+function runTestMe1(name: string, filename: string) {
 	const rawTally = loadTally(filename)
 	const rawState = loadRawState(filename)
 

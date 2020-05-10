@@ -8,13 +8,13 @@ export class MediaPoolClipDescriptionCommand extends DeserializedCommand<Omit<Cl
 
 	public readonly clipId: number
 
-	constructor (mediaPool: number, properties: Omit<ClipBank, 'frames'>) {
+	constructor(mediaPool: number, properties: Omit<ClipBank, 'frames'>) {
 		super(properties)
 
 		this.clipId = mediaPool
 	}
 
-	public static deserialize (rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer) {
 		const mediaPool = rawCommand.readUInt8(0)
 		const properties = {
 			isUsed: rawCommand.readUInt8(1) === 1,
@@ -25,7 +25,7 @@ export class MediaPoolClipDescriptionCommand extends DeserializedCommand<Omit<Cl
 		return new MediaPoolClipDescriptionCommand(mediaPool, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		// TODO - validate ids
 
 		state.media.clipPool[this.clipId] = {

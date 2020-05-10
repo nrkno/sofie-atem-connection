@@ -14,13 +14,13 @@ export class DownstreamKeyMaskCommand extends WritableCommand<DownstreamKeyerMas
 
 	public readonly downstreamKeyerId: number
 
-	constructor (downstreamKeyerId: number) {
+	constructor(downstreamKeyerId: number) {
 		super()
 
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt8(this.downstreamKeyerId, 1)

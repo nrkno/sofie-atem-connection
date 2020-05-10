@@ -9,7 +9,7 @@ export class MixEffectKeyFlyKeyframeGetCommand extends DeserializedCommand<Upstr
 	public readonly upstreamKeyerId: number
 	public readonly keyFrameId: number
 
-	constructor (mixEffect: number, upstreamKeyerId: number, keyFrameId: number, properties: UpstreamKeyerFlyKeyframe) {
+	constructor(mixEffect: number, upstreamKeyerId: number, keyFrameId: number, properties: UpstreamKeyerFlyKeyframe) {
 		super(properties)
 
 		this.mixEffect = mixEffect
@@ -17,7 +17,7 @@ export class MixEffectKeyFlyKeyframeGetCommand extends DeserializedCommand<Upstr
 		this.keyFrameId = keyFrameId
 	}
 
-	public static deserialize (rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer) {
 		const mixEffect = rawCommand.readUInt8(0)
 		const upstreamKeyerId = rawCommand.readUInt8(1)
 		const keyFrameId = rawCommand.readUInt8(2)
@@ -56,7 +56,7 @@ export class MixEffectKeyFlyKeyframeGetCommand extends DeserializedCommand<Upstr
 		return new MixEffectKeyFlyKeyframeGetCommand(mixEffect, upstreamKeyerId, keyFrameId, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		const meInfo = state.info.mixEffects[this.mixEffect]
 		if (!meInfo || this.upstreamKeyerId >= meInfo.keyCount) {
 			throw new InvalidIdError('UpstreamKeyer', this.mixEffect, this.upstreamKeyerId)

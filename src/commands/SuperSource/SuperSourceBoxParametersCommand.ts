@@ -22,14 +22,14 @@ export class SuperSourceBoxParametersCommand extends WritableCommand<SuperSource
 	public readonly ssrcId: number
 	public readonly boxId: number
 
-	constructor (ssrcId: number, boxId: number) {
+	constructor(ssrcId: number, boxId: number) {
 		super()
 
 		this.ssrcId = ssrcId
 		this.boxId = boxId
 	}
 
-	public serialize (version: ProtocolVersion) {
+	public serialize(version: ProtocolVersion) {
 		const buffer = Buffer.alloc(24)
 		let i = 0
 		if (version >= ProtocolVersion.V8_0) {
@@ -61,14 +61,14 @@ export class SuperSourceBoxParametersUpdateCommand extends DeserializedCommand<S
 	public readonly ssrcId: number
 	public readonly boxId: number
 
-	constructor (ssrcId: number, boxId: number, properties: SuperSourceBox) {
+	constructor(ssrcId: number, boxId: number, properties: SuperSourceBox) {
 		super(properties)
 
 		this.ssrcId = ssrcId
 		this.boxId = boxId
 	}
 
-	public static deserialize (rawCommand: Buffer, version: ProtocolVersion): SuperSourceBoxParametersUpdateCommand {
+	public static deserialize(rawCommand: Buffer, version: ProtocolVersion): SuperSourceBoxParametersUpdateCommand {
 		let ssrcId = 0
 		let i = 0
 		if (version >= ProtocolVersion.V8_0) {
@@ -93,7 +93,7 @@ export class SuperSourceBoxParametersUpdateCommand extends DeserializedCommand<S
 		return new SuperSourceBoxParametersUpdateCommand(ssrcId, boxId, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.capabilities || this.ssrcId >= state.info.capabilities.superSources) {
 			throw new InvalidIdError('SuperSource', this.ssrcId)
 		}

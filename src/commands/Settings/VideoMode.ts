@@ -9,11 +9,11 @@ export interface VideoModeProps {
 export class VideoModeCommand extends BasicWritableCommand<VideoModeProps> {
 	public static readonly rawName = 'CVdM'
 
-	constructor (mode: Enums.VideoMode) {
+	constructor(mode: Enums.VideoMode) {
 		super({ mode })
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.properties.mode, 0)
 		return buffer
@@ -23,15 +23,15 @@ export class VideoModeCommand extends BasicWritableCommand<VideoModeProps> {
 export class VideoModeUpdateCommand extends DeserializedCommand<VideoModeProps> {
 	public static readonly rawName = 'VidM'
 
-	constructor (mode: Enums.VideoMode) {
+	constructor(mode: Enums.VideoMode) {
 		super({ mode })
 	}
 
-	public static deserialize (rawCommand: Buffer): VideoModeUpdateCommand {
+	public static deserialize(rawCommand: Buffer): VideoModeUpdateCommand {
 		return new VideoModeUpdateCommand(rawCommand.readUInt8(0))
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		state.settings.videoMode = this.properties.mode
 		return `settings.videoMode`
 	}

@@ -15,13 +15,13 @@ export class InputPropertiesCommand extends WritableCommand<InputChannel> {
 
 	public readonly inputId: number
 
-	constructor (inputId: number) {
+	constructor(inputId: number) {
 		super()
 
 		this.inputId = inputId
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(32)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(this.inputId, 2)
@@ -37,13 +37,13 @@ export class InputPropertiesUpdateCommand extends DeserializedCommand<InputChann
 
 	public readonly inputId: number
 
-	constructor (inputId: number, properties: InputChannel) {
+	constructor(inputId: number, properties: InputChannel) {
 		super(properties)
 
 		this.inputId = inputId
 	}
 
-	public static deserialize (rawCommand: Buffer) {
+	public static deserialize(rawCommand: Buffer) {
 		const inputId = rawCommand.readUInt16BE(0)
 
 		const externalPortsMask = rawCommand.readUInt8(29)
@@ -79,7 +79,7 @@ export class InputPropertiesUpdateCommand extends DeserializedCommand<InputChann
 		return new InputPropertiesUpdateCommand(inputId, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		state.inputs[this.inputId] = {
 			...this.properties
 		}

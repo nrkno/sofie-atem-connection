@@ -5,13 +5,13 @@ export class DownstreamKeyRateCommand extends BasicWritableCommand<{ rate: numbe
 
 	public readonly downstreamKeyerId: number
 
-	constructor (downstreamKeyerId: number, rate: number) {
+	constructor(downstreamKeyerId: number, rate: number) {
 		super({ rate })
 
 		this.downstreamKeyerId = downstreamKeyerId
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.downstreamKeyerId, 0)
 		buffer.writeUInt8(this.properties.rate, 1)

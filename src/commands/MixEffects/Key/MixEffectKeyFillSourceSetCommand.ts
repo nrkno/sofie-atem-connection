@@ -6,14 +6,14 @@ export class MixEffectKeyFillSourceSetCommand extends BasicWritableCommand<{ fil
 	public readonly mixEffect: number
 	public readonly upstreamKeyerId: number
 
-	constructor (mixEffect: number, upstreamKeyerId: number, fillSource: number) {
+	constructor(mixEffect: number, upstreamKeyerId: number, fillSource: number) {
 		super({ fillSource })
 
 		this.mixEffect = mixEffect
 		this.upstreamKeyerId = upstreamKeyerId
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.mixEffect, 0)
 		buffer.writeUInt8(this.upstreamKeyerId, 1)

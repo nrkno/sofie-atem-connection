@@ -20,13 +20,13 @@ export class TransitionWipeCommand extends WritableCommand<WipeTransitionSetting
 
 	public readonly mixEffect: number
 
-	constructor (mixEffect: number) {
+	constructor(mixEffect: number) {
 		super()
 
 		this.mixEffect = mixEffect
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(20)
 		buffer.writeUInt16BE(this.flag, 0)
 
@@ -53,13 +53,13 @@ export class TransitionWipeUpdateCommand extends DeserializedCommand<WipeTransit
 
 	public readonly mixEffect: number
 
-	constructor (mixEffect: number, properties: WipeTransitionSettings) {
+	constructor(mixEffect: number, properties: WipeTransitionSettings) {
 		super(properties)
 
 		this.mixEffect = mixEffect
 	}
 
-	public static deserialize (rawCommand: Buffer): TransitionWipeUpdateCommand {
+	public static deserialize(rawCommand: Buffer): TransitionWipeUpdateCommand {
 		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
 			rate: rawCommand.readUInt8(1),
@@ -77,7 +77,7 @@ export class TransitionWipeUpdateCommand extends DeserializedCommand<WipeTransit
 		return new TransitionWipeUpdateCommand(mixEffect, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		if (!state.info.capabilities || this.mixEffect >= state.info.capabilities.mixEffects) {
 			throw new InvalidIdError('MixEffect', this.mixEffect)
 		}

@@ -6,7 +6,7 @@ const IN_FLIGHT_TIMEOUT = 60 // ms
 const CONNECTION_TIMEOUT = 5000 // ms
 const CONNECTION_RETRY_INTERVAL = 1000 // ms
 const MAX_PACKET_RETRIES = 10
-const MAX_PACKET_ID = (1 << 15) // Atem expects 15 not 16 bits before wrapping
+const MAX_PACKET_ID = 1 << 15 // Atem expects 15 not 16 bits before wrapping
 const MAX_PACKET_PER_ACK = 16
 
 export enum ConnectionState {
@@ -39,25 +39,31 @@ export class AtemSocketChild {
 	private _retransmitTimer: NodeJS.Timer | undefined
 
 	private _nextSendPacketId = 1
-	private _sessionId: number = 0
+	private _sessionId = 0
 
 	private _address: string
 	private _port: number
 	private _socket: Socket
 
 	private _lastReceivedAt: number = Date.now()
-	private _lastReceivedPacketId: number = 0
+	private _lastReceivedPacketId = 0
 	private _inFlight: InFlightPacket[] = []
 	private readonly _ackTimer = new NanoTimer()
 	private _ackTimerRunning = false
-	private _receivedWithoutAck: number = 0
+	private _receivedWithoutAck = 0
 
 	private readonly onDisconnect: () => Promise<void>
 	private readonly onLog: (message: string) => Promise<void>
 	private readonly onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>
-	private readonly onCommandsAcknowledged: (ids: Array<{ packetId: number, trackingId: number }>) => Promise<void>
+	private readonly onCommandsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
 
-	constructor (options: { address: string, port: number, debugBuffers: boolean }, onDisconnect: () => Promise<void>, onLog: (message: string) => Promise<void>, onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>, onCommandAcknowledged: (ids: Array<{ packetId: number, trackingId: number }>) => Promise<void>) {
+	constructor(
+		options: { address: string; port: number; debugBuffers: boolean },
+		onDisconnect: () => Promise<void>,
+		onLog: (message: string) => Promise<void>,
+		onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>,
+		onCommandAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
+	) {
 		this._debugBuffers = options.debugBuffers
 		this._address = options.address
 		this._port = options.port
@@ -70,7 +76,7 @@ export class AtemSocketChild {
 		this._socket = this._createSocket()
 	}
 
-	private startTimers () {
+	private startTimers() {
 		if (!this._reconnectTimer) {
 			this._reconnectTimer = setInterval(async () => {
 				if (this._lastReceivedAt + CONNECTION_TIMEOUT > Date.now()) {
@@ -91,7 +97,7 @@ export class AtemSocketChild {
 		}
 	}
 
-	public connect (address: string, port: number): Promise<void> {
+	public connect(address: string, port: number): Promise<void> {
 		this.startTimers()
 
 		this._address = address
@@ -100,7 +106,7 @@ export class AtemSocketChild {
 		return this.restartConnection()
 	}
 
-	public disconnect (): Promise<void> {
+	public disconnect(): Promise<void> {
 		// Stop timers, as they just cause pointless work now.
 		if (this._retransmitTimer) {
 			clearInterval(this._retransmitTimer)
@@ -111,7 +117,7 @@ export class AtemSocketChild {
 			this._reconnectTimer = undefined
 		}
 
-		return new Promise((resolve) => {
+		return new Promise(resolve => {
 			try {
 				this._socket.close(() => resolve())
 			} catch (e) {
@@ -124,7 +130,7 @@ export class AtemSocketChild {
 		})
 	}
 
-	private async restartConnection (): Promise<void> {
+	private async restartConnection(): Promise<void> {
 		// This includes a 'disconnect'
 		if (this._connectionState === ConnectionState.Established) {
 			this._connectionState = ConnectionState.Closed
@@ -143,18 +149,18 @@ export class AtemSocketChild {
 		this._connectionState = ConnectionState.SynSent
 	}
 
-	private log (message: string): void {
+	private log(message: string): void {
 		// tslint:disable-next-line: no-floating-promises
 		this.onLog(message)
 	}
 
-	public sendCommands (commands: Array<{ payload: number[], rawName: string, trackingId: number }>): void {
+	public sendCommands(commands: Array<{ payload: number[]; rawName: string; trackingId: number }>): void {
 		commands.forEach(cmd => {
 			this.sendCommand(cmd.payload, cmd.rawName, cmd.trackingId)
 		})
 	}
 
-	private sendCommand (payload: number[], rawName: string, trackingId: number): void {
+	private sendCommand(payload: number[], rawName: string, trackingId: number): void {
 		const packetId = this._nextSendPacketId++
 		if (this._nextSendPacketId >= MAX_PACKET_ID) this._nextSendPacketId = 0
 
@@ -182,7 +188,7 @@ export class AtemSocketChild {
 		})
 	}
 
-	private _createSocket () {
+	private _createSocket() {
 		this._socket = createSocket('udp4')
 		this._socket.bind()
 		this._socket.on('message', (packet, rinfo) => this._receivePacket(packet, rinfo))
@@ -198,7 +204,7 @@ export class AtemSocketChild {
 		return this._socket
 	}
 
-	private _isPacketCoveredByAck (ackId: number, packetId: number) {
+	private _isPacketCoveredByAck(ackId: number, packetId: number) {
 		const tolerance = MAX_PACKET_ID / 2
 		const pktIsShortlyBefore = packetId < ackId && packetId + tolerance > ackId
 		const pktIsShortlyAfter = packetId > ackId && packetId < ackId + tolerance
@@ -206,7 +212,7 @@ export class AtemSocketChild {
 		return packetId === ackId || ((pktIsShortlyBefore || pktIsBeforeWrap) && !pktIsShortlyAfter)
 	}
 
-	private _receivePacket (packet: Buffer, rinfo: RemoteInfo) {
+	private _receivePacket(packet: Buffer, rinfo: RemoteInfo) {
 		if (this._debugBuffers) this.log(`RECV ${packet.toString('hex')}`)
 		this._lastReceivedAt = Date.now()
 		const length = packet.readUInt16BE(0) & 0x07ff
@@ -255,7 +261,7 @@ export class AtemSocketChild {
 			// Device ack'ed our packet
 			if (flags & PacketFlag.AckReply) {
 				const ackPacketId = packet.readUInt16BE(4)
-				const ackedCommands: Array<{ packetId: number, trackingId: number }> = []
+				const ackedCommands: Array<{ packetId: number; trackingId: number }> = []
 				this._inFlight = this._inFlight.filter(pkt => {
 					if (this._isPacketCoveredByAck(ackPacketId, pkt.packetId)) {
 						ackedCommands.push({
@@ -276,12 +282,12 @@ export class AtemSocketChild {
 		return Promise.all(ps)
 	}
 
-	private _sendPacket (packet: Buffer) {
+	private _sendPacket(packet: Buffer) {
 		if (this._debugBuffers) this.log(`SEND ${packet.toString('hex')}`)
 		this._socket.send(packet, 0, packet.length, this._port, this._address)
 	}
 
-	private _sendOrQueueAck () {
+	private _sendOrQueueAck() {
 		this._receivedWithoutAck++
 		if (this._receivedWithoutAck >= MAX_PACKET_PER_ACK) {
 			this._receivedWithoutAck = 0
@@ -291,15 +297,19 @@ export class AtemSocketChild {
 		} else if (!this._ackTimerRunning) {
 			this._ackTimerRunning = true
 			// timeout for 5 ms (syntax for nanotimer says m)
-			this._ackTimer.setTimeout(() => {
-				this._receivedWithoutAck = 0
-				this._ackTimerRunning = false
-				this._sendAck(this._lastReceivedPacketId)
-			}, [], '5m')
+			this._ackTimer.setTimeout(
+				() => {
+					this._receivedWithoutAck = 0
+					this._ackTimerRunning = false
+					this._sendAck(this._lastReceivedPacketId)
+				},
+				[],
+				'5m'
+			)
 		}
 	}
 
-	private _sendAck (packetId: number) {
+	private _sendAck(packetId: number) {
 		const opcode = PacketFlag.AckReply << 11
 		const length = 12
 		const buffer = Buffer.alloc(length, 0)
@@ -309,7 +319,7 @@ export class AtemSocketChild {
 		this._sendPacket(buffer)
 	}
 
-	private async _retransmitFrom (fromId: number) {
+	private async _retransmitFrom(fromId: number) {
 		// this.log(`Resending from ${fromId} to ${this._inFlight.length > 0 ? this._inFlight[this._inFlight.length - 1].packetId : '-'}`)
 
 		// The atem will ask for MAX_PACKET_ID to be retransmitted when it really wants 0
@@ -336,10 +346,13 @@ export class AtemSocketChild {
 		}
 	}
 
-	private _checkForRetransmit (): Promise<void> {
+	private _checkForRetransmit(): Promise<void> {
 		for (const sentPacket of this._inFlight) {
 			if (sentPacket.lastSent + IN_FLIGHT_TIMEOUT < Date.now()) {
-				if (sentPacket.resent <= MAX_PACKET_RETRIES && this._isPacketCoveredByAck(this._nextSendPacketId, sentPacket.packetId)) {
+				if (
+					sentPacket.resent <= MAX_PACKET_RETRIES &&
+					this._isPacketCoveredByAck(this._nextSendPacketId, sentPacket.packetId)
+				) {
 					this.log(`Retransmit from timeout: ${sentPacket.packetId}`)
 					// Retransmit the packet and anything after it
 					return this._retransmitFrom(sentPacket.packetId)

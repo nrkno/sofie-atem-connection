@@ -8,26 +8,26 @@ export class MacroPropertiesCommand extends DeserializedCommand<MacroPropertiesS
 
 	public readonly macroIndexID: number
 
-	constructor (macroIndexID: number, properties: MacroPropertiesState) {
+	constructor(macroIndexID: number, properties: MacroPropertiesState) {
 		super(properties)
 
 		this.macroIndexID = macroIndexID
 	}
 
-	public static deserialize (rawCommand: Buffer): MacroPropertiesCommand {
+	public static deserialize(rawCommand: Buffer): MacroPropertiesCommand {
 		const macroIndexID = rawCommand.readUInt16BE(0)
 		const nameLen = rawCommand.readUInt16BE(4)
 		const descLen = rawCommand.readUInt16BE(6)
 
 		const properties = {
 			description: '',
-			isUsed: Boolean(rawCommand.readUInt8(2) & 1 << 0),
+			isUsed: Boolean(rawCommand.readUInt8(2) & (1 << 0)),
 			macroIndex: macroIndexID,
 			name: ''
 		}
 
 		if (descLen > 0) {
-			properties.description = Util.bufToNullTerminatedString(rawCommand, (8 + nameLen), descLen)
+			properties.description = Util.bufToNullTerminatedString(rawCommand, 8 + nameLen, descLen)
 		}
 
 		if (nameLen > 0) {
@@ -37,7 +37,7 @@ export class MacroPropertiesCommand extends DeserializedCommand<MacroPropertiesS
 		return new MacroPropertiesCommand(macroIndexID, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		state.macro.macroProperties[this.macroIndexID] = {
 			...state.macro.macroProperties[this.macroIndexID],
 			...this.properties

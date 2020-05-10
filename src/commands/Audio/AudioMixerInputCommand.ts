@@ -13,13 +13,13 @@ export class AudioMixerInputCommand extends WritableCommand<AudioChannel> {
 
 	public readonly index: number
 
-	constructor (index: number) {
+	constructor(index: number) {
 		super()
 
 		this.index = index
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(this.index, 2)
@@ -35,13 +35,13 @@ export class AudioMixerInputUpdateCommand extends DeserializedCommand<AudioChann
 
 	public readonly index: number
 
-	constructor (index: number, properties: AudioChannel) {
+	constructor(index: number, properties: AudioChannel) {
 		super(properties)
 
 		this.index = index
 	}
 
-	public static deserialize (rawCommand: Buffer): AudioMixerInputUpdateCommand {
+	public static deserialize(rawCommand: Buffer): AudioMixerInputUpdateCommand {
 		const index = rawCommand.readUInt16BE(0)
 		const properties = {
 			sourceType: rawCommand.readUInt8(2),
@@ -54,7 +54,7 @@ export class AudioMixerInputUpdateCommand extends DeserializedCommand<AudioChann
 		return new AudioMixerInputUpdateCommand(index, properties)
 	}
 
-	public applyToState (state: AtemState) {
+	public applyToState(state: AtemState) {
 		state.audio.channels[this.index] = {
 			...state.audio.channels[this.index],
 			...this.properties
