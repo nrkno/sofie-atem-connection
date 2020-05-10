@@ -2,78 +2,6 @@ import { AtemState, AtemStateUtil } from '../state'
 import * as Enums from '../enums'
 
 /**
- * Emulates the ATEM's own tally logic as it appears
- * in the ATEM multiviewer.
- *
- * Useful for any code which needs a full list of all
- * sources present in Preview and/or Program.
- */
-export function listVisibleInputs(mode: 'program' | 'preview', state: AtemState, me = 0): number[] {
-	const inputs = new Set<number>()
-
-	// Start with the basics: the surface level of what is in the target ME.
-	_calcActiveMeInputs(mode, state, me).forEach(i => inputs.add(i))
-
-	// Loop over the active input IDs we've found so far,
-	// and check if any of them are SuperSources or other nested MEs.
-	// If so, iterate through them and find out what they are showing.
-	// Keep looping until we stop discovering new things.
-	let lastSize: number
-	let lastProcessed = 0
-	do {
-		// Only processes inputs we haven't already processed.
-		// This is an important optimization because this function could potentially
-		// be in a hot code path and get called many many times a second,
-		// every time the ATEM's state updates.
-		lastSize = inputs.size
-		Array.from(inputs)
-			.slice(lastProcessed)
-			.forEach(inputId => {
-				const input = state.inputs[inputId]
-				if (!input) {
-					// Data isn't hydrated yet, we'll get 'em next time.
-					return
-				}
-				const portType = input.internalPortType
-				switch (portType) {
-					case Enums.InternalPortType.SuperSource: {
-						const ssrcId = inputId - 6000
-						const ssrc = AtemStateUtil.getSuperSource(state, ssrcId)
-						ssrc.boxes.forEach(box => {
-							if (box && box.enabled) {
-								inputs.add(box.source)
-							}
-						})
-
-						if (ssrc.properties) {
-							inputs.add(ssrc.properties.artFillSource)
-							if (ssrc.properties.artOption === Enums.SuperSourceArtOption.Foreground) {
-								inputs.add(ssrc.properties.artCutSource)
-							}
-						}
-						break
-					}
-					case Enums.InternalPortType.MEOutput: {
-						const nestedMeId = (inputId - (inputId % 10) - 10000) / 10 - 1
-						const nestedMeMode = (inputId - 10000) % 10 === 0 ? 'program' : 'preview'
-						_calcActiveMeInputs(nestedMeMode, state, nestedMeId).forEach(i => inputs.add(i))
-						break
-					}
-					default:
-					// Do nothing.
-				}
-			})
-		lastProcessed = inputs.size - 1
-	} while (inputs.size !== lastSize)
-
-	// undefined sometimes sneaks its way in here.
-	// Don't know why.
-	return Array.from(inputs)
-		.filter((i: unknown) => typeof i === 'number')
-		.sort((a, b) => a - b)
-}
-
-/**
  * Helper method used by listVisibleInputs.
  * This got broken out into its own method because
  * it gets called multiple times, and gets called in a loop.
@@ -205,4 +133,76 @@ function _calcActiveMeInputs(mode: 'program' | 'preview', state: AtemState, meId
 	}
 
 	return Array.from(inputs)
+}
+
+/**
+ * Emulates the ATEM's own tally logic as it appears
+ * in the ATEM multiviewer.
+ *
+ * Useful for any code which needs a full list of all
+ * sources present in Preview and/or Program.
+ */
+export function listVisibleInputs(mode: 'program' | 'preview', state: AtemState, me = 0): number[] {
+	const inputs = new Set<number>()
+
+	// Start with the basics: the surface level of what is in the target ME.
+	_calcActiveMeInputs(mode, state, me).forEach(i => inputs.add(i))
+
+	// Loop over the active input IDs we've found so far,
+	// and check if any of them are SuperSources or other nested MEs.
+	// If so, iterate through them and find out what they are showing.
+	// Keep looping until we stop discovering new things.
+	let lastSize: number
+	let lastProcessed = 0
+	do {
+		// Only processes inputs we haven't already processed.
+		// This is an important optimization because this function could potentially
+		// be in a hot code path and get called many many times a second,
+		// every time the ATEM's state updates.
+		lastSize = inputs.size
+		Array.from(inputs)
+			.slice(lastProcessed)
+			.forEach(inputId => {
+				const input = state.inputs[inputId]
+				if (!input) {
+					// Data isn't hydrated yet, we'll get 'em next time.
+					return
+				}
+				const portType = input.internalPortType
+				switch (portType) {
+					case Enums.InternalPortType.SuperSource: {
+						const ssrcId = inputId - 6000
+						const ssrc = AtemStateUtil.getSuperSource(state, ssrcId)
+						ssrc.boxes.forEach(box => {
+							if (box && box.enabled) {
+								inputs.add(box.source)
+							}
+						})
+
+						if (ssrc.properties) {
+							inputs.add(ssrc.properties.artFillSource)
+							if (ssrc.properties.artOption === Enums.SuperSourceArtOption.Foreground) {
+								inputs.add(ssrc.properties.artCutSource)
+							}
+						}
+						break
+					}
+					case Enums.InternalPortType.MEOutput: {
+						const nestedMeId = (inputId - (inputId % 10) - 10000) / 10 - 1
+						const nestedMeMode = (inputId - 10000) % 10 === 0 ? 'program' : 'preview'
+						_calcActiveMeInputs(nestedMeMode, state, nestedMeId).forEach(i => inputs.add(i))
+						break
+					}
+					default:
+					// Do nothing.
+				}
+			})
+		lastProcessed = inputs.size - 1
+	} while (inputs.size !== lastSize)
+
+	// undefined sometimes sneaks its way in here.
+	// Don't know why.
+	return Array.from(inputs)
+		.filter((i: unknown) => typeof i === 'number')
+		.sort((a, b) => a - b)
 }

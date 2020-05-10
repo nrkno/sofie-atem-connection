@@ -6,7 +6,8 @@ import { InputChannel } from './input'
 import { MacroState } from './macro'
 import { SettingsState } from './settings'
 
-export { AtemStateUtil } from './util'
+import * as AtemStateUtil from './util'
+export { AtemStateUtil }
 
 export interface AtemState {
 	info: DeviceInfo

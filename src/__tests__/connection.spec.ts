@@ -30,7 +30,7 @@ export class AtemSocketChildMock implements AtemSocketChild {
 	public sendCommands = jest.fn(() => Promise.resolve())
 }
 
-(AtemSocketChild as any).mockImplementation(
+;(AtemSocketChild as any).mockImplementation(
 	(
 		_opts: any,
 		onDisconnect: () => Promise<void>,

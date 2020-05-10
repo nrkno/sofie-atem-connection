@@ -11,7 +11,7 @@ const setImmediatePromise = promisify(setImmediate)
 
 describe('Atem', () => {
 	beforeEach(() => {
-		(AtemSocket as any).mockClear()
+		;(AtemSocket as any).mockClear()
 	})
 
 	test('constructor test 1', async () => {
@@ -92,7 +92,7 @@ describe('Atem', () => {
 	})
 
 	test('sendCommand - good', async () => {
-		(AtemSocket as any).mockImplementation(() => new EventEmitter())
+		;(AtemSocket as any).mockImplementation(() => new EventEmitter())
 		const conn = new Atem({ debugBuffers: true, address: 'test1', port: 23 })
 
 		try {
@@ -136,7 +136,7 @@ describe('Atem', () => {
 	}, 500)
 
 	test('sendCommand - send error', async () => {
-		(AtemSocket as any).mockImplementation(() => new EventEmitter())
+		;(AtemSocket as any).mockImplementation(() => new EventEmitter())
 		const conn = new Atem({ debugBuffers: true, address: 'test1', port: 23 })
 
 		try {

@@ -4,176 +4,174 @@ import { MultiViewer } from './settings'
 import { MediaPlayerState, ClipBank } from './media'
 import { MixEffect, SuperSource, DSK, USK } from './video'
 
-export namespace AtemStateUtil {
-	export function Create(): AtemState {
-		return {
-			info: {
-				apiVersion: 0,
-				model: Enums.Model.Unknown,
-				superSources: [],
-				mixEffects: [],
-				power: []
-			},
-			video: {
-				mixEffects: [],
-				downstreamKeyers: [],
-				auxilliaries: [],
-				superSources: []
-			},
-			audio: {
-				channels: {}
-			},
-			media: {
-				stillPool: [],
-				clipPool: [],
-				players: []
-			},
-			inputs: {},
-			macro: {
-				macroPlayer: {
-					isRunning: false,
-					isWaiting: false,
-					loop: false,
-					macroIndex: 0
-				},
-				macroRecorder: {
-					isRecording: false,
-					macroIndex: 0
-				},
-				macroProperties: []
-			},
-			settings: {
-				multiViewers: [],
-				videoMode: 0
-			}
-		}
-	}
-
-	export function getMultiViewer(state: AtemState, index: number): MultiViewer {
-		const multiViewer = state.settings.multiViewers[index]
-		if (!multiViewer) {
-			return (state.settings.multiViewers[index] = { index, windows: [] })
-		}
-
-		return multiViewer
-	}
-
-	export function getMediaPlayer(state: AtemState, index: number, dontCreate?: boolean): MediaPlayerState {
-		let player = state.media.players[index]
-		if (!player) {
-			player = {
-				playing: false,
+export function Create(): AtemState {
+	return {
+		info: {
+			apiVersion: 0,
+			model: Enums.Model.Unknown,
+			superSources: [],
+			mixEffects: [],
+			power: []
+		},
+		video: {
+			mixEffects: [],
+			downstreamKeyers: [],
+			auxilliaries: [],
+			superSources: []
+		},
+		audio: {
+			channels: {}
+		},
+		media: {
+			stillPool: [],
+			clipPool: [],
+			players: []
+		},
+		inputs: {},
+		macro: {
+			macroPlayer: {
+				isRunning: false,
+				isWaiting: false,
 				loop: false,
-				atBeginning: false,
-				clipFrame: 0,
-				sourceType: Enums.MediaSourceType.Clip,
-				clipIndex: 0,
-				stillIndex: 0
-			}
-
-			if (!dontCreate) {
-				state.media.players[index] = player
-			}
+				macroIndex: 0
+			},
+			macroRecorder: {
+				isRecording: false,
+				macroIndex: 0
+			},
+			macroProperties: []
+		},
+		settings: {
+			multiViewers: [],
+			videoMode: 0
 		}
+	}
+}
 
-		return player
+export function getMultiViewer(state: AtemState, index: number): MultiViewer {
+	const multiViewer = state.settings.multiViewers[index]
+	if (!multiViewer) {
+		return (state.settings.multiViewers[index] = { index, windows: [] })
 	}
 
-	export function getClip(state: AtemState, index: number): ClipBank {
-		const clip = state.media.clipPool[index]
-		if (!clip) {
-			return (state.media.clipPool[index] = {
-				isUsed: false,
-				name: '',
-				frameCount: 0,
-				frames: []
-			})
+	return multiViewer
+}
+
+export function getMediaPlayer(state: AtemState, index: number, dontCreate?: boolean): MediaPlayerState {
+	let player = state.media.players[index]
+	if (!player) {
+		player = {
+			playing: false,
+			loop: false,
+			atBeginning: false,
+			clipFrame: 0,
+			sourceType: Enums.MediaSourceType.Clip,
+			clipIndex: 0,
+			stillIndex: 0
 		}
 
-		return clip
+		if (!dontCreate) {
+			state.media.players[index] = player
+		}
 	}
 
-	export function getMixEffect(state: AtemState, index: number, dontCreate?: boolean): MixEffect {
-		let me = state.video.mixEffects[index]
-		if (!me) {
-			me = {
-				index,
-				programInput: 0,
-				previewInput: 0,
-				inTransition: false,
-				transitionPreview: false,
-				transitionPosition: 0,
-				transitionFramesLeft: 0,
-				transitionProperties: {
-					style: Enums.TransitionStyle.MIX,
-					selection: 1,
-					nextStyle: Enums.TransitionStyle.MIX,
-					nextSelection: 1
-				},
-				transitionSettings: {},
-				upstreamKeyers: []
-			}
+	return player
+}
 
-			if (!dontCreate) {
-				state.video.mixEffects[index] = me
-			}
+export function getClip(state: AtemState, index: number): ClipBank {
+	const clip = state.media.clipPool[index]
+	if (!clip) {
+		return (state.media.clipPool[index] = {
+			isUsed: false,
+			name: '',
+			frameCount: 0,
+			frames: []
+		})
+	}
+
+	return clip
+}
+
+export function getMixEffect(state: AtemState, index: number, dontCreate?: boolean): MixEffect {
+	let me = state.video.mixEffects[index]
+	if (!me) {
+		me = {
+			index,
+			programInput: 0,
+			previewInput: 0,
+			inTransition: false,
+			transitionPreview: false,
+			transitionPosition: 0,
+			transitionFramesLeft: 0,
+			transitionProperties: {
+				style: Enums.TransitionStyle.MIX,
+				selection: 1,
+				nextStyle: Enums.TransitionStyle.MIX,
+				nextSelection: 1
+			},
+			transitionSettings: {},
+			upstreamKeyers: []
 		}
 
-		return me
+		if (!dontCreate) {
+			state.video.mixEffects[index] = me
+		}
 	}
 
-	export function getSuperSource(state: AtemState, index: number, dontCreate?: boolean): SuperSource.SuperSource {
-		let ssrc = state.video.superSources[index]
-		if (!ssrc) {
-			ssrc = {
-				index,
-				boxes: [undefined, undefined, undefined, undefined]
-			}
+	return me
+}
 
-			if (!dontCreate) {
-				state.video.superSources[index] = ssrc
-			}
+export function getSuperSource(state: AtemState, index: number, dontCreate?: boolean): SuperSource.SuperSource {
+	let ssrc = state.video.superSources[index]
+	if (!ssrc) {
+		ssrc = {
+			index,
+			boxes: [undefined, undefined, undefined, undefined]
 		}
 
-		return ssrc
+		if (!dontCreate) {
+			state.video.superSources[index] = ssrc
+		}
 	}
 
-	export function getDownstreamKeyer(state: AtemState, index: number, dontCreate?: boolean): DSK.DownstreamKeyer {
-		let dsk = state.video.downstreamKeyers[index]
-		if (!dsk) {
-			dsk = {
-				isAuto: false,
-				remainingFrames: 0,
-				onAir: false,
-				inTransition: false
-			}
+	return ssrc
+}
 
-			if (!dontCreate) {
-				state.video.downstreamKeyers[index] = dsk
-			}
+export function getDownstreamKeyer(state: AtemState, index: number, dontCreate?: boolean): DSK.DownstreamKeyer {
+	let dsk = state.video.downstreamKeyers[index]
+	if (!dsk) {
+		dsk = {
+			isAuto: false,
+			remainingFrames: 0,
+			onAir: false,
+			inTransition: false
 		}
 
-		return dsk
+		if (!dontCreate) {
+			state.video.downstreamKeyers[index] = dsk
+		}
 	}
 
-	export function getUpstreamKeyer(mixEffect: MixEffect, index: number, dontCreate?: boolean): USK.UpstreamKeyer {
-		let usk = mixEffect.upstreamKeyers[index]
-		if (!usk) {
-			usk = {
-				upstreamKeyerId: index,
-				mixEffectKeyType: 0,
-				cutSource: 0,
-				fillSource: 0,
-				onAir: false,
-				flyEnabled: false,
-				flyKeyframes: [undefined, undefined]
-			}
+	return dsk
+}
 
-			if (!dontCreate) {
-				mixEffect.upstreamKeyers[index] = usk
-			}
+export function getUpstreamKeyer(mixEffect: MixEffect, index: number, dontCreate?: boolean): USK.UpstreamKeyer {
+	let usk = mixEffect.upstreamKeyers[index]
+	if (!usk) {
+		usk = {
+			upstreamKeyerId: index,
+			mixEffectKeyType: 0,
+			cutSource: 0,
+			fillSource: 0,
+			onAir: false,
+			flyEnabled: false,
+			flyKeyframes: [undefined, undefined]
 		}
 
-		return usk
+		if (!dontCreate) {
+			mixEffect.upstreamKeyers[index] = usk
+		}
 	}
+
+	return usk
 }

@@ -106,15 +106,15 @@ export function runTestForCommand(
 				}
 
 				if (mutatedCommand.mask !== undefined) {
-					(cmd as any).flag = mutatedCommand.mask
+					;(cmd as any).flag = mutatedCommand.mask
 					delete mutatedCommand.mask
 				}
 
 				if (cmd instanceof SymmetricalCommand) {
 					// These properties are stored in slightly different place
-					(cmd as any).properties = mutatedCommand
+					;(cmd as any).properties = mutatedCommand
 				} else {
-					(cmd as any)._properties = mutatedCommand
+					;(cmd as any)._properties = mutatedCommand
 				}
 
 				// Ensure all properties appear in the mask

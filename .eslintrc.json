@@ -2,8 +2,7 @@
 	"extends": ["eslint:recommended", "plugin:node/recommended", "plugin:prettier/recommended"],
 	"plugins": ["prettier"],
 	"rules": {
-		"prettier/prettier": "error",
-		"no-use-before-define": "off"
+		"prettier/prettier": "error"
 	},
 	"env": { "es2017": true },
 	"parserOptions": { "sourceType": "module", "ecmaVersion": 2018 },
@@ -25,10 +24,10 @@
 				}
 			},
 			"rules": {
-				"no-use-before-define": "off",
-				"@typescript-eslint/no-use-before-define": "off",
 				"no-unused-vars": "off",
+				"no-extra-semi": "off",
 				"@typescript-eslint/no-explicit-any": "off",
+				"@typescript-eslint/interface-name-prefix": "off",
 				"@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
 				"node/no-unsupported-features/es-syntax": ["error", { "ignores": ["modules"] }]
 			}
@@ -37,6 +36,9 @@
 			"files": ["src/**/__tests__/**/*.ts"],
 			"env": {
 				"jest": true
+			},
+			"rules": {
+				"@typescript-eslint/ban-ts-ignore": "off"
 			}
 		}
 	]
