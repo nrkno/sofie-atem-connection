@@ -81,9 +81,31 @@ jobs:
             - yarn-cache-12-{{ .Branch }}-{{ checksum "yarn.lock" }}
             - yarn-cache-12-{{ .Branch }}
             - yarn-cache-12-
+
+      - run: yarn install
+      - run:
+          name: yarn validate:dependencies
+          command: |
+            if ! git log --format=oneline -n 1 | grep -q "\[ignore-audit\]"; then
+              yarn validate:dependencies
+            else
+              echo "Skipping audit"
+            fi
+  validate-all-dependencies:
+    docker:
+      - image: circleci/node:12
+    working_directory: ~/project
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-cache-12-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-cache-12-{{ .Branch }}
+            - yarn-cache-12-
             
       - run: yarn install
       - run: yarn validate:dependencies
+      - run: yarn validate:dev-dependencies
 
   release:
     docker:
@@ -185,6 +207,12 @@ workflows:
       - test-latest(node-12)
       - test-node-10
       - test-node-8
+      - validate-all-dependencies:
+          filters:
+            branches:
+              only:
+                - master
+                - develop
       - validate-dependencies:
           filters:
             branches:

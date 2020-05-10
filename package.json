@@ -43,8 +43,9 @@
     "changelog": "standard-version",
     "release": "yarn reset && yarn docs:publish && yarn changelog",
     "reset": "git clean -dfx && git reset --hard && yarn",
-    "validate:dependencies": "yarn audit && yarn license-validate",
-    "license-validate": "node-license-validator -p -d --allow-licenses MIT BSD BSD-3-Clause ISC Apache"
+    "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate",
+    "validate:dev-dependencies": "yarn audit --groups devDependencies",
+    "license-validate": "node-license-validator -p -d --allow-licenses MIT 0BSD BSD BSD-3-Clause ISC Apache"
   },
   "scripts-info": {
     "info": "Display information about the scripts",
