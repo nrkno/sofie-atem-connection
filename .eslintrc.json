@@ -1,5 +1,5 @@
 {
-	"extends": ["eslint:recommended", "plugin:prettier/recommended"],
+	"extends": ["eslint:recommended", "plugin:node/recommended", "plugin:prettier/recommended"],
 	"plugins": ["prettier"],
 	"rules": {
 		"prettier/prettier": "error",
@@ -19,15 +19,21 @@
 				"plugin:@typescript-eslint/recommended",
 				"prettier/@typescript-eslint"
 			],
+			"settings": {
+				"node": {
+					"tryExtensions": [".js", ".json", ".node", ".ts"]
+				}
+			},
 			"rules": {
 				"no-use-before-define": "off",
 				"@typescript-eslint/no-use-before-define": "off",
 				"no-unused-vars": "off",
-				"@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+				"@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+				"node/no-unsupported-features/es-syntax": ["error", { "ignores": ["modules"] }]
 			}
 		},
 		{
-			"files": ["test/**/*.ts"],
+			"files": ["src/**/__tests__/**/*.ts"],
 			"env": {
 				"jest": true
 			}
