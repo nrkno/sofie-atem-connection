@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'eventemitter3'
 import { CommandParser } from './atemCommandParser'
 import exitHook = require('exit-hook')
 import { VersionCommand, ISerializableCommand, IDeserializedCommand } from '../commands'
@@ -13,7 +13,16 @@ export interface AtemSocketOptions {
 	disableMultithreaded: boolean
 }
 
-export class AtemSocket extends EventEmitter {
+export interface AtemSocketEvents {
+	disconnect: []
+	info: [string]
+	debug: [string]
+	error: [string]
+	commandsReceived: [IDeserializedCommand[]]
+	commandsAck: [number[]]
+}
+
+export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	private readonly _debugBuffers: boolean
 	private readonly _disableMultithreaded: boolean
 	private readonly _commandParser: CommandParser = new CommandParser()
@@ -23,20 +32,6 @@ export class AtemSocket extends EventEmitter {
 	private _port: number = DEFAULT_PORT
 	private _socketProcess: ThreadedClass<AtemSocketChild> | undefined
 	private _exitUnsubscribe?: () => void
-
-	public on!: ((event: 'disconnect', listener: () => void) => this) &
-		((event: 'info', listener: (message: string) => void) => this) &
-		((event: 'debug', listener: (message: string) => void) => this) &
-		((event: 'error', listener: (message: string) => void) => this) &
-		((event: 'commandsReceived', listener: (cmds: IDeserializedCommand[]) => void) => this) &
-		((event: 'commandsAck', listener: (trackingIds: number[]) => void) => this)
-
-	public emit!: ((event: 'disconnect') => boolean) &
-		((event: 'info', message: string) => boolean) &
-		((event: 'debug', message: string) => boolean) &
-		((event: 'error', message: string) => boolean) &
-		((event: 'commandsReceived', cmds: IDeserializedCommand[]) => boolean) &
-		((event: 'commandsAck', trackingIds: number[]) => boolean)
 
 	constructor(options: AtemSocketOptions) {
 		super()

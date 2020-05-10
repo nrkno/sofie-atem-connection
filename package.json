@@ -115,6 +115,7 @@
     "video"
   ],
   "dependencies": {
+    "eventemitter3": "^4.0.1",
     "exit-hook": "^2.0.0",
     "nanotimer": "^0.3.15",
     "threadedclass": "^0.7.0",

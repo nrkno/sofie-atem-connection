@@ -1,4 +1,4 @@
-import { EventEmitter } from 'events'
+import { EventEmitter } from 'eventemitter3'
 import { AtemState, AtemStateUtil, InvalidIdError } from './state'
 import { AtemSocket } from './lib/atemSocket'
 import { ISerializableCommand, IDeserializedCommand } from './commands/CommandBase'
@@ -32,6 +32,16 @@ export interface AtemOptions {
 	disableMultithreaded?: boolean
 }
 
+export interface AtemEvents {
+	error: [string]
+	info: [string]
+	debug: [string]
+	connected: []
+	disconnected: []
+	stateChanged: [AtemState, string[]]
+	receivedCommands: [IDeserializedCommand[]]
+}
+
 interface SentCommand {
 	command: ISerializableCommand
 	resolve: () => void
@@ -46,28 +56,12 @@ export enum AtemConnectionStatus {
 
 export const DEFAULT_PORT = 9910
 
-export class BasicAtem extends EventEmitter {
+export class BasicAtem extends EventEmitter<AtemEvents> {
 	private readonly socket: AtemSocket
 	protected readonly dataTransferManager: DT.DataTransferManager
 	private _state: AtemState | undefined
 	private _sentQueue: { [packetId: string]: SentCommand } = {}
 	private _status: AtemConnectionStatus
-
-	public on!: ((event: 'error', listener: (message: any) => void) => this) &
-		((event: 'info', listener: (message: string) => void) => this) &
-		((event: 'debug', listener: (message: string) => void) => this) &
-		((event: 'connected', listener: () => void) => this) &
-		((event: 'disconnected', listener: () => void) => this) &
-		((event: 'stateChanged', listener: (state: AtemState, paths: string[]) => void) => this) &
-		((event: 'receivedCommands', listener: (cmds: IDeserializedCommand[]) => void) => this)
-
-	public emit!: ((event: 'error', message: any) => boolean) &
-		((event: 'info', message: string) => boolean) &
-		((event: 'debug', message: string) => boolean) &
-		((event: 'connected') => boolean) &
-		((event: 'disconnected') => boolean) &
-		((event: 'stateChanged', state: AtemState, paths: string[]) => boolean) &
-		((event: 'receivedCommands', cmds: IDeserializedCommand[]) => boolean)
 
 	constructor(options?: AtemOptions) {
 		super()
