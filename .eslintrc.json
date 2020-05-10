@@ -10,7 +10,7 @@
 		{
 			"files": ["*.ts"],
 			"parser": "@typescript-eslint/parser",
-			"parserOptions": { "project": "./tsconfig.json" },
+			"parserOptions": { "project": "./tsconfig.lint.json" },
 			"plugins": ["@typescript-eslint"],
 			"extends": [
 				"eslint:recommended",
@@ -39,6 +39,12 @@
 			},
 			"rules": {
 				"@typescript-eslint/ban-ts-ignore": "off"
+			}
+		},
+		{
+			"files": ["examples/**/*.ts"],
+			"rules": {
+				"no-process-exit": "off"
 			}
 		}
 	]

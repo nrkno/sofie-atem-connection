@@ -16,27 +16,29 @@ const conn = new Atem({})
 
 let stuckTimeout: any = null
 
-function uploadNext () {
+function uploadNext(): void {
 	uploadStarted = Date.now()
-	conn.uploadStill(uploadNumber % conn.state.media.stillPool.length, file, 'contemplation..', '')
-	.then(async (_res) => {
-		console.log(`Uploaded still #${uploadNumber} in ${Date.now() - uploadStarted}ms at 1080p`)
-		uploadNumber++
+	conn.uploadStill(uploadNumber % conn.state.media.stillPool.length, file, 'contemplation..', '').then(
+		async _res => {
+			console.log(`Uploaded still #${uploadNumber} in ${Date.now() - uploadStarted}ms at 1080p`)
+			uploadNumber++
 
-		if (stuckTimeout) {
-			clearTimeout(stuckTimeout)
+			if (stuckTimeout) {
+				clearTimeout(stuckTimeout)
+			}
+			stuckTimeout = setTimeout(() => {
+				console.log('')
+				console.log('UPLOAD GOT STUCK')
+				console.log('')
+			}, 20000)
+
+			setTimeout(() => uploadNext(), 0)
+		},
+		e => {
+			console.log('e', e)
+			setTimeout(() => uploadNext(), 500)
 		}
-		stuckTimeout = setTimeout(() => {
-			console.log('')
-			console.log('UPLOAD GOT STUCK')
-			console.log('')
-		}, 20000)
-
-		setTimeout(() => uploadNext(), 0)
-	}, (e) => {
-		console.log('e', e)
-		setTimeout(() => uploadNext(), 500)
-	})
+	)
 }
 
 conn.on('error', console.log)

@@ -78,7 +78,7 @@ export function runTestForCommand(
 
 					for (const key in cmd) {
 						const newName = converter.idAliases[key]
-						if (cmd.hasOwnProperty(key) && newName) {
+						if (Object.prototype.hasOwnProperty.call(cmd, key) && newName) {
 							if (!cmd.properties) cmd.properties = {}
 							cmd.properties[newName] = (cmd as any)[key]
 						}

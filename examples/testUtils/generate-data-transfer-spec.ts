@@ -2,7 +2,7 @@ import { Atem } from '../../dist'
 import { DataTransferManager } from '../../dist/dataTransfer'
 import * as fs from 'fs'
 
-const frameBuffer = Buffer.alloc(1920 * 1080 * 4,0)
+const frameBuffer = Buffer.alloc(1920 * 1080 * 4, 0)
 // const wavBuffer = fs.readFileSync('./src/dataTransfer/__tests__/sampleAudio.wav')
 
 const nb = new Atem({})
@@ -12,7 +12,7 @@ nb.on('connected', async () => {
 	console.log('connected')
 	const commands: any[] = []
 
-	const procCmd = (cmd: any, dir: string) => {
+	const procCmd = (cmd: any, dir: string): any => {
 		const props = { ...cmd.properties }
 		Object.keys(props).forEach(k => {
 			if (Buffer.isBuffer(props[k])) {
@@ -34,9 +34,11 @@ nb.on('connected', async () => {
 			return nb.sendCommand(cmd)
 		})
 	})
-	nb.on('receivedCommand', cmd => {
-		commands.push(procCmd(cmd, 'recv'))
-		transfer.handleCommand(cmd)
+	nb.on('receivedCommands', cmds => {
+		cmds.forEach((cmd): void => {
+			commands.push(procCmd(cmd, 'recv'))
+			transfer.handleCommand(cmd)
+		})
 	})
 
 	console.log('uploading')
@@ -55,6 +57,5 @@ nb.on('connected', async () => {
 	fs.writeFileSync('upload.json', JSON.stringify(commands, undefined, '\t'))
 
 	process.exit(0)
-
 })
 nb.connect('10.42.13.98', 9910)

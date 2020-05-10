@@ -62,6 +62,7 @@ class ThreadedClassManagerMock {
 	public handlers: Function[] = []
 
 	public onEvent(_socketProcess: any, _event: string, cb: Function): { stop: () => void } {
+		// eslint-disable-next-line @typescript-eslint/no-use-before-define
 		ThreadedClassManagerSingleton.handlers.push(cb)
 		return {
 			stop: (): void => {
