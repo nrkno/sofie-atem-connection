@@ -24,6 +24,7 @@ describe('Atem', () => {
 			expect(AtemSocket).toHaveBeenCalledTimes(1)
 			expect(AtemSocket).toHaveBeenCalledWith({
 				address: '',
+				childProcessTimeout: 600,
 				debugBuffers: false,
 				disableMultithreaded: true,
 				log: (conn as any)._log,
@@ -43,6 +44,7 @@ describe('Atem', () => {
 			expect(AtemSocket).toHaveBeenCalledTimes(1)
 			expect(AtemSocket).toHaveBeenCalledWith({
 				address: 'test1',
+				childProcessTimeout: 600,
 				debugBuffers: true,
 				disableMultithreaded: false,
 				log: (conn as any)._log,

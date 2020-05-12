@@ -11,6 +11,7 @@ export interface AtemSocketOptions {
 	port: number
 	debugBuffers: boolean
 	disableMultithreaded: boolean
+	childProcessTimeout: number
 }
 
 export interface AtemSocketEvents {
@@ -25,6 +26,7 @@ export interface AtemSocketEvents {
 export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	private readonly _debugBuffers: boolean
 	private readonly _disableMultithreaded: boolean
+	private readonly _childProcessTimeout: number
 	private readonly _commandParser: CommandParser = new CommandParser()
 
 	private _nextCommandTrackingId = 0
@@ -39,6 +41,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 		this._port = options.port
 		this._debugBuffers = options.debugBuffers
 		this._disableMultithreaded = options.disableMultithreaded
+		this._childProcessTimeout = options.childProcessTimeout
 	}
 
 	public async connect(address?: string, port?: number): Promise<void> {
@@ -134,7 +137,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 			],
 			{
 				instanceName: 'atem-connection',
-				freezeLimit: 200,
+				freezeLimit: this._childProcessTimeout,
 				autoRestart: true,
 				disableMultithreading: this._disableMultithreaded
 			}

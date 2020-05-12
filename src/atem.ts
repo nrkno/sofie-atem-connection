@@ -30,6 +30,7 @@ export interface AtemOptions {
 	port?: number
 	debugBuffers?: boolean
 	disableMultithreaded?: boolean
+	childProcessTimeout?: number
 }
 
 export interface AtemEvents {
@@ -72,7 +73,8 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 			debugBuffers: (options || {}).debugBuffers || false,
 			address: (options || {}).address || '',
 			port: (options || {}).port || DEFAULT_PORT,
-			disableMultithreaded: (options || {}).disableMultithreaded || false
+			disableMultithreaded: (options || {}).disableMultithreaded || false,
+			childProcessTimeout: (options || {}).childProcessTimeout || 600
 		})
 		this.dataTransferManager = new DT.DataTransferManager()
 
