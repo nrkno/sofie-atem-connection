@@ -22,7 +22,7 @@ export class TopologyCommand extends DeserializedCommand<AtemCapabilites> {
 			superSources: rawCommand.readUInt8(10 + v230offset),
 			// talkbackOverSDI: rawCommand.readUInt8(13),
 
-			cameraControl: rawCommand.readUInt8(17) === 1,
+			cameraControl: rawCommand.readUInt8(17 + v230offset) === 1,
 
 			// Note: these are defined below as they can overflow in older firmwares
 			advancedChromaKeyers: false
@@ -30,7 +30,7 @@ export class TopologyCommand extends DeserializedCommand<AtemCapabilites> {
 
 		// in 7.4?
 		if (rawCommand.length > 20) {
-			properties.advancedChromaKeyers = rawCommand.readUInt8(21) === 1
+			properties.advancedChromaKeyers = rawCommand.readUInt8(21 + v230offset) === 1
 		}
 
 		return new TopologyCommand(properties)
