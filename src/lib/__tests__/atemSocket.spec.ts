@@ -104,7 +104,8 @@ describe('AtemSocket', () => {
 			debugBuffers: false,
 			address: '',
 			port: 890,
-			disableMultithreaded: true
+			disableMultithreaded: true,
+			childProcessTimeout: 100
 		})
 	}
 
