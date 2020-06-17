@@ -12,7 +12,8 @@ export enum Model {
 	TVSPro4K = 0x0a,
 	Constellation = 0x0b,
 	Constellation8K = 0x0c,
-	Mini = 0x0d
+	Mini = 0x0d,
+	MiniPro = 0x0e
 }
 
 export enum ProtocolVersion {
