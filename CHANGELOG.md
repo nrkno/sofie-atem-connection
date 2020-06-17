@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.1](https://github.com/nrkno/tv-automation-atem-connection/compare/1.3.0...1.3.1) (2020-06-17)
+
+
+### Bug Fixes
+
+* pin broken dev-dependencies ([edfa595](https://github.com/nrkno/tv-automation-atem-connection/commit/edfa5955006f878ec7c4e63a62ab2fd7c761aa9a))
+* pin broken dev-dependencies ([edfa595](https://github.com/nrkno/tv-automation-atem-connection/commit/edfa5955006f878ec7c4e63a62ab2fd7c761aa9a))
+* TopologyCommand for v8.1.1+ ([1db6cf8](https://github.com/nrkno/tv-automation-atem-connection/commit/1db6cf83a241d983a8cedb1af8c9b95fba2b5d0e))
+* TopologyCommand for v8.1.1+ ([1db6cf8](https://github.com/nrkno/tv-automation-atem-connection/commit/1db6cf83a241d983a8cedb1af8c9b95fba2b5d0e))
+
 ## [1.3.0](https://github.com/nrkno/tv-automation-atem-connection/compare/1.2.0...1.3.0) (2020-01-12)
 
 
