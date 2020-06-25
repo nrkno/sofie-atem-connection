@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>atem-connection - v1.3.1 | atem-connection - v1.3.1</title>
+	<title>atem-connection - v1.3.2 | atem-connection - v1.3.2</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -2335,7 +2335,7 @@ img {
 		<div class="container">
 			<div class="table-wrap">
 				<div class="table-cell">
-					<strong><a href="index.html">atem-connection - v1.3.1</a></strong>
+					<strong><a href="index.html">atem-connection - v1.3.2</a></strong>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -3360,7 +3360,7 @@ RECV &lt;Buffer 00 0c 90 60 5f 76 65 72 00 02 00 10&gt;...</code></pre>
 				<div class="tsd-signature tsd-kind-icon">Command<wbr>Constructor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/45b00ca/src/lib/atemCommandParser.ts#L5">src/lib/atemCommandParser.ts:5</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/c9bdace/src/lib/atemCommandParser.ts#L5">src/lib/atemCommandParser.ts:5</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-type-declaration">
@@ -3378,7 +3378,7 @@ RECV &lt;Buffer 00 0c 90 60 5f 76 65 72 00 02 00 10&gt;...</code></pre>
 				<div class="tsd-signature tsd-kind-icon">MAX_<wbr>PACKETS_<wbr>TO_<wbr>SEND_<wbr>PER_<wbr>TICK<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">10</span><span class="tsd-signature-symbol"> =&nbsp;10</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/45b00ca/src/dataTransfer/index.ts#L10">src/dataTransfer/index.ts:10</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/c9bdace/src/dataTransfer/index.ts#L10">src/dataTransfer/index.ts:10</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -3389,13 +3389,13 @@ RECV &lt;Buffer 00 0c 90 60 5f 76 65 72 00 02 00 10&gt;...</code></pre>
 				<a name="_calcactivemeinputs" class="tsd-anchor"></a>
 				<h3>_calc<wbr>Active<wbr>MeInputs</h3>
 				<ul class="tsd-signatures tsd-kind-function tsd-is-external tsd-is-not-exported">
-					<li class="tsd-signature tsd-kind-icon">_calc<wbr>Active<wbr>MeInputs<span class="tsd-signature-symbol">(</span>mode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"program"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"preview"</span>, state<span class="tsd-signature-symbol">: </span><a href="classes/atemstate.html" class="tsd-signature-type">AtemState</a>, meId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></li>
+					<li class="tsd-signature tsd-kind-icon">_calc<wbr>Active<wbr>MeInputs<span class="tsd-signature-symbol">(</span>inputs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span>, mode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"program"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"preview"</span>, state<span class="tsd-signature-symbol">: </span><a href="classes/atemstate.html" class="tsd-signature-type">AtemState</a>, meId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/45b00ca/src/lib/tally.ts#L73">src/lib/tally.ts:73</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/c9bdace/src/lib/tally.ts#L73">src/lib/tally.ts:73</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -3409,6 +3409,9 @@ RECV &lt;Buffer 00 0c 90 60 5f 76 65 72 00 02 00 10&gt;...</code></pre>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
+								<h5>inputs: <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h5>
+							</li>
+							<li>
 								<h5>mode: <span class="tsd-signature-type">"program"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"preview"</span></h5>
 							</li>
 							<li>
@@ -3418,7 +3421,7 @@ RECV &lt;Buffer 00 0c 90 60 5f 76 65 72 00 02 00 10&gt;...</code></pre>
 								<h5>meId: <span class="tsd-signature-type">number</span></h5>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h4>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 					</li>
 				</ul>
 			</section>
@@ -3432,7 +3435,7 @@ RECV &lt;Buffer 00 0c 90 60 5f 76 65 72 00 02 00 10&gt;...</code></pre>
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/45b00ca/src/lib/tally.ts#L11">src/lib/tally.ts:11</a></li>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/c9bdace/src/lib/tally.ts#L11">src/lib/tally.ts:11</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
