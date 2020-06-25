@@ -7,8 +7,7 @@ import * as Enums from '../enums'
  * it gets called multiple times, and gets called in a loop.
  * Breaking it out made listVisibleInputs much easier to read.
  */
-function _calcActiveMeInputs(mode: 'program' | 'preview', state: AtemState, meId: number): number[] {
-	const inputs = new Set<number>()
+function _calcActiveMeInputs(inputs: Set<number>, mode: 'program' | 'preview', state: AtemState, meId: number): void {
 	const meRef = AtemStateUtil.getMixEffect(state, meId)
 
 	if (mode === 'preview') {
@@ -131,8 +130,6 @@ function _calcActiveMeInputs(mode: 'program' | 'preview', state: AtemState, meId
 			// to the activeInputs array.
 		}
 	}
-
-	return Array.from(inputs)
 }
 
 /**
@@ -146,7 +143,7 @@ export function listVisibleInputs(mode: 'program' | 'preview', state: AtemState,
 	const inputs = new Set<number>()
 
 	// Start with the basics: the surface level of what is in the target ME.
-	_calcActiveMeInputs(mode, state, me).forEach(i => inputs.add(i))
+	_calcActiveMeInputs(inputs, mode, state, me)
 
 	// Loop over the active input IDs we've found so far,
 	// and check if any of them are SuperSources or other nested MEs.
@@ -160,24 +157,22 @@ export function listVisibleInputs(mode: 'program' | 'preview', state: AtemState,
 		// be in a hot code path and get called many many times a second,
 		// every time the ATEM's state updates.
 		lastSize = inputs.size
-		Array.from(inputs)
-			.slice(lastProcessed)
-			.forEach(inputId => {
+		for (const inputId of Array.from(inputs).slice(lastProcessed)) {
 				const input = state.inputs[inputId]
 				if (!input) {
 					// Data isn't hydrated yet, we'll get 'em next time.
-					return
+					continue
 				}
 				const portType = input.internalPortType
 				switch (portType) {
 					case Enums.InternalPortType.SuperSource: {
 						const ssrcId = inputId - 6000
 						const ssrc = AtemStateUtil.getSuperSource(state, ssrcId)
-						ssrc.boxes.forEach(box => {
+						for (const box of ssrc.boxes) {
 							if (box && box.enabled) {
 								inputs.add(box.source)
 							}
-						})
+						}
 
 						if (ssrc.properties) {
 							inputs.add(ssrc.properties.artFillSource)
@@ -190,14 +185,14 @@ export function listVisibleInputs(mode: 'program' | 'preview', state: AtemState,
 					case Enums.InternalPortType.MEOutput: {
 						const nestedMeId = (inputId - (inputId % 10) - 10000) / 10 - 1
 						const nestedMeMode = (inputId - 10000) % 10 === 0 ? 'program' : 'preview'
-						_calcActiveMeInputs(nestedMeMode, state, nestedMeId).forEach(i => inputs.add(i))
+						_calcActiveMeInputs(inputs, nestedMeMode, state, nestedMeId)
 						break
 					}
 					default:
 					// Do nothing.
 				}
-			})
-		lastProcessed = inputs.size - 1
+			}
+		lastProcessed = lastSize - 1
 	} while (inputs.size !== lastSize)
 
 	// undefined sometimes sneaks its way in here.

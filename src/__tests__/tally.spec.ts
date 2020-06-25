@@ -87,4 +87,5 @@ describe('tally', () => {
 	runTestMe1('mid preview transition', 'mid-preview-trans')
 	runTestMe1('chain me2 pgm', 'chain-me2-pgm')
 	runTestMe1('chain me2 pvw', 'chain-me2-pvw')
+	runTestMe1('me2 in ssrc', 'me2-in-ssrc')
 })
