@@ -81,8 +81,8 @@
     "@types/jest": "^25.2.1",
     "@types/node": "^12.7.12",
     "@types/sinonjs__fake-timers": "^6.0.0",
-    "@typescript-eslint/eslint-plugin": "^2.31.0",
-    "@typescript-eslint/parser": "^2.31.0",
+    "@typescript-eslint/eslint-plugin": "~2.31.0",
+    "@typescript-eslint/parser": "~2.31.0",
     "codecov": "^3.2.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.11.0",
@@ -114,11 +114,11 @@
     "video"
   ],
   "dependencies": {
-    "eventemitter3": "^4.0.1",
+    "eventemitter3": "^4.0.4",
     "exit-hook": "^2.0.0",
     "nanotimer": "^0.3.15",
-    "threadedclass": "^0.7.0",
-    "tslib": "^1.10.0",
+    "threadedclass": "0.8.0-nightly-20200626-190313-597bdf9.0",
+    "tslib": "^1.13.0",
     "wavefile": "^8.4.4"
   },
   "standard-version": {
@@ -138,7 +138,7 @@
     "*.{ts}": [
       "yarn lint --fix --",
       "git add"
-	]
+    ]
   },
   "resolutions": {
     "**/conventional-changelog-angular": "5.0.6",

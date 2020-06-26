@@ -14,7 +14,7 @@ export interface AtemSocketOptions {
 	childProcessTimeout: number
 }
 
-export interface AtemSocketEvents {
+export type AtemSocketEvents = {
 	disconnect: []
 	info: [string]
 	debug: [string]
@@ -114,7 +114,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	private async _createSocketProcess(): Promise<Promisify<AtemSocketChild>> {
 		const socketProcess = await threadedClass<AtemSocketChild, typeof AtemSocketChild>(
 			'./atemSocketChild',
-			AtemSocketChild,
+			'AtemSocketChild',
 			[
 				{
 					address: this._address,

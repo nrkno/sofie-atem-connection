@@ -158,40 +158,40 @@ export function listVisibleInputs(mode: 'program' | 'preview', state: AtemState,
 		// every time the ATEM's state updates.
 		lastSize = inputs.size
 		for (const inputId of Array.from(inputs).slice(lastProcessed)) {
-				const input = state.inputs[inputId]
-				if (!input) {
-					// Data isn't hydrated yet, we'll get 'em next time.
-					continue
-				}
-				const portType = input.internalPortType
-				switch (portType) {
-					case Enums.InternalPortType.SuperSource: {
-						const ssrcId = inputId - 6000
-						const ssrc = AtemStateUtil.getSuperSource(state, ssrcId)
-						for (const box of ssrc.boxes) {
-							if (box && box.enabled) {
-								inputs.add(box.source)
-							}
-						}
-
-						if (ssrc.properties) {
-							inputs.add(ssrc.properties.artFillSource)
-							if (ssrc.properties.artOption === Enums.SuperSourceArtOption.Foreground) {
-								inputs.add(ssrc.properties.artCutSource)
-							}
-						}
-						break
-					}
-					case Enums.InternalPortType.MEOutput: {
-						const nestedMeId = (inputId - (inputId % 10) - 10000) / 10 - 1
-						const nestedMeMode = (inputId - 10000) % 10 === 0 ? 'program' : 'preview'
-						_calcActiveMeInputs(inputs, nestedMeMode, state, nestedMeId)
-						break
-					}
-					default:
-					// Do nothing.
-				}
+			const input = state.inputs[inputId]
+			if (!input) {
+				// Data isn't hydrated yet, we'll get 'em next time.
+				continue
 			}
+			const portType = input.internalPortType
+			switch (portType) {
+				case Enums.InternalPortType.SuperSource: {
+					const ssrcId = inputId - 6000
+					const ssrc = AtemStateUtil.getSuperSource(state, ssrcId)
+					for (const box of ssrc.boxes) {
+						if (box && box.enabled) {
+							inputs.add(box.source)
+						}
+					}
+
+					if (ssrc.properties) {
+						inputs.add(ssrc.properties.artFillSource)
+						if (ssrc.properties.artOption === Enums.SuperSourceArtOption.Foreground) {
+							inputs.add(ssrc.properties.artCutSource)
+						}
+					}
+					break
+				}
+				case Enums.InternalPortType.MEOutput: {
+					const nestedMeId = (inputId - (inputId % 10) - 10000) / 10 - 1
+					const nestedMeMode = (inputId - 10000) % 10 === 0 ? 'program' : 'preview'
+					_calcActiveMeInputs(inputs, nestedMeMode, state, nestedMeId)
+					break
+				}
+				default:
+				// Do nothing.
+			}
+		}
 		lastProcessed = lastSize - 1
 	} while (inputs.size !== lastSize)
 

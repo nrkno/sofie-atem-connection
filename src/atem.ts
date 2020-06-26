@@ -33,7 +33,7 @@ export interface AtemOptions {
 	childProcessTimeout?: number
 }
 
-export interface AtemEvents {
+export type AtemEvents = {
 	error: [string]
 	info: [string]
 	debug: [string]
