@@ -1,7 +1,7 @@
 {
 	"video": {
-		"ME": {
-			"0": {
+		"ME": [
+			{
 				"transitionProperties": {
 					"style": 0,
 					"selection": 1,
@@ -314,7 +314,7 @@
 					"remainingFrames": 25
 				}
 			},
-			"1": {
+			{
 				"transitionProperties": {
 					"style": 0,
 					"selection": 1,
@@ -627,9 +627,9 @@
 					"remainingFrames": 25
 				}
 			}
-		},
-		"downstreamKeyers": {
-			"0": {
+		],
+		"downstreamKeyers": [
+			{
 				"sources": {
 					"fillSource": 16,
 					"cutSource": 15
@@ -655,7 +655,7 @@
 				"isTowardsOnAir": false,
 				"remainingFrames": 25
 			},
-			"1": {
+			{
 				"sources": {
 					"fillSource": 14,
 					"cutSource": 13
@@ -681,19 +681,12 @@
 				"isTowardsOnAir": false,
 				"remainingFrames": 25
 			}
-		},
-		"auxilliaries": {
-			"0": 3020,
-			"1": 0,
-			"2": 6000,
-			"3": 0,
-			"4": 1000,
-			"5": 7001
-		},
-		"superSources": {
-			"0": {
-				"boxes": {
-					"0": {
+		],
+		"auxilliaries": [3020, 0, 6000, 0, 1000, 7001],
+		"superSources": [
+			{
+				"boxes": [
+					{
 						"enabled": true,
 						"source": 10020,
 						"x": -800,
@@ -705,7 +698,7 @@
 						"cropLeft": 0,
 						"cropRight": 3600
 					},
-					"1": {
+					{
 						"enabled": true,
 						"source": 1000,
 						"x": 800,
@@ -717,7 +710,7 @@
 						"cropLeft": 0,
 						"cropRight": 0
 					},
-					"2": {
+					{
 						"enabled": false,
 						"source": 0,
 						"x": 0,
@@ -729,7 +722,7 @@
 						"cropLeft": 0,
 						"cropRight": 0
 					},
-					"3": {
+					{
 						"enabled": false,
 						"source": 0,
 						"x": 0,
@@ -741,7 +734,7 @@
 						"cropLeft": 0,
 						"cropRight": 0
 					}
-				},
+				],
 				"index": 0,
 				"properties": {
 					"artFillSource": 3010,
@@ -768,7 +761,7 @@
 					"borderLightSourceAltitude": 10
 				}
 			}
-		}
+		]
 	},
 	"inputs": {
 		"0": {
@@ -786,10 +779,7 @@
 			"inputId": 1,
 			"longName": "Camera 1",
 			"shortName": "Cam1",
-			"externalPorts": [
-				1,
-				2
-			],
+			"externalPorts": [1, 2],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
@@ -800,9 +790,7 @@
 			"inputId": 2,
 			"longName": "Camera 2",
 			"shortName": "Cam2",
-			"externalPorts": [
-				1
-			],
+			"externalPorts": [1],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
@@ -813,9 +801,7 @@
 			"inputId": 3,
 			"longName": "Camera 3",
 			"shortName": "Cam3",
-			"externalPorts": [
-				1
-			],
+			"externalPorts": [1],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
@@ -826,9 +812,7 @@
 			"inputId": 4,
 			"longName": "Camera 4",
 			"shortName": "Cam4",
-			"externalPorts": [
-				1
-			],
+			"externalPorts": [1],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
@@ -839,9 +823,7 @@
 			"inputId": 5,
 			"longName": "Camera 5",
 			"shortName": "Cam5",
-			"externalPorts": [
-				1
-			],
+			"externalPorts": [1],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
@@ -852,9 +834,7 @@
 			"inputId": 6,
 			"longName": "Camera 6",
 			"shortName": "Cam6",
-			"externalPorts": [
-				1
-			],
+			"externalPorts": [1],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
@@ -865,9 +845,7 @@
 			"inputId": 7,
 			"longName": "Camera 7",
 			"shortName": "Cam7",
-			"externalPorts": [
-				1
-			],
+			"externalPorts": [1],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
@@ -878,9 +856,7 @@
 			"inputId": 8,
 			"longName": "Camera 8",
 			"shortName": "Cam8",
-			"externalPorts": [
-				1
-			],
+			"externalPorts": [1],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
@@ -891,9 +867,7 @@
 			"inputId": 9,
 			"longName": "MP1 Next",
 			"shortName": "MP1N",
-			"externalPorts": [
-				1
-			],
+			"externalPorts": [1],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
@@ -904,9 +878,7 @@
 			"inputId": 10,
 			"longName": "MP3 (Studio)",
 			"shortName": "MP3",
-			"externalPorts": [
-				1
-			],
+			"externalPorts": [1],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
@@ -917,9 +889,7 @@
 			"inputId": 11,
 			"longName": "MP1 (Clip)",
 			"shortName": "MP1",
-			"externalPorts": [
-				1
-			],
+			"externalPorts": [1],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
@@ -930,9 +900,7 @@
 			"inputId": 12,
 			"longName": "MP2 (Grafikk)",
 			"shortName": "MP2",
-			"externalPorts": [
-				1
-			],
+			"externalPorts": [1],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
@@ -943,9 +911,7 @@
 			"inputId": 13,
 			"longName": "DSK2K",
 			"shortName": "DK2K",
-			"externalPorts": [
-				1
-			],
+			"externalPorts": [1],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
@@ -956,9 +922,7 @@
 			"inputId": 14,
 			"longName": "DSK2F",
 			"shortName": "DK2F",
-			"externalPorts": [
-				1
-			],
+			"externalPorts": [1],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
@@ -969,9 +933,7 @@
 			"inputId": 15,
 			"longName": "DSK1K",
 			"shortName": "DK1K",
-			"externalPorts": [
-				1
-			],
+			"externalPorts": [1],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
@@ -982,9 +944,7 @@
 			"inputId": 16,
 			"longName": "DSK1F",
 			"shortName": "DK1F",
-			"externalPorts": [
-				1
-			],
+			"externalPorts": [1],
 			"isExternal": true,
 			"externalPortType": 1,
 			"internalPortType": 0,
