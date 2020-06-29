@@ -58,6 +58,7 @@ describe('tally', () => {
 	runTestMe1('dsk in auto', 'dsk-in-auto')
 	runTestMe1('ssrc', 'ssrc')
 	runTestMe1('ssrc2', 'ssrc2')
+	runTestMe1('ssrc not loaded', 'ssrc-not-loaded')
 	runTestMe1('upstream keyers', 'upstream-keyers')
 	runTestMe1('mid wipe - no border', 'mid-wipe-no-border')
 	runTestMe1('mid wipe - with border', 'mid-wipe-with-border')

@@ -42,9 +42,11 @@ export function listVisibleInputs (mode: 'program' | 'preview', state: AtemState
 						}
 					}
 
-					inputs.add(ssrc.properties.artFillSource)
-					if (ssrc.properties.artOption === Enums.SuperSourceArtOption.Foreground) {
-						inputs.add(ssrc.properties.artCutSource)
+					if (ssrc.properties) {
+						inputs.add(ssrc.properties.artFillSource)
+						if (ssrc.properties.artOption === Enums.SuperSourceArtOption.Foreground) {
+							inputs.add(ssrc.properties.artCutSource)
+						}
 					}
 					break
 				case Enums.InternalPortType.MEOutput:
