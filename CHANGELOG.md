@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.3](https://github.com/nrkno/tv-automation-atem-connection/compare/1.3.2...1.3.3) (2020-06-29)
+
+
+### Bug Fixes
+
+* listVisibleInputs exception if supersource info isnt yet loaded ([c91a8c5](https://github.com/nrkno/tv-automation-atem-connection/commit/c91a8c57aee6f3938419f20e087b1a7d09cfe394))
+* listVisibleInputs exception if supersource info isnt yet loaded ([c91a8c5](https://github.com/nrkno/tv-automation-atem-connection/commit/c91a8c57aee6f3938419f20e087b1a7d09cfe394))
+
 ### [1.3.2](https://github.com/nrkno/tv-automation-atem-connection/compare/1.3.1...1.3.2) (2020-06-25)
 
 
