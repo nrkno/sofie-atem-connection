@@ -53,7 +53,22 @@ export function runTestForCommand(
 				: undefined
 			const newProp = propConv ? propConv(testCase.command[key]) : { val: testCase.command[key] }
 
-			mutatedCommand[newProp.name || newKey] = newProp.val
+			if (newProp.name) {
+				const p = newProp.name.split('.')
+
+				let o = mutatedCommand
+				let i: string | undefined = p.shift()! // assuming we'll get at least one entry
+				do {
+					if (p.length) {
+						o[i] = { ...o[i] }
+						o = o[i]
+					} else {
+						o[i] = newProp.val
+					}
+				} while ((i = p.shift()))
+			} else {
+				mutatedCommand[newKey] = newProp.val
+			}
 		}
 
 		if (converter && converter.customMutate) {

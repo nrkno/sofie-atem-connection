@@ -7,6 +7,7 @@ import {
 	PropertyAliasResult
 } from './util'
 import { ProtocolVersion } from '../../enums'
+import { UpstreamKeyerMaskSettings } from '../../state/video/upstreamKeyers'
 
 const TestCases = require('./data-v7.2.json') as TestCase[]
 
@@ -415,10 +416,19 @@ const commandConverters: CommandTestConverterSet = {
 		propertyAliases: {
 			keyerIndex: (val: any): PropertyAliasResult => ({ val, name: 'upstreamKeyerId' }),
 			mode: (val: any): PropertyAliasResult => ({ val, name: 'mixEffectKeyType' }),
-			maskLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
-			maskRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
-			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
-			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) })
+			maskSettings: (v: UpstreamKeyerMaskSettings) => ({
+				val: {
+					maskLeft: Math.round(v.maskLeft * 1000),
+					maskRight: Math.round(v.maskRight * 1000),
+					maskTop: Math.round(v.maskTop * 1000),
+					maskBottom: Math.round(v.maskBottom * 1000)
+				}
+			}),
+			maskEnabled: (v: boolean): PropertyAliasResult => ({ val: v, name: 'maskSettings.maskEnabled' }),
+			maskLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'maskSettings.maskLeft' }),
+			maskRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'maskSettings.maskRight' }),
+			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'maskSettings.maskTop' }),
+			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'maskSettings.maskBottom' })
 		}
 	},
 	KeDV: {
