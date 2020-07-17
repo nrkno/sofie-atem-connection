@@ -92,5 +92,6 @@ export interface UpstreamKeyer extends UpstreamKeyerBase {
 	patternSettings?: UpstreamKeyerPatternSettings
 	flyKeyframes: [UpstreamKeyerFlyKeyframe | undefined, UpstreamKeyerFlyKeyframe | undefined]
 	flyProperties?: UpstreamKeyerFlySettings
+	maskSettings: UpstreamKeyerMaskSettings
 	onAir: boolean
 }

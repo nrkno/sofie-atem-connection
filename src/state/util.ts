@@ -63,9 +63,9 @@ export function getMediaPlayer(state: AtemState, index: number, dontCreate?: boo
 		player = {
 			playing: false,
 			loop: false,
-			atBeginning: false,
+			atBeginning: true,
 			clipFrame: 0,
-			sourceType: Enums.MediaSourceType.Clip,
+			sourceType: Enums.MediaSourceType.Still,
 			clipIndex: 0,
 			stillIndex: 0
 		}
@@ -165,7 +165,14 @@ export function getUpstreamKeyer(mixEffect: MixEffect, index: number, dontCreate
 			fillSource: 0,
 			onAir: false,
 			flyEnabled: false,
-			flyKeyframes: [undefined, undefined]
+			flyKeyframes: [undefined, undefined],
+			maskSettings: {
+				maskEnabled: false,
+				maskTop: 0,
+				maskBottom: 0,
+				maskLeft: 0,
+				maskRight: 0
+			}
 		}
 
 		if (!dontCreate) {

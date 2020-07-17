@@ -24,11 +24,13 @@ export class MixEffectKeyPropertiesGetCommand extends DeserializedCommand<Upstre
 			flyEnabled: rawCommand.readUInt8(5) === 1,
 			fillSource: rawCommand.readUInt16BE(6),
 			cutSource: rawCommand.readUInt16BE(8),
-			maskEnabled: rawCommand.readUInt8(10) === 1,
-			maskTop: rawCommand.readInt16BE(12),
-			maskBottom: rawCommand.readInt16BE(14),
-			maskLeft: rawCommand.readInt16BE(16),
-			maskRight: rawCommand.readInt16BE(18)
+			maskSettings: {
+				maskEnabled: rawCommand.readUInt8(10) === 1,
+				maskTop: rawCommand.readInt16BE(12),
+				maskBottom: rawCommand.readInt16BE(14),
+				maskLeft: rawCommand.readInt16BE(16),
+				maskRight: rawCommand.readInt16BE(18)
+			}
 		}
 
 		return new MixEffectKeyPropertiesGetCommand(mixEffect, keyer, properties)
