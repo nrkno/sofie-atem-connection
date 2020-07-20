@@ -425,10 +425,19 @@ const commandConverters: CommandTestConverterSet = {
 				}
 			}),
 			maskEnabled: (v: boolean): PropertyAliasResult => ({ val: v, name: 'maskSettings.maskEnabled' }),
-			maskLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'maskSettings.maskLeft' }),
-			maskRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'maskSettings.maskRight' }),
+			maskLeft: (v: number): PropertyAliasResult => ({
+				val: Math.round(v * 1000),
+				name: 'maskSettings.maskLeft'
+			}),
+			maskRight: (v: number): PropertyAliasResult => ({
+				val: Math.round(v * 1000),
+				name: 'maskSettings.maskRight'
+			}),
 			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'maskSettings.maskTop' }),
-			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'maskSettings.maskBottom' })
+			maskBottom: (v: number): PropertyAliasResult => ({
+				val: Math.round(v * 1000),
+				name: 'maskSettings.maskBottom'
+			})
 		}
 	},
 	KeDV: {
