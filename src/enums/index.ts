@@ -13,7 +13,8 @@ export enum Model {
 	Constellation = 0x0b,
 	Constellation8K = 0x0c,
 	Mini = 0x0d,
-	MiniPro = 0x0e
+	MiniPro = 0x0e,
+	MiniProISO = 0x0f
 }
 
 export enum ProtocolVersion {
@@ -82,27 +83,20 @@ export enum MacroAction {
 	Delete = 5
 }
 
-export enum ExternalPorts {
-	None = 0,
-	SDI = 1 << 0,
-	HDMI = 1 << 1,
-	Component = 1 << 2,
-	Composite = 1 << 3,
-	SVideo = 1 << 4,
-	All = SDI | HDMI | Component | Composite | SVideo
-}
-
 export enum ExternalPortType {
-	Internal = 0,
+	Unknown = 0,
 	SDI = 1,
 	HDMI = 2,
-	Composite = 3,
 	Component = 4,
-	SVideo = 5,
+	Composite = 8,
+	SVideo = 16,
 	XLR = 32,
 	AESEBU = 64,
 	RCA = 128,
-	TSJack // @todo: check value
+	Internal = 256,
+	TSJack = 512,
+	MADI = 1024,
+	TRSJack = 2048
 }
 
 export enum InternalPortType {
@@ -113,10 +107,14 @@ export enum InternalPortType {
 	MediaPlayerFill = 4,
 	MediaPlayerKey = 5,
 	SuperSource = 6,
+	// Since V8_1_1
+	ExternalDirect = 7,
 
 	MEOutput = 128,
 	Auxiliary = 129,
-	Mask = 130
+	Mask = 130,
+	// Since V8_1_1
+	MultiViewer = 131
 }
 
 export enum SourceAvailability {
@@ -133,7 +131,9 @@ export enum MeAvailability {
 	None = 0,
 	Me1 = 1 << 0,
 	Me2 = 1 << 1,
-	All = Me1 | Me2
+	Me3 = 1 << 2,
+	Me4 = 1 << 3,
+	All = Me1 | Me2 | Me3 | Me4
 }
 
 export enum BorderBevel {

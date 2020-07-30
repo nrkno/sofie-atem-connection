@@ -1,7 +1,7 @@
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { InputChannel } from '../../state/input'
-import { ExternalPorts, ExternalPortType } from '../../enums'
+import { ExternalPortType } from '../../enums'
 import * as Util from '../../lib/atemUtil'
 
 export class InputPropertiesCommand extends WritableCommand<InputChannel> {
@@ -48,19 +48,19 @@ export class InputPropertiesUpdateCommand extends DeserializedCommand<InputChann
 
 		const externalPortsMask = rawCommand.readUInt8(29)
 		const externalPorts: ExternalPortType[] = []
-		if (externalPortsMask & ExternalPorts.SDI) {
+		if (externalPortsMask & ExternalPortType.SDI) {
 			externalPorts.push(ExternalPortType.SDI)
 		}
-		if (externalPortsMask & ExternalPorts.HDMI) {
+		if (externalPortsMask & ExternalPortType.HDMI) {
 			externalPorts.push(ExternalPortType.HDMI)
 		}
-		if (externalPortsMask & ExternalPorts.Component) {
+		if (externalPortsMask & ExternalPortType.Component) {
 			externalPorts.push(ExternalPortType.Component)
 		}
-		if (externalPortsMask & ExternalPorts.Composite) {
+		if (externalPortsMask & ExternalPortType.Composite) {
 			externalPorts.push(ExternalPortType.Composite)
 		}
-		if (externalPortsMask & ExternalPorts.SVideo) {
+		if (externalPortsMask & ExternalPortType.SVideo) {
 			externalPorts.push(ExternalPortType.SVideo)
 		}
 
