@@ -528,10 +528,11 @@ export class Atem extends BasicAtem {
 
 	public uploadStill(index: number, data: Buffer, name: string, description: string): Promise<DataTransfer> {
 		if (!this.state) return Promise.reject()
-		const resolution = Util.getResolution(this.state.settings.videoMode)
+		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
+		if (!resolution) return Promise.reject()
 		return this.dataTransferManager.uploadStill(
 			index,
-			Util.convertRGBAToYUV422(resolution[0], resolution[1], data),
+			Util.convertRGBAToYUV422(resolution.width, resolution.height, data),
 			name,
 			description
 		)
@@ -539,10 +540,11 @@ export class Atem extends BasicAtem {
 
 	public uploadClip(index: number, frames: Array<Buffer>, name: string): Promise<DataTransfer> {
 		if (!this.state) return Promise.reject()
-		const resolution = Util.getResolution(this.state.settings.videoMode)
+		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
+		if (!resolution) return Promise.reject()
 		const data: Array<Buffer> = []
 		for (const frame of frames) {
-			data.push(Util.convertRGBAToYUV422(resolution[0], resolution[1], frame))
+			data.push(Util.convertRGBAToYUV422(resolution.width, resolution.height, frame))
 		}
 		return this.dataTransferManager.uploadClip(index, data, name)
 	}

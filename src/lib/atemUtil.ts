@@ -1,4 +1,4 @@
-import { Enums } from '..'
+import * as Enums from '../enums'
 import WaveFile = require('wavefile')
 
 export function bufToBase64String(buffer: Buffer, start: number, length: number): string {
@@ -91,39 +91,111 @@ export function convertRGBAToYUV422(width: number, height: number, data: Buffer)
 	return buffer
 }
 
-export type Resolution = [number, number]
-export function getResolution(videoMode: Enums.VideoMode): Resolution {
-	const PAL: Resolution = [720, 576]
-	const NTSC: Resolution = [640, 480]
-	const HD: Resolution = [1280, 720]
-	const FHD: Resolution = [1920, 1080]
-	const UHD: Resolution = [3840, 2160]
-	// TODO - add 8k options
+export interface VideoModeInfo {
+	width: number
+	height: number
+}
 
-	const enumToResolution = [
-		NTSC,
-		PAL,
-		NTSC,
-		PAL,
-		HD,
-		HD,
-		FHD,
-		FHD,
-		FHD,
-		FHD,
-		FHD,
-		FHD,
-		FHD,
-		FHD,
-		UHD,
-		UHD,
-		UHD,
-		UHD,
-		UHD,
-		UHD
-	]
+const dimsPAL: Pick<VideoModeInfo, 'width' | 'height'> = { width: 720, height: 576 }
+const dimsNTSC: Pick<VideoModeInfo, 'width' | 'height'> = { width: 640, height: 480 }
+const dims720p: Pick<VideoModeInfo, 'width' | 'height'> = { width: 1280, height: 720 }
+const dims1080p: Pick<VideoModeInfo, 'width' | 'height'> = { width: 1920, height: 1080 }
+const dims4k: Pick<VideoModeInfo, 'width' | 'height'> = { width: 3840, height: 2160 }
+const dims8k: Pick<VideoModeInfo, 'width' | 'height'> = { width: 7680, height: 4260 }
+const VideoModeInfoImpl: { [key in Enums.VideoMode]: VideoModeInfo } = {
+	[Enums.VideoMode.N525i5994NTSC]: {
+		...dimsNTSC
+	},
+	[Enums.VideoMode.P625i50PAL]: {
+		...dimsPAL
+	},
+	[Enums.VideoMode.N525i5994169]: {
+		...dimsNTSC
+	},
+	[Enums.VideoMode.P625i50169]: {
+		...dimsPAL
+	},
 
-	return enumToResolution[videoMode]
+	[Enums.VideoMode.P720p50]: {
+		...dims720p
+	},
+	[Enums.VideoMode.N720p5994]: {
+		...dims720p
+	},
+	[Enums.VideoMode.P1080i50]: {
+		...dims1080p
+	},
+	[Enums.VideoMode.N1080i5994]: {
+		...dims1080p
+	},
+	[Enums.VideoMode.N1080p2398]: {
+		...dims1080p
+	},
+	[Enums.VideoMode.N1080p24]: {
+		...dims1080p
+	},
+	[Enums.VideoMode.P1080p25]: {
+		...dims1080p
+	},
+	[Enums.VideoMode.N1080p2997]: {
+		...dims1080p
+	},
+	[Enums.VideoMode.P1080p50]: {
+		...dims1080p
+	},
+	[Enums.VideoMode.N1080p5994]: {
+		...dims1080p
+	},
+
+	[Enums.VideoMode.N4KHDp2398]: {
+		...dims4k
+	},
+	[Enums.VideoMode.N4KHDp24]: {
+		...dims4k
+	},
+	[Enums.VideoMode.P4KHDp25]: {
+		...dims4k
+	},
+	[Enums.VideoMode.N4KHDp2997]: {
+		...dims4k
+	},
+
+	[Enums.VideoMode.P4KHDp5000]: {
+		...dims4k
+	},
+	[Enums.VideoMode.N4KHDp5994]: {
+		...dims4k
+	},
+
+	[Enums.VideoMode.N8KHDp2398]: {
+		...dims8k
+	},
+	[Enums.VideoMode.N8KHDp24]: {
+		...dims8k
+	},
+	[Enums.VideoMode.P8KHDp25]: {
+		...dims8k
+	},
+	[Enums.VideoMode.N8KHDp2997]: {
+		...dims8k
+	},
+	[Enums.VideoMode.P8KHDp50]: {
+		...dims8k
+	},
+	[Enums.VideoMode.N8KHDp5994]: {
+		...dims8k
+	},
+
+	[Enums.VideoMode.N1080p30]: {
+		...dims1080p
+	},
+	[Enums.VideoMode.N1080p60]: {
+		...dims1080p
+	}
+}
+
+export function getVideoModeInfo(videoMode: Enums.VideoMode): VideoModeInfo | undefined {
+	return VideoModeInfoImpl[videoMode]
 }
 
 export function convertWAVToRaw(inputBuffer: Buffer): Buffer {

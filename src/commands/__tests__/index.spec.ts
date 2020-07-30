@@ -416,7 +416,7 @@ const commandConverters: CommandTestConverterSet = {
 		propertyAliases: {
 			keyerIndex: (val: any): PropertyAliasResult => ({ val, name: 'upstreamKeyerId' }),
 			mode: (val: any): PropertyAliasResult => ({ val, name: 'mixEffectKeyType' }),
-			maskSettings: (v: UpstreamKeyerMaskSettings) => ({
+			maskSettings: (v: UpstreamKeyerMaskSettings): PropertyAliasResult => ({
 				val: {
 					maskLeft: Math.round(v.maskLeft * 1000),
 					maskRight: Math.round(v.maskRight * 1000),
