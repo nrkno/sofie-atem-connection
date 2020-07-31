@@ -1,11 +1,8 @@
 import { BasicWritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState, AtemStateUtil, InvalidIdError } from '../../../state'
+import { TransitionPosition } from '../../../state/video'
 
-export interface HandlePositionProps {
-	handlePosition: number // 0...10000
-}
-
-export class TransitionPositionCommand extends BasicWritableCommand<HandlePositionProps> {
+export class TransitionPositionCommand extends BasicWritableCommand<Pick<TransitionPosition, 'handlePosition'>> {
 	public static readonly rawName = 'CTPs'
 
 	public readonly mixEffect: number
@@ -24,17 +21,12 @@ export class TransitionPositionCommand extends BasicWritableCommand<HandlePositi
 	}
 }
 
-export interface TransitionPositionProps extends HandlePositionProps {
-	inTransition: boolean
-	remainingFrames: number // 0...250
-}
-
-export class TransitionPositionUpdateCommand extends DeserializedCommand<TransitionPositionProps> {
+export class TransitionPositionUpdateCommand extends DeserializedCommand<TransitionPosition> {
 	public static readonly rawName = 'TrPs'
 
 	public readonly mixEffect: number
 
-	constructor(mixEffect: number, properties: TransitionPositionProps) {
+	constructor(mixEffect: number, properties: TransitionPosition) {
 		super(properties)
 
 		this.mixEffect = mixEffect
@@ -57,9 +49,7 @@ export class TransitionPositionUpdateCommand extends DeserializedCommand<Transit
 		}
 
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
-		mixEffect.transitionFramesLeft = this.properties.remainingFrames
-		mixEffect.transitionPosition = this.properties.handlePosition
-		mixEffect.inTransition = this.properties.inTransition
-		return `video.ME.${this.mixEffect}.transition`
+		mixEffect.transitionPosition = this.properties
+		return `video.ME.${this.mixEffect}.transitionPosition`
 	}
 }

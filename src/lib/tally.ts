@@ -25,7 +25,7 @@ function _calcActiveMeInputs(inputs: Set<number>, mode: 'program' | 'preview', s
 				const keyerMask = 1 << (usk.upstreamKeyerId + 1)
 				const isPartOfTransition = meRef.transitionProperties.selection & keyerMask
 				if (mode === 'program') {
-					if (meRef.inTransition) {
+					if (meRef.transitionPosition.inTransition) {
 						return usk.onAir || isPartOfTransition
 					}
 
@@ -77,8 +77,9 @@ function _calcActiveMeInputs(inputs: Set<number>, mode: 'program' | 'preview', s
 	}
 
 	// Compute what sources are currently participating in a transition.
-	const isTransitionInProgram = mode === 'program' && meRef.inTransition
-	const isTransitionInPreview = mode === 'preview' && meRef.transitionPreview && meRef.transitionPosition > 0
+	const isTransitionInProgram = mode === 'program' && meRef.transitionPosition.inTransition
+	const isTransitionInPreview =
+		mode === 'preview' && meRef.transitionPreview && meRef.transitionPosition.handlePosition > 0
 	if (isTransitionInProgram || isTransitionInPreview) {
 		if (meRef.transitionProperties.selection & 1) {
 			// Includes background

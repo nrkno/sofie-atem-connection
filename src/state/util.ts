@@ -99,10 +99,12 @@ export function getMixEffect(state: AtemState, index: number, dontCreate?: boole
 			index,
 			programInput: 0,
 			previewInput: 0,
-			inTransition: false,
 			transitionPreview: false,
-			transitionPosition: 0,
-			transitionFramesLeft: 0,
+			transitionPosition: {
+				inTransition: false,
+				handlePosition: 0,
+				remainingFrames: 0
+			},
 			transitionProperties: {
 				style: Enums.TransitionStyle.MIX,
 				selection: 1,

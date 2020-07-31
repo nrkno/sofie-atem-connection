@@ -29,6 +29,22 @@ function loadRawState(file: string): AtemState {
 		videoState.mixEffects = videoState.ME
 	}
 
+	loadedState.video.mixEffects.forEach(me => {
+		// Lazy fix up moving some state properties
+		if (me) {
+			const me1 = me as any
+			if (typeof me.transitionPosition === 'number') {
+				me.transitionPosition = {
+					inTransition: me1.inTransition,
+					handlePosition: me1.transitionPosition,
+					remainingFrames: me1.transitionFramesLeft
+				}
+				delete me1.transitionFramesLeft
+				delete me1.inTransition
+			}
+		}
+	})
+
 	return loadedState
 }
 function loadTally(file: string): { program: number[]; preview: number[] } {

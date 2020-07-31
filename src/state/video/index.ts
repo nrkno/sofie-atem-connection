@@ -72,15 +72,19 @@ export interface TransitionSettings {
 	wipe?: WipeTransitionSettings
 }
 
+export interface TransitionPosition {
+	inTransition: boolean
+	handlePosition: number
+	remainingFrames: number
+}
+
 export interface MixEffect {
 	readonly index: number
 	programInput: number
 	previewInput: number
-	inTransition: boolean
 	transitionPreview: boolean
-	transitionPosition: number
-	transitionFramesLeft: number
 	fadeToBlack?: FadeToBlackProperties
+	transitionPosition: TransitionPosition
 	transitionProperties: TransitionProperties
 	transitionSettings: TransitionSettings
 	readonly upstreamKeyers: Array<USK.UpstreamKeyer | undefined>
