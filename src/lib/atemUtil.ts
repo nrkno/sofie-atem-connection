@@ -235,3 +235,12 @@ export function IntToBalance(input: number): number {
 export function BalanceToInt(input: number): number {
 	return Math.round(input * 200)
 }
+
+export function padToMultiple4(val: number): number {
+	const r = val % 4
+	if (r === 0) {
+		return val
+	} else {
+		return val + (4 - r)
+	}
+}

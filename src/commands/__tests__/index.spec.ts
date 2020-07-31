@@ -647,6 +647,12 @@ const commandConverters: CommandTestConverterSet = {
 			index: (val: any): PropertyAliasResult => ({ val, name: 'macroIndex' })
 		}
 	},
+	MSRc: {
+		idAliases: {
+			index: 'index'
+		},
+		propertyAliases: {}
+	},
 	MvIn: {
 		idAliases: {
 			multiViewerId: 'multiviewIndex'

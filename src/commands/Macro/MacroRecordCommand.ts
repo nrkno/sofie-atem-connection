@@ -1,0 +1,26 @@
+import { BasicWritableCommand } from '../CommandBase'
+import { Util } from '../..'
+
+export class MacroRecordCommand extends BasicWritableCommand<{ name: string; description: string }> {
+	public static readonly rawName = 'MSRc'
+	public readonly index: number
+
+	constructor(index: number, name: string, description: string) {
+		super({ name, description })
+
+		this.index = index
+	}
+
+	public serialize(): Buffer {
+		const name = this.properties.name || ''
+		const description = this.properties.description || ''
+
+		const buffer = Buffer.alloc(Util.padToMultiple4(8 + name.length + description.length))
+		buffer.writeUInt16BE(this.index, 0)
+		buffer.writeUInt16BE(name.length, 2)
+		buffer.writeUInt16BE(description.length, 4)
+		buffer.write(name, 6)
+		buffer.write(description, 6 + name.length)
+		return buffer
+	}
+}

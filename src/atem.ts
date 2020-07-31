@@ -377,6 +377,11 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	public macroStartRecord(index: number, name: string, description: string): Promise<void> {
+		const command = new Commands.MacroRecordCommand(index, name, description)
+		return this.sendCommand(command)
+	}
+
 	public macroStopRecord(): Promise<void> {
 		const command = new Commands.MacroActionCommand(0, Enums.MacroAction.StopRecord)
 		return this.sendCommand(command)
