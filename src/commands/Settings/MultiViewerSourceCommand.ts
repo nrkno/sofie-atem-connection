@@ -1,14 +1,14 @@
-import { WritableCommand, DeserializedCommand } from '../CommandBase'
+import { BasicWritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState, AtemStateUtil, InvalidIdError } from '../../state'
 import { MultiViewerSourceState } from '../../state/settings'
 
-export class MultiViewerSourceCommand extends WritableCommand<MultiViewerSourceState> {
+export class MultiViewerSourceCommand extends BasicWritableCommand<MultiViewerSourceState> {
 	public static readonly rawName = 'CMvI'
 
 	public readonly multiViewerId: number
 
-	constructor(multiviewerId: number) {
-		super()
+	constructor(multiviewerId: number, windowIndex: number, source: number) {
+		super({ windowIndex, source })
 
 		this.multiViewerId = multiviewerId
 	}

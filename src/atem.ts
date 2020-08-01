@@ -387,9 +387,8 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public setMultiViewerSource(newProps: Partial<MultiViewerSourceState>, mv = 0): Promise<void> {
-		const command = new Commands.MultiViewerSourceCommand(mv)
-		command.updateProps(newProps)
+	public setMultiViewerSource(newProps: MultiViewerSourceState, mv = 0): Promise<void> {
+		const command = new Commands.MultiViewerSourceCommand(mv, newProps.windowIndex, newProps.source)
 		return this.sendCommand(command)
 	}
 
