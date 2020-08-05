@@ -120,7 +120,7 @@ jobs:
             - yarn-cache-12-{{ .Branch }}-{{ checksum "yarn.lock" }}
             - yarn-cache-12-{{ .Branch }}
             - yarn-cache-12-
-            
+
       - run: yarn install
       - run: yarn validate:dependencies
       - run: yarn validate:dev-dependencies
@@ -163,7 +163,7 @@ jobs:
       # Setup git
       - add_ssh_keys:
           fingerprints:
-            - "8d:f8:a8:b0:86:33:58:1c:fb:24:53:2b:03:73:9c:34"
+            - '8d:f8:a8:b0:86:33:58:1c:fb:24:53:2b:03:73:9c:34'
       - run: mkdir -p ~/.ssh
       - run:
           name: Keyscan Github
@@ -171,7 +171,7 @@ jobs:
       - run: git config --global user.email "info@superfly.tv"
       - run: git config --global user.name "superflytvab"
       # Publish docs
-      - run: 
+      - run:
           name: yarn docs:publish
           command: |
             if [[ $PUBLISH_ARGS == *"latest"* ]]; then
@@ -198,7 +198,7 @@ jobs:
       - run: yarn reset
       - run: yarn install
       # Locally bump the version
-      - run: 
+      - run:
           name: yarn release
           command: |
             COMMIT_TIMESTAMP=$(git log -1 --pretty=format:%ct HEAD)
@@ -222,7 +222,7 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - run:
           name: Publish to NPM with yarn
-          command: NEW_VERSION=$(node -p "require('./package.json').version") && yarn publish --access=public --new-version=$NEW_VERSION --network-timeout 100000 --tag experimental
+          command: NEW_VERSION=$(node -p "require('./package.json').version") && yarn publish --access=public --new-version=$NEW_VERSION --network-timeout 100000 $PUBLISH_ARGS
 
 workflows:
   version: 2
