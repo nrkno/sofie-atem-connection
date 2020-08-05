@@ -19,7 +19,8 @@ export function createEmptyState(): AtemState {
 		// talkbackOverSDI: 0,
 		downstreamKeyers: 4,
 		cameraControl: true,
-		advancedChromaKeyers: true
+		advancedChromaKeyers: true,
+		onlyConfigurableOutputs: true
 	}
 	state.info.mixEffects = [
 		{

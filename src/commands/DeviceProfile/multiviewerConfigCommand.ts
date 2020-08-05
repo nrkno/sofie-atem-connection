@@ -1,6 +1,7 @@
 import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { MultiviewerInfo } from '../../state/info'
+import { ProtocolVersion } from '../../enums'
 
 export class MultiviewerConfigCommand extends DeserializedCommand<MultiviewerInfo> {
 	public static readonly rawName = '_MvC'
@@ -9,17 +10,30 @@ export class MultiviewerConfigCommand extends DeserializedCommand<MultiviewerInf
 		super(properties)
 	}
 
-	public static deserialize(rawCommand: Buffer): MultiviewerConfigCommand {
-		return new MultiviewerConfigCommand({
-			count: rawCommand.readUInt8(0),
-			windowCount: rawCommand.readUInt8(1)
-			// Note: there are a bunch more properties, but their use is not confirmed and has changed over time,
-			// also we dont care about them for now
-		})
+	public static deserialize(rawCommand: Buffer, version: ProtocolVersion): MultiviewerConfigCommand {
+		if (version >= ProtocolVersion.V8_1_1) {
+			return new MultiviewerConfigCommand({
+				count: -1,
+				windowCount: rawCommand.readUInt8(1)
+			})
+		} else {
+			return new MultiviewerConfigCommand({
+				count: rawCommand.readUInt8(0),
+				windowCount: rawCommand.readUInt8(1)
+			})
+		}
 	}
 
 	public applyToState(state: AtemState): string {
-		state.info.multiviewer = this.properties
+		if (this.properties.count === -1) {
+			state.info.multiviewer = {
+				count: -1,
+				...state.info.multiviewer,
+				windowCount: this.properties.windowCount
+			}
+		} else {
+			state.info.multiviewer = this.properties
+		}
 		return `info.multiviewer`
 	}
 }

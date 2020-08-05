@@ -1,5 +1,6 @@
 import { PropertyAliasResult, CommandTestConverterSet } from './index.spec'
 import { UpstreamKeyerMaskSettings } from '../../state/video/upstreamKeyers'
+import { Util } from '../..'
 
 export const DefaultCommandConverters: CommandTestConverterSet = {
 	_ver: {
@@ -26,6 +27,17 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 				val.sSrcId = 0
 			}
 			return val
+		}
+	},
+	InPr: {
+		idAliases: {},
+		propertyAliases: {
+			id: (val: any): PropertyAliasResult => ({ val, name: 'inputId' })
+		},
+		customMutate: (props): any => {
+			props.externalPorts = Util.getComponents(props.availableExternalPorts)
+			delete props.availableExternalPorts
+			return props
 		}
 	},
 	SSBP: {
@@ -275,6 +287,15 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			videoSources: (val: any): PropertyAliasResult => ({ val, name: 'sources' }),
 			superSource: (val: any): PropertyAliasResult => ({ val, name: 'superSources' }),
 			talkbackOverSDI: (): PropertyAliasResult => ({ val: 0 }) // @todo: should be fixed in atem-connection
+		},
+		customMutate: (props): any => {
+			if (props.multiviewers === undefined) {
+				props.multiviewers = -1
+			}
+			props.onlyConfigurableOutputs = props.onlyConfigurableOutputs || false
+			props.advancedChromaKeyers = props.advancedChromaKeyers || false
+			props.cameraControl = props.cameraControl || false
+			return props
 		}
 	},
 	_MeC: {

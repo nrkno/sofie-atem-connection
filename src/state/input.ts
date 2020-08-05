@@ -4,7 +4,7 @@ export interface InputChannel {
 	readonly inputId: number
 	longName: string
 	shortName: string
-	isExternal: boolean
+	readonly areNamesDefault: boolean
 	readonly externalPorts: Array<ExternalPortType> | null
 	externalPortType: ExternalPortType
 	readonly internalPortType: InternalPortType

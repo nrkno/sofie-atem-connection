@@ -244,3 +244,13 @@ export function padToMultiple4(val: number): number {
 		return val + (4 - r)
 	}
 }
+
+export function getComponents(val: number): number[] {
+	const res: number[] = []
+	for (let next = 1; next <= val; next = next << 1) {
+		if ((val & next) > 0) {
+			res.push(next)
+		}
+	}
+	return res
+}

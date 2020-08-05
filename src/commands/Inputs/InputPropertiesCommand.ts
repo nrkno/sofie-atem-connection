@@ -1,10 +1,10 @@
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { InputChannel } from '../../state/input'
-import { ExternalPortType } from '../../enums'
 import * as Util from '../../lib/atemUtil'
+import { OmitReadonly } from '../../lib/types'
 
-export class InputPropertiesCommand extends WritableCommand<InputChannel> {
+export class InputPropertiesCommand extends WritableCommand<OmitReadonly<InputChannel>> {
 	public static MaskFlags = {
 		longName: 1 << 0,
 		shortName: 1 << 1,
@@ -46,31 +46,13 @@ export class InputPropertiesUpdateCommand extends DeserializedCommand<InputChann
 	public static deserialize(rawCommand: Buffer): InputPropertiesUpdateCommand {
 		const inputId = rawCommand.readUInt16BE(0)
 
-		const externalPortsMask = rawCommand.readUInt8(29)
-		const externalPorts: ExternalPortType[] = []
-		if (externalPortsMask & ExternalPortType.SDI) {
-			externalPorts.push(ExternalPortType.SDI)
-		}
-		if (externalPortsMask & ExternalPortType.HDMI) {
-			externalPorts.push(ExternalPortType.HDMI)
-		}
-		if (externalPortsMask & ExternalPortType.Component) {
-			externalPorts.push(ExternalPortType.Component)
-		}
-		if (externalPortsMask & ExternalPortType.Composite) {
-			externalPorts.push(ExternalPortType.Composite)
-		}
-		if (externalPortsMask & ExternalPortType.SVideo) {
-			externalPorts.push(ExternalPortType.SVideo)
-		}
-
-		const properties = {
+		const properties: InputChannel = {
 			inputId: rawCommand.readUInt16BE(0),
 			longName: Util.bufToNullTerminatedString(rawCommand, 2, 20),
 			shortName: Util.bufToNullTerminatedString(rawCommand, 22, 4),
-			externalPorts: externalPorts.length > 0 ? externalPorts : null,
-			isExternal: rawCommand.readUInt8(28) === 0,
-			externalPortType: rawCommand.readUInt8(31),
+			areNamesDefault: rawCommand.readUInt8(26) === 1,
+			externalPorts: Util.getComponents(rawCommand.readUInt16BE(28)),
+			externalPortType: rawCommand.readUInt16BE(30),
 			internalPortType: rawCommand.readUInt8(32),
 			sourceAvailability: rawCommand.readUInt8(34),
 			meAvailability: rawCommand.readUInt8(35)

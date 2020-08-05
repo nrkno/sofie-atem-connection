@@ -15,6 +15,7 @@ export interface AtemCapabilites {
 	readonly downstreamKeyers: number
 	readonly cameraControl: boolean
 	readonly advancedChromaKeyers: boolean
+	readonly onlyConfigurableOutputs: boolean
 }
 
 export interface MixEffectInfo {

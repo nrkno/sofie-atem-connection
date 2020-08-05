@@ -17,4 +17,8 @@ type MutableKeys<T extends object> = {
 
 type IfEquals<X, Y, A = X, B = never> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? A : B
 
-export type OmitReadonly<T> = Pick<T, MutableKeys<T>>
+export type OmitReadonly<T extends object> = Pick<T, MutableKeys<T>>
+
+export type Mutable<T> = {
+	-readonly [P in keyof T]: T[P]
+}
