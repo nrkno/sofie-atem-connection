@@ -367,6 +367,11 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	public macroInsertTimedWait(frames: number): Promise<void> {
+		const command = new Commands.MacroAddTimedPauseCommand(frames)
+		return this.sendCommand(command)
+	}
+
 	public macroRun(index = 0): Promise<void> {
 		const command = new Commands.MacroActionCommand(index, Enums.MacroAction.Run)
 		return this.sendCommand(command)
@@ -384,6 +389,18 @@ export class Atem extends BasicAtem {
 
 	public macroStopRecord(): Promise<void> {
 		const command = new Commands.MacroActionCommand(0, Enums.MacroAction.StopRecord)
+		return this.sendCommand(command)
+	}
+
+	public macroUpdateProperties(props: Commands.MacroPropertiesCommand['properties'], index = 0): Promise<void> {
+		const command = new Commands.MacroPropertiesCommand(index)
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public macroSetLoop(loop: boolean): Promise<void> {
+		const command = new Commands.MacroRunStatusCommand()
+		command.updateProps({ loop })
 		return this.sendCommand(command)
 	}
 

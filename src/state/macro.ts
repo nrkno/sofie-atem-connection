@@ -13,7 +13,7 @@ export interface MacroRecorderState {
 export interface MacroPropertiesState {
 	description: string
 	isUsed: boolean
-	macroIndex: number
+	hasUnsupportedOps: boolean
 	name: string
 }
 
