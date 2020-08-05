@@ -3,6 +3,8 @@ import { VideoMode } from '../enums'
 export interface MultiViewerSourceState {
 	source: number
 	windowIndex: number
+	readonly supportsVuMeter: boolean
+	readonly supportsSafeArea: boolean
 }
 
 export interface MultiViewerWindowState extends MultiViewerSourceState {

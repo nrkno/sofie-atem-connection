@@ -8,6 +8,9 @@ export interface AudioChannel {
 	gain: number
 	/** Balance, -50 to +50 */
 	balance: number
+
+	readonly supportsRcaToXlrEnabled: boolean
+	rcaToXlrEnabled: boolean
 }
 
 export interface AudioMasterChannel {

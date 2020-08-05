@@ -11,10 +11,10 @@ export interface MacroRecorderState {
 }
 
 export interface MacroPropertiesState {
-	description: string
-	isUsed: boolean
-	hasUnsupportedOps: boolean
+	readonly isUsed: boolean
+	readonly hasUnsupportedOps: boolean
 	name: string
+	description: string
 }
 
 export interface MacroState {

@@ -161,6 +161,7 @@ export function getUpstreamKeyer(mixEffect: MixEffect, index: number, dontCreate
 	let usk = mixEffect.upstreamKeyers[index]
 	if (!usk) {
 		usk = {
+			canFlyKey: false,
 			upstreamKeyerId: index,
 			mixEffectKeyType: 0,
 			cutSource: 0,

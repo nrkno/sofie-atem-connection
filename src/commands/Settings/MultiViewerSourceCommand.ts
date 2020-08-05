@@ -1,8 +1,9 @@
 import { BasicWritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState, AtemStateUtil, InvalidIdError } from '../../state'
 import { MultiViewerSourceState } from '../../state/settings'
+import { OmitReadonly } from '../../lib/types'
 
-export class MultiViewerSourceCommand extends BasicWritableCommand<MultiViewerSourceState> {
+export class MultiViewerSourceCommand extends BasicWritableCommand<OmitReadonly<MultiViewerSourceState>> {
 	public static readonly rawName = 'CMvI'
 
 	public readonly multiViewerId: number
@@ -36,8 +37,10 @@ export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiVie
 	public static deserialize(rawCommand: Buffer): MultiViewerSourceUpdateCommand {
 		const multiViewerId = rawCommand.readUInt8(0)
 		const properties = {
+			windowIndex: rawCommand.readUInt8(1),
 			source: rawCommand.readUInt16BE(2),
-			windowIndex: rawCommand.readUInt8(1)
+			supportsVuMeter: rawCommand.readUInt8(4) != 0,
+			supportsSafeArea: rawCommand.readUInt8(5) != 0
 		}
 
 		return new MultiViewerSourceUpdateCommand(multiViewerId, properties)

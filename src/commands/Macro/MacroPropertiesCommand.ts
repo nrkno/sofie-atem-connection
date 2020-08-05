@@ -2,6 +2,7 @@ import { DeserializedCommand, WritableCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { MacroPropertiesState } from '../../state/macro'
 import * as Util from '../../lib/atemUtil'
+import { OmitReadonly } from '../../lib/types'
 
 export class MacroPropertiesUpdateCommand extends DeserializedCommand<MacroPropertiesState> {
 	public static readonly rawName = 'MPrp'
@@ -42,7 +43,7 @@ export class MacroPropertiesUpdateCommand extends DeserializedCommand<MacroPrope
 	}
 }
 
-export class MacroPropertiesCommand extends WritableCommand<Pick<MacroPropertiesState, 'name' | 'description'>> {
+export class MacroPropertiesCommand extends WritableCommand<OmitReadonly<MacroPropertiesState>> {
 	public static MaskFlags = {
 		name: 1 << 0,
 		description: 1 << 1
@@ -68,7 +69,7 @@ export class MacroPropertiesCommand extends WritableCommand<Pick<MacroProperties
 		buffer.writeUInt16BE(name.length, 4)
 		buffer.writeUInt16BE(description.length, 6)
 		buffer.write(name, 8, 'ascii')
-		buffer.write(name, 8 + name.length, 'ascii')
+		buffer.write(description, 8 + name.length, 'ascii')
 
 		return buffer
 	}

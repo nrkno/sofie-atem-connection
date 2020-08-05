@@ -2,6 +2,7 @@ import * as Enum from '../../enums'
 
 export interface UpstreamKeyerBase extends UpstreamKeyerTypeSettings {
 	readonly upstreamKeyerId: number
+	readonly canFlyKey: boolean
 	fillSource: number
 	cutSource: number
 }

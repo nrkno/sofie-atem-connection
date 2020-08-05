@@ -1,11 +1,12 @@
 import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState, AtemStateUtil, InvalidIdError } from '../../../state'
 import { TransitionProperties } from '../../../state/video'
+import { OmitReadonly } from '../../../lib/types'
 
-export class TransitionPropertiesCommand extends WritableCommand<TransitionProperties> {
+export class TransitionPropertiesCommand extends WritableCommand<OmitReadonly<TransitionProperties>> {
 	public static MaskFlags = {
-		style: 1 << 0,
-		selection: 1 << 1
+		nextStyle: 1 << 0,
+		nextSelection: 1 << 1
 	}
 
 	public static readonly rawName = 'CTTp'
@@ -23,8 +24,8 @@ export class TransitionPropertiesCommand extends WritableCommand<TransitionPrope
 		buffer.writeUInt8(this.flag, 0)
 
 		buffer.writeUInt8(this.mixEffect, 1)
-		buffer.writeUInt8(this.properties.style || 0, 2)
-		buffer.writeUInt8(this.properties.selection || 0, 3)
+		buffer.writeUInt8(this.properties.nextStyle || 0, 2)
+		buffer.writeUInt8(this.properties.nextSelection || 0, 3)
 
 		return buffer
 	}

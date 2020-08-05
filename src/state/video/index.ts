@@ -58,10 +58,10 @@ export interface WipeTransitionSettings {
 }
 
 export interface TransitionProperties {
-	style: Enum.TransitionStyle
-	selection: number
-	readonly nextStyle: Enum.TransitionStyle
-	readonly nextSelection: number
+	readonly style: Enum.TransitionStyle
+	readonly selection: number
+	nextStyle: Enum.TransitionStyle
+	nextSelection: number
 }
 
 export interface TransitionSettings {

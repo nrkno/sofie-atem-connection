@@ -28,6 +28,7 @@ export interface SuperSourceInfo {
 export interface AudioMixerInfo {
 	readonly inputs: number
 	readonly monitors: number
+	readonly headphones: number
 }
 
 export interface MacroPoolInfo {

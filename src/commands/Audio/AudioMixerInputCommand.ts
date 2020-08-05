@@ -2,12 +2,15 @@ import { AtemState } from '../../state'
 import { Util } from '../..'
 import { AudioChannel } from '../../state/audio'
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
+import { ProtocolVersion } from '../../enums'
+import { OmitReadonly } from '../../lib/types'
 
-export class AudioMixerInputCommand extends WritableCommand<AudioChannel> {
+export class AudioMixerInputCommand extends WritableCommand<OmitReadonly<AudioChannel>> {
 	public static MaskFlags = {
 		mixOption: 1 << 0,
 		gain: 1 << 1,
-		balance: 1 << 2
+		balance: 1 << 2,
+		rcaToXlrEnabled: 1 << 3
 	}
 	public static readonly rawName = 'CAMI'
 
@@ -26,16 +29,19 @@ export class AudioMixerInputCommand extends WritableCommand<AudioChannel> {
 		buffer.writeUInt8(this.properties.mixOption || 0, 4)
 		buffer.writeUInt16BE(Util.DecibelToUInt16BE(this.properties.gain || 0), 6)
 		buffer.writeInt16BE(Util.BalanceToInt(this.properties.balance || 0), 8)
+		buffer.writeUInt8(this.properties.rcaToXlrEnabled ? 1 : 0, 10)
 		return buffer
 	}
 }
 
-export class AudioMixerInputUpdateCommand extends DeserializedCommand<AudioChannel> {
+export class AudioMixerInputUpdateCommand extends DeserializedCommand<
+	Omit<AudioChannel, 'rcaToXlrEnabled' | 'supportsRcaToXlrEnabled'>
+> {
 	public static readonly rawName = 'AMIP'
 
 	public readonly index: number
 
-	constructor(index: number, properties: AudioChannel) {
+	constructor(index: number, properties: AudioMixerInputUpdateCommand['properties']) {
 		super(properties)
 
 		this.index = index
@@ -45,7 +51,7 @@ export class AudioMixerInputUpdateCommand extends DeserializedCommand<AudioChann
 		const index = rawCommand.readUInt16BE(0)
 		const properties = {
 			sourceType: rawCommand.readUInt8(2),
-			portType: rawCommand.readUInt8(7),
+			portType: rawCommand.readUInt16BE(6),
 			mixOption: rawCommand.readUInt8(8),
 			gain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(10)),
 			balance: Util.IntToBalance(rawCommand.readInt16BE(12))
@@ -56,9 +62,43 @@ export class AudioMixerInputUpdateCommand extends DeserializedCommand<AudioChann
 
 	public applyToState(state: AtemState): string {
 		state.audio.channels[this.index] = {
-			...state.audio.channels[this.index],
-			...this.properties
+			...this.properties,
+			rcaToXlrEnabled: false,
+			supportsRcaToXlrEnabled: false
 		}
+		return `audio.channels.${this.index}`
+	}
+}
+
+export class AudioMixerInputUpdateV8Command extends DeserializedCommand<AudioChannel> {
+	public static readonly minimumVersion = ProtocolVersion.V8_0
+	public static readonly rawName = 'AMIP'
+
+	public readonly index: number
+
+	constructor(index: number, properties: AudioChannel) {
+		super(properties)
+
+		this.index = index
+	}
+
+	public static deserialize(rawCommand: Buffer): AudioMixerInputUpdateV8Command {
+		const index = rawCommand.readUInt16BE(0)
+		const properties = {
+			sourceType: rawCommand.readUInt8(2),
+			portType: rawCommand.readUInt16BE(6),
+			mixOption: rawCommand.readUInt8(8),
+			gain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(10)),
+			balance: Util.IntToBalance(rawCommand.readInt16BE(12)),
+			supportsRcaToXlrEnabled: rawCommand.readUInt8(14) != 0,
+			rcaToXlrEnabled: rawCommand.readUInt8(15) != 0
+		}
+
+		return new AudioMixerInputUpdateV8Command(index, properties)
+	}
+
+	public applyToState(state: AtemState): string {
+		state.audio.channels[this.index] = this.properties
 		return `audio.channels.${this.index}`
 	}
 }

@@ -12,7 +12,8 @@ export class AudioMixerConfigCommand extends DeserializedCommand<AudioMixerInfo>
 	public static deserialize(rawCommand: Buffer): AudioMixerConfigCommand {
 		return new AudioMixerConfigCommand({
 			inputs: rawCommand.readUInt8(0),
-			monitors: rawCommand.readUInt8(1)
+			monitors: rawCommand.readUInt8(1),
+			headphones: rawCommand.readUInt8(2)
 		})
 	}
 

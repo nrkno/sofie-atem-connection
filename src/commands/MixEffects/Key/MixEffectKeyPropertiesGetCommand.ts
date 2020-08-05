@@ -21,6 +21,7 @@ export class MixEffectKeyPropertiesGetCommand extends DeserializedCommand<Upstre
 		const properties = {
 			upstreamKeyerId: keyer,
 			mixEffectKeyType: rawCommand.readUInt8(2),
+			canFlyKey: rawCommand.readUInt8(4) === 1,
 			flyEnabled: rawCommand.readUInt8(5) === 1,
 			fillSource: rawCommand.readUInt16BE(6),
 			cutSource: rawCommand.readUInt16BE(8),
