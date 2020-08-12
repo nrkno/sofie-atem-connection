@@ -1,8 +1,8 @@
 export interface DownstreamKeyerBase {
+	readonly inTransition: boolean
+	readonly remainingFrames: number
+	readonly isAuto: boolean
 	onAir: boolean
-	inTransition: boolean
-	isAuto: boolean
-	remainingFrames: number
 	isTowardsOnAir?: boolean
 }
 

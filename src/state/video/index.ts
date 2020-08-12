@@ -73,9 +73,9 @@ export interface TransitionSettings {
 }
 
 export interface TransitionPosition {
-	inTransition: boolean
+	readonly inTransition: boolean
+	readonly remainingFrames: number
 	handlePosition: number
-	remainingFrames: number
 }
 
 export interface MixEffect {
@@ -91,10 +91,10 @@ export interface MixEffect {
 }
 
 export interface FadeToBlackProperties {
-	isFullyBlack: boolean
+	readonly isFullyBlack: boolean
+	readonly inTransition: boolean
+	readonly remainingFrames: number
 	rate: number
-	inTransition: boolean
-	remainingFrames: number
 }
 
 export interface AtemVideoState {

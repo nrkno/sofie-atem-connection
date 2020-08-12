@@ -22,8 +22,8 @@ export interface AudioMasterChannel {
 }
 
 export interface AtemAudioState {
-	numberOfChannels?: number
-	hasMonitor?: boolean
+	readonly numberOfChannels?: number
+	readonly hasMonitor?: boolean
 	channels: { [channelId: number]: AudioChannel | undefined }
 	master?: AudioMasterChannel
 }
