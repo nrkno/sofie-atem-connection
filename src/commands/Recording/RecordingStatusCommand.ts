@@ -31,7 +31,7 @@ export class RecordingStatusUpdateCommand extends DeserializedCommand<RecordingS
 
 	public static deserialize(rawCommand: Buffer): RecordingStatusUpdateCommand {
 		const rawStatus = rawCommand.readUInt16BE(0)
-		const recordingTimeAvailable = rawCommand.readUInt32BE(4)
+		const recordingTimeAvailable = rawCommand.length > 4 ? rawCommand.readUInt32BE(4) : -1
 
 		let error = RecordingError.NoMedia
 		let state = RecordingStatus.Idle
