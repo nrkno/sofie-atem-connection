@@ -285,13 +285,16 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			mixEffectBlocks: (val: any): PropertyAliasResult => ({ val, name: 'mixEffects' }),
 			serialPort: (val: any): PropertyAliasResult => ({ val, name: 'serialPorts' }),
 			videoSources: (val: any): PropertyAliasResult => ({ val, name: 'sources' }),
-			superSource: (val: any): PropertyAliasResult => ({ val, name: 'superSources' }),
-			talkbackOverSDI: (): PropertyAliasResult => ({ val: 0 }) // @todo: should be fixed in atem-connection
+			superSource: (val: any): PropertyAliasResult => ({ val, name: 'superSources' })
 		},
 		customMutate: (props): any => {
 			if (props.multiviewers === undefined) {
 				props.multiviewers = -1
 			}
+			if (props.talkbackChannels === undefined) {
+				props.talkbackChannels = 0
+			}
+
 			props.onlyConfigurableOutputs = props.onlyConfigurableOutputs || false
 			props.advancedChromaKeyers = props.advancedChromaKeyers || false
 			props.cameraControl = props.cameraControl || false

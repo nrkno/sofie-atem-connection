@@ -109,4 +109,5 @@ describe('connection', () => {
 	runTestMe1('mini v8.1', 'mini-v8.1')
 	runTestMe1('mini v8.1.1', 'mini-v8.1.1')
 	runTestMe1('mini pro v8.2', 'mini-pro-v8.2')
+	runTestMe1('mini pro iso v8.4', 'mini-pro-iso-v8.4')
 })
