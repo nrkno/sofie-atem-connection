@@ -25,6 +25,7 @@ import { AudioChannel, AudioMasterChannel } from './state/audio'
 import { listVisibleInputs } from './lib/tally'
 import DataTransfer from './dataTransfer/dataTransfer'
 import { RecordingStateProperties } from './state/recording'
+import { OmitReadonly } from './lib/types'
 
 export interface AtemOptions {
 	address?: string
@@ -283,7 +284,7 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public setTransitionStyle(newProps: Partial<TransitionProperties>, me = 0): Promise<void> {
+	public setTransitionStyle(newProps: Partial<OmitReadonly<TransitionProperties>>, me = 0): Promise<void> {
 		const command = new Commands.TransitionPropertiesCommand(me)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
@@ -405,7 +406,7 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public setMultiViewerSource(newProps: MultiViewerSourceState, mv = 0): Promise<void> {
+	public setMultiViewerSource(newProps: OmitReadonly<MultiViewerSourceState>, mv = 0): Promise<void> {
 		const command = new Commands.MultiViewerSourceCommand(mv, newProps.windowIndex, newProps.source)
 		return this.sendCommand(command)
 	}
@@ -471,7 +472,7 @@ export class Atem extends BasicAtem {
 		}
 	}
 
-	public setInputSettings(newProps: Partial<InputChannel>, input = 0): Promise<void> {
+	public setInputSettings(newProps: Partial<OmitReadonly<InputChannel>>, input = 0): Promise<void> {
 		const command = new Commands.InputPropertiesCommand(input)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
@@ -593,7 +594,7 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public setAudioMixerInputProps(index: number, props: Partial<AudioChannel>): Promise<void> {
+	public setAudioMixerInputProps(index: number, props: Partial<OmitReadonly<AudioChannel>>): Promise<void> {
 		const command = new Commands.AudioMixerInputCommand(index)
 		command.updateProps(props)
 		return this.sendCommand(command)
