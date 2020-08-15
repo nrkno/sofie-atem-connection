@@ -22,7 +22,7 @@ export class TopologyCommand extends DeserializedCommand<AtemCapabilites & { mul
 			DVEs: rawCommand.readUInt8(8 + v230offset),
 			stingers: rawCommand.readUInt8(9 + v230offset),
 			superSources: rawCommand.readUInt8(10 + v230offset),
-			// talkbackOverSDI: rawCommand.readUInt8(13),
+			talkbackChannels: rawCommand.readUInt8(12 + v230offset),
 
 			cameraControl: rawCommand.readUInt8(17 + v230offset) === 1,
 

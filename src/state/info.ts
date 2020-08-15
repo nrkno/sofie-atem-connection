@@ -11,7 +11,7 @@ export interface AtemCapabilites {
 	readonly DVEs: number
 	readonly stingers: number
 	readonly superSources: number
-	// readonly talkbackOverSDI: number
+	readonly talkbackChannels: number
 	readonly downstreamKeyers: number
 	readonly cameraControl: boolean
 	readonly advancedChromaKeyers: boolean

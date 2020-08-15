@@ -16,7 +16,7 @@ export function createEmptyState(): AtemState {
 		DVEs: 1,
 		stingers: 1,
 		superSources: 2,
-		// talkbackOverSDI: 0,
+		talkbackChannels: 2,
 		downstreamKeyers: 4,
 		cameraControl: true,
 		advancedChromaKeyers: true,
