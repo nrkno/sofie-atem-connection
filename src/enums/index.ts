@@ -249,3 +249,41 @@ export enum AudioSourceType {
 	MediaPlayer,
 	ExternalAudio
 }
+
+export enum StreamingError {
+	None,
+	InvalidState = 1 << 4,
+	Unknown = 1 << 15
+}
+
+export enum StreamingStatus {
+	Idle = 1 << 0,
+	Connecting = 1 << 1,
+	Streaming = 1 << 2,
+	Stopping = 1 << 5 // + Streaming
+}
+
+export enum RecordingError {
+	None = 1 << 1,
+	NoMedia = 0,
+	MediaFull = 1 << 2,
+	MediaError = 1 << 3,
+	MediaUnformatted = 1 << 4,
+	DroppingFrames = 1 << 5,
+	Unknown = 1 << 15
+}
+
+export enum RecordingStatus {
+	Idle = 0,
+	Recording = 1 << 0,
+	Stopping = 1 << 7
+}
+
+export enum RecordingDiskStatus {
+	Idle = 1 << 0,
+	Unformatted = 1 << 1,
+	Active = 1 << 2,
+	Recording = 1 << 3,
+
+	Removed = 1 << 5
+}

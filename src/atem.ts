@@ -24,6 +24,7 @@ import * as Enums from './enums'
 import { AudioChannel, AudioMasterChannel } from './state/audio'
 import { listVisibleInputs } from './lib/tally'
 import DataTransfer from './dataTransfer/dataTransfer'
+import { RecordingStateProperties } from './state/recording'
 
 export interface AtemOptions {
 	address?: string
@@ -606,6 +607,47 @@ export class Atem extends BasicAtem {
 
 	public setAudioMixerMasterProps(props: Partial<AudioMasterChannel>): Promise<void> {
 		const command = new Commands.AudioMixerMasterCommand()
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public startStreaming(): Promise<void> {
+		const command = new Commands.StreamingStatusCommand(true)
+		return this.sendCommand(command)
+	}
+
+	public stopStreaming(): Promise<void> {
+		const command = new Commands.StreamingStatusCommand(false)
+		return this.sendCommand(command)
+	}
+
+	public requestStreamingDuration(): Promise<void> {
+		const command = new Commands.StreamingRequestDurationCommand()
+		return this.sendCommand(command)
+	}
+
+	public startRecording(): Promise<void> {
+		const command = new Commands.RecordingStatusCommand(true)
+		return this.sendCommand(command)
+	}
+
+	public stopRecording(): Promise<void> {
+		const command = new Commands.RecordingStatusCommand(false)
+		return this.sendCommand(command)
+	}
+
+	public requestRecordingDuration(): Promise<void> {
+		const command = new Commands.RecordingRequestDurationCommand()
+		return this.sendCommand(command)
+	}
+
+	public switchRecordingDisk(): Promise<void> {
+		const command = new Commands.RecordingRequestSwitchDiskCommand()
+		return this.sendCommand(command)
+	}
+
+	public setRecordingSettings(props: Partial<RecordingStateProperties>): Promise<void> {
+		const command = new Commands.RecordingSettingsCommand()
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}

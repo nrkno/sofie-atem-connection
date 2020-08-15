@@ -40,6 +40,16 @@ export function createEmptyState(): AtemState {
 		count: 255,
 		windowCount: 16
 	}
+	state.streaming = {}
+	state.recording = {
+		properties: {
+			filename: '',
+			workingSet1DiskId: 0,
+			workingSet2DiskId: 0,
+			recordInAllCameras: false
+		},
+		disks: {}
+	}
 
 	return state
 }

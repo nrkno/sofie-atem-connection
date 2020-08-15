@@ -5,6 +5,8 @@ import { MediaState } from './media'
 import { InputChannel } from './input'
 import { MacroState } from './macro'
 import { SettingsState } from './settings'
+import { RecordingState } from './recording'
+import { StreamingState } from './streaming'
 
 import * as AtemStateUtil from './util'
 export { AtemStateUtil }
@@ -17,6 +19,8 @@ export interface AtemState {
 	inputs: { [inputId: number]: InputChannel | undefined }
 	macro: MacroState
 	settings: SettingsState
+	recording?: RecordingState
+	streaming?: StreamingState
 }
 
 export class InvalidIdError extends Error {

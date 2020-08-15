@@ -183,17 +183,19 @@ describe('Commands vs LibAtem', () => {
 	test('Ensure all commands have test cases', () => {
 		// Verify that all commands were tested
 		let knownNames: string[] = []
-		for (const name of Object.keys(commandParser.commands)) {
-			knownNames.push(name)
+		for (const [name, cmds] of Object.entries(commandParser.commands)) {
+			for (const cmd of cmds) {
+				knownNames.push(`${name}_${cmd.minimumVersion || ProtocolVersion.V7_2}`)
+			}
 		}
 
 		// knownNames = Object.keys(commandParser.commands).sort()
-		const testNames = Array.from(new Set(TestCases.map(c => c.name)))
+		const testNames = Array.from(new Set(TestCases.map(c => `${c.name}_${c.firstVersion}`)))
 			.filter(n => knownNames.indexOf(n) !== -1)
 			.sort()
 
 		// Temporarily ignore these missing cases
-		knownNames = knownNames.filter(n => n !== 'InCm' && n !== 'TlSr')
+		knownNames = knownNames.filter(n => !n.startsWith('InCm') && !n.startsWith('TlSr'))
 
 		knownNames.sort()
 
