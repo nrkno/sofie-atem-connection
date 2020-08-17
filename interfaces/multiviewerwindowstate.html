@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>MultiViewerWindowState | atem-connection - v1.3.3</title>
+	<title>MultiViewerWindowState | atem-connection</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -2335,7 +2335,7 @@ img {
 		<div class="container">
 			<div class="table-wrap">
 				<div class="table-cell">
-					<strong><a href="../index.html">atem-connection - v1.3.3</a></strong>
+					<strong><a href="../index.html">atem-connection</a></strong>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -2378,6 +2378,12 @@ img {
 					<a href="multiviewerwindowstate.html#source" class="tsd-kind-icon">source</a>
 				</li>
 				<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-external">
+					<a href="multiviewerwindowstate.html#supportssafearea" class="tsd-kind-icon">supports<wbr>Safe<wbr>Area</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-external">
+					<a href="multiviewerwindowstate.html#supportsvumeter" class="tsd-kind-icon">supports<wbr>VuMeter</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-external">
 					<a href="multiviewerwindowstate.html#windowindex" class="tsd-kind-icon">window<wbr>Index</a>
 				</li>
 			</ul>
@@ -2409,6 +2415,8 @@ img {
 							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-external"><a href="multiviewerwindowstate.html#audiometer" class="tsd-kind-icon">audio<wbr>Meter</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-external"><a href="multiviewerwindowstate.html#safetitle" class="tsd-kind-icon">safe<wbr>Title</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-external"><a href="multiviewerwindowstate.html#source" class="tsd-kind-icon">source</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-external"><a href="multiviewerwindowstate.html#supportssafearea" class="tsd-kind-icon">supports<wbr>Safe<wbr>Area</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-external"><a href="multiviewerwindowstate.html#supportsvumeter" class="tsd-kind-icon">supports<wbr>VuMeter</a></li>
 							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-external"><a href="multiviewerwindowstate.html#windowindex" class="tsd-kind-icon">window<wbr>Index</a></li>
 						</ul>
 					</section>
@@ -2419,21 +2427,21 @@ img {
 			<h2>Properties</h2>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-external">
 				<a name="audiometer" class="tsd-anchor"></a>
-				<h3>audio<wbr>Meter</h3>
-				<div class="tsd-signature tsd-kind-icon">audio<wbr>Meter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+				<h3><span class="tsd-flag ts-flagOptional">Optional</span> audio<wbr>Meter</h3>
+				<div class="tsd-signature tsd-kind-icon">audio<wbr>Meter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/9e59a78/src/state/settings.ts#L8">src/state/settings.ts:8</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/2a72957/src/state/settings.ts#L12">src/state/settings.ts:12</a></li>
 					</ul>
 				</aside>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-external">
 				<a name="safetitle" class="tsd-anchor"></a>
-				<h3>safe<wbr>Title</h3>
-				<div class="tsd-signature tsd-kind-icon">safe<wbr>Title<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+				<h3><span class="tsd-flag ts-flagOptional">Optional</span> safe<wbr>Title</h3>
+				<div class="tsd-signature tsd-kind-icon">safe<wbr>Title<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/9e59a78/src/state/settings.ts#L7">src/state/settings.ts:7</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/2a72957/src/state/settings.ts#L11">src/state/settings.ts:11</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2444,7 +2452,29 @@ img {
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="multiviewersourcestate.html">MultiViewerSourceState</a>.<a href="multiviewersourcestate.html#source">source</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/9e59a78/src/state/settings.ts#L2">src/state/settings.ts:2</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/2a72957/src/state/settings.ts#L4">src/state/settings.ts:4</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-external">
+				<a name="supportssafearea" class="tsd-anchor"></a>
+				<h3>supports<wbr>Safe<wbr>Area</h3>
+				<div class="tsd-signature tsd-kind-icon">supports<wbr>Safe<wbr>Area<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+				<aside class="tsd-sources">
+					<p>Inherited from <a href="multiviewersourcestate.html">MultiViewerSourceState</a>.<a href="multiviewersourcestate.html#supportssafearea">supportsSafeArea</a></p>
+					<ul>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/2a72957/src/state/settings.ts#L7">src/state/settings.ts:7</a></li>
+					</ul>
+				</aside>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited tsd-is-external">
+				<a name="supportsvumeter" class="tsd-anchor"></a>
+				<h3>supports<wbr>VuMeter</h3>
+				<div class="tsd-signature tsd-kind-icon">supports<wbr>VuMeter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+				<aside class="tsd-sources">
+					<p>Inherited from <a href="multiviewersourcestate.html">MultiViewerSourceState</a>.<a href="multiviewersourcestate.html#supportsvumeter">supportsVuMeter</a></p>
+					<ul>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/2a72957/src/state/settings.ts#L6">src/state/settings.ts:6</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -2455,7 +2485,7 @@ img {
 				<aside class="tsd-sources">
 					<p>Inherited from <a href="multiviewersourcestate.html">MultiViewerSourceState</a>.<a href="multiviewersourcestate.html#windowindex">windowIndex</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/9e59a78/src/state/settings.ts#L3">src/state/settings.ts:3</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/2a72957/src/state/settings.ts#L5">src/state/settings.ts:5</a></li>
 					</ul>
 				</aside>
 			</section>
