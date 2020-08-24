@@ -55,7 +55,7 @@ function getChild(conn: BasicAtem): ThreadedClass<AtemSocketChildMock> {
 	return (conn as any).socket._socketProcess
 }
 
-function runTestMe1(name: string, filename: string): void {
+function runTest(name: string, filename: string): void {
 	const filePath = resolve(__dirname, `./connection/${filename}.data`)
 	const fileData = readFileSync(filePath)
 		.toString()
@@ -94,20 +94,20 @@ describe('connection', () => {
 	 * These tests run the payload through the parser to ensure that the commands does not error.
 	 */
 
-	runTestMe1('1me v8.1', '1me-v8.1')
-	runTestMe1('2me v8.1', '2me-v8.1')
-	runTestMe1('2me v8.1.2', '2me-v8.1.2')
-	runTestMe1('ps4k v7.2', 'ps4k-v7.2')
-	runTestMe1('1me4k v8.2', '1me4k-v8.2')
-	runTestMe1('4me4k v7.5.2', '4me4k-v7.5.2')
-	runTestMe1('4me4k v8.2', '4me4k-v8.2')
-	runTestMe1('tvshd v8.0.0', 'tvshd-v8.0.0')
-	runTestMe1('tvshd v8.1.0', 'tvshd-v8.1.0')
-	runTestMe1('tvshd v8.2.0', 'tvshd-v8.2.0')
-	runTestMe1('constellation v8.0.2', 'constellation-v8.0.2')
-	runTestMe1('constellation v8.2.3', 'constellation-v8.2.3')
-	runTestMe1('mini v8.1', 'mini-v8.1')
-	runTestMe1('mini v8.1.1', 'mini-v8.1.1')
-	runTestMe1('mini pro v8.2', 'mini-pro-v8.2')
-	runTestMe1('mini pro iso v8.4', 'mini-pro-iso-v8.4')
+	runTest('1me v8.1', '1me-v8.1')
+	runTest('2me v8.1', '2me-v8.1')
+	runTest('2me v8.1.2', '2me-v8.1.2')
+	runTest('ps4k v7.2', 'ps4k-v7.2')
+	runTest('1me4k v8.2', '1me4k-v8.2')
+	runTest('4me4k v7.5.2', '4me4k-v7.5.2')
+	runTest('4me4k v8.2', '4me4k-v8.2')
+	runTest('tvshd v8.0.0', 'tvshd-v8.0.0')
+	runTest('tvshd v8.1.0', 'tvshd-v8.1.0')
+	runTest('tvshd v8.2.0', 'tvshd-v8.2.0')
+	runTest('constellation v8.0.2', 'constellation-v8.0.2')
+	runTest('constellation v8.2.3', 'constellation-v8.2.3')
+	runTest('mini v8.1', 'mini-v8.1')
+	runTest('mini v8.1.1', 'mini-v8.1.1')
+	runTest('mini pro v8.2', 'mini-pro-v8.2')
+	runTest('mini pro iso v8.4', 'mini-pro-iso-v8.4')
 })

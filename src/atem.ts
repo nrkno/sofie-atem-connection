@@ -24,6 +24,9 @@ import * as Enums from './enums'
 import { AudioChannel, AudioMasterChannel } from './state/audio'
 import { listVisibleInputs } from './lib/tally'
 import DataTransfer from './dataTransfer/dataTransfer'
+import { RecordingStateProperties } from './state/recording'
+import { OmitReadonly } from './lib/types'
+import { StreamingServiceProperties } from './state/streaming'
 
 export interface AtemOptions {
 	address?: string
@@ -282,7 +285,7 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public setTransitionStyle(newProps: Partial<TransitionProperties>, me = 0): Promise<void> {
+	public setTransitionStyle(newProps: Partial<OmitReadonly<TransitionProperties>>, me = 0): Promise<void> {
 		const command = new Commands.TransitionPropertiesCommand(me)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
@@ -404,7 +407,7 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public setMultiViewerSource(newProps: MultiViewerSourceState, mv = 0): Promise<void> {
+	public setMultiViewerSource(newProps: OmitReadonly<MultiViewerSourceState>, mv = 0): Promise<void> {
 		const command = new Commands.MultiViewerSourceCommand(mv, newProps.windowIndex, newProps.source)
 		return this.sendCommand(command)
 	}
@@ -470,7 +473,7 @@ export class Atem extends BasicAtem {
 		}
 	}
 
-	public setInputSettings(newProps: Partial<InputChannel>, input = 0): Promise<void> {
+	public setInputSettings(newProps: Partial<OmitReadonly<InputChannel>>, input = 0): Promise<void> {
 		const command = new Commands.InputPropertiesCommand(input)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
@@ -592,7 +595,7 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public setAudioMixerInputProps(index: number, props: Partial<AudioChannel>): Promise<void> {
+	public setAudioMixerInputProps(index: number, props: Partial<OmitReadonly<AudioChannel>>): Promise<void> {
 		const command = new Commands.AudioMixerInputCommand(index)
 		command.updateProps(props)
 		return this.sendCommand(command)
@@ -606,6 +609,53 @@ export class Atem extends BasicAtem {
 
 	public setAudioMixerMasterProps(props: Partial<AudioMasterChannel>): Promise<void> {
 		const command = new Commands.AudioMixerMasterCommand()
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public startStreaming(): Promise<void> {
+		const command = new Commands.StreamingStatusCommand(true)
+		return this.sendCommand(command)
+	}
+
+	public stopStreaming(): Promise<void> {
+		const command = new Commands.StreamingStatusCommand(false)
+		return this.sendCommand(command)
+	}
+
+	public requestStreamingDuration(): Promise<void> {
+		const command = new Commands.StreamingRequestDurationCommand()
+		return this.sendCommand(command)
+	}
+
+	public setStreamingService(props: Partial<StreamingServiceProperties>): Promise<void> {
+		const command = new Commands.StreamingServiceCommand()
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public startRecording(): Promise<void> {
+		const command = new Commands.RecordingStatusCommand(true)
+		return this.sendCommand(command)
+	}
+
+	public stopRecording(): Promise<void> {
+		const command = new Commands.RecordingStatusCommand(false)
+		return this.sendCommand(command)
+	}
+
+	public requestRecordingDuration(): Promise<void> {
+		const command = new Commands.RecordingRequestDurationCommand()
+		return this.sendCommand(command)
+	}
+
+	public switchRecordingDisk(): Promise<void> {
+		const command = new Commands.RecordingRequestSwitchDiskCommand()
+		return this.sendCommand(command)
+	}
+
+	public setRecordingSettings(props: Partial<RecordingStateProperties>): Promise<void> {
+		const command = new Commands.RecordingSettingsCommand()
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}

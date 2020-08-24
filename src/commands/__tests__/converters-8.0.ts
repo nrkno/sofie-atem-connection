@@ -64,5 +64,48 @@ export const V8_0CommandConverters: CommandTestConverterSet = {
 			bevelPosition: (val): PropertyAliasResult => ({ val, name: 'borderBevelPosition' }),
 			bevelSoftness: (val): PropertyAliasResult => ({ val, name: 'borderBevelSoftness' })
 		}
+	},
+	StRS: {
+		idAliases: {},
+		propertyAliases: {
+			status: (val): PropertyAliasResult => ({ val, name: 'state' })
+		}
+	},
+	StrR: {
+		idAliases: {},
+		propertyAliases: {
+			isStreaming: (val): PropertyAliasResult => ({ val, name: 'streaming' })
+		}
+	},
+	SRST: {
+		idAliases: {},
+		propertyAliases: {
+			hour: (val): PropertyAliasResult => ({ val, name: 'hours' }),
+			minute: (val): PropertyAliasResult => ({ val, name: 'minutes' }),
+			second: (val): PropertyAliasResult => ({ val, name: 'seconds' }),
+			frame: (val): PropertyAliasResult => ({ val, name: 'frames' })
+		}
+	},
+	RTMR: {
+		idAliases: {},
+		propertyAliases: {
+			hour: (val): PropertyAliasResult => ({ val, name: 'hours' }),
+			minute: (val): PropertyAliasResult => ({ val, name: 'minutes' }),
+			second: (val): PropertyAliasResult => ({ val, name: 'seconds' }),
+			frame: (val): PropertyAliasResult => ({ val, name: 'frames' })
+		}
+	},
+	RcTM: {
+		idAliases: {},
+		propertyAliases: {
+			isRecording: (val): PropertyAliasResult => ({ val, name: 'recording' })
+		}
+	},
+	RTMS: {
+		idAliases: {},
+		propertyAliases: {
+			status: (val): PropertyAliasResult => ({ val, name: 'state' }),
+			totalRecordingTimeAvailable: (val): PropertyAliasResult => ({ val, name: 'recordingTimeAvailable' })
+		}
 	}
 }
