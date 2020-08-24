@@ -1,5 +1,5 @@
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
-import { AtemState } from '../../state'
+import { AtemState, InvalidIdError } from '../../state'
 import { Util } from '../..'
 import { AudioMasterChannel } from '../../state/audio'
 
@@ -35,6 +35,10 @@ export class AudioMixerMasterUpdateCommand extends DeserializedCommand<AudioMast
 	}
 
 	public applyToState(state: AtemState): string {
+		if (!state.audio) {
+			throw new InvalidIdError('Classic Audio')
+		}
+
 		state.audio.master = {
 			...state.audio.master,
 			...this.properties

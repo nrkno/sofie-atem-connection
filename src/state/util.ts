@@ -19,9 +19,6 @@ export function Create(): AtemState {
 			auxilliaries: [],
 			superSources: []
 		},
-		audio: {
-			channels: {}
-		},
 		media: {
 			stillPool: [],
 			clipPool: [],

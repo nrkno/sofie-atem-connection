@@ -1,6 +1,6 @@
 import { DeviceInfo } from './info'
 import { AtemVideoState } from './video'
-import { AtemAudioState } from './audio'
+import { AtemClassicAudioState } from './audio'
 import { MediaState } from './media'
 import { InputChannel } from './input'
 import { MacroState } from './macro'
@@ -14,7 +14,7 @@ export { AtemStateUtil }
 export interface AtemState {
 	info: DeviceInfo
 	video: AtemVideoState
-	audio: AtemAudioState
+	audio?: AtemClassicAudioState
 	media: MediaState
 	inputs: { [inputId: number]: InputChannel | undefined }
 	macro: MacroState

@@ -1,6 +1,10 @@
 import { AudioSourceType, ExternalPortType, AudioMixOption } from '../enums'
 
-export interface AudioChannel {
+export type AudioChannel = ClassicAudioChannel
+export type AudioMasterChannel = ClassicAudioMasterChannel
+export type AtemAudioState = AtemClassicAudioState
+
+export interface ClassicAudioChannel {
 	readonly sourceType: AudioSourceType
 	portType: ExternalPortType
 	mixOption: AudioMixOption
@@ -13,7 +17,7 @@ export interface AudioChannel {
 	rcaToXlrEnabled: boolean
 }
 
-export interface AudioMasterChannel {
+export interface ClassicAudioMasterChannel {
 	/** Gain in decibel, -Infinity to +6dB */
 	gain: number
 	/** Balance, -50 to +50 */
@@ -21,9 +25,9 @@ export interface AudioMasterChannel {
 	followFadeToBlack: boolean
 }
 
-export interface AtemAudioState {
+export interface AtemClassicAudioState {
 	readonly numberOfChannels?: number
 	readonly hasMonitor?: boolean
-	channels: { [channelId: number]: AudioChannel | undefined }
-	master?: AudioMasterChannel
+	channels: { [channelId: number]: ClassicAudioChannel | undefined }
+	master?: ClassicAudioMasterChannel
 }

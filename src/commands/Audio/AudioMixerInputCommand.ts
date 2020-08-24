@@ -1,4 +1,4 @@
-import { AtemState } from '../../state'
+import { AtemState, InvalidIdError } from '../../state'
 import { Util } from '../..'
 import { AudioChannel } from '../../state/audio'
 import { WritableCommand, DeserializedCommand } from '../CommandBase'
@@ -61,6 +61,10 @@ export class AudioMixerInputUpdateCommand extends DeserializedCommand<
 	}
 
 	public applyToState(state: AtemState): string {
+		if (!state.audio) {
+			throw new InvalidIdError('Classic Audio')
+		}
+
 		state.audio.channels[this.index] = {
 			...this.properties,
 			rcaToXlrEnabled: false,
@@ -98,6 +102,10 @@ export class AudioMixerInputUpdateV8Command extends DeserializedCommand<AudioCha
 	}
 
 	public applyToState(state: AtemState): string {
+		if (!state.audio) {
+			throw new InvalidIdError('Classic Audio')
+		}
+
 		state.audio.channels[this.index] = this.properties
 		return `audio.channels.${this.index}`
 	}
