@@ -287,3 +287,34 @@ export enum RecordingDiskStatus {
 
 	Removed = 1 << 5
 }
+
+export enum FairlightAudioMixOption {
+	Off = 1,
+	On = 2,
+	AudioFollowVideo = 4
+}
+
+export enum FairlightInputConfiguration {
+	Mono = 1,
+	Stereo = 2,
+	DualMono = 4
+}
+
+export enum FairlightAnalogInputLevel {
+	Microphone = 1,
+	ConsumerLine = 2,
+	// [Since(ProtocolVersion.V8_1_1)]
+	ProLine = 4
+}
+
+export enum FairlightAudioSourceType {
+	Mono = 0,
+	Stereo = 1
+}
+
+export enum FairlightInputType {
+	EmbeddedWithVideo = 0,
+	MediaPlayer = 1,
+	AudioIn = 2,
+	MADI = 4
+}

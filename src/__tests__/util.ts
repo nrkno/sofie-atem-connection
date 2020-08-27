@@ -60,6 +60,9 @@ export function createEmptyState(): AtemState {
 	state.audio = {
 		channels: {}
 	}
+	state.fairlight = {
+		inputs: {}
+	}
 
 	return state
 }

@@ -27,6 +27,7 @@ import DataTransfer from './dataTransfer/dataTransfer'
 import { RecordingStateProperties } from './state/recording'
 import { OmitReadonly } from './lib/types'
 import { StreamingServiceProperties } from './state/streaming'
+import { commandStringify } from './lib/atemUtil'
 
 export interface AtemOptions {
 	address?: string
@@ -171,12 +172,16 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 					if (e instanceof InvalidIdError) {
 						this.emit(
 							'debug',
-							`Invalid command id: ${e}. Command: ${command.constructor.name} ${JSON.stringify(command)}`
+							`Invalid command id: ${e}. Command: ${command.constructor.name} ${commandStringify(
+								command
+							)}`
 						)
 					} else {
 						this.emit(
 							'error',
-							`MutateState failed: ${e}. Command: ${command.constructor.name} ${JSON.stringify(command)}`
+							`MutateState failed: ${e}. Command: ${command.constructor.name} ${commandStringify(
+								command
+							)}`
 						)
 					}
 				}
@@ -609,6 +614,31 @@ export class Atem extends BasicAtem {
 
 	public setAudioMixerMasterProps(props: Partial<AudioMasterChannel>): Promise<void> {
 		const command = new Commands.AudioMixerMasterCommand()
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerInputProps(
+		index: number,
+		props: Commands.FairlightMixerInputCommand['properties']
+	): Promise<void> {
+		if (this.state && this.state.info.apiVersion >= Enums.ProtocolVersion.V8_0) {
+			const command = new Commands.FairlightMixerInputV8Command(index)
+			command.updateProps(props)
+			return this.sendCommand(command)
+		} else {
+			const command = new Commands.FairlightMixerInputCommand(index)
+			command.updateProps(props)
+			return this.sendCommand(command)
+		}
+	}
+
+	public setFairlightAudioMixerSourceProps(
+		index: number,
+		source: string,
+		props: Commands.FairlightMixerSourceCommand['properties']
+	): Promise<void> {
+		const command = new Commands.FairlightMixerSourceCommand(index, BigInt(source))
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}

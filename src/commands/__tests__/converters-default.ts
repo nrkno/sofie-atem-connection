@@ -1,6 +1,6 @@
 import { PropertyAliasResult, CommandTestConverterSet } from './index.spec'
 import { UpstreamKeyerMaskSettings } from '../../state/video/upstreamKeyers'
-import { Util } from '../..'
+import { Enums, Util } from '../..'
 
 export const DefaultCommandConverters: CommandTestConverterSet = {
 	_ver: {
@@ -913,6 +913,74 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 		idAliases: {},
 		propertyAliases: {
 			isDropFrame: (val): PropertyAliasResult => ({ val, name: 'dropFrame' })
+		}
+	},
+	FAIP: {
+		idAliases: {
+			index: 'index'
+		},
+		propertyAliases: {
+			supportedConfigurations: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) })
+		},
+		customMutate: (props): any => {
+			props.activeInputLevel = props.rcaToXlrEnabled
+				? Enums.FairlightAnalogInputLevel.ProLine
+				: Enums.FairlightAnalogInputLevel.Microphone
+			delete props.rcaToXlrEnabled
+
+			props.supportedInputLevels = props.supportsRcaToXlr
+				? [Enums.FairlightAnalogInputLevel.ProLine, Enums.FairlightAnalogInputLevel.Microphone]
+				: []
+			delete props.supportsRcaToXlr
+
+			return props
+		}
+	},
+	CFIP: {
+		idAliases: {
+			index: 'index'
+		},
+		propertyAliases: {}
+	},
+	FASD: {
+		idAliases: {
+			index: 'index',
+			source: 'sourceId'
+		},
+		propertyAliases: {
+			sourceId: (val): PropertyAliasResult => ({ val: BigInt(val), name: 'sourceId' })
+		}
+	},
+	FASP: {
+		idAliases: {
+			index: 'index',
+			source: 'sourceId'
+		},
+		propertyAliases: {
+			sourceId: (val): PropertyAliasResult => ({ val: BigInt(val), name: 'sourceId' }),
+			balance: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			gain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			equalizerGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			faderGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			makeUpGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			stereoSimulation: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			supportedMixOptions: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) })
+		}
+	},
+	CFSP: {
+		idAliases: {
+			index: 'index',
+			source: 'sourceId'
+		},
+		propertyAliases: {
+			sourceId: (val): PropertyAliasResult => ({ val: BigInt(val), name: 'sourceId' }),
+			balance: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			gain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			equalizerGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			faderGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			makeUpGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			stereoSimulation: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			supportedMixOptions: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) })
 		}
 	}
 }

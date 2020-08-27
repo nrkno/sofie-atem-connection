@@ -254,3 +254,7 @@ export function getComponents(val: number): number[] {
 	}
 	return res
 }
+
+export function commandStringify(command: any): string {
+	return JSON.stringify(command, (_key, value) => (typeof value === 'bigint' ? value.toString() : value))
+}

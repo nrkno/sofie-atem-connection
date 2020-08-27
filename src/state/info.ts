@@ -32,6 +32,11 @@ export interface AudioMixerInfo {
 	readonly headphones: number
 }
 
+export interface FairlightAudioMixerInfo {
+	readonly inputs: number
+	readonly monitors: number
+}
+
 export interface MacroPoolInfo {
 	readonly macroCount: number
 }
@@ -63,6 +68,7 @@ export interface DeviceInfo {
 	mixEffects: Array<MixEffectInfo | undefined>
 	power: boolean[]
 	audioMixer?: AudioMixerInfo
+	fairlightMixer?: FairlightAudioMixerInfo
 	macroPool?: MacroPoolInfo
 	mediaPool?: MediaPoolInfo
 	multiviewer?: MultiviewerInfo

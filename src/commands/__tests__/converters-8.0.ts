@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { PropertyAliasResult, CommandTestConverterSet } from './index.spec'
+import { Util } from '../..'
 
 export const V8_0CommandConverters: CommandTestConverterSet = {
 	SSrc: {
@@ -106,6 +107,15 @@ export const V8_0CommandConverters: CommandTestConverterSet = {
 		propertyAliases: {
 			status: (val): PropertyAliasResult => ({ val, name: 'state' }),
 			totalRecordingTimeAvailable: (val): PropertyAliasResult => ({ val, name: 'recordingTimeAvailable' })
+		}
+	},
+	FAIP: {
+		idAliases: {
+			index: 'index'
+		},
+		propertyAliases: {
+			supportedConfigurations: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) }),
+			supportedInputLevels: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) })
 		}
 	}
 }
