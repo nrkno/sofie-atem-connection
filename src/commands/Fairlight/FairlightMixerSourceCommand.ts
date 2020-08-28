@@ -3,14 +3,15 @@ import { AtemState, InvalidIdError } from '../../state'
 import * as Util from '../../lib/atemUtil'
 import { DeserializedCommand, WritableCommand } from '../CommandBase'
 import { OmitReadonly } from '../../lib/types'
+import { BigInteger } from 'big-integer'
 
 export class FairlightMixerSourceDeleteCommand extends DeserializedCommand<{}> {
 	public static readonly rawName = 'FASD'
 
 	public readonly index: number
-	public readonly source: bigint
+	public readonly source: BigInteger
 
-	constructor(index: number, source: bigint) {
+	constructor(index: number, source: BigInteger) {
 		super({})
 
 		this.index = index
@@ -19,7 +20,7 @@ export class FairlightMixerSourceDeleteCommand extends DeserializedCommand<{}> {
 
 	public static deserialize(rawCommand: Buffer): FairlightMixerSourceDeleteCommand {
 		const index = rawCommand.readUInt16BE(0)
-		const source = rawCommand.readBigInt64BE(8)
+		const source = Util.bufToBigInt(rawCommand, 8)
 		return new FairlightMixerSourceDeleteCommand(index, source)
 	}
 
@@ -53,9 +54,9 @@ export class FairlightMixerSourceCommand extends WritableCommand<OmitReadonly<Fa
 	public static readonly rawName = 'CFSP'
 
 	public readonly index: number
-	public readonly source: bigint
+	public readonly source: BigInteger
 
-	constructor(index: number, source: bigint) {
+	constructor(index: number, source: BigInteger) {
 		super()
 
 		this.index = index
@@ -66,7 +67,8 @@ export class FairlightMixerSourceCommand extends WritableCommand<OmitReadonly<Fa
 		const buffer = Buffer.alloc(48)
 		buffer.writeUInt16BE(this.flag, 0)
 		buffer.writeUInt16BE(this.index, 2)
-		buffer.writeBigInt64BE(this.source, 8)
+		Util.bigIntToBuf(buffer, this.source, 8)
+		// buffer.writeBigInt64BE(this.source, 8)
 
 		buffer.writeUInt8(this.properties.framesDelay || 0, 16)
 		buffer.writeInt32BE(this.properties.gain || 0, 20)
@@ -86,9 +88,9 @@ export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<Fairl
 	public static readonly rawName = 'FASP'
 
 	public readonly index: number
-	public readonly source: bigint
+	public readonly source: BigInteger
 
-	constructor(index: number, source: bigint, props: FairlightAudioSourceProperties) {
+	constructor(index: number, source: BigInteger, props: FairlightAudioSourceProperties) {
 		super(props)
 
 		this.index = index
@@ -97,7 +99,7 @@ export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<Fairl
 
 	public static deserialize(rawCommand: Buffer): FairlightMixerSourceUpdateCommand {
 		const index = rawCommand.readUInt16BE(0)
-		const source = rawCommand.readBigInt64BE(8)
+		const source = Util.bufToBigInt(rawCommand, 8)
 		const properties = {
 			sourceType: rawCommand.readUInt8(16),
 			maxFramesDelay: rawCommand.readUInt8(17),

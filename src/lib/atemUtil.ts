@@ -1,5 +1,6 @@
 import * as Enums from '../enums'
 import WaveFile = require('wavefile')
+import * as bigInt from 'big-integer'
 
 export function bufToBase64String(buffer: Buffer, start: number, length: number): string {
 	return buffer.toString('base64', start, start + length)
@@ -9,6 +10,25 @@ export function bufToNullTerminatedString(buffer: Buffer, start: number, length:
 	const slice = buffer.slice(start, start + length)
 	const nullIndex = slice.indexOf('\0')
 	return slice.toString('ascii', 0, nullIndex < 0 ? slice.length : nullIndex)
+}
+
+const UINT63_MAX = bigInt.one.shiftLeft(63)
+const UINT64_MAX = bigInt.one.shiftLeft(64)
+export function bufToBigInt(buffer: Buffer, start: number): bigInt.BigInteger {
+	const hex = buffer.toString('hex', start, start + 8)
+	const rawVal = bigInt(hex, 16)
+	if (rawVal.greater(UINT63_MAX)) {
+		return UINT64_MAX.subtract(rawVal).negate()
+	} else {
+		return rawVal
+	}
+}
+
+export function bigIntToBuf(buffer: Buffer, val: bigInt.BigInteger, start: number): void {
+	if (val.isNegative()) val = UINT64_MAX.subtract(val.negate())
+
+	const str = val.toString(16).padStart(16, '0')
+	buffer.write(str, start, 'hex')
 }
 
 export const COMMAND_CONNECT_HELLO = Buffer.from([
@@ -256,5 +276,7 @@ export function getComponents(val: number): number[] {
 }
 
 export function commandStringify(command: any): string {
-	return JSON.stringify(command, (_key, value) => (typeof value === 'bigint' ? value.toString() : value))
+	return JSON.stringify(command, (_key, value) =>
+		typeof value === 'bigint' || bigInt.isInstance(value) ? value.toString() : value
+	)
 }

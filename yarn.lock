@@ -519,6 +519,11 @@
   dependencies:
     any-observable "^0.3.0"
 
+"@schemastore/package@0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@schemastore/package/-/package-0.0.5.tgz#67b621d5c833ad2d5a29a1acf868717b7839bb8a"
+  integrity sha512-0XEiMT/Rh8I0SEIO81fo5MN3AHhONFv9SJ1IIJ5OTI3PN/jG032OPlHUMxvrun7yc6YUGtufVg2WPQVK8PaH5Q==
+
 "@sindresorhus/df@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@sindresorhus/df/-/df-1.0.1.tgz#c69b66f52f6fcdd287c807df210305dbaf78500d"
@@ -1125,6 +1130,11 @@ bcrypt-pbkdf@^1.0.0:
   integrity sha1-pDAdOJtqQ/m2f/PKEaP2Y342Dp4=
   dependencies:
     tweetnacl "^0.14.3"
+
+big-integer@^1.6.48:
+  version "1.6.48"
+  resolved "https://registry.yarnpkg.com/big-integer/-/big-integer-1.6.48.tgz#8fd88bd1632cba4a1c8c3e3d7159f08bb95b4b9e"
+  integrity sha512-j51egjPa7/i+RdiRuJbPdJ2FIUYYPhvYLjzoYbcMMm62ooO6F94fETG4MTs46zPAF9Brs04OajboA/qTGuz78w==
 
 bitdepth@^7.0.2:
   version "7.0.2"
@@ -3758,6 +3768,13 @@ jest-validate@^25.5.0:
     jest-get-type "^25.2.6"
     leven "^3.1.0"
     pretty-format "^25.5.0"
+
+jest-verify-node-version@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/jest-verify-node-version/-/jest-verify-node-version-1.0.3.tgz#9cf7db12dfa5b41be0909a861b9afce2bbbcb408"
+  integrity sha512-Sn5t2HjyW7z6KFCIr0pLKlRE1+rWgSlk9VVaO+Qi1oui29o7TNOZTDvtNhXVFKuWyOxlJJQx/hX5NfZ8T0MaQA==
+  dependencies:
+    semver "^6.3.0"
 
 jest-watcher@^25.5.0:
   version "25.5.0"

@@ -1,6 +1,7 @@
 import { PropertyAliasResult, CommandTestConverterSet } from './index.spec'
 import { UpstreamKeyerMaskSettings } from '../../state/video/upstreamKeyers'
 import { Enums, Util } from '../..'
+import * as bigInt from 'big-integer'
 
 export const DefaultCommandConverters: CommandTestConverterSet = {
 	_ver: {
@@ -948,7 +949,7 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			source: 'sourceId'
 		},
 		propertyAliases: {
-			sourceId: (val): PropertyAliasResult => ({ val: BigInt(val), name: 'sourceId' })
+			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' })
 		}
 	},
 	FASP: {
@@ -957,7 +958,7 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			source: 'sourceId'
 		},
 		propertyAliases: {
-			sourceId: (val): PropertyAliasResult => ({ val: BigInt(val), name: 'sourceId' }),
+			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' }),
 			balance: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			gain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			equalizerGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
@@ -973,7 +974,7 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			source: 'sourceId'
 		},
 		propertyAliases: {
-			sourceId: (val): PropertyAliasResult => ({ val: BigInt(val), name: 'sourceId' }),
+			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' }),
 			balance: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			gain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			equalizerGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
