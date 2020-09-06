@@ -99,6 +99,7 @@ describe('connection', () => {
 	runTest('2me v8.1.2', '2me-v8.1.2')
 	runTest('ps4k v7.2', 'ps4k-v7.2')
 	runTest('1me4k v8.2', '1me4k-v8.2')
+	runTest('2me4k v8.4', '2me4k-v8.4')
 	runTest('4me4k v7.5.2', '4me4k-v7.5.2')
 	runTest('4me4k v8.2', '4me4k-v8.2')
 	runTest('tvshd v8.0.0', 'tvshd-v8.0.0')
