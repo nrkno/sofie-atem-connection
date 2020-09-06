@@ -172,7 +172,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 			if (cmdConstructor && typeof cmdConstructor.deserialize === 'function') {
 				try {
 					const cmd: IDeserializedCommand = cmdConstructor.deserialize(
-						buffer.slice(0, length).slice(8),
+						buffer.slice(8, length),
 						this._commandParser.version
 					)
 
