@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>AudioMasterChannel | atem-connection</title>
+	<title>FairlightAudioMixerConfigCommand | atem-connection</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -2365,17 +2365,26 @@ img {
 </header>
 <nav class="tsd-navigation secondary">
 	<ul>
-		<li class="current tsd-kind-interface tsd-is-external">
-			<a href="audiomasterchannel.html" class="tsd-kind-icon">Audio<wbr>Master<wbr>Channel</a>
+		<li class="current tsd-kind-class tsd-is-external">
+			<a href="fairlightaudiomixerconfigcommand.html" class="tsd-kind-icon">Fairlight<wbr>Audio<wbr>Mixer<wbr>Config<wbr>Command</a>
 			<ul>
-				<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-external">
-					<a href="audiomasterchannel.html#balance" class="tsd-kind-icon">balance</a>
+				<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite tsd-is-external">
+					<a href="fairlightaudiomixerconfigcommand.html#constructor" class="tsd-kind-icon">constructor</a>
 				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-external">
-					<a href="audiomasterchannel.html#followfadetoblack" class="tsd-kind-icon">follow<wbr>Fade<wbr>ToBlack</a>
+				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-external">
+					<a href="fairlightaudiomixerconfigcommand.html#properties" class="tsd-kind-icon">properties</a>
 				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-external">
-					<a href="audiomasterchannel.html#gain" class="tsd-kind-icon">gain</a>
+				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static tsd-is-external">
+					<a href="fairlightaudiomixerconfigcommand.html#minimumversion" class="tsd-kind-icon">minimum<wbr>Version</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-static tsd-is-external">
+					<a href="fairlightaudiomixerconfigcommand.html#rawname" class="tsd-kind-icon">raw<wbr>Name</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-external">
+					<a href="fairlightaudiomixerconfigcommand.html#applytostate" class="tsd-kind-icon">apply<wbr>ToState</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static tsd-is-external">
+					<a href="fairlightaudiomixerconfigcommand.html#deserialize" class="tsd-kind-icon">deserialize</a>
 				</li>
 			</ul>
 		</li>
@@ -2387,8 +2396,19 @@ img {
 			<h3>Hierarchy</h3>
 			<ul class="tsd-hierarchy">
 				<li>
-					<span class="target">AudioMasterChannel</span>
+					<a href="deserializedcommand.html" class="tsd-signature-type">DeserializedCommand</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/fairlightaudiomixerinfo.html" class="tsd-signature-type">FairlightAudioMixerInfo</a><span class="tsd-signature-symbol">&gt;</span>
+					<ul class="tsd-hierarchy">
+						<li>
+							<span class="target">FairlightAudioMixerConfigCommand</span>
+						</li>
+					</ul>
 				</li>
+			</ul>
+		</section>
+		<section class="tsd-panel">
+			<h3>Implements</h3>
+			<ul class="tsd-hierarchy">
+				<li><a href="../interfaces/ideserializedcommand.html" class="tsd-signature-type">IDeserializedCommand</a></li>
 			</ul>
 		</section>
 		<section class="tsd-panel-group tsd-index-group">
@@ -2396,57 +2416,142 @@ img {
 			<section class="tsd-panel tsd-index-panel">
 				<div class="tsd-index-content">
 					<section class="tsd-index-section tsd-is-external">
+						<h3>Constructors</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite tsd-is-external"><a href="fairlightaudiomixerconfigcommand.html#constructor" class="tsd-kind-icon">constructor</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section tsd-is-external">
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-external"><a href="audiomasterchannel.html#balance" class="tsd-kind-icon">balance</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-external"><a href="audiomasterchannel.html#followfadetoblack" class="tsd-kind-icon">follow<wbr>Fade<wbr>ToBlack</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-external"><a href="audiomasterchannel.html#gain" class="tsd-kind-icon">gain</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-external"><a href="fairlightaudiomixerconfigcommand.html#properties" class="tsd-kind-icon">properties</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static tsd-is-external"><a href="fairlightaudiomixerconfigcommand.html#minimumversion" class="tsd-kind-icon">minimum<wbr>Version</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-static tsd-is-external"><a href="fairlightaudiomixerconfigcommand.html#rawname" class="tsd-kind-icon">raw<wbr>Name</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section tsd-is-external">
+						<h3>Methods</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-external"><a href="fairlightaudiomixerconfigcommand.html#applytostate" class="tsd-kind-icon">apply<wbr>ToState</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static tsd-is-external"><a href="fairlightaudiomixerconfigcommand.html#deserialize" class="tsd-kind-icon">deserialize</a></li>
 						</ul>
 					</section>
 				</div>
 			</section>
 		</section>
 		<section class="tsd-panel-group tsd-member-group tsd-is-external">
+			<h2>Constructors</h2>
+			<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite tsd-is-external">
+				<a name="constructor" class="tsd-anchor"></a>
+				<h3>constructor</h3>
+				<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite tsd-is-external">
+					<li class="tsd-signature tsd-kind-icon">new <wbr>Fairlight<wbr>Audio<wbr>Mixer<wbr>Config<wbr>Command<span class="tsd-signature-symbol">(</span>properties<span class="tsd-signature-symbol">: </span><a href="../interfaces/fairlightaudiomixerinfo.html" class="tsd-signature-type">FairlightAudioMixerInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fairlightaudiomixerconfigcommand.html" class="tsd-signature-type">FairlightAudioMixerConfigCommand</a></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Overrides <a href="deserializedcommand.html">DeserializedCommand</a>.<a href="deserializedcommand.html#constructor">constructor</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b74488f/src/commands/DeviceProfile/fairlightAudioMixerConfigCommand.ts#L6">src/commands/DeviceProfile/fairlightAudioMixerConfigCommand.ts:6</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>properties: <a href="../interfaces/fairlightaudiomixerinfo.html" class="tsd-signature-type">FairlightAudioMixerInfo</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <a href="fairlightaudiomixerconfigcommand.html" class="tsd-signature-type">FairlightAudioMixerConfigCommand</a></h4>
+					</li>
+				</ul>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group tsd-is-external">
 			<h2>Properties</h2>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-external">
-				<a name="balance" class="tsd-anchor"></a>
-				<h3>balance</h3>
-				<div class="tsd-signature tsd-kind-icon">balance<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-external">
+				<a name="properties" class="tsd-anchor"></a>
+				<h3>properties</h3>
+				<div class="tsd-signature tsd-kind-icon">properties<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Readonly</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/fairlightaudiomixerinfo.html" class="tsd-signature-type">FairlightAudioMixerInfo</a><span class="tsd-signature-symbol">&gt;</span></div>
 				<aside class="tsd-sources">
+					<p>Implementation of <a href="../interfaces/ideserializedcommand.html">IDeserializedCommand</a>.<a href="../interfaces/ideserializedcommand.html#properties">properties</a></p>
+					<p>Inherited from <a href="deserializedcommand.html">DeserializedCommand</a>.<a href="deserializedcommand.html#properties">properties</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/2a72957/src/state/audio.ts#L20">src/state/audio.ts:20</a></li>
-					</ul>
-				</aside>
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Balance, -50 to +50</p>
-					</div>
-				</div>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-external">
-				<a name="followfadetoblack" class="tsd-anchor"></a>
-				<h3>follow<wbr>Fade<wbr>ToBlack</h3>
-				<div class="tsd-signature tsd-kind-icon">follow<wbr>Fade<wbr>ToBlack<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/2a72957/src/state/audio.ts#L21">src/state/audio.ts:21</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b74488f/src/commands/CommandBase.ts#L14">src/commands/CommandBase.ts:14</a></li>
 					</ul>
 				</aside>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-external">
-				<a name="gain" class="tsd-anchor"></a>
-				<h3>gain</h3>
-				<div class="tsd-signature tsd-kind-icon">gain<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static tsd-is-external">
+				<a name="minimumversion" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagOptional">Optional</span> minimum<wbr>Version</h3>
+				<div class="tsd-signature tsd-kind-icon">minimum<wbr>Version<span class="tsd-signature-symbol">:</span> <a href="../enums/protocolversion.html" class="tsd-signature-type">ProtocolVersion</a></div>
 				<aside class="tsd-sources">
+					<p>Inherited from <a href="deserializedcommand.html">DeserializedCommand</a>.<a href="deserializedcommand.html#minimumversion">minimumVersion</a></p>
 					<ul>
-						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/2a72957/src/state/audio.ts#L18">src/state/audio.ts:18</a></li>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b74488f/src/commands/CommandBase.ts#L12">src/commands/CommandBase.ts:12</a></li>
 					</ul>
 				</aside>
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Gain in decibel, -Infinity to +6dB</p>
-					</div>
-				</div>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-static tsd-is-external">
+				<a name="rawname" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagStatic">Static</span> raw<wbr>Name</h3>
+				<div class="tsd-signature tsd-kind-icon">raw<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"_FAC"</span><span class="tsd-signature-symbol"> = &quot;_FAC&quot;</span></div>
+				<aside class="tsd-sources">
+					<p>Overrides <a href="deserializedcommand.html">DeserializedCommand</a>.<a href="deserializedcommand.html#rawname">rawName</a></p>
+					<ul>
+						<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b74488f/src/commands/DeviceProfile/fairlightAudioMixerConfigCommand.ts#L6">src/commands/DeviceProfile/fairlightAudioMixerConfigCommand.ts:6</a></li>
+					</ul>
+				</aside>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group tsd-is-external">
+			<h2>Methods</h2>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-external">
+				<a name="applytostate" class="tsd-anchor"></a>
+				<h3>apply<wbr>ToState</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-external">
+					<li class="tsd-signature tsd-kind-icon">apply<wbr>ToState<span class="tsd-signature-symbol">(</span>state<span class="tsd-signature-symbol">: </span><a href="../interfaces/atemstate.html" class="tsd-signature-type">AtemState</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<p>Implementation of <a href="../interfaces/ideserializedcommand.html">IDeserializedCommand</a>.<a href="../interfaces/ideserializedcommand.html#applytostate">applyToState</a></p>
+							<p>Overrides <a href="deserializedcommand.html">DeserializedCommand</a>.<a href="deserializedcommand.html#applytostate">applyToState</a></p>
+							<ul>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b74488f/src/commands/DeviceProfile/fairlightAudioMixerConfigCommand.ts#L19">src/commands/DeviceProfile/fairlightAudioMixerConfigCommand.ts:19</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>state: <a href="../interfaces/atemstate.html" class="tsd-signature-type">AtemState</a></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static tsd-is-external">
+				<a name="deserialize" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagStatic">Static</span> deserialize</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static tsd-is-external">
+					<li class="tsd-signature tsd-kind-icon">deserialize<span class="tsd-signature-symbol">(</span>rawCommand<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="fairlightaudiomixerconfigcommand.html" class="tsd-signature-type">FairlightAudioMixerConfigCommand</a></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/nrkno/tv-automation-atem-connection/blob/b74488f/src/commands/DeviceProfile/fairlightAudioMixerConfigCommand.ts#L12">src/commands/DeviceProfile/fairlightAudioMixerConfigCommand.ts:12</a></li>
+							</ul>
+						</aside>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>rawCommand: <span class="tsd-signature-type">Buffer</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <a href="fairlightaudiomixerconfigcommand.html" class="tsd-signature-type">FairlightAudioMixerConfigCommand</a></h4>
+					</li>
+				</ul>
 			</section>
 		</section>
 		<footer class="with-border-bottom">
