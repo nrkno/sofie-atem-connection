@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/nrkno/tv-automation-atem-connection/compare/2.0.0...2.1.0) (2020-09-16)
+
+
+### Features
+
+* atem mini streaming and recording ([7fd86b9](https://github.com/nrkno/tv-automation-atem-connection/commit/7fd86b9c1b683e2b180f75f04a4dac0b7e7e1814))
+* atem mini streaming and recording ([7fd86b9](https://github.com/nrkno/tv-automation-atem-connection/commit/7fd86b9c1b683e2b180f75f04a4dac0b7e7e1814))
+* basic fairlight audio ([13f46a6](https://github.com/nrkno/tv-automation-atem-connection/commit/13f46a6c28c4f38d043ae0e721026e273432f0f8))
+* basic fairlight audio ([13f46a6](https://github.com/nrkno/tv-automation-atem-connection/commit/13f46a6c28c4f38d043ae0e721026e273432f0f8))
+* make classic audio optional ([73ee0f6](https://github.com/nrkno/tv-automation-atem-connection/commit/73ee0f6f8ea24462983d9dd61f1322be3db717c5))
+* make classic audio optional ([73ee0f6](https://github.com/nrkno/tv-automation-atem-connection/commit/73ee0f6f8ea24462983d9dd61f1322be3db717c5))
+
+
+### Bug Fixes
+
+* use big-integer instead of native bigint for node8 support ([a1cc735](https://github.com/nrkno/tv-automation-atem-connection/commit/a1cc7353b7e4fc1cff416b978f50b8d7f8d72c97))
+* use big-integer instead of native bigint for node8 support ([a1cc735](https://github.com/nrkno/tv-automation-atem-connection/commit/a1cc7353b7e4fc1cff416b978f50b8d7f8d72c97))
+
 ## [2.0.0](https://github.com/nrkno/tv-automation-atem-connection/compare/1.3.2...2.0.0) (2020-08-17)
 
 
