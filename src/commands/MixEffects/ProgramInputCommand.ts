@@ -48,6 +48,6 @@ export class ProgramInputUpdateCommand extends DeserializedCommand<InputSource> 
 
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.programInput = this.properties.source
-		return `video.ME.${this.mixEffect}.programInput`
+		return `video.mixEffects.${this.mixEffect}.programInput`
 	}
 }

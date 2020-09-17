@@ -153,6 +153,6 @@ export class MixEffectKeyDVEUpdateCommand extends DeserializedCommand<UpstreamKe
 		upstreamKeyer.dveSettings = {
 			...this.properties
 		}
-		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.dveSettings`
+		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.dveSettings`
 	}
 }

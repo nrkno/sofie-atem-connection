@@ -57,6 +57,6 @@ export class TransitionDipUpdateCommand extends DeserializedCommand<DipTransitio
 		mixEffect.transitionSettings.dip = {
 			...this.properties
 		}
-		return `video.ME.${this.mixEffect}.transitionSettings.dip`
+		return `video.mixEffects.${this.mixEffect}.transitionSettings.dip`
 	}
 }

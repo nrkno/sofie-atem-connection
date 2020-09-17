@@ -52,6 +52,6 @@ export class FadeToBlackRateUpdateCommand extends DeserializedCommand<{ rate: nu
 			...mixEffect.fadeToBlack,
 			rate: this.properties.rate
 		}
-		return `video.ME.${this.mixEffect}.fadeToBlack`
+		return `video.mixEffects.${this.mixEffect}.fadeToBlack`
 	}
 }

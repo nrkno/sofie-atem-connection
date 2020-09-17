@@ -94,7 +94,7 @@ You can find the generated type docs [here](https://nrkno.github.io/tv-automatio
 
 - `stateChanged(state, path)`
   Whenever a packet from the ATEM is received that changes the state, this event will be fired.
-  The path parameter is a path into the state that represents the change, to allow for filtering of events. eg video.ME.0.programInput
+  The path parameter is a path into the state that represents the change, to allow for filtering of events. eg video.mixEffects.0.programInput
 
 - `receivedCommand(command)`
   Whenever a packet from the ATEM is received that contains a command, this event will be fired.

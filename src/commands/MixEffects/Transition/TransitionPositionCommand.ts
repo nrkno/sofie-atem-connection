@@ -50,6 +50,6 @@ export class TransitionPositionUpdateCommand extends DeserializedCommand<Transit
 
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionPosition = this.properties
-		return `video.ME.${this.mixEffect}.transitionPosition`
+		return `video.mixEffects.${this.mixEffect}.transitionPosition`
 	}
 }

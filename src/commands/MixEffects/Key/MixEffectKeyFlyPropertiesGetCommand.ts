@@ -38,6 +38,6 @@ export class MixEffectKeyFlyPropertiesGetCommand extends DeserializedCommand<Ups
 		upstreamKeyer.flyProperties = {
 			...this.properties
 		}
-		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.flyProperties`
+		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.flyProperties`
 	}
 }

@@ -51,6 +51,6 @@ export class PreviewTransitionUpdateCommand extends DeserializedCommand<PreviewP
 
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionPreview = this.properties.preview
-		return `video.ME.${this.mixEffect}.transitionPreview`
+		return `video.mixEffects.${this.mixEffect}.transitionPreview`
 	}
 }

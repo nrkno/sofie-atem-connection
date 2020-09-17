@@ -95,6 +95,6 @@ export class TransitionDVEUpdateCommand extends DeserializedCommand<DVETransitio
 		mixEffect.transitionSettings.DVE = {
 			...this.properties
 		}
-		return `video.ME.${this.mixEffect}.transitionSettings.DVE`
+		return `video.mixEffects.${this.mixEffect}.transitionSettings.DVE`
 	}
 }

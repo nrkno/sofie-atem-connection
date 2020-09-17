@@ -51,6 +51,6 @@ export class PreviewInputUpdateCommand extends DeserializedCommand<InputSource> 
 
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.previewInput = this.properties.source
-		return `video.ME.${this.mixEffect}.previewInput`
+		return `video.mixEffects.${this.mixEffect}.previewInput`
 	}
 }

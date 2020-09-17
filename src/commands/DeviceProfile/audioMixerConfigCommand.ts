@@ -17,7 +17,7 @@ export class AudioMixerConfigCommand extends DeserializedCommand<AudioMixerInfo>
 		})
 	}
 
-	public applyToState(state: AtemState): string {
+	public applyToState(state: AtemState): string[] {
 		state.info.audioMixer = this.properties
 		state.audio = {
 			numberOfChannels: this.properties.inputs,
@@ -25,6 +25,6 @@ export class AudioMixerConfigCommand extends DeserializedCommand<AudioMixerInfo>
 			channels: []
 		}
 
-		return `info.audioMixer`
+		return [`info.audioMixer`, `audio`]
 	}
 }

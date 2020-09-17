@@ -69,6 +69,6 @@ export class MixEffectKeyFlyKeyframeGetCommand extends DeserializedCommand<Upstr
 		upstreamKeyer.flyKeyframes[this.properties.keyFrameId] = {
 			...this.properties
 		}
-		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.flyKeyframes.${this.properties.keyFrameId}`
+		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.flyKeyframes.${this.properties.keyFrameId}`
 	}
 }

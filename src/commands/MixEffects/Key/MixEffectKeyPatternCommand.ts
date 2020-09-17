@@ -83,6 +83,6 @@ export class MixEffectKeyUpdateCommand extends DeserializedCommand<UpstreamKeyer
 		upstreamKeyer.patternSettings = {
 			...this.properties
 		}
-		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.patternSettings`
+		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.patternSettings`
 	}
 }

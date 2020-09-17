@@ -76,6 +76,6 @@ export class MixEffectKeyChromaUpdateCommand extends DeserializedCommand<Upstrea
 		upstreamKeyer.chromaSettings = {
 			...this.properties
 		}
-		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.chromaSettings`
+		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.chromaSettings`
 	}
 }

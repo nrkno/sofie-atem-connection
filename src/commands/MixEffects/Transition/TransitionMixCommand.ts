@@ -50,6 +50,6 @@ export class TransitionMixUpdateCommand extends DeserializedCommand<MixTransitio
 		mixEffect.transitionSettings.mix = {
 			...this.properties
 		}
-		return `video.ME.${this.mixEffect}.transitionSettings.mix`
+		return `video.mixEffects.${this.mixEffect}.transitionSettings.mix`
 	}
 }

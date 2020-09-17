@@ -40,6 +40,6 @@ export class FadeToBlackStateCommand extends DeserializedCommand<FadeToBlackProp
 			...mixEffect.fadeToBlack,
 			...this.properties
 		}
-		return `video.ME.${this.mixEffect}.fadeToBlack`
+		return `video.mixEffects.${this.mixEffect}.fadeToBlack`
 	}
 }

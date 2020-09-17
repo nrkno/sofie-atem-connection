@@ -86,6 +86,6 @@ export class TransitionWipeUpdateCommand extends DeserializedCommand<WipeTransit
 		mixEffect.transitionSettings.wipe = {
 			...this.properties
 		}
-		return `video.ME.${this.mixEffect}.transitionSettings.wipe`
+		return `video.mixEffects.${this.mixEffect}.transitionSettings.wipe`
 	}
 }

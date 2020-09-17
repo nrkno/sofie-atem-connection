@@ -48,6 +48,6 @@ export class MixEffectKeyPropertiesGetCommand extends DeserializedCommand<Upstre
 			...AtemStateUtil.getUpstreamKeyer(mixEffect, this.properties.upstreamKeyerId),
 			...this.properties
 		}
-		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.properties.upstreamKeyerId}`
+		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.properties.upstreamKeyerId}`
 	}
 }

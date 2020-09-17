@@ -16,12 +16,12 @@ export class FairlightAudioMixerConfigCommand extends DeserializedCommand<Fairli
 		})
 	}
 
-	public applyToState(state: AtemState): string {
+	public applyToState(state: AtemState): string[] {
 		state.info.fairlightMixer = this.properties
 		state.fairlight = {
 			inputs: {}
 		}
 
-		return `info.audioMixer`
+		return [`info.fairlightMixer`, `fairlight.inputs`]
 	}
 }

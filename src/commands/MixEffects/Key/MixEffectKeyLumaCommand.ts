@@ -73,6 +73,6 @@ export class MixEffectKeyLumaUpdateCommand extends DeserializedCommand<UpstreamK
 		upstreamKeyer.lumaSettings = {
 			...this.properties
 		}
-		return `video.ME.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.lumaSettings`
+		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.lumaSettings`
 	}
 }

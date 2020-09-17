@@ -3,8 +3,14 @@ import { resolve } from 'path'
 import { AtemSocketChild } from '../lib/atemSocketChild'
 import { ThreadedClass } from 'threadedclass'
 import { BasicAtem } from '../atem'
-import { InvalidIdError } from '../state'
+import { AtemState, InvalidIdError } from '../state'
+import { IDeserializedCommand } from '../commands'
+import * as objectPath from 'object-path'
 jest.mock('../lib/atemSocketChild')
+
+function cloneJson<T>(v: T): T {
+	return JSON.parse(JSON.stringify(v))
+}
 
 // @ts-ignore
 export class AtemSocketChildMock implements AtemSocketChild {
@@ -61,30 +67,95 @@ function runTest(name: string, filename: string): void {
 		.toString()
 		.split('\n')
 
-	test(`${name}`, async () => {
-		const conn = createConnection()
-		await conn.connect('')
+	describe(name, () => {
+		test(`Connection`, async () => {
+			const conn = createConnection()
+			await conn.connect('')
 
-		const child = getChild(conn)
-		expect(child).toBeTruthy()
-		expect(child.onCommandsReceived).toBeTruthy()
+			const child = getChild(conn)
+			expect(child).toBeTruthy()
+			expect(child.onCommandsReceived).toBeTruthy()
 
-		const errors: any[] = []
-		conn.on('error', (e: any) => {
-			// Ignore any errors that are due to bad ids, as they are 'good' errors
-			if (!(e instanceof InvalidIdError)) {
-				errors.push(e)
+			const errors: any[] = []
+			conn.on('error', (e: any) => {
+				// Ignore any errors that are due to bad ids, as they are 'good' errors
+				if (!(e instanceof InvalidIdError)) {
+					errors.push(e)
+				}
+			})
+
+			for (const i in fileData) {
+				const buffer = Buffer.from(fileData[i].trim(), 'hex')
+				await child.onCommandsReceived(buffer, i)
 			}
+
+			expect(errors).toEqual([])
 		})
 
-		for (const i in fileData) {
-			const buffer = Buffer.from(fileData[i].trim(), 'hex')
-			await child.onCommandsReceived(buffer, i)
-		}
+		describe('Paths', () => {
+			const conn = createConnection()
+			const parser: (b: Buffer) => IDeserializedCommand[] = (conn as any).socket._parseCommands.bind(
+				(conn as any).socket
+			)
 
-		expect(errors).toEqual([])
+			const commands: IDeserializedCommand[] = []
+			for (const i in fileData) {
+				const buffer = Buffer.from(fileData[i].trim(), 'hex')
+				commands.push(...parser(buffer))
+			}
 
-		// console.log(conn.state)
+			const state = cloneJson(conn.state)
+
+			expect(commands).not.toBeEmpty()
+			expect(state).toBeTruthy()
+
+			const state0 = state as AtemState
+
+			for (const cmd of commands) {
+				test(`${cmd.constructor.name}`, async () => {
+					const newState = cloneJson(state0)
+					try {
+						const paths0 = cmd.applyToState(newState)
+						const paths = Array.isArray(paths0) ? paths0 : [paths0]
+
+						switch (cmd.constructor.name) {
+							case 'TallyBySourceCommand':
+							case 'LockStateUpdateCommand':
+								// Some commands are not expected to update the state
+								break
+							default:
+								expect(paths).not.toBeEmpty()
+								break
+						}
+
+						// Ensure the paths are all valid
+						// const trimmedRawState = cloneJson(state0)
+						// const trimmedNewState = cloneJson(newState)
+						if (paths.length > 0) {
+							for (const path of paths) {
+								// Start by making sure that the paths are valid
+								const subObj = objectPath.get(newState, path)
+								expect(subObj).not.toBeUndefined()
+								// objectPath.del(trimmedNewState, path)
+								// objectPath.del(trimmedRawState, path)
+							}
+						}
+
+						// // Ensure nothing outside the paths changed
+						// TODO - this wont do much as the current state is too similar. Also it is horrifically slow
+						// expect(trimmedNewState).toEqual(trimmedRawState)
+					} catch (e) {
+						if (e instanceof InvalidIdError) {
+							// Ignore it
+						} else {
+							throw e
+						}
+					}
+
+					//
+				})
+			}
+		})
 	})
 }
 

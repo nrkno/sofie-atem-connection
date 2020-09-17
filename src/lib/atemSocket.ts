@@ -127,7 +127,9 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 				async (message: string): Promise<void> => {
 					this.emit('info', message)
 				}, // onLog
-				async (payload: Buffer): Promise<void> => this._parseCommands(Buffer.from(payload)), // onCommandsReceived
+				async (payload: Buffer): Promise<void> => {
+					this._parseCommands(Buffer.from(payload))
+				}, // onCommandsReceived
 				async (ids: Array<{ packetId: number; trackingId: number }>): Promise<void> => {
 					this.emit(
 						'commandsAck',
@@ -156,7 +158,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 		return socketProcess
 	}
 
-	private _parseCommands(buffer: Buffer): void {
+	private _parseCommands(buffer: Buffer): IDeserializedCommand[] {
 		const parsedCommands: IDeserializedCommand[] = []
 
 		while (buffer.length > 8) {
@@ -197,5 +199,6 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 		if (parsedCommands.length > 0) {
 			this.emit('commandsReceived', parsedCommands)
 		}
+		return parsedCommands
 	}
 }

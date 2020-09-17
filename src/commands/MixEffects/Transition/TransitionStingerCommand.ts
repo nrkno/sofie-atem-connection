@@ -85,6 +85,6 @@ export class TransitionStingerUpdateCommand extends DeserializedCommand<StingerT
 		mixEffect.transitionSettings.stinger = {
 			...this.properties
 		}
-		return `video.ME.${this.mixEffect}.transitionSettings.stinger`
+		return `video.mixEffects.${this.mixEffect}.transitionSettings.stinger`
 	}
 }
