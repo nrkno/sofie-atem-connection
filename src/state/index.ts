@@ -1,27 +1,27 @@
-import { DeviceInfo } from './info'
-import { AtemVideoState } from './video'
-import { AtemClassicAudioState } from './audio'
-import { MediaState } from './media'
-import { InputChannel } from './input'
-import { MacroState } from './macro'
-import { SettingsState } from './settings'
-import { RecordingState } from './recording'
-import { StreamingState } from './streaming'
-import { AtemFairlightAudioState } from './fairlight'
+import * as Info from './info'
+import * as Video from './video'
+import * as ClassicAudio from './audio'
+import * as Media from './media'
+import * as Input from './input'
+import * as Macro from './macro'
+import * as Settings from './settings'
+import * as Recording from './recording'
+import * as Streaming from './streaming'
+import * as Fairlight from './fairlight'
 import * as AtemStateUtil from './util'
-export { AtemStateUtil }
+export { AtemStateUtil, Info, Video, ClassicAudio, Media, Input, Macro, Settings, Recording, Streaming, Fairlight }
 
 export interface AtemState {
-	info: DeviceInfo
-	video: AtemVideoState
-	audio?: AtemClassicAudioState
-	fairlight?: AtemFairlightAudioState
-	media: MediaState
-	inputs: { [inputId: number]: InputChannel | undefined }
-	macro: MacroState
-	settings: SettingsState
-	recording?: RecordingState
-	streaming?: StreamingState
+	info: Info.DeviceInfo
+	video: Video.AtemVideoState
+	audio?: ClassicAudio.AtemClassicAudioState
+	fairlight?: Fairlight.AtemFairlightAudioState
+	media: Media.MediaState
+	inputs: { [inputId: number]: Input.InputChannel | undefined }
+	macro: Macro.MacroState
+	settings: Settings.SettingsState
+	recording?: Recording.RecordingState
+	streaming?: Streaming.StreamingState
 }
 
 export class InvalidIdError extends Error {
