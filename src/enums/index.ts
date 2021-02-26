@@ -187,7 +187,7 @@ export enum FlyKeyKeyFrame {
 	RunToInfinite = 4
 }
 
-export enum FlyKeyLocation {
+export enum FlyKeyDirection {
 	CentreOfKey = 0,
 	TopLeft = 1,
 	TopCentre = 2,

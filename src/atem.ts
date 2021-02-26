@@ -550,13 +550,25 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public mixEffectKeyRunTo(
+	public runUpstreamKeyerFlyKeyTo(
 		mixEffect: number,
 		upstreamKeyerId: number,
-		keyFrameId: number,
-		direction: number
+		keyFrameId: Enums.FlyKeyKeyFrame.A | Enums.FlyKeyKeyFrame.B | Enums.FlyKeyKeyFrame.Full
 	): Promise<void> {
-		const command = new Commands.MixEffectKeyRunToCommand(mixEffect, upstreamKeyerId, keyFrameId, direction)
+		const command = new Commands.MixEffectKeyRunToCommand(mixEffect, upstreamKeyerId, keyFrameId, 0)
+		return this.sendCommand(command)
+	}
+	public runUpstreamKeyerFlyKeyToInfinite(
+		mixEffect: number,
+		upstreamKeyerId: number,
+		direction: Enums.FlyKeyDirection
+	): Promise<void> {
+		const command = new Commands.MixEffectKeyRunToCommand(
+			mixEffect,
+			upstreamKeyerId,
+			Enums.FlyKeyKeyFrame.RunToInfinite,
+			direction
+		)
 		return this.sendCommand(command)
 	}
 

@@ -1,16 +1,16 @@
 import { BasicWritableCommand } from '../../CommandBase'
-import { FlyKeyKeyFrame, FlyKeyLocation } from '../../../enums'
+import { FlyKeyKeyFrame, FlyKeyDirection } from '../../../enums'
 
 export class MixEffectKeyRunToCommand extends BasicWritableCommand<{
 	keyFrameId: FlyKeyKeyFrame
-	direction: FlyKeyLocation
+	direction: FlyKeyDirection
 }> {
 	public static readonly rawName = 'RFlK'
 
 	public readonly mixEffect: number
 	public readonly upstreamKeyerId: number
 
-	constructor(mixEffect: number, upstreamKeyerId: number, keyFrameId: FlyKeyKeyFrame, direction: FlyKeyLocation) {
+	constructor(mixEffect: number, upstreamKeyerId: number, keyFrameId: FlyKeyKeyFrame, direction: FlyKeyDirection) {
 		super({ keyFrameId, direction })
 
 		this.mixEffect = mixEffect
@@ -19,7 +19,7 @@ export class MixEffectKeyRunToCommand extends BasicWritableCommand<{
 
 	public serialize(): Buffer {
 		const buffer = Buffer.alloc(8)
-		buffer.writeUInt8(2, 0)
+		buffer.writeUInt8(this.properties.keyFrameId === FlyKeyKeyFrame.RunToInfinite ? 2 : 0, 0)
 		buffer.writeUInt8(this.mixEffect, 1)
 		buffer.writeUInt8(this.upstreamKeyerId, 2)
 		buffer.writeUInt8(this.properties.keyFrameId, 4)
