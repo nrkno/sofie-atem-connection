@@ -28,7 +28,6 @@ import { RecordingStateProperties } from './state/recording'
 import { OmitReadonly } from './lib/types'
 import { StreamingServiceProperties } from './state/streaming'
 import { commandStringify } from './lib/atemUtil'
-import * as bigInt from 'big-integer'
 
 export interface AtemOptions {
 	address?: string
@@ -639,7 +638,7 @@ export class Atem extends BasicAtem {
 		source: string,
 		props: Commands.FairlightMixerSourceCommand['properties']
 	): Promise<void> {
-		const command = new Commands.FairlightMixerSourceCommand(index, bigInt(source))
+		const command = new Commands.FairlightMixerSourceCommand(index, BigInt(source))
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}

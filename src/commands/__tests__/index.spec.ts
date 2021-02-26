@@ -6,6 +6,7 @@ import { createEmptyState } from '../../__tests__/util'
 import { DefaultCommandConverters } from './converters-default'
 import { V8_0CommandConverters } from './converters-8.0'
 import { readFileSync } from 'fs'
+import { resolve } from 'path'
 
 export type CommandTestConverterSet = { [key: string]: CommandTestConverter }
 export interface PropertyAliasResult {
@@ -30,7 +31,8 @@ export interface TestCase {
 	command: { [key: string]: any }
 }
 
-const TestCases = JSON.parse(readFileSync(__dirname + '/libatem-data.json').toString()) as TestCase[]
+const testCasePath = resolve(__dirname, `./libatem-data.json`)
+const TestCases: TestCase[] = JSON.parse(readFileSync(testCasePath).toString())
 
 function runTestForCommand(commandParser: CommandParser, i: number, testCase: TestCase, allowUnknown?: boolean): void {
 	commandParser.version = testCase.firstVersion

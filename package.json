@@ -25,7 +25,6 @@
     }
   ],
   "scripts": {
-    "info": "npm-scripts-info",
     "build": "rimraf dist && yarn build:main",
     "build:main": "tsc -p tsconfig.build.json",
     "lint": "eslint . --ext .ts --ext .js --ext .tsx --ext .jsx --ignore-pattern dist",
@@ -70,7 +69,6 @@
     "jest-extended": "^0.11.2",
     "jest-haste-map": "^26.6.2",
     "jest-resolve": "^26.6.2",
-    "jest-verify-node-version": "^1.0.3",
     "object-path": "^0.11.5",
     "open-cli": "^6.0.1",
     "rimraf": "^3.0.2",
@@ -88,7 +86,6 @@
     "video"
   ],
   "dependencies": {
-    "big-integer": "^1.6.48",
     "eventemitter3": "^4.0.7",
     "exit-hook": "^2.0.0",
     "nanotimer": "^0.3.15",
