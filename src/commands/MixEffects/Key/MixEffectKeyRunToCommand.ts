@@ -19,7 +19,7 @@ export class MixEffectKeyRunToCommand extends BasicWritableCommand<{ keyFrameId:
 
 	public serialize(): Buffer {
 		const buffer = Buffer.alloc(8)
-        buffer.writeUInt8(2,0);
+		buffer.writeUInt8(2, 0)
 		buffer.writeUInt8(this.mixEffect, 1)
 		buffer.writeUInt8(this.upstreamKeyerId, 2)
 		buffer.writeUInt8(this.direction, 5)

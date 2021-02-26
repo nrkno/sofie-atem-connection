@@ -197,7 +197,7 @@ export enum FlyKeyLocation {
 	MiddleRight = 6,
 	BottomLeft = 7,
 	BottomCentre = 8,
-	BottomRight = 9,
+	BottomRight = 9
 }
 
 export enum SuperSourceArtOption {
