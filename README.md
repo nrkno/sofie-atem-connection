@@ -10,7 +10,7 @@ This library is used in the [**Sofie** TV News Studio Automation System](https:/
 
 | Version       | Level of Support                                                  |
 | ------------- | ----------------------------------------------------------------- |
-| v8.0 - v8.4   | Primary focus. Target for new features                            |
+| v8.0 - v8.6   | Primary focus. Target for new features                            |
 | v7.2          | Previous focus, should still work well                            |
 | v7.3 - v7.5.2 | Community tested, we may accept PRs but will not be testing these |
 
