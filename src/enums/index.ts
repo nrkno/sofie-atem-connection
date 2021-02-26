@@ -179,7 +179,7 @@ export enum MixEffectKeyType {
 	DVE = 3
 }
 
-export enum FlyKeyKeyFrameType {
+export enum FlyKeyKeyFrame {
 	None = 0,
 	A = 1,
 	B = 2,
