@@ -1,0 +1,255 @@
+name: Node CI
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'v**'
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Prepare Environment
+        run: |
+          yarn install
+        env:
+          CI: true
+      - name: Run typecheck and linter
+        run: |
+          yarn lint
+        env:
+          CI: true
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 15
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 15.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Prepare Environment
+        run: |
+          yarn install
+        env:
+          CI: true
+      - name: Run tests
+        run: |
+          yarn unit
+        env:
+          CI: true
+      - name: Send coverage
+        if: matrix.node-version == '14.x'
+        run: |
+          yarn send-coverage
+        env:
+          CI: true
+      - name: Check docs generation
+        if: matrix.node-version == '14.x'
+        run: |
+          yarn docs:test
+        env:
+          CI: true
+
+  prerelease:
+    name: Prerelease
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 15
+
+    # only run for branches
+    if: contains(github.ref, 'refs/heads/')
+
+    needs:
+      - test
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Check release is desired
+        id: do-publish
+        run: |
+          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "No Token"
+          elif git log --format=oneline -n 1 | grep -q "\[publish\]"; then
+            echo "Publish experimental"
+            echo ::set-output name=publish::"experimental"
+          elif [[ "{ github.ref }" == "ref/heads/master" ]]; then
+            echo "Publish nightly"
+            echo ::set-output name=publish::"nightly"
+          else
+            echo "Skip"
+          fi
+      - name: Prepare Environment
+        if: ${{ steps.do-publish.outputs.publish }}
+        run: |
+          yarn install
+        env:
+          CI: true
+      - name: Get the Prerelease tag
+        id: prerelease-tag
+        uses: yuya-takeyama/docker-tag-from-github-ref-action@2b0614b1338c8f19dd9d3ea433ca9bc0cc7057ba
+        with:
+          remove-version-tag-prefix: false
+      - name: Bump version and build
+        if: ${{ steps.do-publish.outputs.publish }}
+        run: |
+          COMMIT_TIMESTAMP=$(git log -1 --pretty=format:%ct HEAD)
+          COMMIT_DATE=$(date -d @$COMMIT_TIMESTAMP +%Y%m%d-%H%M%S)
+          GIT_HASH=$(git rev-parse --short HEAD)
+          PRERELEASE_TAG=nightly-$(echo "${{ steps.prerelease-tag.outputs.tag }}" | sed -r 's/[^a-z0-9]+/-/gi')
+          yarn release --prerelease $PRERELEASE_TAG-$COMMIT_DATE-$GIT_HASH --skip.changelog --skip.tag --skip.commit
+          yarn build
+        env:
+          CI: true
+      - name: Publish to NPM
+        if: ${{ steps.do-publish.outputs.publish }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          yarn publish --access=public --new-version=$NEW_VERSION --network-timeout 100000 --tag "${{ steps.do-publish.outputs.publish }}"
+        env:
+          CI: true
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 15
+
+    # only run for tags
+    if: contains(github.ref, 'refs/tags/')
+
+    needs:
+      - test
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Check release is desired
+        id: do-publish
+        run: |
+          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "No Token"
+          else
+
+            PACKAGE_NAME=$(yarn info -s . name)
+            PUBLISHED_VERSION=$(yarn info -s $PACKAGE_NAME version)
+            THIS_VERSION=$(node -p "require('./package.json').version")
+            # Simple bash helper to comapre version numbers
+            verlte() {
+              [  "$1" = "`echo -e "$1\n$2" | sort -V | head -n1`" ]
+            }
+            verlt() {
+              [ "$1" = "$2" ] && return 1 || verlte $1 $2
+            }
+            if verlt $PUBLISHED_VERSION $THIS_VERSION
+            then
+              echo "Publishing latest"
+              echo ::set-output name=tag::"latest"
+            else
+              echo "Publishing hotfix"
+              echo ::set-output name=tag::"hotfix"
+            fi
+
+          fi
+      - name: Prepare build
+        if: ${{ steps.do-publish.outputs.tag }}
+        run: |
+          yarn install
+          yarn build
+        env:
+          CI: true
+      - name: Publish to NPM
+        if: ${{ steps.do-publish.outputs.tag }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          yarn publish --access=public --new-version=$NEW_VERSION --network-timeout 100000 --tag ${{ steps.do-publish.outputs.tag }}
+        env:
+          CI: true
+      - name: Publish docs
+        if: ${{ steps.do-publish.outputs.tag }} == 'latest'
+        run: |
+          yarn docs:publish
+
+  validate-dependencies:
+    name: Validate production dependencies
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Prepare Environment
+        run: |
+          yarn install
+        env:
+          CI: true
+      - name: Validate production dependencies
+        run: |
+          if ! git log --format=oneline -n 1 | grep -q "\[ignore-audit\]"; then
+            yarn validate:dependencies
+          else
+            echo "Skipping audit"
+          fi
+        env:
+          CI: true
+
+  validate-all-dependencies:
+    name: Validate all dependencies
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Prepare Environment
+        run: |
+          yarn install
+        env:
+          CI: true
+      - name: Validate production dependencies
+        run: |
+          yarn validate:dependencies
+        env:
+          CI: true
+      - name: Validate dev dependencies
+        run: |
+          yarn validate:dev-dependencies
+        env:
+          CI: true
