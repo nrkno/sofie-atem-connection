@@ -7,7 +7,7 @@ export class MediaPlayerStatusCommand extends WritableCommand<MediaPlayer> {
 		playing: 1 << 0,
 		loop: 1 << 1,
 		atBeginning: 1 << 2,
-		clipFrame: 1 << 3
+		clipFrame: 1 << 3,
 	}
 	public static readonly rawName = 'SCPS'
 
@@ -48,7 +48,7 @@ export class MediaPlayerStatusUpdateCommand extends DeserializedCommand<MediaPla
 			playing: rawCommand.readUInt8(1) === 1,
 			loop: rawCommand.readUInt8(2) === 1,
 			atBeginning: rawCommand.readUInt8(3) === 1,
-			clipFrame: (rawCommand.readUInt8(4) << 8) | rawCommand.readUInt8(5)
+			clipFrame: (rawCommand.readUInt8(4) << 8) | rawCommand.readUInt8(5),
 		}
 
 		return new MediaPlayerStatusUpdateCommand(mediaPlayerId, properties)
@@ -61,7 +61,7 @@ export class MediaPlayerStatusUpdateCommand extends DeserializedCommand<MediaPla
 
 		state.media.players[this.mediaPlayerId] = {
 			...AtemStateUtil.getMediaPlayer(state, this.mediaPlayerId),
-			...this.properties
+			...this.properties,
 		}
 		return `media.players.${this.mediaPlayerId}`
 	}

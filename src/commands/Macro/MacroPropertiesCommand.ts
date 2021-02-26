@@ -24,7 +24,7 @@ export class MacroPropertiesUpdateCommand extends DeserializedCommand<MacroPrope
 			isUsed: rawCommand.readUInt8(2) != 0,
 			hasUnsupportedOps: rawCommand.readUInt8(3) != 0,
 			name: '',
-			description: ''
+			description: '',
 		}
 
 		if (nameLen > 0) {
@@ -46,7 +46,7 @@ export class MacroPropertiesUpdateCommand extends DeserializedCommand<MacroPrope
 export class MacroPropertiesCommand extends WritableCommand<OmitReadonly<MacroPropertiesState>> {
 	public static MaskFlags = {
 		name: 1 << 0,
-		description: 1 << 1
+		description: 1 << 1,
 	}
 
 	public static readonly rawName = 'CMPr'

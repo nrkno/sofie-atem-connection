@@ -51,7 +51,7 @@ export const COMMAND_CONNECT_HELLO = Buffer.from([
 	0x00,
 	0x00,
 	0x00,
-	0x00
+	0x00,
 ])
 
 /**
@@ -124,94 +124,94 @@ const dims4k: Pick<VideoModeInfo, 'width' | 'height'> = { width: 3840, height: 2
 const dims8k: Pick<VideoModeInfo, 'width' | 'height'> = { width: 7680, height: 4260 }
 const VideoModeInfoImpl: { [key in Enums.VideoMode]: VideoModeInfo } = {
 	[Enums.VideoMode.N525i5994NTSC]: {
-		...dimsNTSC
+		...dimsNTSC,
 	},
 	[Enums.VideoMode.P625i50PAL]: {
-		...dimsPAL
+		...dimsPAL,
 	},
 	[Enums.VideoMode.N525i5994169]: {
-		...dimsNTSC
+		...dimsNTSC,
 	},
 	[Enums.VideoMode.P625i50169]: {
-		...dimsPAL
+		...dimsPAL,
 	},
 
 	[Enums.VideoMode.P720p50]: {
-		...dims720p
+		...dims720p,
 	},
 	[Enums.VideoMode.N720p5994]: {
-		...dims720p
+		...dims720p,
 	},
 	[Enums.VideoMode.P1080i50]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.N1080i5994]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.N1080p2398]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.N1080p24]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.P1080p25]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.N1080p2997]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.P1080p50]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.N1080p5994]: {
-		...dims1080p
+		...dims1080p,
 	},
 
 	[Enums.VideoMode.N4KHDp2398]: {
-		...dims4k
+		...dims4k,
 	},
 	[Enums.VideoMode.N4KHDp24]: {
-		...dims4k
+		...dims4k,
 	},
 	[Enums.VideoMode.P4KHDp25]: {
-		...dims4k
+		...dims4k,
 	},
 	[Enums.VideoMode.N4KHDp2997]: {
-		...dims4k
+		...dims4k,
 	},
 
 	[Enums.VideoMode.P4KHDp5000]: {
-		...dims4k
+		...dims4k,
 	},
 	[Enums.VideoMode.N4KHDp5994]: {
-		...dims4k
+		...dims4k,
 	},
 
 	[Enums.VideoMode.N8KHDp2398]: {
-		...dims8k
+		...dims8k,
 	},
 	[Enums.VideoMode.N8KHDp24]: {
-		...dims8k
+		...dims8k,
 	},
 	[Enums.VideoMode.P8KHDp25]: {
-		...dims8k
+		...dims8k,
 	},
 	[Enums.VideoMode.N8KHDp2997]: {
-		...dims8k
+		...dims8k,
 	},
 	[Enums.VideoMode.P8KHDp50]: {
-		...dims8k
+		...dims8k,
 	},
 	[Enums.VideoMode.N8KHDp5994]: {
-		...dims8k
+		...dims8k,
 	},
 
 	[Enums.VideoMode.N1080p30]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.N1080p60]: {
-		...dims1080p
-	}
+		...dims1080p,
+	},
 }
 
 export function getVideoModeInfo(videoMode: Enums.VideoMode): VideoModeInfo | undefined {

@@ -15,7 +15,7 @@ export class TransitionDVECommand extends WritableCommand<DVETransitionSettings>
 		gain: 1 << 8,
 		invertKey: 1 << 9,
 		reverse: 1 << 10,
-		flipFlop: 1 << 11
+		flipFlop: 1 << 11,
 	}
 
 	public static readonly rawName = 'CTDv'
@@ -78,7 +78,7 @@ export class TransitionDVEUpdateCommand extends DeserializedCommand<DVETransitio
 			gain: rawCommand.readUInt16BE(12),
 			invertKey: rawCommand.readUInt8(14) === 1,
 			reverse: rawCommand.readUInt8(15) === 1,
-			flipFlop: rawCommand.readUInt8(16) === 1
+			flipFlop: rawCommand.readUInt8(16) === 1,
 		}
 
 		return new TransitionDVEUpdateCommand(mixEffect, properties)
@@ -93,7 +93,7 @@ export class TransitionDVEUpdateCommand extends DeserializedCommand<DVETransitio
 
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionSettings.DVE = {
-			...this.properties
+			...this.properties,
 		}
 		return `video.mixEffects.${this.mixEffect}.transitionSettings.DVE`
 	}

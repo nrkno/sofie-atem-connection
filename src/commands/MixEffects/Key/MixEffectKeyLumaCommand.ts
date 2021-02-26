@@ -7,7 +7,7 @@ export class MixEffectKeyLumaCommand extends WritableCommand<UpstreamKeyerLumaSe
 		preMultiplied: 1 << 0,
 		clip: 1 << 1,
 		gain: 1 << 2,
-		invert: 1 << 3
+		invert: 1 << 3,
 	}
 	public static readonly rawName = 'CKLm'
 
@@ -56,7 +56,7 @@ export class MixEffectKeyLumaUpdateCommand extends DeserializedCommand<UpstreamK
 			preMultiplied: rawCommand.readUInt8(2) === 1,
 			clip: rawCommand.readUInt16BE(4),
 			gain: rawCommand.readUInt16BE(6),
-			invert: rawCommand.readUInt8(8) === 1
+			invert: rawCommand.readUInt8(8) === 1,
 		}
 
 		return new MixEffectKeyLumaUpdateCommand(mixEffect, upstreamKeyerId, properties)
@@ -71,7 +71,7 @@ export class MixEffectKeyLumaUpdateCommand extends DeserializedCommand<UpstreamK
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		const upstreamKeyer = AtemStateUtil.getUpstreamKeyer(mixEffect, this.upstreamKeyerId)
 		upstreamKeyer.lumaSettings = {
-			...this.properties
+			...this.properties,
 		}
 		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.lumaSettings`
 	}

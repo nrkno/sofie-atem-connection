@@ -12,14 +12,14 @@ export class FairlightAudioMixerConfigCommand extends DeserializedCommand<Fairli
 	public static deserialize(rawCommand: Buffer): FairlightAudioMixerConfigCommand {
 		return new FairlightAudioMixerConfigCommand({
 			inputs: rawCommand.readUInt8(0),
-			monitors: rawCommand.readUInt8(1)
+			monitors: rawCommand.readUInt8(1),
 		})
 	}
 
 	public applyToState(state: AtemState): string[] {
 		state.info.fairlightMixer = this.properties
 		state.fairlight = {
-			inputs: {}
+			inputs: {},
 		}
 
 		return [`info.fairlightMixer`, `fairlight.inputs`]

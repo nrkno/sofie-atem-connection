@@ -30,7 +30,7 @@ export class StreamingDurationUpdateCommand extends DeserializedCommand<Timecode
 			minutes: rawCommand.readUInt8(1),
 			seconds: rawCommand.readUInt8(2),
 			frames: rawCommand.readUInt8(3),
-			isDropFrame: rawCommand.readUInt8(4) != 0
+			isDropFrame: rawCommand.readUInt8(4) != 0,
 		}
 
 		return new StreamingDurationUpdateCommand(props)

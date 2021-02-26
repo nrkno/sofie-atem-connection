@@ -190,12 +190,12 @@ describe('Commands vs LibAtem', () => {
 		}
 
 		// knownNames = Object.keys(commandParser.commands).sort()
-		const testNames = Array.from(new Set(TestCases.map(c => `${c.name}_${c.firstVersion}`)))
-			.filter(n => knownNames.indexOf(n) !== -1)
+		const testNames = Array.from(new Set(TestCases.map((c) => `${c.name}_${c.firstVersion}`)))
+			.filter((n) => knownNames.indexOf(n) !== -1)
 			.sort()
 
 		// Temporarily ignore these missing cases
-		knownNames = knownNames.filter(n => !n.startsWith('InCm') && !n.startsWith('TlSr'))
+		knownNames = knownNames.filter((n) => !n.startsWith('InCm') && !n.startsWith('TlSr'))
 
 		knownNames.sort()
 

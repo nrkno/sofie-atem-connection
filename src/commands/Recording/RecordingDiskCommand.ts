@@ -44,7 +44,7 @@ export class RecordingDiskInfoUpdateCommand extends DeserializedCommand<Deletabl
 			recordingTimeAvailable: rawCommand.readUInt32BE(4),
 			status: rawStatus & ~this.DeleteStatusFlag,
 			isDelete: (rawStatus & this.DeleteStatusFlag) === this.DeleteStatusFlag,
-			volumeName: bufToNullTerminatedString(rawCommand, 10, 64)
+			volumeName: bufToNullTerminatedString(rawCommand, 10, 64),
 		}
 
 		return new RecordingDiskInfoUpdateCommand(diskId, props)

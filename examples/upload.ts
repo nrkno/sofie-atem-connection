@@ -19,7 +19,7 @@ let stuckTimeout: any = null
 function uploadNext(): void {
 	uploadStarted = Date.now()
 	conn.uploadStill(uploadNumber % conn.state.media.stillPool.length, file, 'contemplation..', '').then(
-		async _res => {
+		async (_res) => {
 			console.log(`Uploaded still #${uploadNumber} in ${Date.now() - uploadStarted}ms at 1080p`)
 			uploadNumber++
 
@@ -34,7 +34,7 @@ function uploadNext(): void {
 
 			setTimeout(() => uploadNext(), 0)
 		},
-		e => {
+		(e) => {
 			console.log('e', e)
 			setTimeout(() => uploadNext(), 500)
 		}

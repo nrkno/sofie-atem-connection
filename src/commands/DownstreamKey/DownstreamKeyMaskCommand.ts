@@ -7,7 +7,7 @@ export class DownstreamKeyMaskCommand extends WritableCommand<DownstreamKeyerMas
 		top: 1 << 1,
 		bottom: 1 << 2,
 		left: 1 << 3,
-		right: 1 << 4
+		right: 1 << 4,
 	}
 
 	public static readonly rawName = 'CDsM'

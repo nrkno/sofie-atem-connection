@@ -14,7 +14,7 @@ export class SuperSourceBoxParametersCommand extends WritableCommand<SuperSource
 		cropTop: 1 << 6,
 		cropBottom: 1 << 7,
 		cropLeft: 1 << 8,
-		cropRight: 1 << 9
+		cropRight: 1 << 9,
 	}
 
 	public static readonly rawName = 'CSBP'
@@ -87,7 +87,7 @@ export class SuperSourceBoxParametersUpdateCommand extends DeserializedCommand<S
 			cropTop: rawCommand.readUInt16BE(i + 12),
 			cropBottom: rawCommand.readUInt16BE(i + 14),
 			cropLeft: rawCommand.readUInt16BE(i + 16),
-			cropRight: rawCommand.readUInt16BE(i + 18)
+			cropRight: rawCommand.readUInt16BE(i + 18),
 		}
 
 		return new SuperSourceBoxParametersUpdateCommand(ssrcId, boxId, properties)
@@ -100,7 +100,7 @@ export class SuperSourceBoxParametersUpdateCommand extends DeserializedCommand<S
 
 		const supersource = AtemStateUtil.getSuperSource(state, this.ssrcId)
 		supersource.boxes[this.boxId] = {
-			...this.properties
+			...this.properties,
 		}
 		return `video.superSources.${this.ssrcId}.boxes.${this.boxId}`
 	}

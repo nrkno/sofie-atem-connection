@@ -7,7 +7,7 @@ export class AudioMixerMasterCommand extends WritableCommand<AudioMasterChannel>
 	public static MaskFlags = {
 		gain: 1 << 0,
 		balance: 1 << 1,
-		followFadeToBlack: 1 << 2
+		followFadeToBlack: 1 << 2,
 	}
 	public static readonly rawName = 'CAMM'
 
@@ -28,7 +28,7 @@ export class AudioMixerMasterUpdateCommand extends DeserializedCommand<AudioMast
 		const properties = {
 			gain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(0)),
 			balance: Util.IntToBalance(rawCommand.readInt16BE(2)),
-			followFadeToBlack: rawCommand.readInt8(4) === 1
+			followFadeToBlack: rawCommand.readInt8(4) === 1,
 		}
 
 		return new AudioMixerMasterUpdateCommand(properties)
@@ -41,7 +41,7 @@ export class AudioMixerMasterUpdateCommand extends DeserializedCommand<AudioMast
 
 		state.audio.master = {
 			...state.audio.master,
-			...this.properties
+			...this.properties,
 		}
 		return `audio.master`
 	}

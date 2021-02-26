@@ -17,7 +17,7 @@ export class DownstreamKeySourcesCommand extends DeserializedCommand<DownstreamK
 		const downstreamKeyerId = rawCommand.readUInt8(0)
 		const properties = {
 			fillSource: rawCommand.readUInt16BE(2),
-			cutSource: rawCommand.readUInt16BE(4)
+			cutSource: rawCommand.readUInt16BE(4),
 		}
 
 		return new DownstreamKeySourcesCommand(downstreamKeyerId, properties)

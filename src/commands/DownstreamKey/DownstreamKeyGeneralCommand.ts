@@ -6,7 +6,7 @@ export class DownstreamKeyGeneralCommand extends WritableCommand<DownstreamKeyer
 		preMultiply: 1 << 0,
 		clip: 1 << 1,
 		gain: 1 << 2,
-		invert: 1 << 3
+		invert: 1 << 3,
 	}
 
 	public static readonly rawName = 'CDsG'

@@ -16,7 +16,7 @@ if (args.length < 2) {
 const conn = new Atem({ debug: true })
 conn.on('error', console.log)
 
-function writeJson (fileName, data) {
+function writeJson(fileName, data) {
 	const filePath = path.resolve(__dirname, fileName)
 	fs.writeFileSync(filePath, JSON.stringify(data, undefined, '\t'))
 }
@@ -24,7 +24,7 @@ function writeJson (fileName, data) {
 conn.once('connected', () => {
 	writeJson(`./${args[1]}-state.json`, {
 		video: conn.state.video,
-		inputs: conn.state.inputs // Optimise out the nulls
+		inputs: conn.state.inputs, // Optimise out the nulls
 	})
 	console.log('Wrote state file')
 

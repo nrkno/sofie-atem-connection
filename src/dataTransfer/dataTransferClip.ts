@@ -39,7 +39,7 @@ export default class DataTransferClip extends DataTransfer {
 				const command = new Commands.MediaPoolSetClipCommand({
 					index: this.clipIndex,
 					name: this.name,
-					frames: this.frames.length
+					frames: this.frames.length,
 				})
 				commands.push(command)
 				this.state = Enums.TransferState.Finished

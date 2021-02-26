@@ -28,7 +28,7 @@ describe('Atem', () => {
 				debugBuffers: false,
 				disableMultithreaded: true,
 				log: (conn as any)._log,
-				port: DEFAULT_PORT
+				port: DEFAULT_PORT,
 			})
 		} finally {
 			cleanupAtem(conn)
@@ -48,7 +48,7 @@ describe('Atem', () => {
 				debugBuffers: true,
 				disableMultithreaded: false,
 				log: (conn as any)._log,
-				port: 23
+				port: 23,
 			})
 		} finally {
 			cleanupAtem(conn)
@@ -104,7 +104,7 @@ describe('Atem', () => {
 			let nextId = 123
 			Object.defineProperty(socket, 'nextCommandTrackingId', {
 				get: jest.fn(() => nextId++),
-				set: jest.fn()
+				set: jest.fn(),
 			})
 			expect(socket.nextCommandTrackingId).toEqual(123)
 
@@ -122,8 +122,8 @@ describe('Atem', () => {
 			expect(socket.sendCommands).toHaveBeenCalledWith([
 				{
 					rawCommand: cmd,
-					trackingId: 124
-				}
+					trackingId: 124,
+				},
 			])
 
 			// Trigger the ack, and it should switfy resolve
@@ -148,7 +148,7 @@ describe('Atem', () => {
 			let nextId = 123
 			Object.defineProperty(socket, 'nextCommandTrackingId', {
 				get: jest.fn(() => nextId++),
-				set: jest.fn()
+				set: jest.fn(),
 			})
 			expect(socket.nextCommandTrackingId).toEqual(123)
 
@@ -165,8 +165,8 @@ describe('Atem', () => {
 			expect(socket.sendCommands).toHaveBeenCalledWith([
 				{
 					rawCommand: cmd,
-					trackingId: 124
-				}
+					trackingId: 124,
+				},
 			])
 
 			expect(Object.keys(sentQueue)).toHaveLength(0)

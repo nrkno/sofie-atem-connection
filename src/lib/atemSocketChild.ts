@@ -12,7 +12,7 @@ const MAX_PACKET_PER_ACK = 16
 export enum ConnectionState {
 	Closed = 0x00,
 	SynSent = 0x01,
-	Established = 0x02
+	Established = 0x02,
 }
 
 export enum PacketFlag {
@@ -20,7 +20,7 @@ export enum PacketFlag {
 	NewSessionId = 0x02,
 	IsRetransmit = 0x04,
 	RetransmitRequest = 0x08,
-	AckReply = 0x10
+	AckReply = 0x10,
 }
 
 interface InFlightPacket {
@@ -117,7 +117,7 @@ export class AtemSocketChild {
 			this._reconnectTimer = undefined
 		}
 
-		return new Promise(resolve => {
+		return new Promise((resolve) => {
 			try {
 				this._socket.close(() => resolve())
 			} catch (e) {
@@ -155,7 +155,7 @@ export class AtemSocketChild {
 	}
 
 	public sendCommands(commands: Array<{ payload: number[]; rawName: string; trackingId: number }>): void {
-		commands.forEach(cmd => {
+		commands.forEach((cmd) => {
 			this.sendCommand(cmd.payload, cmd.rawName, cmd.trackingId)
 		})
 	}
@@ -184,7 +184,7 @@ export class AtemSocketChild {
 			trackingId,
 			lastSent: Date.now(),
 			payload: buffer,
-			resent: 0
+			resent: 0,
 		})
 	}
 
@@ -192,7 +192,7 @@ export class AtemSocketChild {
 		this._socket = createSocket('udp4')
 		this._socket.bind()
 		this._socket.on('message', (packet, rinfo) => this._receivePacket(packet, rinfo))
-		this._socket.on('error', async err => {
+		this._socket.on('error', async (err) => {
 			this.log(`Connection error: ${err}`)
 
 			if (this._connectionState === ConnectionState.Established) {
@@ -262,11 +262,11 @@ export class AtemSocketChild {
 			if (flags & PacketFlag.AckReply) {
 				const ackPacketId = packet.readUInt16BE(4)
 				const ackedCommands: Array<{ packetId: number; trackingId: number }> = []
-				this._inFlight = this._inFlight.filter(pkt => {
+				this._inFlight = this._inFlight.filter((pkt) => {
 					if (this._isPacketCoveredByAck(ackPacketId, pkt.packetId)) {
 						ackedCommands.push({
 							packetId: pkt.packetId,
-							trackingId: pkt.trackingId
+							trackingId: pkt.trackingId,
 						})
 						return false
 					} else {
@@ -325,7 +325,7 @@ export class AtemSocketChild {
 		// The atem will ask for MAX_PACKET_ID to be retransmitted when it really wants 0
 		fromId = fromId % MAX_PACKET_ID
 
-		const fromIndex = this._inFlight.findIndex(pkt => pkt.packetId === fromId)
+		const fromIndex = this._inFlight.findIndex((pkt) => pkt.packetId === fromId)
 		if (fromIndex === -1) {
 			// fromId is not inflight, so we cannot resend. only fix is to abort
 			this.log(`Unable to resend: ${fromId}`)

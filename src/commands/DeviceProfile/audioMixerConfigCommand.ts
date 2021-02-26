@@ -13,7 +13,7 @@ export class AudioMixerConfigCommand extends DeserializedCommand<AudioMixerInfo>
 		return new AudioMixerConfigCommand({
 			inputs: rawCommand.readUInt8(0),
 			monitors: rawCommand.readUInt8(1),
-			headphones: rawCommand.readUInt8(2)
+			headphones: rawCommand.readUInt8(2),
 		})
 	}
 
@@ -22,7 +22,7 @@ export class AudioMixerConfigCommand extends DeserializedCommand<AudioMixerInfo>
 		state.audio = {
 			numberOfChannels: this.properties.inputs,
 			hasMonitor: this.properties.monitors != 0,
-			channels: []
+			channels: [],
 		}
 
 		return [`info.audioMixer`, `audio`]

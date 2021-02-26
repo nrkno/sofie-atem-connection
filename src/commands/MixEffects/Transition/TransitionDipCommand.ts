@@ -5,7 +5,7 @@ import { DipTransitionSettings } from '../../../state/video'
 export class TransitionDipCommand extends WritableCommand<DipTransitionSettings> {
 	public static MaskFlags = {
 		rate: 1 << 0,
-		input: 1 << 1
+		input: 1 << 1,
 	}
 	public static readonly rawName = 'CTDp'
 
@@ -42,7 +42,7 @@ export class TransitionDipUpdateCommand extends DeserializedCommand<DipTransitio
 		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
 			rate: rawCommand.readUInt8(1),
-			input: (rawCommand.readUInt8(2) << 8) | (rawCommand.readUInt8(3) & 0xff)
+			input: (rawCommand.readUInt8(2) << 8) | (rawCommand.readUInt8(3) & 0xff),
 		}
 
 		return new TransitionDipUpdateCommand(mixEffect, properties)
@@ -55,7 +55,7 @@ export class TransitionDipUpdateCommand extends DeserializedCommand<DipTransitio
 
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionSettings.dip = {
-			...this.properties
+			...this.properties,
 		}
 		return `video.mixEffects.${this.mixEffect}.transitionSettings.dip`
 	}

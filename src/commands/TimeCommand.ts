@@ -10,7 +10,7 @@ export class TimeCommand extends SymmetricalCommand<TimeInfo> {
 	constructor(properties: TimeInfo | Omit<TimeInfo, 'dropFrame'>) {
 		super({
 			dropFrame: false,
-			...properties
+			...properties,
 		})
 	}
 
@@ -33,7 +33,7 @@ export class TimeCommand extends SymmetricalCommand<TimeInfo> {
 			second: rawCommand.readUInt8(2),
 			frame: rawCommand.readUInt8(3),
 			// Byte 4 looks to be a field marker
-			dropFrame: rawCommand.readUInt8(5) === 1
+			dropFrame: rawCommand.readUInt8(5) === 1,
 		}
 
 		return new TimeCommand(properties)

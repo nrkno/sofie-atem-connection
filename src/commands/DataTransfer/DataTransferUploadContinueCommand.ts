@@ -13,7 +13,7 @@ export class DataTransferUploadContinueCommand extends DeserializedCommand<DataT
 		const properties = {
 			transferId: rawCommand.readUInt16BE(0),
 			chunkSize: rawCommand.readUInt16BE(6),
-			chunkCount: rawCommand.readUInt16BE(8)
+			chunkCount: rawCommand.readUInt16BE(8),
 		}
 
 		return new DataTransferUploadContinueCommand(properties)

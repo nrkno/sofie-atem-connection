@@ -46,7 +46,7 @@ export default class DataLock {
 	public lockObtained(): void {
 		this.isLocked = true
 		if (this.activeTransfer && this.activeTransfer.state === Enums.TransferState.Queued) {
-			this.activeTransfer.gotLock().forEach(cmd => this.queueCommand(cmd))
+			this.activeTransfer.gotLock().forEach((cmd) => this.queueCommand(cmd))
 		}
 	}
 
@@ -81,10 +81,10 @@ export default class DataLock {
 						// Retry the last frame.
 						this.activeTransfer.frames[this.activeTransfer.curFrame]
 							.start()
-							.forEach(cmd => this.queueCommand(cmd))
+							.forEach((cmd) => this.queueCommand(cmd))
 					} else {
 						// Retry the entire transfer.
-						this.activeTransfer.start().forEach(cmd => this.queueCommand(cmd))
+						this.activeTransfer.start().forEach((cmd) => this.queueCommand(cmd))
 					}
 					break
 				case 2: // Unknown.

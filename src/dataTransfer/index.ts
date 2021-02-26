@@ -15,10 +15,10 @@ const MAX_TRANSFER_INDEX = (1 << 16) - 1 // Inclusive maximum
 export class DataTransferManager {
 	private readonly commandQueue: Array<ISerializableCommand> = []
 
-	private readonly stillsLock = new DataLock(0, cmd => this.commandQueue.push(cmd))
+	private readonly stillsLock = new DataLock(0, (cmd) => this.commandQueue.push(cmd))
 	private readonly clipLocks = [
-		new DataLock(1, cmd => this.commandQueue.push(cmd)),
-		new DataLock(2, cmd => this.commandQueue.push(cmd))
+		new DataLock(1, (cmd) => this.commandQueue.push(cmd)),
+		new DataLock(2, (cmd) => this.commandQueue.push(cmd)),
 	]
 
 	private interval?: NodeJS.Timer
@@ -38,7 +38,7 @@ export class DataTransferManager {
 
 				const commandsToSend = this.commandQueue.splice(0, MAX_PACKETS_TO_SEND_PER_TICK)
 				// The only way commands are rejected is if the connection dies, so if any reject then we fail
-				Promise.all(sendCommands(commandsToSend)).catch(e => {
+				Promise.all(sendCommands(commandsToSend)).catch((e) => {
 					// TODO - handle this better. it should kill/restart the upload. and should also be logged in some way
 					console.log(`Transfer send error: ${e}`)
 				})
@@ -108,7 +108,7 @@ export class DataTransferManager {
 			lock.transferErrored(command.properties.errorCode)
 		}
 		if (lock.activeTransfer) {
-			lock.activeTransfer.handleCommand(command).forEach(cmd => this.commandQueue.push(cmd))
+			lock.activeTransfer.handleCommand(command).forEach((cmd) => this.commandQueue.push(cmd))
 			if (lock.activeTransfer.state === Enums.TransferState.Finished) {
 				lock.transferFinished()
 			}

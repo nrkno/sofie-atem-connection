@@ -48,7 +48,7 @@ export class FairlightMixerSourceCommand extends WritableCommand<OmitReadonly<Fa
 		makeUpGain: 1 << 5,
 		balance: 1 << 6,
 		faderGain: 1 << 7,
-		mixOption: 1 << 8
+		mixOption: 1 << 8,
 	}
 
 	public static readonly rawName = 'CFSP'
@@ -118,7 +118,7 @@ export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<Fairl
 			faderGain: rawCommand.readInt32BE(44),
 
 			supportedMixOptions: Util.getComponents(rawCommand.readUInt8(48)),
-			mixOption: rawCommand.readUInt8(49)
+			mixOption: rawCommand.readUInt8(49),
 		}
 
 		return new FairlightMixerSourceUpdateCommand(index, source, properties)
@@ -137,7 +137,7 @@ export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<Fairl
 
 		input.sources[sourceIdStr] = {
 			...oldSource,
-			properties: this.properties
+			properties: this.properties,
 		}
 
 		return `fairlight.inputs.${this.index}.sources.${sourceIdStr}`

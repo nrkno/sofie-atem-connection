@@ -23,7 +23,7 @@ export class Socket extends EventEmitter {
 			address: this.expectedAddress || '127.0.0.1',
 			port: this.expectedPort || DEFAULT_PORT,
 			family: 'IPv4',
-			size: msg.length
+			size: msg.length,
 		}
 		this.emit('message', msg, rinfo)
 

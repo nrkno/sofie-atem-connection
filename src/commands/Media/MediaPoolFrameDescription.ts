@@ -22,7 +22,7 @@ export class MediaPoolFrameDescriptionCommand extends DeserializedCommand<StillF
 		const properties = {
 			isUsed: rawCommand.readUInt8(4) === 1,
 			hash: Util.bufToBase64String(rawCommand, 5, 16),
-			fileName: Util.bufToNullTerminatedString(rawCommand, 24, rawCommand.readUInt8(23))
+			fileName: Util.bufToNullTerminatedString(rawCommand, 24, rawCommand.readUInt8(23)),
 		}
 
 		return new MediaPoolFrameDescriptionCommand(mediaPool, frameIndex, properties)

@@ -29,8 +29,8 @@ export class DownstreamKeyPropertiesCommand extends DeserializedCommand<Downstre
 				top: rawCommand.readInt16BE(10),
 				bottom: rawCommand.readInt16BE(12),
 				left: rawCommand.readInt16BE(14),
-				right: rawCommand.readInt16BE(16)
-			}
+				right: rawCommand.readInt16BE(16),
+			},
 		}
 
 		return new DownstreamKeyPropertiesCommand(downstreamKeyerId, properties)

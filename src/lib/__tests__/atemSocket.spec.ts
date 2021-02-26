@@ -6,7 +6,7 @@ import {
 	PreviewInputUpdateCommand,
 	ISerializableCommand,
 	BasicWritableCommand,
-	DeserializedCommand
+	DeserializedCommand,
 } from '../../commands'
 import { ProtocolVersion, Model } from '../../enums'
 import { AtemSocket } from '../atemSocket'
@@ -67,7 +67,7 @@ class ThreadedClassManagerMock {
 		return {
 			stop: (): void => {
 				// Ignore
-			}
+			},
 		}
 	}
 }
@@ -105,7 +105,7 @@ describe('AtemSocket', () => {
 			address: '',
 			port: 890,
 			disableMultithreaded: true,
-			childProcessTimeout: 100
+			childProcessTimeout: 100,
 		})
 	}
 
@@ -265,7 +265,7 @@ describe('AtemSocket', () => {
 
 		const cmd = (new ProductIdentifierCommand({
 			model: Model.OneME,
-			productIdentifier: 'ATEM OneME'
+			productIdentifier: 'ATEM OneME',
 		}) as any) as ISerializableCommand
 		expect(cmd.serialize).toBeFalsy()
 		try {
@@ -314,8 +314,8 @@ describe('AtemSocket', () => {
 			{
 				payload: expectedBuffer,
 				rawName: 'TEST',
-				trackingId: cmdId
-			}
+				trackingId: cmdId,
+			},
 		])
 	})
 
@@ -442,7 +442,7 @@ describe('AtemSocket', () => {
 			0x00,
 			0x00,
 			0x01,
-			0x23
+			0x23,
 		])
 		const testCmd2 = Buffer.from([
 			0,
@@ -453,7 +453,7 @@ describe('AtemSocket', () => {
 			0x01,
 			0x00,
 			0x04,
-			0x44
+			0x44,
 		])
 		const pktId = 822
 		expect(AtemSocketChildSingleton.onCommandsReceived).toBeDefined()
@@ -558,7 +558,7 @@ describe('AtemSocket', () => {
 			0x00,
 			0x00,
 			0x01,
-			0x23
+			0x23,
 		])
 		const testCmd2 = Buffer.from([
 			0,
@@ -569,7 +569,7 @@ describe('AtemSocket', () => {
 			0x01,
 			0x00,
 			0x04,
-			0x44
+			0x44,
 		])
 		const pktId = 822
 		expect(AtemSocketChildSingleton.onCommandsReceived).toBeDefined()
@@ -603,7 +603,7 @@ describe('AtemSocket', () => {
 
 		expect(ThreadedClassManagerSingleton.handlers).toHaveLength(1)
 		// simulate a restart
-		ThreadedClassManagerSingleton.handlers.forEach(handler => handler())
+		ThreadedClassManagerSingleton.handlers.forEach((handler) => handler())
 
 		expect(disconnected).toHaveBeenCalledTimes(1)
 		expect(connect).toHaveBeenCalledTimes(1)

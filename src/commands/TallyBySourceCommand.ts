@@ -17,7 +17,7 @@ export class TallyBySourceCommand extends DeserializedCommand<TallyBySourceProps
 			const value = rawCommand.readUInt8(4 + i * 3)
 			sources[source] = {
 				program: (value & 0x01) > 0,
-				preview: (value & 0x02) > 0
+				preview: (value & 0x02) > 0,
 			}
 		}
 

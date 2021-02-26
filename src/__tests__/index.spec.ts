@@ -35,7 +35,7 @@ test('setSuperSourceProperties - 7.2', async () => {
 		await conn.setSuperSourceProperties(
 			{
 				artPreMultiplied: true,
-				artOption: Enums.SuperSourceArtOption.Background
+				artOption: Enums.SuperSourceArtOption.Background,
 			},
 			2
 		)
@@ -44,8 +44,8 @@ test('setSuperSourceProperties - 7.2', async () => {
 			flag: 12,
 			_properties: {
 				artOption: 0,
-				artPreMultiplied: true
-			}
+				artPreMultiplied: true,
+			},
 		})
 	} finally {
 		cleanupAtem(conn)
@@ -60,7 +60,7 @@ test('setSuperSourceProperties - 8.0', async () => {
 		await conn.setSuperSourceProperties(
 			{
 				artPreMultiplied: true,
-				artOption: Enums.SuperSourceArtOption.Background
+				artOption: Enums.SuperSourceArtOption.Background,
 			},
 			2
 		)
@@ -70,8 +70,8 @@ test('setSuperSourceProperties - 8.0', async () => {
 			flag: 12,
 			_properties: {
 				artOption: 0,
-				artPreMultiplied: true
-			}
+				artPreMultiplied: true,
+			},
 		})
 	} finally {
 		cleanupAtem(conn)
@@ -86,7 +86,7 @@ test('setSuperSourceBorder - 7.2', async () => {
 		await conn.setSuperSourceBorder(
 			{
 				borderBevelSoftness: 12,
-				borderLuma: 3
+				borderLuma: 3,
 			},
 			2
 		)
@@ -95,8 +95,8 @@ test('setSuperSourceBorder - 7.2', async () => {
 			flag: 139264,
 			_properties: {
 				borderBevelSoftness: 12,
-				borderLuma: 3
-			}
+				borderLuma: 3,
+			},
 		})
 	} finally {
 		cleanupAtem(conn)
@@ -111,7 +111,7 @@ test('setSuperSourceBorder - 8.0', async () => {
 		await conn.setSuperSourceBorder(
 			{
 				borderBevelSoftness: 12,
-				borderLuma: 3
+				borderLuma: 3,
 			},
 			2
 		)
@@ -121,8 +121,8 @@ test('setSuperSourceBorder - 8.0', async () => {
 			flag: 1088,
 			_properties: {
 				borderBevelSoftness: 12,
-				borderLuma: 3
-			}
+				borderLuma: 3,
+			},
 		})
 	} finally {
 		cleanupAtem(conn)
