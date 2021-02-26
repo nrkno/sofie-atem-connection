@@ -28,7 +28,7 @@
     "info": "npm-scripts-info",
     "build": "trash dist && yarn build:main",
     "build:main": "tsc -p tsconfig.build.json",
-    "lint": "eslint . --ext .ts --ignore-pattern dist && tsc --noEmit",
+    "lint": "tsc --noEmit && eslint . --ext .ts --ignore-pattern dist",
     "unit": "jest --forceExit",
     "test": "yarn lint && yarn unit",
     "watch": "jest --watch",

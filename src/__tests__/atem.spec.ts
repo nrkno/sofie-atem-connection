@@ -8,8 +8,8 @@ jest.mock('../lib/atemSocket.ts')
 
 const setImmediatePromise = promisify(setImmediate)
 
-class MockSocket extends EventEmitter{
-	destroy(): void{
+class MockSocket extends EventEmitter {
+	destroy(): void {
 		// Nothing
 	}
 }
