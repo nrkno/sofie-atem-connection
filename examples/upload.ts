@@ -46,7 +46,10 @@ conn.on('disconnected', () => {
 	console.log('Connection lost')
 	process.exit(0)
 })
-conn.connect(IP)
+conn.connect(IP).catch((e) => {
+	console.error(e)
+	process.exit(0)
+})
 conn.once('connected', () => {
 	console.log(`connected in ${Date.now() - uploadStarted}ms`)
 	uploadNext()

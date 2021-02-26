@@ -48,7 +48,7 @@
     "license-validate": "yarn sofie-licensecheck"
   },
   "engines": {
-    "node": ">=10.12.1"
+    "node": ">=12.18"
   },
   "files": [
     "/dist",

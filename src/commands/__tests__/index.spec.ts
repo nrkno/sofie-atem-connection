@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/camelcase */
 import { CommandParser } from '../../lib/atemCommandParser'
 import { ProtocolVersion } from '../../enums'
 import { IDeserializedCommand, SymmetricalCommand, ISerializableCommand } from '../CommandBase'
 import { createEmptyState } from '../../__tests__/util'
 import { DefaultCommandConverters } from './converters-default'
 import { V8_0CommandConverters } from './converters-8.0'
+import { readFileSync } from 'fs'
 
 export type CommandTestConverterSet = { [key: string]: CommandTestConverter }
 export interface PropertyAliasResult {
@@ -30,7 +30,7 @@ export interface TestCase {
 	command: { [key: string]: any }
 }
 
-const TestCases = require('./libatem-data.json') as TestCase[]
+const TestCases = JSON.parse(readFileSync(__dirname + '/libatem-data.json').toString()) as TestCase[]
 
 function runTestForCommand(commandParser: CommandParser, i: number, testCase: TestCase, allowUnknown?: boolean): void {
 	commandParser.version = testCase.firstVersion

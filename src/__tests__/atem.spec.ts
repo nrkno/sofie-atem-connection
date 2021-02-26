@@ -110,7 +110,7 @@ describe('Atem', () => {
 
 			socket.sendCommands = jest.fn(() => Promise.resolve(35) as any)
 
-			const sentQueue = (conn as any)._sentQueue as object
+			const sentQueue = (conn as any)._sentQueue as Record<string, unknown>
 			expect(Object.keys(sentQueue)).toHaveLength(0)
 
 			const cmd = new CutCommand(0)
@@ -154,7 +154,7 @@ describe('Atem', () => {
 
 			socket.sendCommands = jest.fn(() => Promise.reject(35) as any)
 
-			const sentQueue = (conn as any)._sentQueue as object
+			const sentQueue = (conn as any)._sentQueue as Record<string, unknown>
 			expect(Object.keys(sentQueue)).toHaveLength(0)
 
 			const cmd = new CutCommand(0)

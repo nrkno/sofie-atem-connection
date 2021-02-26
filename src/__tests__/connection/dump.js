@@ -1,3 +1,4 @@
+/* eslint-disable no-process-exit */
 const fs = require('fs')
 const path = require('path')
 const { AtemSocket } = require('../../../dist/lib/atemSocket')

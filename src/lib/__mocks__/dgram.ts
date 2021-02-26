@@ -65,7 +65,7 @@ export class Socket extends EventEmitter {
 		}
 	}
 
-	public close(cb?: Function): void {
+	public close(cb?: () => void): void {
 		this.isOpen = false
 		if (cb) cb()
 	}

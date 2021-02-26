@@ -4,7 +4,7 @@ import { DeserializedCommand, BasicWritableCommand } from '../CommandBase'
 import { RecordingDiskProperties } from '../../state/recording'
 import { bufToNullTerminatedString } from '../../lib/atemUtil'
 
-export class RecordingRequestSwitchDiskCommand extends BasicWritableCommand<{}> {
+export class RecordingRequestSwitchDiskCommand extends BasicWritableCommand<Record<string, never>> {
 	public static readonly rawName = 'RMSp'
 	public static readonly minimumVersion = ProtocolVersion.V8_1_1
 

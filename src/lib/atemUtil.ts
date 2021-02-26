@@ -1,6 +1,7 @@
 import * as Enums from '../enums'
 import WaveFile = require('wavefile')
 import * as bigInt from 'big-integer'
+import type { IDeserializedCommand, ISerializableCommand } from '../commands'
 
 export function bufToBase64String(buffer: Buffer, start: number, length: number): string {
 	return buffer.toString('base64', start, start + length)
@@ -275,7 +276,7 @@ export function getComponents(val: number): number[] {
 	return res
 }
 
-export function commandStringify(command: any): string {
+export function commandStringify(command: IDeserializedCommand | ISerializableCommand): string {
 	return JSON.stringify(command, (_key, value) =>
 		typeof value === 'bigint' || bigInt.isInstance(value) ? value.toString() : value
 	)

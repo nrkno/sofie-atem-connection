@@ -58,4 +58,7 @@ nb.on('connected', async () => {
 
 	process.exit(0)
 })
-nb.connect('10.42.13.98', 9910)
+nb.connect('10.42.13.98', 9910).catch((e) => {
+	console.error(e)
+	process.exit(0)
+})

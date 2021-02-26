@@ -5,7 +5,7 @@ import { DeserializedCommand, WritableCommand } from '../CommandBase'
 import { OmitReadonly } from '../../lib/types'
 import { BigInteger } from 'big-integer'
 
-export class FairlightMixerSourceDeleteCommand extends DeserializedCommand<{}> {
+export class FairlightMixerSourceDeleteCommand extends DeserializedCommand<Record<string, never>> {
 	public static readonly rawName = 'FASD'
 
 	public readonly index: number

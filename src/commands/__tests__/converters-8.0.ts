@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { PropertyAliasResult, CommandTestConverterSet } from './index.spec'
 import { Util } from '../..'
 

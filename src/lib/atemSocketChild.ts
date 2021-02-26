@@ -151,7 +151,7 @@ export class AtemSocketChild {
 
 	private log(message: string): void {
 		// tslint:disable-next-line: no-floating-promises
-		this.onLog(message)
+		void this.onLog(message)
 	}
 
 	public sendCommands(commands: Array<{ payload: number[]; rawName: string; trackingId: number }>): void {

@@ -23,8 +23,8 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 		propertyAliases: {
 			boxes: (val: any): PropertyAliasResult => ({ val, name: 'boxCount' }),
 		},
-		customMutate: (val: any): any => {
-			if (val.sSrcId === undefined) {
+		customMutate: (val: Record<string, unknown>): any => {
+			if (!('sSrcId' in val)) {
 				val.sSrcId = 0
 			}
 			return val
@@ -35,8 +35,8 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 		propertyAliases: {
 			id: (val: any): PropertyAliasResult => ({ val, name: 'inputId' }),
 		},
-		customMutate: (props): any => {
-			props.externalPorts = Util.getComponents(props.availableExternalPorts)
+		customMutate: (props: Record<string, unknown>): any => {
+			props.externalPorts = Util.getComponents(props.availableExternalPorts as any)
 			delete props.availableExternalPorts
 			return props
 		},
@@ -56,8 +56,8 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			positionY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100), name: 'y' }),
 			inputSource: (v: number): PropertyAliasResult => ({ val: v, name: 'source' }),
 		},
-		customMutate: (val: any): any => {
-			if (val.sSrcId === undefined) {
+		customMutate: (val: Record<string, unknown>): any => {
+			if (!('sSrcId' in val)) {
 				val.sSrcId = 0
 			}
 			return val
@@ -96,7 +96,7 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			artFillInput: (v: number): PropertyAliasResult => ({ val: v, name: 'artFillSource' }),
 			artKeyInput: (v: number): PropertyAliasResult => ({ val: v, name: 'artCutSource' }),
 		},
-		customMutate: (o: any): any => {
+		customMutate: (o: Record<string, unknown>): any => {
 			return {
 				properties: {
 					artFillSource: o.artFillSource,
@@ -154,7 +154,7 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
 			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
 		},
-		customMutate: (obj: any): any => {
+		customMutate: (obj: Record<string, unknown>): any => {
 			obj['mask'] = {
 				enabled: obj['maskEnabled'],
 				top: obj['maskTop'],
@@ -252,12 +252,12 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			balance: (v: number): PropertyAliasResult => ({ val: Math.round(v) }),
 			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 }),
 		},
-		customMutate: (props): any => {
+		customMutate: (props: Record<string, unknown>): any => {
 			delete props.indexOfSourceType
 			return props
 		},
-		processDeserialized: (props): void => {
-			props.gain = Math.round(props.gain * 100) / 100
+		processDeserialized: (props: Record<string, unknown>): void => {
+			props.gain = Math.round((props.gain as any) * 100) / 100
 		},
 	},
 	CAMI: {
@@ -288,7 +288,7 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			videoSources: (val: any): PropertyAliasResult => ({ val, name: 'sources' }),
 			superSource: (val: any): PropertyAliasResult => ({ val, name: 'superSources' }),
 		},
-		customMutate: (props): any => {
+		customMutate: (props: Record<string, unknown>): any => {
 			if (props.multiviewers === undefined) {
 				props.multiviewers = -1
 			}
@@ -313,7 +313,7 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 	FTCD: {
 		idAliases: {},
 		propertyAliases: {},
-		customMutate: (obj: any): any => {
+		customMutate: (obj: Record<string, unknown>): any => {
 			delete obj['unknown']
 			delete obj['test3']
 			return obj
@@ -328,7 +328,7 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 	Powr: {
 		idAliases: {},
 		propertyAliases: {},
-		customMutate: (obj: any): any => {
+		customMutate: (obj: Record<string, unknown>): any => {
 			return [obj.pin1, obj.pin2]
 		},
 	},
@@ -850,8 +850,8 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 		propertyAliases: {
 			body: (v: string): PropertyAliasResult => ({ val: Buffer.from(v, 'base64') }),
 		},
-		customMutate: (obj: any): any => {
-			obj.size = obj.body.length
+		customMutate: (obj: Record<string, unknown>): any => {
+			obj.size = (obj.body as any).length
 			return obj
 		},
 	},
@@ -882,7 +882,7 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			maskLeft: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
 			maskRight: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
 		},
-		customMutate: (obj: any): any => {
+		customMutate: (obj: Record<string, unknown>): any => {
 			delete obj.maskEnabled
 			return obj
 		},
@@ -892,7 +892,7 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			mediaPlayerId: 'index',
 		},
 		propertyAliases: {},
-		customMutate: (obj: any): any => {
+		customMutate: (obj: Record<string, unknown>): any => {
 			obj.clipIndex = 0
 			obj.stillIndex = 0
 			if (obj.sourceType === 1) {
@@ -923,7 +923,7 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 		propertyAliases: {
 			supportedConfigurations: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) }),
 		},
-		customMutate: (props): any => {
+		customMutate: (props: Record<string, unknown>): any => {
 			props.activeInputLevel = props.rcaToXlrEnabled
 				? Enums.FairlightAnalogInputLevel.ProLine
 				: Enums.FairlightAnalogInputLevel.Microphone

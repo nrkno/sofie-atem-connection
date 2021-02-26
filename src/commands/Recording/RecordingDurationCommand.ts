@@ -3,7 +3,7 @@ import { ProtocolVersion } from '../../enums'
 import { InvalidIdError, AtemState } from '../../state'
 import { DeserializedCommand, BasicWritableCommand } from '../CommandBase'
 
-export class RecordingRequestDurationCommand extends BasicWritableCommand<{}> {
+export class RecordingRequestDurationCommand extends BasicWritableCommand<Record<string, never>> {
 	public static readonly rawName = 'RMDR'
 	public static readonly minimumVersion = ProtocolVersion.V8_1_1
 
