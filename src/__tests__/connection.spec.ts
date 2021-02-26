@@ -180,6 +180,7 @@ describe('connection', () => {
 	runTest('constellation v8.2.3', 'constellation-v8.2.3')
 	runTest('mini v8.1', 'mini-v8.1')
 	runTest('mini v8.1.1', 'mini-v8.1.1')
+	runTest('mini v8.6', 'mini-v8.6')
 	runTest('mini pro v8.2', 'mini-pro-v8.2')
 	runTest('mini pro iso v8.4', 'mini-pro-iso-v8.4')
 })
