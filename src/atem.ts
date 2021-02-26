@@ -550,13 +550,13 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public mixEffectKeyRunToKeyframe(mixEffect: number, upstreamKeyerId: number, keyFrameId: number): Promise<void> {
-		const command = new Commands.MixEffectKeyRunToKeyframeCommand(mixEffect, upstreamKeyerId, keyFrameId)
-		return this.sendCommand(command)
-	}
-
-	public mixEffectKeyRunToInfinite(mixEffect: number, upstreamKeyerId: number, direction: number): Promise<void> {
-		const command = new Commands.MixEffectKeyRunToInfiniteCommand(mixEffect, upstreamKeyerId, direction)
+	public mixEffectKeyRunTo(
+		mixEffect: number,
+		upstreamKeyerId: number,
+		keyFrameId: number,
+		direction: number
+	): Promise<void> {
+		const command = new Commands.MixEffectKeyRunToCommand(mixEffect, upstreamKeyerId, keyFrameId, direction)
 		return this.sendCommand(command)
 	}
 
