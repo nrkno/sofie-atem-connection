@@ -145,6 +145,7 @@ jobs:
 
     needs:
       - test
+      - validate-dependencies
 
     steps:
       - uses: actions/checkout@v2
