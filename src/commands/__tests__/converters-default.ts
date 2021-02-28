@@ -475,6 +475,16 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 		},
 		propertyAliases: {}
 	},
+	RFlK: {
+		idAliases: {
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
+		},
+		propertyAliases: {
+			keyFrame: (v: number): PropertyAliasResult => ({ val: v, name: 'keyFrameId' }),
+			runToInfinite: (v: number): PropertyAliasResult => ({ val: v, name: 'direction' })
+		}
+	},
 	KeDV: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
