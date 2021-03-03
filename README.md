@@ -1,6 +1,6 @@
 # Sofie: The Modern TV News Studio Automation System (ATEM connection library)
 
-[![CircleCI](https://circleci.com/gh/nrkno/tv-automation-atem-connection.svg?style=svg)](https://circleci.com/gh/nrkno/tv-automation-atem-connection)
+[![Node CI](https://github.com/nrkno/tv-automation-atem-connection/actions/workflows/node.yaml/badge.svg)](https://github.com/nrkno/tv-automation-atem-connection/actions/workflows/node.yaml)
 [![codecov](https://codecov.io/gh/nrkno/tv-automation-atem-connection/branch/master/graph/badge.svg)](https://codecov.io/gh/nrkno/tv-automation-atem-connection)
 [![npm](https://img.shields.io/npm/v/atem-connection)](https://www.npmjs.com/package/atem-connection)
 

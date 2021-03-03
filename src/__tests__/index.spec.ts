@@ -1,5 +1,4 @@
 import { Atem, Enums } from '../index'
-import { cleanupAtem } from './lib'
 import { createEmptyState } from './util'
 
 test('Simple test', async () => {
@@ -9,7 +8,7 @@ test('Simple test', async () => {
 
 		expect(nb).toBeTruthy()
 	} finally {
-		cleanupAtem(nb)
+		nb.destroy()
 	}
 })
 
@@ -48,7 +47,7 @@ test('setSuperSourceProperties - 7.2', async () => {
 			}
 		})
 	} finally {
-		cleanupAtem(conn)
+		conn.destroy()
 	}
 })
 
@@ -74,7 +73,7 @@ test('setSuperSourceProperties - 8.0', async () => {
 			}
 		})
 	} finally {
-		cleanupAtem(conn)
+		conn.destroy()
 	}
 })
 
@@ -99,7 +98,7 @@ test('setSuperSourceBorder - 7.2', async () => {
 			}
 		})
 	} finally {
-		cleanupAtem(conn)
+		conn.destroy()
 	}
 })
 
@@ -125,6 +124,6 @@ test('setSuperSourceBorder - 8.0', async () => {
 			}
 		})
 	} finally {
-		cleanupAtem(conn)
+		conn.destroy()
 	}
 })

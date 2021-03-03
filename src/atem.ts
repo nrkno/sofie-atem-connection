@@ -122,6 +122,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 	}
 
 	public destroy(): Promise<void> {
+		this.dataTransferManager.stopCommandSending()
 		return this.socket.destroy()
 	}
 
