@@ -8,7 +8,7 @@ test('Simple test', async () => {
 
 		expect(nb).toBeTruthy()
 	} finally {
-		nb.destroy()
+		await nb.destroy()
 	}
 })
 
@@ -47,7 +47,7 @@ test('setSuperSourceProperties - 7.2', async () => {
 			},
 		})
 	} finally {
-		conn.destroy()
+		await conn.destroy()
 	}
 })
 
@@ -73,7 +73,7 @@ test('setSuperSourceProperties - 8.0', async () => {
 			},
 		})
 	} finally {
-		conn.destroy()
+		await conn.destroy()
 	}
 })
 
@@ -98,7 +98,7 @@ test('setSuperSourceBorder - 7.2', async () => {
 			},
 		})
 	} finally {
-		conn.destroy()
+		await conn.destroy()
 	}
 })
 
@@ -124,6 +124,6 @@ test('setSuperSourceBorder - 8.0', async () => {
 			},
 		})
 	} finally {
-		conn.destroy()
+		await conn.destroy()
 	}
 })

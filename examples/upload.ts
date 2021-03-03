@@ -18,6 +18,7 @@ let stuckTimeout: any = null
 
 function uploadNext(): void {
 	uploadStarted = Date.now()
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	conn.uploadStill(uploadNumber % conn.state!.media.stillPool.length, file, 'contemplation..', '').then(
 		async (_res) => {
 			console.log(`Uploaded still #${uploadNumber} in ${Date.now() - uploadStarted}ms at 1080p`)

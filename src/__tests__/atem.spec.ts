@@ -36,7 +36,7 @@ describe('Atem', () => {
 				port: DEFAULT_PORT,
 			})
 		} finally {
-			conn.destroy()
+			await conn.destroy()
 		}
 	})
 	test('constructor test 2', async () => {
@@ -56,7 +56,7 @@ describe('Atem', () => {
 				port: 23,
 			})
 		} finally {
-			conn.destroy()
+			await conn.destroy()
 		}
 	})
 
@@ -75,7 +75,7 @@ describe('Atem', () => {
 			expect(socket.connect).toHaveBeenCalledTimes(1)
 			expect(socket.connect).toHaveBeenCalledWith('127.9.8.7', 98)
 		} finally {
-			conn.destroy()
+			await conn.destroy()
 		}
 	})
 
@@ -94,7 +94,7 @@ describe('Atem', () => {
 			expect(socket.disconnect).toHaveBeenCalledTimes(1)
 			expect(socket.disconnect).toHaveBeenCalledWith()
 		} finally {
-			conn.destroy()
+			await conn.destroy()
 		}
 	})
 
@@ -138,7 +138,7 @@ describe('Atem', () => {
 			// Finally, it should now resolve without a timeout
 			expect(await res).toBeUndefined()
 		} finally {
-			conn.destroy()
+			await conn.destroy()
 		}
 	}, 500)
 
@@ -187,7 +187,7 @@ describe('Atem', () => {
 			}
 			// expect(await res).toEqual(cmd)
 		} finally {
-			conn.destroy()
+			await conn.destroy()
 		}
 	}, 500)
 })
