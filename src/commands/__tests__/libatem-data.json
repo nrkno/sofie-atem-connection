@@ -14735,122 +14735,119 @@
 	{
 		"name": "RFlK",
 		"firstVersion": 131094,
-		"bytes": "00-10-00-00-52-46-6C-4B-00-02-03-00-02-04-00-00",
-		"command": {
-			"MixEffectIndex": 2,
-			"KeyerIndex": 3,
-			"KeyFrame": 2,
-			"RunToInfinite": 4
-		},
-		"commandHash": "9B-1B-B9-E1-A2-55-68-90-E3-8D-DD-96-F1-6C-E6-9C-50-D6-54-F4-AE-F9-97-56-5C-6E-FA-4C-A4-EB-D7-FF"
-	},
-	{
-		"name": "RFlK",
-		"firstVersion": 131094,
-		"bytes": "00-10-00-00-52-46-6C-4B-00-00-01-00-03-03-00-00",
-		"command": {
-			"MixEffectIndex": 0,
-			"KeyerIndex": 1,
-			"KeyFrame": 3,
-			"RunToInfinite": 3
-		},
-		"commandHash": "9B-1B-B9-E1-A2-55-68-90-E3-8D-DD-96-F1-6C-E6-9C-50-D6-54-F4-AE-F9-97-56-5C-6E-FA-4C-A4-EB-D7-FF"
-	},
-	{
-		"name": "RFlK",
-		"firstVersion": 131094,
-		"bytes": "00-10-00-00-52-46-6C-4B-00-02-00-00-02-00-00-00",
-		"command": {
-			"MixEffectIndex": 2,
-			"KeyerIndex": 0,
-			"KeyFrame": 2,
-			"RunToInfinite": 0
-		},
-		"commandHash": "9B-1B-B9-E1-A2-55-68-90-E3-8D-DD-96-F1-6C-E6-9C-50-D6-54-F4-AE-F9-97-56-5C-6E-FA-4C-A4-EB-D7-FF"
-	},
-	{
-		"name": "RFlK",
-		"firstVersion": 131094,
-		"bytes": "00-10-00-00-52-46-6C-4B-00-02-00-00-00-07-00-00",
-		"command": {
-			"MixEffectIndex": 2,
-			"KeyerIndex": 0,
-			"KeyFrame": 0,
-			"RunToInfinite": 7
-		},
-		"commandHash": "9B-1B-B9-E1-A2-55-68-90-E3-8D-DD-96-F1-6C-E6-9C-50-D6-54-F4-AE-F9-97-56-5C-6E-FA-4C-A4-EB-D7-FF"
-	},
-	{
-		"name": "RFlK",
-		"firstVersion": 131094,
 		"bytes": "00-10-00-00-52-46-6C-4B-00-02-00-00-03-07-00-00",
 		"command": {
+			"Mask": 0,
 			"MixEffectIndex": 2,
 			"KeyerIndex": 0,
 			"KeyFrame": 3,
 			"RunToInfinite": 7
 		},
-		"commandHash": "9B-1B-B9-E1-A2-55-68-90-E3-8D-DD-96-F1-6C-E6-9C-50-D6-54-F4-AE-F9-97-56-5C-6E-FA-4C-A4-EB-D7-FF"
+		"commandHash": "43-32-B1-E5-24-0C-C6-CC-31-25-56-84-47-49-13-C8-7F-12-BF-EA-2B-94-B5-F7-6D-91-5B-C7-5A-23-4A-26"
 	},
 	{
 		"name": "RFlK",
 		"firstVersion": 131094,
-		"bytes": "00-10-00-00-52-46-6C-4B-00-02-03-00-00-01-00-00",
+		"bytes": "00-10-00-00-52-46-6C-4B-00-03-02-00-00-09-00-00",
 		"command": {
-			"MixEffectIndex": 2,
-			"KeyerIndex": 3,
-			"KeyFrame": 0,
-			"RunToInfinite": 1
-		},
-		"commandHash": "9B-1B-B9-E1-A2-55-68-90-E3-8D-DD-96-F1-6C-E6-9C-50-D6-54-F4-AE-F9-97-56-5C-6E-FA-4C-A4-EB-D7-FF"
-	},
-	{
-		"name": "RFlK",
-		"firstVersion": 131094,
-		"bytes": "00-10-00-00-52-46-6C-4B-00-00-00-00-01-04-00-00",
-		"command": {
-			"MixEffectIndex": 0,
-			"KeyerIndex": 0,
-			"KeyFrame": 1,
-			"RunToInfinite": 4
-		},
-		"commandHash": "9B-1B-B9-E1-A2-55-68-90-E3-8D-DD-96-F1-6C-E6-9C-50-D6-54-F4-AE-F9-97-56-5C-6E-FA-4C-A4-EB-D7-FF"
-	},
-	{
-		"name": "RFlK",
-		"firstVersion": 131094,
-		"bytes": "00-10-00-00-52-46-6C-4B-00-02-02-00-00-09-00-00",
-		"command": {
-			"MixEffectIndex": 2,
+			"Mask": 0,
+			"MixEffectIndex": 3,
 			"KeyerIndex": 2,
 			"KeyFrame": 0,
 			"RunToInfinite": 9
 		},
-		"commandHash": "9B-1B-B9-E1-A2-55-68-90-E3-8D-DD-96-F1-6C-E6-9C-50-D6-54-F4-AE-F9-97-56-5C-6E-FA-4C-A4-EB-D7-FF"
+		"commandHash": "43-32-B1-E5-24-0C-C6-CC-31-25-56-84-47-49-13-C8-7F-12-BF-EA-2B-94-B5-F7-6D-91-5B-C7-5A-23-4A-26"
 	},
 	{
 		"name": "RFlK",
 		"firstVersion": 131094,
-		"bytes": "00-10-00-00-52-46-6C-4B-00-02-00-00-04-09-00-00",
+		"bytes": "00-10-00-00-52-46-6C-4B-00-02-02-00-03-00-00-00",
 		"command": {
+			"Mask": 0,
+			"MixEffectIndex": 2,
+			"KeyerIndex": 2,
+			"KeyFrame": 3,
+			"RunToInfinite": 0
+		},
+		"commandHash": "43-32-B1-E5-24-0C-C6-CC-31-25-56-84-47-49-13-C8-7F-12-BF-EA-2B-94-B5-F7-6D-91-5B-C7-5A-23-4A-26"
+	},
+	{
+		"name": "RFlK",
+		"firstVersion": 131094,
+		"bytes": "00-10-00-00-52-46-6C-4B-00-01-00-00-01-07-00-00",
+		"command": {
+			"Mask": 0,
+			"MixEffectIndex": 1,
+			"KeyerIndex": 0,
+			"KeyFrame": 1,
+			"RunToInfinite": 7
+		},
+		"commandHash": "43-32-B1-E5-24-0C-C6-CC-31-25-56-84-47-49-13-C8-7F-12-BF-EA-2B-94-B5-F7-6D-91-5B-C7-5A-23-4A-26"
+	},
+	{
+		"name": "RFlK",
+		"firstVersion": 131094,
+		"bytes": "00-10-00-00-52-46-6C-4B-00-02-01-00-03-04-00-00",
+		"command": {
+			"Mask": 0,
+			"MixEffectIndex": 2,
+			"KeyerIndex": 1,
+			"KeyFrame": 3,
+			"RunToInfinite": 4
+		},
+		"commandHash": "43-32-B1-E5-24-0C-C6-CC-31-25-56-84-47-49-13-C8-7F-12-BF-EA-2B-94-B5-F7-6D-91-5B-C7-5A-23-4A-26"
+	},
+	{
+		"name": "RFlK",
+		"firstVersion": 131094,
+		"bytes": "00-10-00-00-52-46-6C-4B-02-02-00-00-04-01-00-00",
+		"command": {
+			"Mask": 2,
 			"MixEffectIndex": 2,
 			"KeyerIndex": 0,
 			"KeyFrame": 4,
-			"RunToInfinite": 9
+			"RunToInfinite": 1
 		},
-		"commandHash": "9B-1B-B9-E1-A2-55-68-90-E3-8D-DD-96-F1-6C-E6-9C-50-D6-54-F4-AE-F9-97-56-5C-6E-FA-4C-A4-EB-D7-FF"
+		"commandHash": "43-32-B1-E5-24-0C-C6-CC-31-25-56-84-47-49-13-C8-7F-12-BF-EA-2B-94-B5-F7-6D-91-5B-C7-5A-23-4A-26"
 	},
 	{
 		"name": "RFlK",
 		"firstVersion": 131094,
-		"bytes": "00-10-00-00-52-46-6C-4B-00-01-03-00-03-03-00-00",
+		"bytes": "00-10-00-00-52-46-6C-4B-00-01-03-00-01-00-00-00",
 		"command": {
+			"Mask": 0,
 			"MixEffectIndex": 1,
 			"KeyerIndex": 3,
-			"KeyFrame": 3,
+			"KeyFrame": 1,
+			"RunToInfinite": 0
+		},
+		"commandHash": "43-32-B1-E5-24-0C-C6-CC-31-25-56-84-47-49-13-C8-7F-12-BF-EA-2B-94-B5-F7-6D-91-5B-C7-5A-23-4A-26"
+	},
+	{
+		"name": "RFlK",
+		"firstVersion": 131094,
+		"bytes": "00-10-00-00-52-46-6C-4B-00-01-02-00-01-03-00-00",
+		"command": {
+			"Mask": 0,
+			"MixEffectIndex": 1,
+			"KeyerIndex": 2,
+			"KeyFrame": 1,
 			"RunToInfinite": 3
 		},
-		"commandHash": "9B-1B-B9-E1-A2-55-68-90-E3-8D-DD-96-F1-6C-E6-9C-50-D6-54-F4-AE-F9-97-56-5C-6E-FA-4C-A4-EB-D7-FF"
+		"commandHash": "43-32-B1-E5-24-0C-C6-CC-31-25-56-84-47-49-13-C8-7F-12-BF-EA-2B-94-B5-F7-6D-91-5B-C7-5A-23-4A-26"
+	},
+	{
+		"name": "RFlK",
+		"firstVersion": 131094,
+		"bytes": "00-10-00-00-52-46-6C-4B-02-02-00-00-04-08-00-00",
+		"command": {
+			"Mask": 2,
+			"MixEffectIndex": 2,
+			"KeyerIndex": 0,
+			"KeyFrame": 4,
+			"RunToInfinite": 8
+		},
+		"commandHash": "43-32-B1-E5-24-0C-C6-CC-31-25-56-84-47-49-13-C8-7F-12-BF-EA-2B-94-B5-F7-6D-91-5B-C7-5A-23-4A-26"
 	},
 	{
 		"name": "KeLm",
@@ -22308,102 +22305,102 @@
 	{
 		"name": "FTDE",
 		"firstVersion": 131094,
-		"bytes": "00-0C-00-00-46-54-44-45-6A-9C-51-00",
+		"bytes": "00-0C-00-00-46-54-44-45-D2-22-01-00",
 		"command": {
-			"TransferId": 27292,
-			"ErrorCode": 81
+			"TransferId": 53794,
+			"ErrorCode": 1
 		},
-		"commandHash": "8C-14-79-A3-CC-BD-36-DA-35-33-B0-79-17-49-E6-DE-5D-30-74-EA-CC-03-BE-A0-42-4A-C8-68-96-5C-F9-12"
+		"commandHash": "75-30-98-75-75-05-A6-E4-71-64-27-C6-32-4E-99-B4-8D-B7-BD-66-2A-77-3C-80-34-1D-0A-E3-A9-C0-95-D0"
 	},
 	{
 		"name": "FTDE",
 		"firstVersion": 131094,
-		"bytes": "00-0C-00-00-46-54-44-45-FE-19-74-00",
+		"bytes": "00-0C-00-00-46-54-44-45-C6-6D-02-00",
 		"command": {
-			"TransferId": 65049,
-			"ErrorCode": 116
+			"TransferId": 50797,
+			"ErrorCode": 2
 		},
-		"commandHash": "8C-14-79-A3-CC-BD-36-DA-35-33-B0-79-17-49-E6-DE-5D-30-74-EA-CC-03-BE-A0-42-4A-C8-68-96-5C-F9-12"
+		"commandHash": "75-30-98-75-75-05-A6-E4-71-64-27-C6-32-4E-99-B4-8D-B7-BD-66-2A-77-3C-80-34-1D-0A-E3-A9-C0-95-D0"
 	},
 	{
 		"name": "FTDE",
 		"firstVersion": 131094,
-		"bytes": "00-0C-00-00-46-54-44-45-B4-95-E4-00",
+		"bytes": "00-0C-00-00-46-54-44-45-84-46-02-00",
 		"command": {
-			"TransferId": 46229,
-			"ErrorCode": 228
+			"TransferId": 33862,
+			"ErrorCode": 2
 		},
-		"commandHash": "8C-14-79-A3-CC-BD-36-DA-35-33-B0-79-17-49-E6-DE-5D-30-74-EA-CC-03-BE-A0-42-4A-C8-68-96-5C-F9-12"
+		"commandHash": "75-30-98-75-75-05-A6-E4-71-64-27-C6-32-4E-99-B4-8D-B7-BD-66-2A-77-3C-80-34-1D-0A-E3-A9-C0-95-D0"
 	},
 	{
 		"name": "FTDE",
 		"firstVersion": 131094,
-		"bytes": "00-0C-00-00-46-54-44-45-16-89-8D-00",
+		"bytes": "00-0C-00-00-46-54-44-45-0C-37-01-00",
 		"command": {
-			"TransferId": 5769,
-			"ErrorCode": 141
+			"TransferId": 3127,
+			"ErrorCode": 1
 		},
-		"commandHash": "8C-14-79-A3-CC-BD-36-DA-35-33-B0-79-17-49-E6-DE-5D-30-74-EA-CC-03-BE-A0-42-4A-C8-68-96-5C-F9-12"
+		"commandHash": "75-30-98-75-75-05-A6-E4-71-64-27-C6-32-4E-99-B4-8D-B7-BD-66-2A-77-3C-80-34-1D-0A-E3-A9-C0-95-D0"
 	},
 	{
 		"name": "FTDE",
 		"firstVersion": 131094,
-		"bytes": "00-0C-00-00-46-54-44-45-DE-8D-B3-00",
+		"bytes": "00-0C-00-00-46-54-44-45-A5-30-01-00",
 		"command": {
-			"TransferId": 56973,
-			"ErrorCode": 179
+			"TransferId": 42288,
+			"ErrorCode": 1
 		},
-		"commandHash": "8C-14-79-A3-CC-BD-36-DA-35-33-B0-79-17-49-E6-DE-5D-30-74-EA-CC-03-BE-A0-42-4A-C8-68-96-5C-F9-12"
+		"commandHash": "75-30-98-75-75-05-A6-E4-71-64-27-C6-32-4E-99-B4-8D-B7-BD-66-2A-77-3C-80-34-1D-0A-E3-A9-C0-95-D0"
 	},
 	{
 		"name": "FTDE",
 		"firstVersion": 131094,
-		"bytes": "00-0C-00-00-46-54-44-45-2E-CF-AB-00",
+		"bytes": "00-0C-00-00-46-54-44-45-53-93-01-00",
 		"command": {
-			"TransferId": 11983,
-			"ErrorCode": 171
+			"TransferId": 21395,
+			"ErrorCode": 1
 		},
-		"commandHash": "8C-14-79-A3-CC-BD-36-DA-35-33-B0-79-17-49-E6-DE-5D-30-74-EA-CC-03-BE-A0-42-4A-C8-68-96-5C-F9-12"
+		"commandHash": "75-30-98-75-75-05-A6-E4-71-64-27-C6-32-4E-99-B4-8D-B7-BD-66-2A-77-3C-80-34-1D-0A-E3-A9-C0-95-D0"
 	},
 	{
 		"name": "FTDE",
 		"firstVersion": 131094,
-		"bytes": "00-0C-00-00-46-54-44-45-C1-80-36-00",
+		"bytes": "00-0C-00-00-46-54-44-45-1B-58-02-00",
 		"command": {
-			"TransferId": 49536,
-			"ErrorCode": 54
+			"TransferId": 7000,
+			"ErrorCode": 2
 		},
-		"commandHash": "8C-14-79-A3-CC-BD-36-DA-35-33-B0-79-17-49-E6-DE-5D-30-74-EA-CC-03-BE-A0-42-4A-C8-68-96-5C-F9-12"
+		"commandHash": "75-30-98-75-75-05-A6-E4-71-64-27-C6-32-4E-99-B4-8D-B7-BD-66-2A-77-3C-80-34-1D-0A-E3-A9-C0-95-D0"
 	},
 	{
 		"name": "FTDE",
 		"firstVersion": 131094,
-		"bytes": "00-0C-00-00-46-54-44-45-17-85-9E-00",
+		"bytes": "00-0C-00-00-46-54-44-45-CC-68-02-00",
 		"command": {
-			"TransferId": 6021,
-			"ErrorCode": 158
+			"TransferId": 52328,
+			"ErrorCode": 2
 		},
-		"commandHash": "8C-14-79-A3-CC-BD-36-DA-35-33-B0-79-17-49-E6-DE-5D-30-74-EA-CC-03-BE-A0-42-4A-C8-68-96-5C-F9-12"
+		"commandHash": "75-30-98-75-75-05-A6-E4-71-64-27-C6-32-4E-99-B4-8D-B7-BD-66-2A-77-3C-80-34-1D-0A-E3-A9-C0-95-D0"
 	},
 	{
 		"name": "FTDE",
 		"firstVersion": 131094,
-		"bytes": "00-0C-00-00-46-54-44-45-BE-25-CA-00",
+		"bytes": "00-0C-00-00-46-54-44-45-EE-20-01-00",
 		"command": {
-			"TransferId": 48677,
-			"ErrorCode": 202
+			"TransferId": 60960,
+			"ErrorCode": 1
 		},
-		"commandHash": "8C-14-79-A3-CC-BD-36-DA-35-33-B0-79-17-49-E6-DE-5D-30-74-EA-CC-03-BE-A0-42-4A-C8-68-96-5C-F9-12"
+		"commandHash": "75-30-98-75-75-05-A6-E4-71-64-27-C6-32-4E-99-B4-8D-B7-BD-66-2A-77-3C-80-34-1D-0A-E3-A9-C0-95-D0"
 	},
 	{
 		"name": "FTDE",
 		"firstVersion": 131094,
-		"bytes": "00-0C-00-00-46-54-44-45-F1-D5-3E-00",
+		"bytes": "00-0C-00-00-46-54-44-45-DE-F7-01-00",
 		"command": {
-			"TransferId": 61909,
-			"ErrorCode": 62
+			"TransferId": 57079,
+			"ErrorCode": 1
 		},
-		"commandHash": "8C-14-79-A3-CC-BD-36-DA-35-33-B0-79-17-49-E6-DE-5D-30-74-EA-CC-03-BE-A0-42-4A-C8-68-96-5C-F9-12"
+		"commandHash": "75-30-98-75-75-05-A6-E4-71-64-27-C6-32-4E-99-B4-8D-B7-BD-66-2A-77-3C-80-34-1D-0A-E3-A9-C0-95-D0"
 	},
 	{
 		"name": "FTFD",

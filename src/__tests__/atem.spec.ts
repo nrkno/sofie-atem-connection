@@ -1,5 +1,4 @@
 import { Atem, DEFAULT_PORT } from '../atem'
-import { cleanupAtem } from './lib'
 import { CutCommand } from '../commands'
 import { promisify } from 'util'
 import { EventEmitter } from 'events'
@@ -8,6 +7,12 @@ import { AtemSocket } from '../lib/atemSocket'
 jest.mock('../lib/atemSocket.ts')
 
 const setImmediatePromise = promisify(setImmediate)
+
+class MockSocket extends EventEmitter {
+	destroy(): void {
+		// Nothing
+	}
+}
 
 describe('Atem', () => {
 	beforeEach(() => {
@@ -31,7 +36,7 @@ describe('Atem', () => {
 				port: DEFAULT_PORT,
 			})
 		} finally {
-			cleanupAtem(conn)
+			conn.destroy()
 		}
 	})
 	test('constructor test 2', async () => {
@@ -51,7 +56,7 @@ describe('Atem', () => {
 				port: 23,
 			})
 		} finally {
-			cleanupAtem(conn)
+			conn.destroy()
 		}
 	})
 
@@ -70,7 +75,7 @@ describe('Atem', () => {
 			expect(socket.connect).toHaveBeenCalledTimes(1)
 			expect(socket.connect).toHaveBeenCalledWith('127.9.8.7', 98)
 		} finally {
-			cleanupAtem(conn)
+			conn.destroy()
 		}
 	})
 
@@ -89,12 +94,12 @@ describe('Atem', () => {
 			expect(socket.disconnect).toHaveBeenCalledTimes(1)
 			expect(socket.disconnect).toHaveBeenCalledWith()
 		} finally {
-			cleanupAtem(conn)
+			conn.destroy()
 		}
 	})
 
 	test('sendCommand - good', async () => {
-		;(AtemSocket as any).mockImplementation(() => new EventEmitter())
+		;(AtemSocket as any).mockImplementation(() => new MockSocket())
 		const conn = new Atem({ debugBuffers: true, address: 'test1', port: 23 })
 
 		try {
@@ -133,12 +138,12 @@ describe('Atem', () => {
 			// Finally, it should now resolve without a timeout
 			expect(await res).toBeUndefined()
 		} finally {
-			cleanupAtem(conn)
+			conn.destroy()
 		}
 	}, 500)
 
 	test('sendCommand - send error', async () => {
-		;(AtemSocket as any).mockImplementation(() => new EventEmitter())
+		;(AtemSocket as any).mockImplementation(() => new MockSocket())
 		const conn = new Atem({ debugBuffers: true, address: 'test1', port: 23 })
 
 		try {
@@ -182,7 +187,7 @@ describe('Atem', () => {
 			}
 			// expect(await res).toEqual(cmd)
 		} finally {
-			cleanupAtem(conn)
+			conn.destroy()
 		}
 	}, 500)
 })

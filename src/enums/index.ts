@@ -179,6 +179,27 @@ export enum MixEffectKeyType {
 	DVE = 3,
 }
 
+export enum FlyKeyKeyFrame {
+	None = 0,
+	A = 1,
+	B = 2,
+	Full = 3,
+	RunToInfinite = 4
+}
+
+export enum FlyKeyDirection {
+	CentreOfKey = 0,
+	TopLeft = 1,
+	TopCentre = 2,
+	TopRight = 3,
+	MiddleLeft = 4,
+	MiddleCentre = 5,
+	MiddleRight = 6,
+	BottomLeft = 7,
+	BottomCentre = 8,
+	BottomRight = 9
+}
+
 export enum SuperSourceArtOption {
 	Background,
 	Foreground,

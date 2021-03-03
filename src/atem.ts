@@ -121,6 +121,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 	}
 
 	public destroy(): Promise<void> {
+		this.dataTransferManager.stopCommandSending()
 		return this.socket.destroy()
 	}
 
@@ -546,6 +547,28 @@ export class Atem extends BasicAtem {
 
 	public setUpstreamKeyerOnAir(onAir: boolean, me = 0, keyer = 0): Promise<void> {
 		const command = new Commands.MixEffectKeyOnAirCommand(me, keyer, onAir)
+		return this.sendCommand(command)
+	}
+
+	public runUpstreamKeyerFlyKeyTo(
+		mixEffect: number,
+		upstreamKeyerId: number,
+		keyFrameId: Enums.FlyKeyKeyFrame.A | Enums.FlyKeyKeyFrame.B | Enums.FlyKeyKeyFrame.Full
+	): Promise<void> {
+		const command = new Commands.MixEffectKeyRunToCommand(mixEffect, upstreamKeyerId, keyFrameId, 0)
+		return this.sendCommand(command)
+	}
+	public runUpstreamKeyerFlyKeyToInfinite(
+		mixEffect: number,
+		upstreamKeyerId: number,
+		direction: Enums.FlyKeyDirection
+	): Promise<void> {
+		const command = new Commands.MixEffectKeyRunToCommand(
+			mixEffect,
+			upstreamKeyerId,
+			Enums.FlyKeyKeyFrame.RunToInfinite,
+			direction
+		)
 		return this.sendCommand(command)
 	}
 
