@@ -1,6 +1,6 @@
 {
   "name": "atem-connection",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Typescript Node.js library for connecting with an ATEM switcher.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -126,7 +126,7 @@
     "wavefile": "^8.4.4"
   },
   "standard-version": {
-    "message": "chore(release): %s [skip ci]",
+    "message": "chore(release): %s",
     "tagPrefix": ""
   },
   "husky": {
