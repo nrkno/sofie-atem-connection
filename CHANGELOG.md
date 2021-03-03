@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/nrkno/tv-automation-atem-connection/compare/2.1.0...2.2.0) (2021-03-03)
+
+
+### Features
+
+* github actions ([#103](https://github.com/nrkno/tv-automation-atem-connection/issues/103)) ([017898a](https://github.com/nrkno/tv-automation-atem-connection/commit/017898a62ea94346cf01721167ecaca601b66b3a))
+* github actions ([#103](https://github.com/nrkno/tv-automation-atem-connection/issues/103)) ([017898a](https://github.com/nrkno/tv-automation-atem-connection/commit/017898a62ea94346cf01721167ecaca601b66b3a))
+* support for flying key 'Run to' (to keyframe and to infinite) ([#102](https://github.com/nrkno/tv-automation-atem-connection/issues/102)) ([7ccc292](https://github.com/nrkno/tv-automation-atem-connection/commit/7ccc292d8eda16cb0e5830b0c128f26f0127a684))
+* support for flying key 'Run to' (to keyframe and to infinite) ([#102](https://github.com/nrkno/tv-automation-atem-connection/issues/102)) ([7ccc292](https://github.com/nrkno/tv-automation-atem-connection/commit/7ccc292d8eda16cb0e5830b0c128f26f0127a684))
+
+
+### Bug Fixes
+
+* Incorrect paths returned from applyToState ([66bb5be](https://github.com/nrkno/tv-automation-atem-connection/commit/66bb5be76b9faf5b7ac5e6c903136a726c13cfec))
+* Incorrect paths returned from applyToState ([66bb5be](https://github.com/nrkno/tv-automation-atem-connection/commit/66bb5be76b9faf5b7ac5e6c903136a726c13cfec))
+
 ## [2.1.0](https://github.com/nrkno/tv-automation-atem-connection/compare/2.0.0...2.1.0) (2020-09-16)
 
 
