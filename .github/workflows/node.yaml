@@ -199,10 +199,15 @@ jobs:
           yarn publish --access=public --new-version=$NEW_VERSION --network-timeout 100000 --tag ${{ steps.do-publish.outputs.tag }}
         env:
           CI: true
-      - name: Publish docs
+      - name: Generate docs
         if: ${{ steps.do-publish.outputs.tag }} == 'latest'
         run: |
-          yarn docs:publish
+          yarn docs:html
+      - name: Publish docs
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
 
   validate-dependencies:
     name: Validate production dependencies
