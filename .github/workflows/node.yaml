@@ -24,6 +24,7 @@ jobs:
       - name: Prepare Environment
         run: |
           yarn install
+          yarn build
         env:
           CI: true
       - name: Run typecheck and linter
