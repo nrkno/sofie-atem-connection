@@ -14,7 +14,9 @@ export enum Model {
 	Constellation8K = 0x0c,
 	Mini = 0x0d,
 	MiniPro = 0x0e,
-	MiniProISO = 0x0f
+	MiniProISO = 0x0f,
+	MiniExtreme = 0x10,
+	MiniExtremeISO = 0x11
 }
 
 export enum ProtocolVersion {
