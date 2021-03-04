@@ -127,7 +127,9 @@ export enum SourceAvailability {
 	SuperSourceArt = 1 << 2,
 	SuperSourceBox = 1 << 3,
 	KeySource = 1 << 4,
-	All = Auxiliary | Multiviewer | SuperSourceArt | SuperSourceBox | KeySource
+	Auxiliary1 = 1 << 5,
+	Auxiliary2 = 1 << 6,
+	All = Auxiliary | Multiviewer | SuperSourceArt | SuperSourceBox | KeySource | Auxiliary1 | Auxiliary2
 }
 
 export enum MeAvailability {
