@@ -68,8 +68,8 @@ export class MacroPropertiesCommand extends WritableCommand<OmitReadonly<MacroPr
 		buffer.writeUInt16BE(this.macroIndex, 2)
 		buffer.writeUInt16BE(name.length, 4)
 		buffer.writeUInt16BE(description.length, 6)
-		buffer.write(name, 8, 'ascii')
-		buffer.write(description, 8 + name.length, 'ascii')
+		buffer.write(name, 8, 'utf8')
+		buffer.write(description, 8 + name.length, 'utf8')
 
 		return buffer
 	}

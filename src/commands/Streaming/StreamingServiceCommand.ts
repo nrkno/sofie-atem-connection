@@ -18,9 +18,9 @@ export class StreamingServiceCommand extends WritableCommand<StreamingServicePro
 	public serialize(): Buffer {
 		const buffer = Buffer.alloc(1100)
 		buffer.writeUInt8(this.flag, 0)
-		buffer.write(this.properties.serviceName || '', 1, 64)
-		buffer.write(this.properties.url || '', 65, 512)
-		buffer.write(this.properties.key || '', 577, 512)
+		buffer.write(this.properties.serviceName || '', 1, 64, 'utf8')
+		buffer.write(this.properties.url || '', 65, 512, 'utf8')
+		buffer.write(this.properties.key || '', 577, 512, 'utf8')
 
 		const bitrates = this.properties.bitrates || [0, 0]
 		buffer.writeUInt32BE(bitrates[0], 1092)
