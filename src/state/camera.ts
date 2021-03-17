@@ -1,0 +1,37 @@
+// import { ExternalPortType, InternalPortType, MeAvailability, SourceAvailability } from '../enums'
+
+export interface Camera {
+	readonly cameraID: number
+	iris: number,
+	autoIris: boolean,
+	focus: number,
+	autoFocused: boolean,
+	gain: string,
+	gainValue: number,
+	whiteBalance: string,
+	whiteBalanceValue: number,
+	zoomPosition: number,
+	zoomSpeed: number,
+	liftR: number,
+	gammaR: number,
+	gainR: number,
+	liftG: number,
+	gammaG: number,
+	gainG: number,
+	liftB: number,
+	gammaB: number,
+	gainB: number,
+	liftY: number,
+	gammaY: number,
+	gainY: number,
+	liftRGBY: number[],
+	gainRGBY: number[],
+	gammaRGBY: number[],
+	lumMix: number,
+	hue: number,
+	shutter: string,
+	shutterValue: number,
+	contrast: number,
+	saturation: number,
+	command: string
+}

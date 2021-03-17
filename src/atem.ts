@@ -1,5 +1,5 @@
 import { EventEmitter } from 'eventemitter3'
-import { AtemState, AtemStateUtil, InvalidIdError } from './state'
+import { AtemState, AtemStateUtil, Camera, InvalidIdError } from './state'
 import { AtemSocket } from './lib/atemSocket'
 import { ISerializableCommand, IDeserializedCommand } from './commands/CommandBase'
 import * as Commands from './commands'
@@ -721,4 +721,34 @@ export class Atem extends BasicAtem {
 			return []
 		}
 	}
+
+	public setCameraIris(cameraId: number, irisLevel: number): Promise<void> {
+		var camera = this.state!.cameras[cameraId];
+		if(camera !== undefined) {
+			//Add our new value after copying the previous values
+			camera.iris = irisLevel;
+			camera.command = "iris";
+
+			const command = new Commands.CameraControlCommand(cameraId, camera);
+			return this.sendCommand(command)
+		}
+
+		return Promise.reject()
+	}
+
+
+
+
+
+
+
+	// 	if(this.state) {
+	// 		if(this.state.cameras[cameraId]) {
+	// 			console.log(this.state!.cameras[cameraId]!.iris);
+	// 			return this.state!.cameras[cameraId]!.iris / 2048; 
+	// 		}
+	// 	}
+		
+	// 	return 0.0;
+	// }
 }

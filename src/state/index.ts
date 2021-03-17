@@ -8,8 +8,9 @@ import * as Settings from './settings'
 import * as Recording from './recording'
 import * as Streaming from './streaming'
 import * as Fairlight from './fairlight'
+import * as Camera from './camera'
 import * as AtemStateUtil from './util'
-export { AtemStateUtil, Info, Video, ClassicAudio, Media, Input, Macro, Settings, Recording, Streaming, Fairlight }
+export { AtemStateUtil, Info, Video, ClassicAudio, Media, Input, Macro, Settings, Recording, Streaming, Fairlight, Camera }
 
 export interface AtemState {
 	info: Info.DeviceInfo
@@ -22,6 +23,7 @@ export interface AtemState {
 	settings: Settings.SettingsState
 	recording?: Recording.RecordingState
 	streaming?: Streaming.StreamingState
+	cameras: { [cameraId: number]: Camera.Camera | undefined }
 }
 
 export class InvalidIdError extends Error {
