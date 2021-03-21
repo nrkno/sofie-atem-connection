@@ -1,31 +1,204 @@
 import { AtemState } from '../state'
 import { ProtocolVersion } from '../enums'
 import { Camera } from '../state/camera'
-import { DeserializedCommand, BasicWritableCommand } from './CommandBase'
+import { DeserializedCommand, WritableCommand } from './CommandBase'
 
-export class CameraControlCommand extends BasicWritableCommand<Camera> {
+export class CameraControlCommand extends WritableCommand<Camera> {
 	public static readonly rawName = 'CCmd'
 	public static readonly minimumVersion = ProtocolVersion.V7_2
 	public readonly cameraID: number
+	public readonly update: Camera
+	public readonly isRel: boolean
 
-	constructor(cameraID: number, properties: Camera) {
-		super(properties);
+	constructor(cameraID: number, update: Camera, isRel: boolean | false) {
+		super();
 
-		this.cameraID = cameraID
+		this.cameraID = cameraID;
+		this.update = update;
+		this.isRel = isRel;
 	}
 
 	public serialize(): Buffer {
-		console.log("HELLLLLLLLLLLLLLLLLLLLLLLLLLLLLO");
-		console.log(this.properties);
+		const buffer = Buffer.alloc(24).fill(0);
+
+
+		buffer.writeUInt8(this.cameraID, 0);
 
 		//Switch by what we need to update
-		switch(this.properties.command) {
+		switch(this.update.command) {
 			case "iris": {
-
+				if(this.update.iris !== undefined) {
+					buffer.writeUInt8(0, 1);
+					buffer.writeUInt8(2, 2);
+					buffer.writeUInt8(this.isRel ? 1:0, 3);
+					buffer.writeUInt8(0x80, 4);
+					buffer.writeUInt8(0x01, 9);
+					buffer.writeInt16BE(((1.0 - this.update.iris) * 15360) + 3072, 16);
+					return buffer;
+				}
+				break;
+			}
+			case "autoIris": {
+				if(this.update.autoIris !== undefined) {
+					buffer.writeUInt8(0, 1);
+					buffer.writeUInt8(5, 2);
+					buffer.writeUInt8(this.isRel ? 1:0, 3);
+					return buffer;
+				}
+				break;
+			}
+			case "focus": {
+				if(this.update.focus !== undefined) {
+					buffer.writeUInt8(0, 1);
+					buffer.writeUInt8(0, 2);
+					buffer.writeUInt8(this.isRel ? 1:0, 3);
+					buffer.writeUInt8(0x80, 4); //Not sure if this is correct
+					buffer.writeUInt8(0x01, 9);
+					buffer.writeUInt16BE(this.update.focus * 65535, 16);
+					return buffer;
+				}
+				break;
+			}
+			case "autoFocus": {
+				if(this.update.autoFocused !== undefined) {
+					buffer.writeUInt8(0, 1);
+					buffer.writeUInt8(1, 2);
+					buffer.writeUInt8(this.isRel ? 1:0, 3);
+					return buffer;
+				}
+				break;
+			}
+			case "zoomPosition": {
+				if(this.update.zoomPosition !== undefined) {
+					buffer.writeUInt8(0, 1);
+					buffer.writeUInt8(8, 2);
+					buffer.writeUInt8(this.isRel ? 1:0, 3);
+					buffer.writeUInt8(0x80, 4);
+					buffer.writeUInt8(0x01, 9);
+					buffer.writeInt16BE(this.update.zoomPosition * 2048, 16);
+					return buffer;
+				}
+				break;
+			}
+			case "zoomSpeed": {
+				if(this.update.zoomSpeed !== undefined) {
+					buffer.writeUInt8(0, 1);
+					buffer.writeUInt8(9, 2);
+					buffer.writeUInt8(this.isRel ? 1:0, 3);
+					buffer.writeUInt8(0x80, 4);
+					buffer.writeUInt8(0x01, 9);
+					buffer.writeInt16BE(this.update.zoomSpeed * 2048, 16);
+					return buffer;
+				}
+				break;
+			}
+			case "whiteBalance": {
+				// if(this.update.iris !== undefined) {
+				// 	buffer.writeUInt8(0, 1);
+				// 	buffer.writeUInt8(2, 2);
+				// 	buffer.writeUInt8(this.isRel ? 1:0, 3);
+				// 	buffer.writeUInt8(0x80, 4);
+				// 	buffer.writeUInt8(0x01, 9);
+				// 	buffer.writeInt16BE(((1.0 - this.update.iris) * 15360) + 3072, 16);
+				// 	return buffer;
+				// }
+				break;
+			}
+			case "shutter": {
+				// if(this.update.iris !== undefined) {
+				// 	buffer.writeUInt8(0, 1);
+				// 	buffer.writeUInt8(2, 2);
+				// 	buffer.writeUInt8(this.isRel ? 1:0, 3);
+				// 	buffer.writeUInt8(0x80, 4);
+				// 	buffer.writeUInt8(0x01, 9);
+				// 	buffer.writeInt16BE(((1.0 - this.update.iris) * 15360) + 3072, 16);
+				// 	return buffer;
+				// }
+				break;
+			}
+			case "liftRGBY": {
+				if(this.update.liftRGBY !== undefined) {
+					buffer.writeUInt8(8, 1);
+					buffer.writeUInt8(0, 2);
+					buffer.writeUInt8(this.isRel ? 1:0, 3);
+					buffer.writeUInt8(0x80, 4);
+					buffer.writeUInt8(0x04, 9);
+					buffer.writeInt16BE(this.update.liftRGBY[0] * 4096, 16);
+					buffer.writeInt16BE(this.update.liftRGBY[1] * 4096, 18);
+					buffer.writeInt16BE(this.update.liftRGBY[2] * 4096, 20);
+					buffer.writeInt16BE(this.update.liftRGBY[3] * 4096, 22);
+					return buffer;
+				}
+				break;
+			}
+			case "gammaRGBY": {
+				if(this.update.gammaRGBY !== undefined) {
+					buffer.writeUInt8(8, 1);
+					buffer.writeUInt8(1, 2);
+					buffer.writeUInt8(this.isRel ? 1:0, 3);
+					buffer.writeUInt8(0x80, 4);
+					buffer.writeUInt8(0x04, 9);
+					buffer.writeInt16BE(this.update.gammaRGBY[0] * 8192, 16);
+					buffer.writeInt16BE(this.update.gammaRGBY[1] * 8192, 18);
+					buffer.writeInt16BE(this.update.gammaRGBY[2] * 8192, 20);
+					buffer.writeInt16BE(this.update.gammaRGBY[3] * 8192, 22);
+					return buffer;
+				}
+				break;
+			}
+			case "gainRGBY": {
+				if(this.update.gainRGBY !== undefined) {
+					buffer.writeUInt8(8, 1);
+					buffer.writeUInt8(2, 2);
+					buffer.writeUInt8(this.isRel ? 1:0, 3);
+					buffer.writeUInt8(0x80, 4);
+					buffer.writeUInt8(0x04, 9);
+					buffer.writeInt16BE(this.update.gainRGBY[0] * 2047.9375, 16);
+					buffer.writeInt16BE(this.update.gainRGBY[1] * 2047.9375, 18);
+					buffer.writeInt16BE(this.update.gainRGBY[2] * 2047.9375, 20);
+					buffer.writeInt16BE(this.update.gainRGBY[3] * 2047.9375, 22);
+					return buffer;
+				}
+				break;
+			}
+			case "contrast": {
+				if(this.update.contrast !== undefined) {
+					buffer.writeUInt8(8, 1);
+					buffer.writeUInt8(4, 2);
+					buffer.writeUInt8(this.isRel ? 1:0, 3);
+					buffer.writeUInt8(0x80, 4);
+					buffer.writeUInt8(0x02, 9);
+					buffer.writeUInt16BE(this.update.contrast * 4096, 18);
+					return buffer;
+				}
+				break;
+			}
+			case "lumMix": {
+				if(this.update.lumMix !== undefined) {
+					buffer.writeUInt8(8, 1);
+					buffer.writeUInt8(5, 2);
+					buffer.writeUInt8(this.isRel ? 1:0, 3);
+					buffer.writeUInt8(0x80, 4);
+					buffer.writeUInt8(0x01, 9);
+					buffer.writeInt16BE(this.update.lumMix * 2048, 16);
+					return buffer;
+				}
+				break;
+			}
+			case "hueSat": {
+				if(this.update.hue !== undefined && this.update.saturation !== undefined) {
+					buffer.writeUInt8(8, 1);
+					buffer.writeUInt8(6, 2);
+					buffer.writeUInt8(this.isRel ? 1:0, 3);
+					buffer.writeUInt8(0x80, 4);
+					buffer.writeUInt8(0x02, 9);
+					buffer.writeInt16BE(this.update.hue * 1024, 16);
+					buffer.writeInt16BE(this.update.saturation * 4096, 18);
+					return buffer;
+				}
+				break;
 			}
 		}
-
-
 
 		return Buffer.alloc(0)
 	}
@@ -85,6 +258,13 @@ export class CameraControlUpdateCommand extends DeserializedCommand<Camera> {
 			command: "none"
 		}
 
+		//If our packet size is not expected just return no changes
+		if(rawCommand.length != 24) {
+			return new CameraControlUpdateCommand(rawCommand.readUInt8(0), changed, properties)
+		}
+
+		console.log(rawCommand);
+
 		//Read in the values
 		switch(rawCommand.readUInt8(1)) {
 			case 0: {
@@ -105,7 +285,7 @@ export class CameraControlUpdateCommand extends DeserializedCommand<Camera> {
 					}
 					case 2: {
 						//Iris
-						changed["iris"] = 1.0 - ((rawCommand.readUInt16BE(16) - 3072) / 18432);
+						changed["iris"] = 1.0 - ((rawCommand.readUInt16BE(16) - 3072) / 15360);
 						changed["autoIris"] = false;
 						changed["command"] = "iris";
 						break;
