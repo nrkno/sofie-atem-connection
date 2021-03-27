@@ -1,5 +1,5 @@
 import { EventEmitter } from 'eventemitter3'
-import { AtemState, AtemStateUtil, Camera, InvalidIdError } from './state'
+import { AtemState, AtemStateUtil, InvalidIdError } from './state'
 import { AtemSocket } from './lib/atemSocket'
 import { ISerializableCommand, IDeserializedCommand } from './commands/CommandBase'
 import * as Commands from './commands'

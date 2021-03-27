@@ -23,7 +23,7 @@ export interface AtemState {
 	settings: Settings.SettingsState
 	recording?: Recording.RecordingState
 	streaming?: Streaming.StreamingState
-	cameras: { [cameraId: number]: Camera.Camera | undefined }
+	cameras: { [cameraId: number]: Camera.Camera }
 }
 
 export class InvalidIdError extends Error {
