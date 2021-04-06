@@ -1,4 +1,4 @@
-import { AtemStateUtil, AtemState } from '../state'
+import { AtemStateUtil, AtemState, Settings } from '../state'
 
 export function createEmptyState(): AtemState {
 	const state = AtemStateUtil.Create()
@@ -62,6 +62,19 @@ export function createEmptyState(): AtemState {
 	}
 	state.fairlight = {
 		inputs: {}
+	}
+
+	if (state.info.multiviewer) {
+		for (let i = 0; i < state.info.multiviewer.count; i++) {
+			const windows: Settings.MultiViewerWindowState[] = []
+			for (let o = 0; o < state.info.multiviewer.windowCount; o++) {
+				windows.push({ windowIndex: o, source: 0, supportsSafeArea: true, supportsVuMeter: true })
+			}
+			state.settings.multiViewers[i] = {
+				index: i,
+				windows: windows
+			}
+		}
 	}
 
 	return state

@@ -2,7 +2,7 @@ import { VideoMode, MultiViewerLayout } from '../enums'
 
 export interface MultiViewerSourceState {
 	source: number
-	windowIndex: number
+	readonly windowIndex: number
 	readonly supportsVuMeter: boolean
 	readonly supportsSafeArea: boolean
 }
@@ -10,7 +10,6 @@ export interface MultiViewerSourceState {
 export interface MultiViewerWindowState extends MultiViewerSourceState {
 	safeTitle?: boolean
 	audioMeter?: boolean
-	// TODO - supports safeTitle & audioMeter?
 }
 
 export interface MultiViewerPropertiesState {
@@ -22,6 +21,7 @@ export interface MultiViewer {
 	readonly index: number
 	readonly windows: Array<MultiViewerWindowState | undefined>
 	properties?: MultiViewerPropertiesState
+	vuOpacity?: number
 }
 
 export interface SettingsState {

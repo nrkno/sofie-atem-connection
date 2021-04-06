@@ -129,5 +129,12 @@ export const V8_0CommandConverters: CommandTestConverterSet = {
 			multiViewerId: 'multiviewIndex'
 		},
 		propertyAliases: {}
+	},
+	SaMw: {
+		idAliases: {
+			multiViewerId: 'multiviewIndex',
+			windowIndex: 'windowIndex'
+		},
+		propertyAliases: {}
 	}
 }

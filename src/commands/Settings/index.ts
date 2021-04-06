@@ -1,3 +1,5 @@
 export * from './MultiViewerSourceCommand'
 export * from './MultiViewerPropertiesCommand'
+export * from './MultiViewerVuOpacityCommand'
+export * from './MultiViewerWindowSafeAreaCommand'
 export * from './VideoMode'

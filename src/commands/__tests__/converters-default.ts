@@ -1013,5 +1013,13 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			saturation: (val: number): PropertyAliasResult => ({ val: Math.round(val * 10) }),
 			luma: (val: number): PropertyAliasResult => ({ val: Math.round(val * 10) })
 		}
+	},
+	VuMo: {
+		idAliases: {
+			multiViewerId: 'multiviewIndex'
+		},
+		propertyAliases: {
+			opacity: (val: number): PropertyAliasResult => ({ val: Math.round(val) })
+		}
 	}
 }
