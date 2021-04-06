@@ -9,7 +9,22 @@ import * as Recording from './recording'
 import * as Streaming from './streaming'
 import * as Fairlight from './fairlight'
 import * as AtemStateUtil from './util'
-export { AtemStateUtil, Info, Video, ClassicAudio, Media, Input, Macro, Settings, Recording, Streaming, Fairlight }
+import { ColorGeneratorState } from './color'
+
+export {
+	AtemStateUtil,
+	Info,
+	Video,
+	ClassicAudio,
+	Media,
+	Input,
+	Macro,
+	Settings,
+	Recording,
+	Streaming,
+	Fairlight,
+	ColorGeneratorState
+}
 
 export interface AtemState {
 	info: Info.DeviceInfo
@@ -22,6 +37,7 @@ export interface AtemState {
 	settings: Settings.SettingsState
 	recording?: Recording.RecordingState
 	streaming?: Streaming.StreamingState
+	colorGenerators?: { [index: number]: ColorGeneratorState | undefined }
 }
 
 export class InvalidIdError extends Error {

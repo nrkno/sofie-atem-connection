@@ -993,5 +993,25 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			stereoSimulation: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			supportedMixOptions: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) })
 		}
+	},
+	ColV: {
+		idAliases: {
+			index: 'index'
+		},
+		propertyAliases: {
+			hue: (val: number): PropertyAliasResult => ({ val: Math.round(val * 10) }),
+			saturation: (val: number): PropertyAliasResult => ({ val: Math.round(val * 10) }),
+			luma: (val: number): PropertyAliasResult => ({ val: Math.round(val * 10) })
+		}
+	},
+	CClV: {
+		idAliases: {
+			index: 'index'
+		},
+		propertyAliases: {
+			hue: (val: number): PropertyAliasResult => ({ val: Math.round(val * 10) }),
+			saturation: (val: number): PropertyAliasResult => ({ val: Math.round(val * 10) }),
+			luma: (val: number): PropertyAliasResult => ({ val: Math.round(val * 10) })
+		}
 	}
 }
