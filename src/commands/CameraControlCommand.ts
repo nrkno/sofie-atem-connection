@@ -263,8 +263,6 @@ export class CameraControlUpdateCommand extends DeserializedCommand<Camera> {
 			return new CameraControlUpdateCommand(rawCommand.readUInt8(0), changed, properties)
 		}
 
-		console.log(rawCommand);
-
 		//Read in the values
 		switch(rawCommand.readUInt8(1)) {
 			case 0: {
