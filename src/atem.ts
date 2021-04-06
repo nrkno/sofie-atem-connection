@@ -1,5 +1,5 @@
 import { EventEmitter } from 'eventemitter3'
-import { AtemState, AtemStateUtil, InvalidIdError } from './state'
+import { AtemState, AtemStateUtil, InvalidIdError, ColorGeneratorState } from './state'
 import { AtemSocket } from './lib/atemSocket'
 import { ISerializableCommand, IDeserializedCommand } from './commands/CommandBase'
 import * as Commands from './commands'
@@ -414,8 +414,34 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public setMultiViewerSource(newProps: OmitReadonly<MultiViewerSourceState>, mv = 0): Promise<void> {
-		const command = new Commands.MultiViewerSourceCommand(mv, newProps.windowIndex, newProps.source)
+	/** @deprecated Use setMultiViewerWindowSource instead */
+	public setMultiViewerSource(
+		newProps: Pick<MultiViewerSourceState, 'windowIndex' | 'source'>,
+		mv = 0
+	): Promise<void> {
+		return this.setMultiViewerWindowSource(newProps.source, mv, newProps.windowIndex)
+	}
+	public setMultiViewerWindowSource(source: number, mv = 0, window = 0): Promise<void> {
+		const command = new Commands.MultiViewerSourceCommand(mv, window, source)
+		return this.sendCommand(command)
+	}
+	public setMultiViewerWindowSafeAreaEnabled(safeAreaEnabled: boolean, mv = 0, window = 0): Promise<void> {
+		const command = new Commands.MultiViewerWindowSafeAreaCommand(mv, window, safeAreaEnabled)
+		return this.sendCommand(command)
+	}
+	public setMultiViewerWindowVuEnabled(vuEnabled: boolean, mv = 0, window = 0): Promise<void> {
+		const command = new Commands.MultiViewerWindowVuMeterCommand(mv, window, vuEnabled)
+		return this.sendCommand(command)
+	}
+
+	public setMultiViewerVuOpacity(opacity: number, mv = 0): Promise<void> {
+		const command = new Commands.MultiViewerVuOpacityCommand(mv, opacity)
+		return this.sendCommand(command)
+	}
+
+	public setColorGeneratorColour(newProps: Partial<ColorGeneratorState>, index = 0): Promise<void> {
+		const command = new Commands.ColorGeneratorCommand(index)
+		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 

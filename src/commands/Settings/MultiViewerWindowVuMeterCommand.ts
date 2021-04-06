@@ -18,7 +18,7 @@ export class MultiViewerWindowVuMeterCommand extends BasicWritableCommand<{ vuEn
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt8(this.multiViewerId, 0)
 		buffer.writeUInt8(this.windowIndex || 0, 1)
-		buffer.writeUInt16BE(this.properties.vuEnabled ? 1 : 0, 2)
+		buffer.writeUInt8(this.properties.vuEnabled ? 1 : 0, 2)
 		return buffer
 	}
 }

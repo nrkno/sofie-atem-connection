@@ -1021,5 +1021,19 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 		propertyAliases: {
 			opacity: (val: number): PropertyAliasResult => ({ val: Math.round(val) })
 		}
+	},
+	VuMS: {
+		idAliases: {
+			multiViewerId: 'multiviewIndex',
+			windowIndex: 'windowIndex'
+		},
+		propertyAliases: {}
+	},
+	VuMC: {
+		idAliases: {
+			multiViewerId: 'multiviewIndex',
+			windowIndex: 'windowIndex'
+		},
+		propertyAliases: {}
 	}
 }

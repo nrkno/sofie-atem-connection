@@ -1,9 +1,10 @@
 import { BasicWritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState, AtemStateUtil, InvalidIdError } from '../../state'
 import { MultiViewerSourceState } from '../../state/settings'
-import { OmitReadonly } from '../../lib/types'
 
-export class MultiViewerSourceCommand extends BasicWritableCommand<OmitReadonly<MultiViewerSourceState>> {
+export class MultiViewerSourceCommand extends BasicWritableCommand<
+	Pick<MultiViewerSourceState, 'windowIndex' | 'source'>
+> {
 	public static readonly rawName = 'CMvI'
 
 	public readonly multiViewerId: number
