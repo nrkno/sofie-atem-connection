@@ -1,4 +1,4 @@
-import { VideoMode } from '../enums'
+import { VideoMode, MultiViewerLayout } from '../enums'
 
 export interface MultiViewerSourceState {
 	source: number
@@ -13,9 +13,15 @@ export interface MultiViewerWindowState extends MultiViewerSourceState {
 	// TODO - supports safeTitle & audioMeter?
 }
 
+export interface MultiViewerPropertiesState {
+	layout: MultiViewerLayout
+	programPreviewSwapped: boolean
+}
+
 export interface MultiViewer {
 	readonly index: number
 	readonly windows: Array<MultiViewerWindowState | undefined>
+	properties?: MultiViewerPropertiesState
 }
 
 export interface SettingsState {
