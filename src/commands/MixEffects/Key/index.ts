@@ -1,3 +1,6 @@
+export * from './MixEffectKeyAdvancedChromaPropertiesCommand'
+export * from './MixEffectKeyAdvancedChromaSampleCommand'
+export * from './MixEffectKeyAdvancedChromaSampleResetCommand'
 export * from './MixEffectKeyChromaCommand'
 export * from './MixEffectKeyCutSourceSetCommand'
 export * from './MixEffectKeyDVECommand'

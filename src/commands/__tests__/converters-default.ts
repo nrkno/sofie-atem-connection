@@ -1035,5 +1035,78 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			windowIndex: 'windowIndex'
 		},
 		propertyAliases: {}
+	},
+	RACK: {
+		idAliases: {
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
+		},
+		propertyAliases: {}
+	},
+	CACK: {
+		idAliases: {
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
+		},
+		propertyAliases: {
+			backgroundLevel: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			foregroundLevel: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			keyEdge: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			spillSuppression: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			flareSuppression: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			brightness: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			contrast: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			saturation: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			red: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			green: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			blue: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
+		}
+	},
+	KACk: {
+		idAliases: {
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
+		},
+		propertyAliases: {
+			backgroundLevel: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			foregroundLevel: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			keyEdge: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			spillSuppression: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			flareSuppression: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			brightness: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			contrast: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			saturation: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			red: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			green: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+			blue: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
+		}
+	},
+	KACC: {
+		idAliases: {
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
+		},
+		propertyAliases: {
+			sampledY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
+			sampledCb: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
+			sampledCr: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
+			cursorSize: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			cursorX: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			cursorY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) })
+		}
+	},
+	CACC: {
+		idAliases: {
+			mixEffect: 'mixEffectIndex',
+			upstreamKeyerId: 'keyerIndex'
+		},
+		propertyAliases: {
+			sampledY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
+			sampledCb: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
+			sampledCr: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
+			cursorSize: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			cursorX: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+			cursorY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) })
+		}
 	}
 }

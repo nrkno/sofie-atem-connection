@@ -29,6 +29,7 @@ import { OmitReadonly } from './lib/types'
 import { StreamingServiceProperties } from './state/streaming'
 import { commandStringify } from './lib/atemUtil'
 import * as bigInt from 'big-integer'
+import { AdvancedChromaSampleResetProps } from './commands'
 
 export interface AtemOptions {
 	address?: string
@@ -519,6 +520,33 @@ export class Atem extends BasicAtem {
 	): Promise<void> {
 		const command = new Commands.MixEffectKeyChromaCommand(me, keyer)
 		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+
+	public setUpstreamKeyerAdvancedChromaProperties(
+		newProps: Partial<USK.UpstreamKeyerAdvancedChromaProperties>,
+		me = 0,
+		keyer = 0
+	): Promise<void> {
+		const command = new Commands.MixEffectKeyAdvancedChromaPropertiesCommand(me, keyer)
+		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+	public setUpstreamKeyerAdvancedChromaSample(
+		newProps: Partial<USK.UpstreamKeyerAdvancedChromaSample>,
+		me = 0,
+		keyer = 0
+	): Promise<void> {
+		const command = new Commands.MixEffectKeyAdvancedChromaSampleCommand(me, keyer)
+		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+	public setUpstreamKeyerAdvancedChromaSampleReset(
+		flags: AdvancedChromaSampleResetProps,
+		me = 0,
+		keyer = 0
+	): Promise<void> {
+		const command = new Commands.MixEffectKeyAdvancedChromaSampleResetCommand(me, keyer, flags)
 		return this.sendCommand(command)
 	}
 
