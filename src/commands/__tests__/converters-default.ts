@@ -277,6 +277,38 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 })
 		}
 	},
+	CAMm: {
+		idAliases: {},
+		propertyAliases: {
+			dimLevel: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) })
+			// gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 })
+		}
+	},
+	AMmO: {
+		idAliases: {},
+		propertyAliases: {
+			dimLevel: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 })
+		}
+	},
+	CAMH: {
+		idAliases: {},
+		propertyAliases: {
+			// gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 }),
+			// programOutGain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 }),
+			// talkbackGain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 }),
+			// sidetoneGain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 })
+		}
+	},
+	AMHP: {
+		idAliases: {},
+		propertyAliases: {
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 }),
+			programOutGain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 }),
+			talkbackGain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 }),
+			sidetoneGain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 })
+		}
+	},
 	_top: {
 		idAliases: {},
 		propertyAliases: {
