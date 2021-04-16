@@ -280,3 +280,11 @@ export function commandStringify(command: any): string {
 		typeof value === 'bigint' || bigInt.isInstance(value) ? value.toString() : value
 	)
 }
+
+export function omit<T, K extends keyof T>(o: T, ...keys: K[]): Omit<T, K> {
+	const obj: any = { ...o }
+	for (const key of keys) {
+		delete obj[key]
+	}
+	return obj
+}

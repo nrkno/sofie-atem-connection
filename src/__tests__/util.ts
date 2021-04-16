@@ -61,7 +61,21 @@ export function createEmptyState(): AtemState {
 		channels: {}
 	}
 	state.fairlight = {
-		inputs: {}
+		inputs: {},
+		master: {
+			equalizerBands: [undefined, undefined, undefined, undefined, undefined],
+			equalizerGain: 0,
+			equalizerEnabled: false,
+			makeUpGain: 0,
+			faderGain: 0,
+			followFadeToBlack: false
+		}
+	}
+
+	for (let i = 0; i < 6000; i++) {
+		state.fairlight.inputs[i] = {
+			sources: {}
+		}
 	}
 
 	if (state.info.multiviewer) {

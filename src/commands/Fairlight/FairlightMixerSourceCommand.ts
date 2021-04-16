@@ -84,13 +84,15 @@ export class FairlightMixerSourceCommand extends WritableCommand<OmitReadonly<Fa
 	}
 }
 
-export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<FairlightAudioSourceProperties> {
+export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<
+	Omit<FairlightAudioSourceProperties, 'equalizerBands'> & { bandCount: number }
+> {
 	public static readonly rawName = 'FASP'
 
 	public readonly index: number
 	public readonly source: BigInteger
 
-	constructor(index: number, source: BigInteger, props: FairlightAudioSourceProperties) {
+	constructor(index: number, source: BigInteger, props: FairlightMixerSourceUpdateCommand['properties']) {
 		super(props)
 
 		this.index = index
@@ -110,7 +112,7 @@ export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<Fairl
 			hasStereoSimulation: rawCommand.readUInt8(24) > 0,
 			stereoSimulation: rawCommand.readInt16BE(26),
 
-			equalizerBands: rawCommand.readUInt8(28),
+			bandCount: rawCommand.readUInt8(28),
 			equalizerEnabled: rawCommand.readUInt8(29) > 0,
 			equalizerGain: rawCommand.readInt32BE(32),
 			makeUpGain: rawCommand.readInt32BE(36),
@@ -137,9 +139,14 @@ export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<Fairl
 
 		input.sources[sourceIdStr] = {
 			...oldSource,
-			properties: this.properties
+			properties: {
+				equalizerBands: new Array(this.properties.bandCount).fill(undefined),
+				// preserve old props
+				...(oldSource ? oldSource.properties : {}),
+				...Util.omit(this.properties, 'bandCount')
+			}
 		}
 
-		return `fairlight.inputs.${this.index}.sources.${sourceIdStr}`
+		return `fairlight.inputs.${this.index}.sources.${sourceIdStr}.properties`
 	}
 }

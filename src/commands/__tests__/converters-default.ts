@@ -1007,7 +1007,8 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			faderGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			makeUpGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			stereoSimulation: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
-			supportedMixOptions: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) })
+			supportedMixOptions: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) }),
+			equalizerBands: (val: number): PropertyAliasResult => ({ val, name: 'bandCount' })
 		}
 	},
 	CFSP: {
@@ -1024,6 +1025,234 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			makeUpGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			stereoSimulation: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			supportedMixOptions: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) })
+		}
+	},
+	FAMP: {
+		idAliases: {},
+		propertyAliases: {
+			equalizerGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			gain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100), name: 'faderGain' }),
+			makeUpGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			equalizerBands: (val: number): PropertyAliasResult => ({ val, name: 'bandCount' })
+		}
+	},
+	CFMP: {
+		idAliases: {},
+		propertyAliases: {
+			equalizerGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			gain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100), name: 'faderGain' }),
+			makeUpGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) })
+		}
+	},
+	FMPP: {
+		idAliases: {},
+		propertyAliases: {
+			audioFollowVideoCrossfadeTransitionEnabled: (val: number): PropertyAliasResult => ({
+				val,
+				name: 'audioFollowVideo'
+			})
+		}
+	},
+	CMPP: {
+		idAliases: {},
+		propertyAliases: {
+			audioFollowVideoCrossfadeTransitionEnabled: (val: number): PropertyAliasResult => ({
+				val,
+				name: 'audioFollowVideo'
+			})
+		}
+	},
+	FMHP: {
+		idAliases: {},
+		propertyAliases: {
+			gain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			inputMasterGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			inputSidetoneGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			inputTalkbackGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) })
+		}
+	},
+	CFMH: {
+		idAliases: {},
+		propertyAliases: {
+			gain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			inputMasterGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			inputSidetoneGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			inputTalkbackGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) })
+		}
+	},
+	MOCP: {
+		idAliases: {},
+		propertyAliases: {
+			threshold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			ratio: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			attack: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			hold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			release: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) })
+		}
+	},
+	CMCP: {
+		idAliases: {},
+		propertyAliases: {
+			threshold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			ratio: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			attack: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			hold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			release: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) })
+		}
+	},
+	AICP: {
+		idAliases: {
+			index: 'index',
+			source: 'sourceId'
+		},
+		propertyAliases: {
+			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' }),
+			threshold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			ratio: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			attack: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			hold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			release: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) })
+		}
+	},
+	CICP: {
+		idAliases: {
+			index: 'index',
+			source: 'sourceId'
+		},
+		propertyAliases: {
+			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' }),
+			threshold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			ratio: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			attack: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			hold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			release: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) })
+		}
+	},
+	AMLP: {
+		idAliases: {},
+		propertyAliases: {
+			threshold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			attack: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			hold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			release: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) })
+		}
+	},
+	CMLP: {
+		idAliases: {},
+		propertyAliases: {
+			threshold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			attack: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			hold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			release: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) })
+		}
+	},
+	AILP: {
+		idAliases: {
+			index: 'index',
+			source: 'sourceId'
+		},
+		propertyAliases: {
+			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' }),
+			threshold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			attack: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			hold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			release: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) })
+		}
+	},
+	CILP: {
+		idAliases: {
+			index: 'index',
+			source: 'sourceId'
+		},
+		propertyAliases: {
+			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' }),
+			threshold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			attack: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			hold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			release: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) })
+		}
+	},
+	AIXP: {
+		idAliases: {
+			index: 'index',
+			source: 'sourceId'
+		},
+		propertyAliases: {
+			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' }),
+			threshold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			attack: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			hold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			release: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			ratio: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			range: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) })
+		}
+	},
+	CIXP: {
+		idAliases: {
+			index: 'index',
+			source: 'sourceId'
+		},
+		propertyAliases: {
+			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' }),
+			threshold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			attack: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			hold: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			release: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			ratio: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			range: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) })
+		}
+	},
+	RICD: {
+		idAliases: {
+			index: 'index',
+			source: 'sourceId'
+		},
+		propertyAliases: {
+			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' })
+		}
+	},
+	RICE: {
+		idAliases: {
+			index: 'index',
+			source: 'sourceId'
+		},
+		propertyAliases: {
+			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' })
+		}
+	},
+	RFIP: {
+		idAliases: {
+			index: 'index',
+			source: 'sourceId'
+		},
+		propertyAliases: {
+			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' })
+		}
+	},
+	AEBP: {
+		idAliases: {
+			index: 'index',
+			source: 'sourceId',
+			band: 'band'
+		},
+		propertyAliases: {
+			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' }),
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			qFactor: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			supportedFrequencyRanges: (v: number): PropertyAliasResult => ({ val: Util.getComponents(v) }),
+			supportedShapes: (v: number): PropertyAliasResult => ({ val: Util.getComponents(v) })
+		}
+	},
+	CEBP: {
+		idAliases: {
+			index: 'index',
+			source: 'sourceId',
+			band: 'band'
+		},
+		propertyAliases: {
+			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' }),
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			qFactor: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) })
 		}
 	},
 	ColV: {
@@ -1139,6 +1368,26 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			cursorSize: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
 			cursorX: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
 			cursorY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) })
+		}
+	},
+	AMBP: {
+		idAliases: {
+			band: 'band'
+		},
+		propertyAliases: {
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			qFactor: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			supportedFrequencyRanges: (v: number): PropertyAliasResult => ({ val: Util.getComponents(v) }),
+			supportedShapes: (v: number): PropertyAliasResult => ({ val: Util.getComponents(v) })
+		}
+	},
+	CMBP: {
+		idAliases: {
+			band: 'band'
+		},
+		propertyAliases: {
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+			qFactor: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) })
 		}
 	}
 }
