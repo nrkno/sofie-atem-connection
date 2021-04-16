@@ -3,6 +3,7 @@ import { AtemState, InvalidIdError } from '../../state'
 import { DeserializedCommand, WritableCommand } from '../CommandBase'
 import { OmitReadonly } from '../../lib/types'
 import * as Util from '../../lib/atemUtil'
+
 export class FairlightMixerMasterCommand extends WritableCommand<OmitReadonly<FairlightAudioMasterChannel>> {
 	public static MaskFlags = {
 		equalizerEnabled: 1 << 0,
