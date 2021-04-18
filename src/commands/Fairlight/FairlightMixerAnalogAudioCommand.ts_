@@ -1,5 +1,5 @@
 import { AtemState, InvalidIdError } from '../../state'
-import { FairlightAudioInputAnalog } from '../../state/fairlight'
+// import { FairlightAudioInputAnalog } from '../../state/fairlight'
 import * as Util from '../../lib/atemUtil'
 import { DeserializedCommand, WritableCommand } from '../CommandBase'
 import { OmitReadonly } from '../../lib/types'

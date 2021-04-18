@@ -110,13 +110,13 @@ export interface FairlightAudioInput {
 	properties?: FairlightAudioInputProperties
 	sources: { [sourceId: string]: FairlightAudioSource | undefined }
 
-	analog?: FairlightAudioInputAnalog
+	// analog?: FairlightAudioInputAnalog
 }
 
-export interface FairlightAudioInputAnalog {
-	readonly supportedInputLevels: FairlightAnalogInputLevel[]
-	inputLevel: FairlightAnalogInputLevel
-}
+// export interface FairlightAudioInputAnalog {
+// 	readonly supportedInputLevels: FairlightAnalogInputLevel[]
+// 	inputLevel: FairlightAnalogInputLevel
+// }
 
 export interface FairlightAudioInputProperties {
 	readonly inputType: FairlightInputType
