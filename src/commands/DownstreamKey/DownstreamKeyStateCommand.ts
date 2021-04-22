@@ -20,7 +20,7 @@ export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKey
 			onAir: rawCommand.readUInt8(1) === 1,
 			inTransition: rawCommand.readUInt8(2) === 1,
 			isAuto: rawCommand.readUInt8(3) === 1,
-			remainingFrames: rawCommand.readUInt8(4)
+			remainingFrames: rawCommand.readUInt8(4),
 		}
 
 		return new DownstreamKeyStateCommand(downstreamKeyerId, properties)
@@ -33,7 +33,7 @@ export class DownstreamKeyStateCommand extends DeserializedCommand<DownstreamKey
 
 		state.video.downstreamKeyers[this.downstreamKeyerId] = {
 			...AtemStateUtil.getDownstreamKeyer(state, this.downstreamKeyerId),
-			...this.properties
+			...this.properties,
 		}
 		return `video.downstreamKeyers.${this.downstreamKeyerId}`
 	}
@@ -58,7 +58,7 @@ export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamK
 			inTransition: rawCommand.readUInt8(2) === 1,
 			isAuto: rawCommand.readUInt8(3) === 1,
 			isTowardsOnAir: rawCommand.readUInt8(4) === 1,
-			remainingFrames: rawCommand.readUInt8(5)
+			remainingFrames: rawCommand.readUInt8(5),
 		}
 
 		return new DownstreamKeyStateV8Command(downstreamKeyerId, properties)
@@ -71,7 +71,7 @@ export class DownstreamKeyStateV8Command extends DeserializedCommand<DownstreamK
 
 		state.video.downstreamKeyers[this.downstreamKeyerId] = {
 			...AtemStateUtil.getDownstreamKeyer(state, this.downstreamKeyerId),
-			...this.properties
+			...this.properties,
 		}
 		return `video.downstreamKeyers.${this.downstreamKeyerId}`
 	}

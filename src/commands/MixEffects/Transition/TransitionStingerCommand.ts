@@ -12,7 +12,7 @@ export class TransitionStingerCommand extends WritableCommand<StingerTransitionS
 		preroll: 1 << 5,
 		clipDuration: 1 << 6,
 		triggerPoint: 1 << 7,
-		mixRate: 1 << 8
+		mixRate: 1 << 8,
 	}
 
 	public static readonly rawName = 'CTSt'
@@ -70,7 +70,7 @@ export class TransitionStingerUpdateCommand extends DeserializedCommand<StingerT
 			preroll: (rawCommand.readUInt8(10) << 8) | rawCommand.readUInt8(11),
 			clipDuration: (rawCommand.readUInt8(12) << 8) | rawCommand.readUInt8(13),
 			triggerPoint: (rawCommand.readUInt8(14) << 8) | rawCommand.readUInt8(15),
-			mixRate: (rawCommand.readUInt8(16) << 8) | rawCommand.readUInt8(17)
+			mixRate: (rawCommand.readUInt8(16) << 8) | rawCommand.readUInt8(17),
 		}
 
 		return new TransitionStingerUpdateCommand(mixEffect, properties)
@@ -83,7 +83,7 @@ export class TransitionStingerUpdateCommand extends DeserializedCommand<StingerT
 
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionSettings.stinger = {
-			...this.properties
+			...this.properties,
 		}
 		return `video.mixEffects.${this.mixEffect}.transitionSettings.stinger`
 	}

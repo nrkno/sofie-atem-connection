@@ -18,7 +18,7 @@ export default class DataTransferStill extends DataTransferFrame {
 			description: this.description,
 			name: this.name,
 			fileHash: this.hash,
-			transferId: this.transferId
+			transferId: this.transferId,
 		})
 	}
 }

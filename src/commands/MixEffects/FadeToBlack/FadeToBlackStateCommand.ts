@@ -23,7 +23,7 @@ export class FadeToBlackStateCommand extends DeserializedCommand<FadeToBlackProp
 		const properties = {
 			isFullyBlack: rawCommand.readUInt8(1) === 1,
 			inTransition: rawCommand.readUInt8(2) === 1,
-			remainingFrames: rawCommand.readUInt8(3)
+			remainingFrames: rawCommand.readUInt8(3),
 		}
 
 		return new FadeToBlackStateCommand(mixEffect, properties)
@@ -38,7 +38,7 @@ export class FadeToBlackStateCommand extends DeserializedCommand<FadeToBlackProp
 		mixEffect.fadeToBlack = {
 			rate: 0,
 			...mixEffect.fadeToBlack,
-			...this.properties
+			...this.properties,
 		}
 		return `video.mixEffects.${this.mixEffect}.fadeToBlack`
 	}

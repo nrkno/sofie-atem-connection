@@ -40,7 +40,7 @@ export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiVie
 			windowIndex: rawCommand.readUInt8(1),
 			source: rawCommand.readUInt16BE(2),
 			supportsVuMeter: rawCommand.readUInt8(4) != 0,
-			supportsSafeArea: rawCommand.readUInt8(5) != 0
+			supportsSafeArea: rawCommand.readUInt8(5) != 0,
 		}
 
 		return new MultiViewerSourceUpdateCommand(multiViewerId, properties)
@@ -54,7 +54,7 @@ export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiVie
 		const multiviewer = AtemStateUtil.getMultiViewer(state, this.multiViewerId)
 		multiviewer.windows[this.properties.windowIndex] = {
 			...multiviewer.windows[this.properties.windowIndex],
-			...this.properties
+			...this.properties,
 		}
 
 		return `settings.multiViewers.${this.multiViewerId}.windows.${this.properties.windowIndex}`

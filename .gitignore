@@ -2,6 +2,7 @@ node_modules
 dist
 test
 src/**/*.js
+scratch
 
 /coverage
 /docs

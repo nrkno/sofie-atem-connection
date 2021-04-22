@@ -15,13 +15,7 @@ export default class DataTransferFrame extends DataTransfer {
 
 		this.frameId = frameId
 		this.data = data
-		this.hash = this.data
-			? crypto
-					.createHash('md5')
-					.update(this.data)
-					.digest()
-					.toString()
-			: ''
+		this.hash = this.data ? crypto.createHash('md5').update(this.data).digest().toString() : ''
 	}
 
 	public start(): Commands.ISerializableCommand[] {
@@ -30,7 +24,7 @@ export default class DataTransferFrame extends DataTransfer {
 			transferStoreId: this.storeId,
 			transferIndex: this.frameId,
 			size: this.data.length,
-			mode: Enums.TransferMode.Write
+			mode: Enums.TransferMode.Write,
 		})
 		return [command]
 	}
@@ -70,7 +64,7 @@ export default class DataTransferFrame extends DataTransfer {
 			if (this._sent > this.data.length) break
 			const command = new Commands.DataTransferDataCommand({
 				transferId: this.transferId,
-				body: this.data.slice(this._sent, this._sent + chunkSize)
+				body: this.data.slice(this._sent, this._sent + chunkSize),
 			})
 			commands.push(command)
 			this._sent += chunkSize

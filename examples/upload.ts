@@ -18,8 +18,9 @@ let stuckTimeout: any = null
 
 function uploadNext(): void {
 	uploadStarted = Date.now()
-	conn.uploadStill(uploadNumber % conn.state.media.stillPool.length, file, 'contemplation..', '').then(
-		async _res => {
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	conn.uploadStill(uploadNumber % conn.state!.media.stillPool.length, file, 'contemplation..', '').then(
+		async (_res) => {
 			console.log(`Uploaded still #${uploadNumber} in ${Date.now() - uploadStarted}ms at 1080p`)
 			uploadNumber++
 
@@ -34,7 +35,7 @@ function uploadNext(): void {
 
 			setTimeout(() => uploadNext(), 0)
 		},
-		e => {
+		(e) => {
 			console.log('e', e)
 			setTimeout(() => uploadNext(), 500)
 		}
@@ -46,7 +47,10 @@ conn.on('disconnected', () => {
 	console.log('Connection lost')
 	process.exit(0)
 })
-conn.connect(IP)
+conn.connect(IP).catch((e) => {
+	console.error(e)
+	process.exit(0)
+})
 conn.once('connected', () => {
 	console.log(`connected in ${Date.now() - uploadStarted}ms`)
 	uploadNext()

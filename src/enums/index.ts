@@ -16,7 +16,7 @@ export enum Model {
 	MiniPro = 0x0e,
 	MiniProISO = 0x0f,
 	MiniExtreme = 0x10,
-	MiniExtremeISO = 0x11
+	MiniExtremeISO = 0x11,
 }
 
 export enum ProtocolVersion {
@@ -24,7 +24,7 @@ export enum ProtocolVersion {
 	V7_5_2 = 0x0002001b, // 2.27 // The naming of this may be off
 	V8_0 = 0x0002001c, // 2.28
 	V8_0_1 = 0x0002001d, // 2.29
-	V8_1_1 = 0x0002001e // 2.30
+	V8_1_1 = 0x0002001e, // 2.30
 }
 
 export enum TransitionStyle {
@@ -32,7 +32,7 @@ export enum TransitionStyle {
 	DIP = 0x01,
 	WIPE = 0x02,
 	DVE = 0x03,
-	STING = 0x04
+	STING = 0x04,
 }
 
 export enum DVEEffect {
@@ -74,7 +74,7 @@ export enum DVEEffect {
 
 	GraphicCWSpin = 32,
 	GraphicCCWSpin = 33,
-	GraphicLogoWipe = 34
+	GraphicLogoWipe = 34,
 }
 
 export enum MacroAction {
@@ -83,7 +83,7 @@ export enum MacroAction {
 	StopRecord = 2,
 	InsertUserWait = 3,
 	Continue = 4,
-	Delete = 5
+	Delete = 5,
 }
 
 export enum ExternalPortType {
@@ -99,7 +99,7 @@ export enum ExternalPortType {
 	Internal = 256,
 	TSJack = 512,
 	MADI = 1024,
-	TRSJack = 2048
+	TRSJack = 2048,
 }
 
 export enum InternalPortType {
@@ -117,7 +117,7 @@ export enum InternalPortType {
 	Auxiliary = 129,
 	Mask = 130,
 	// Since V8_1_1
-	MultiViewer = 131
+	MultiViewer = 131,
 }
 
 export enum SourceAvailability {
@@ -129,7 +129,7 @@ export enum SourceAvailability {
 	KeySource = 1 << 4,
 	Auxiliary1 = 1 << 5,
 	Auxiliary2 = 1 << 6,
-	All = Auxiliary | Multiviewer | SuperSourceArt | SuperSourceBox | KeySource | Auxiliary1 | Auxiliary2
+	All = Auxiliary | Multiviewer | SuperSourceArt | SuperSourceBox | KeySource | Auxiliary1 | Auxiliary2,
 }
 
 export enum MeAvailability {
@@ -138,21 +138,21 @@ export enum MeAvailability {
 	Me2 = 1 << 1,
 	Me3 = 1 << 2,
 	Me4 = 1 << 3,
-	All = Me1 | Me2 | Me3 | Me4
+	All = Me1 | Me2 | Me3 | Me4,
 }
 
 export enum BorderBevel {
 	None = 0,
 	InOut = 1,
 	In = 2,
-	Out = 3
+	Out = 3,
 }
 
 export enum IsAtKeyFrame {
 	None = 0,
 	A = 1 << 0,
 	B = 1 << 1,
-	RunToInfinite = 1 << 2
+	RunToInfinite = 1 << 2,
 }
 
 export enum Pattern {
@@ -173,14 +173,14 @@ export enum Pattern {
 	BottomCentreBox = 14,
 	LeftCentreBox = 15,
 	TopLeftDiagonal = 16,
-	TopRightDiagonal = 17
+	TopRightDiagonal = 17,
 }
 
 export enum MixEffectKeyType {
 	Luma = 0,
 	Chroma = 1,
 	Pattern = 2,
-	DVE = 3
+	DVE = 3,
 }
 
 export enum FlyKeyKeyFrame {
@@ -188,7 +188,7 @@ export enum FlyKeyKeyFrame {
 	A = 1,
 	B = 2,
 	Full = 3,
-	RunToInfinite = 4
+	RunToInfinite = 4,
 }
 
 export enum FlyKeyDirection {
@@ -201,19 +201,19 @@ export enum FlyKeyDirection {
 	MiddleRight = 6,
 	BottomLeft = 7,
 	BottomCentre = 8,
-	BottomRight = 9
+	BottomRight = 9,
 }
 
 export enum SuperSourceArtOption {
 	Background,
-	Foreground
+	Foreground,
 }
 
 export enum TransferMode {
 	NoOp,
 	Write,
 	Clear,
-	WriteAudio = 256
+	WriteAudio = 256,
 }
 
 export enum VideoMode {
@@ -249,44 +249,44 @@ export enum VideoMode {
 	N8KHDp5994 = 25,
 
 	N1080p30 = 26,
-	N1080p60 = 27
+	N1080p60 = 27,
 }
 
 export enum TransferState {
 	Queued,
 	Locked,
 	Transferring,
-	Finished
+	Finished,
 }
 
 export enum MediaSourceType {
 	Still = 1,
-	Clip
+	Clip,
 }
 
 export enum AudioMixOption {
 	Off = 0,
 	On = 1,
-	AudioFollowVideo = 2
+	AudioFollowVideo = 2,
 }
 
 export enum AudioSourceType {
 	ExternalVideo,
 	MediaPlayer,
-	ExternalAudio
+	ExternalAudio,
 }
 
 export enum StreamingError {
 	None,
 	InvalidState = 1 << 4,
-	Unknown = 1 << 15
+	Unknown = 1 << 15,
 }
 
 export enum StreamingStatus {
 	Idle = 1 << 0,
 	Connecting = 1 << 1,
 	Streaming = 1 << 2,
-	Stopping = 1 << 5 // + Streaming
+	Stopping = 1 << 5, // + Streaming
 }
 
 export enum RecordingError {
@@ -296,13 +296,13 @@ export enum RecordingError {
 	MediaError = 1 << 3,
 	MediaUnformatted = 1 << 4,
 	DroppingFrames = 1 << 5,
-	Unknown = 1 << 15
+	Unknown = 1 << 15,
 }
 
 export enum RecordingStatus {
 	Idle = 0,
 	Recording = 1 << 0,
-	Stopping = 1 << 7
+	Stopping = 1 << 7,
 }
 
 export enum RecordingDiskStatus {
@@ -311,36 +311,36 @@ export enum RecordingDiskStatus {
 	Active = 1 << 2,
 	Recording = 1 << 3,
 
-	Removed = 1 << 5
+	Removed = 1 << 5,
 }
 
 export enum FairlightAudioMixOption {
 	Off = 1,
 	On = 2,
-	AudioFollowVideo = 4
+	AudioFollowVideo = 4,
 }
 
 export enum FairlightInputConfiguration {
 	Mono = 1,
 	Stereo = 2,
-	DualMono = 4
+	DualMono = 4,
 }
 
 export enum FairlightAnalogInputLevel {
 	Microphone = 1,
 	ConsumerLine = 2,
 	// [Since(ProtocolVersion.V8_1_1)]
-	ProLine = 4
+	ProLine = 4,
 }
 
 export enum FairlightAudioSourceType {
 	Mono = 0,
-	Stereo = 1
+	Stereo = 1,
 }
 
 export enum FairlightInputType {
 	EmbeddedWithVideo = 0,
 	MediaPlayer = 1,
 	AudioIn = 2,
-	MADI = 4
+	MADI = 4,
 }

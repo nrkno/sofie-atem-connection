@@ -11,7 +11,7 @@ export class DataTransferAckCommand extends DeserializedCommand<DataTransferAckP
 	public static deserialize(rawCommand: Buffer): DataTransferAckCommand {
 		const properties = {
 			transferId: rawCommand.readUInt16BE(0),
-			transferIndex: rawCommand.readUInt8(2)
+			transferIndex: rawCommand.readUInt8(2),
 		}
 
 		return new DataTransferAckCommand(properties)

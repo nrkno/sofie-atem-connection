@@ -10,7 +10,7 @@ export class FairlightMixerInputCommand extends WritableCommand<
 > {
 	public static MaskFlags = {
 		rcaToXlrEnabled: 1 << 0,
-		activeConfiguration: 1 << 1
+		activeConfiguration: 1 << 1,
 	}
 
 	public static readonly rawName = 'CFIP'
@@ -38,7 +38,7 @@ export class FairlightMixerInputCommand extends WritableCommand<
 export class FairlightMixerInputV8Command extends WritableCommand<OmitReadonly<FairlightAudioInputProperties>> {
 	public static MaskFlags = {
 		activeConfiguration: 1 << 0,
-		activeInputLevel: 1 << 1
+		activeInputLevel: 1 << 1,
 	}
 	public static readonly rawName = 'CFIP'
 	public static readonly minimumVersion = ProtocolVersion.V8_1_1
@@ -96,7 +96,7 @@ export class FairlightMixerInputUpdateCommand extends DeserializedCommand<Fairli
 				? rawCommand.readUInt8(9) > 0
 					? FairlightAnalogInputLevel.ProLine
 					: FairlightAnalogInputLevel.Microphone
-				: rawCommand.readUInt8(12)
+				: rawCommand.readUInt8(12),
 		}
 
 		return new FairlightMixerInputUpdateCommand(index, properties)
@@ -110,7 +110,7 @@ export class FairlightMixerInputUpdateCommand extends DeserializedCommand<Fairli
 		state.fairlight.inputs[this.index] = {
 			sources: {},
 			...state.fairlight.inputs[this.index],
-			properties: this.properties
+			properties: this.properties,
 		}
 		return `fairlight.inputs.${this.index}.properties`
 	}

@@ -8,7 +8,7 @@ export class MacroRecordingStatusCommand extends DeserializedCommand<MacroRecord
 	public static deserialize(rawCommand: Buffer): MacroRecordingStatusCommand {
 		const properties = {
 			isRecording: rawCommand.readUInt8(0) != 0,
-			macroIndex: rawCommand.readUInt16BE(2)
+			macroIndex: rawCommand.readUInt16BE(2),
 		}
 
 		return new MacroRecordingStatusCommand(properties)
@@ -17,7 +17,7 @@ export class MacroRecordingStatusCommand extends DeserializedCommand<MacroRecord
 	public applyToState(state: AtemState): string {
 		state.macro.macroRecorder = {
 			...state.macro.macroRecorder,
-			...this.properties
+			...this.properties,
 		}
 		return `macro.macroRecorder`
 	}

@@ -38,7 +38,7 @@ function createSocketChild(
 		{
 			address: ADDRESS,
 			port: DEFAULT_PORT,
-			debugBuffers: false
+			debugBuffers: false,
 		},
 		onDisconnect || ((): Promise<void> => Promise.resolve()),
 		// async msg => { console.log(msg) },
@@ -49,7 +49,7 @@ function createSocketChild(
 }
 
 describe('SocketChild', () => {
-	let clock: fakeTimers.InstalledClock
+	let clock: fakeTimers.Clock
 	beforeEach(() => {
 		clock = fakeTimers.install()
 	})
@@ -119,7 +119,7 @@ describe('SocketChild', () => {
 					0x00,
 					0x00,
 					0x00,
-					0x00 // Unknown Payload
+					0x00, // Unknown Payload
 				])
 			)
 
@@ -150,7 +150,7 @@ describe('SocketChild', () => {
 			0x00,
 			0x00, // 'Client pkt id' Not needed
 			0x00,
-			0x00 // Packet Id
+			0x00, // Packet Id
 		])
 		buffer.writeUInt16BE(pktId, 10) // Packet Id
 
@@ -247,7 +247,7 @@ describe('SocketChild', () => {
 
 	test('Inbound commands', async () => {
 		let gotCmds: number[] = []
-		const child = createSocketChild(buf => {
+		const child = createSocketChild((buf) => {
 			gotCmds.push(buf.length)
 			return Promise.resolve()
 		})
@@ -301,7 +301,7 @@ describe('SocketChild', () => {
 
 	test('Inbound commands - around wrap', async () => {
 		let gotCmds: number[] = []
-		const child = createSocketChild(buf => {
+		const child = createSocketChild((buf) => {
 			gotCmds.push(buf.length)
 			return Promise.resolve()
 		})
@@ -389,7 +389,7 @@ describe('SocketChild', () => {
 
 				received.push({
 					id: msg.readUInt16BE(10),
-					payload: msg.slice(12)
+					payload: msg.slice(12),
 				})
 			}
 
@@ -405,8 +405,8 @@ describe('SocketChild', () => {
 			expect(received).toEqual([
 				{
 					id: 123,
-					payload: buf1Expected
-				}
+					payload: buf1Expected,
+				},
 			])
 			received = []
 			expect(getInflightIds(child)).toEqual([123])
@@ -416,8 +416,8 @@ describe('SocketChild', () => {
 			expect(received).toEqual([
 				{
 					id: 124,
-					payload: buf1Expected
-				}
+					payload: buf1Expected,
+				},
 			])
 			received = []
 			expect(getInflightIds(child)).toEqual([123, 124])
@@ -442,7 +442,7 @@ describe('SocketChild', () => {
 			0x00,
 			0x00, // 'Client pkt id' Not needed
 			0x00,
-			0x00 // No Packet Id
+			0x00, // No Packet Id
 		])
 		buffer.writeUInt16BE(pktId, 4) // Acked Id
 
@@ -451,7 +451,7 @@ describe('SocketChild', () => {
 
 	test('SendCommand - acks', async () => {
 		let acked: Array<{ packetId: number; trackingId: number }> = []
-		const child = createSocketChild(undefined, async ids => {
+		const child = createSocketChild(undefined, async (ids) => {
 			acked.push(...ids)
 		})
 		try {
@@ -474,12 +474,12 @@ describe('SocketChild', () => {
 			child.sendCommands([
 				{ payload: buf1, rawName: '', trackingId: 5 },
 				{ payload: buf1, rawName: '', trackingId: 6 },
-				{ payload: buf1, rawName: '', trackingId: 7 }
+				{ payload: buf1, rawName: '', trackingId: 7 },
 			])
 			child.sendCommands([{ payload: buf1, rawName: '', trackingId: 8 }])
 			child.sendCommands([
 				{ payload: buf1, rawName: '', trackingId: 9 },
-				{ payload: buf1, rawName: '', trackingId: 10 }
+				{ payload: buf1, rawName: '', trackingId: 10 },
 			])
 			expect(received).toEqual([123, 124, 125, 126, 127, 128])
 			received = []
@@ -492,7 +492,7 @@ describe('SocketChild', () => {
 			expect(acked).toEqual([
 				{ packetId: 123, trackingId: 5 },
 				{ packetId: 124, trackingId: 6 },
-				{ packetId: 125, trackingId: 7 }
+				{ packetId: 125, trackingId: 7 },
 			])
 			acked = []
 
@@ -510,7 +510,7 @@ describe('SocketChild', () => {
 
 	test('SendCommand - acks wrap', async () => {
 		let acked: Array<{ packetId: number; trackingId: number }> = []
-		const child = createSocketChild(undefined, async ids => {
+		const child = createSocketChild(undefined, async (ids) => {
 			acked.push(...ids)
 		})
 		try {
@@ -533,14 +533,14 @@ describe('SocketChild', () => {
 			child.sendCommands([
 				{ payload: buf1, rawName: '', trackingId: 5 }, // 32764
 				{ payload: buf1, rawName: '', trackingId: 6 }, // 32765
-				{ payload: buf1, rawName: '', trackingId: 7 } // 32766
+				{ payload: buf1, rawName: '', trackingId: 7 }, // 32766
 			])
 			child.sendCommands([
-				{ payload: buf1, rawName: '', trackingId: 8 } // 32767
+				{ payload: buf1, rawName: '', trackingId: 8 }, // 32767
 			])
 			child.sendCommands([
 				{ payload: buf1, rawName: '', trackingId: 9 }, // 0
-				{ payload: buf1, rawName: '', trackingId: 10 } // 1
+				{ payload: buf1, rawName: '', trackingId: 10 }, // 1
 			])
 			expect(received).toEqual([32764, 32765, 32766, 32767, 0, 1])
 			received = []
@@ -553,7 +553,7 @@ describe('SocketChild', () => {
 			expect(acked).toEqual([
 				{ packetId: 32764, trackingId: 5 },
 				{ packetId: 32765, trackingId: 6 },
-				{ packetId: 32766, trackingId: 7 }
+				{ packetId: 32766, trackingId: 7 },
 			])
 			acked = []
 
@@ -562,7 +562,7 @@ describe('SocketChild', () => {
 			expect(getInflightIds(child)).toEqual([1])
 			expect(acked).toEqual([
 				{ packetId: 32767, trackingId: 8 },
-				{ packetId: 0, trackingId: 9 }
+				{ packetId: 0, trackingId: 9 },
 			])
 		} finally {
 			if (child) {
@@ -574,7 +574,7 @@ describe('SocketChild', () => {
 
 	test('SendCommand - retransmit timeouts', async () => {
 		let acked: Array<{ packetId: number; trackingId: number }> = []
-		const child = createSocketChild(undefined, async ids => {
+		const child = createSocketChild(undefined, async (ids) => {
 			acked.push(...ids)
 		})
 		try {
@@ -600,7 +600,7 @@ describe('SocketChild', () => {
 				{ payload: buf1, rawName: '', trackingId: 7 }, // 32766
 				{ payload: buf1, rawName: '', trackingId: 8 }, // 32767
 				{ payload: buf1, rawName: '', trackingId: 9 }, // 0
-				{ payload: buf1, rawName: '', trackingId: 10 } // 1
+				{ payload: buf1, rawName: '', trackingId: 10 }, // 1
 			])
 			expect(received).toEqual([32764, 32765, 32766, 32767, 0, 1])
 			received = []
@@ -612,7 +612,7 @@ describe('SocketChild', () => {
 			expect(getInflightIds(child)).toEqual([32766, 32767, 0, 1])
 			expect(acked).toEqual([
 				{ packetId: 32764, trackingId: 5 },
-				{ packetId: 32765, trackingId: 6 }
+				{ packetId: 32765, trackingId: 6 },
 			])
 			acked = []
 			expect(received).toEqual([])
@@ -630,7 +630,7 @@ describe('SocketChild', () => {
 
 			// Add another to the queue
 			child.sendCommands([
-				{ payload: buf1, rawName: '', trackingId: 11 } // 2
+				{ payload: buf1, rawName: '', trackingId: 11 }, // 2
 			])
 			expect(received).toEqual([2])
 			received = []
@@ -662,7 +662,7 @@ describe('SocketChild', () => {
 			0x00,
 			0x00, // 'Client pkt id' Not needed
 			0x00,
-			0x00 // No Packet Id
+			0x00, // No Packet Id
 		])
 		buffer.writeUInt16BE(pktId, 6) // retransmit Id
 
@@ -671,7 +671,7 @@ describe('SocketChild', () => {
 
 	test('SendCommand - retransmit request', async () => {
 		let acked: Array<{ packetId: number; trackingId: number }> = []
-		const child = createSocketChild(undefined, async ids => {
+		const child = createSocketChild(undefined, async (ids) => {
 			acked.push(...ids)
 		})
 		try {
@@ -697,7 +697,7 @@ describe('SocketChild', () => {
 				{ payload: buf1, rawName: '', trackingId: 7 }, // 32766
 				{ payload: buf1, rawName: '', trackingId: 8 }, // 32767
 				{ payload: buf1, rawName: '', trackingId: 9 }, // 0
-				{ payload: buf1, rawName: '', trackingId: 10 } // 1
+				{ payload: buf1, rawName: '', trackingId: 10 }, // 1
 			])
 			expect(received).toEqual([32764, 32765, 32766, 32767, 0, 1])
 			received = []
@@ -709,7 +709,7 @@ describe('SocketChild', () => {
 			expect(getInflightIds(child)).toEqual([32766, 32767, 0, 1])
 			expect(acked).toEqual([
 				{ packetId: 32764, trackingId: 5 },
-				{ packetId: 32765, trackingId: 6 }
+				{ packetId: 32765, trackingId: 6 },
 			])
 			acked = []
 			expect(received).toEqual([])
@@ -737,7 +737,7 @@ describe('SocketChild', () => {
 		let connected = true
 		const child = createSocketChild(
 			undefined,
-			async ids => {
+			async (ids) => {
 				acked.push(...ids)
 			},
 			async () => {
@@ -754,7 +754,7 @@ describe('SocketChild', () => {
 			const buf1 = [0, 1, 2]
 			child.sendCommands([
 				{ payload: buf1, rawName: '', trackingId: 5 }, // 32767
-				{ payload: buf1, rawName: '', trackingId: 6 } // 0
+				{ payload: buf1, rawName: '', trackingId: 6 }, // 0
 			])
 			expect(getInflightIds(child)).toEqual([32767, 0])
 			expect(acked).toEqual([])
@@ -777,7 +777,7 @@ describe('SocketChild', () => {
 		let connected = true
 		const child = createSocketChild(
 			undefined,
-			async ids => {
+			async (ids) => {
 				acked.push(...ids)
 			},
 			async () => {
@@ -794,7 +794,7 @@ describe('SocketChild', () => {
 			const buf1 = [0, 1, 2]
 			child.sendCommands([
 				{ payload: buf1, rawName: '', trackingId: 5 }, // 32767
-				{ payload: buf1, rawName: '', trackingId: 6 } // 0
+				{ payload: buf1, rawName: '', trackingId: 6 }, // 0
 			])
 			expect(getInflightIds(child)).toEqual([32767, 0])
 			expect(acked).toEqual([])
@@ -817,7 +817,7 @@ describe('SocketChild', () => {
 		let connected = true
 		const child = createSocketChild(
 			undefined,
-			async ids => {
+			async (ids) => {
 				acked.push(...ids)
 			},
 			async () => {
@@ -836,7 +836,7 @@ describe('SocketChild', () => {
 			const buf1 = [0, 1, 2]
 			child.sendCommands([
 				{ payload: buf1, rawName: '', trackingId: 5 }, // 32767
-				{ payload: buf1, rawName: '', trackingId: 6 } // 0
+				{ payload: buf1, rawName: '', trackingId: 6 }, // 0
 			])
 			expect(getInflightIds(child)).toEqual([32767, 0])
 			expect(acked).toEqual([])
@@ -847,7 +847,7 @@ describe('SocketChild', () => {
 			expect(getInflightIds(child)).toEqual([])
 			expect(acked).toEqual([
 				{ packetId: 32767, trackingId: 5 },
-				{ packetId: 0, trackingId: 6 }
+				{ packetId: 0, trackingId: 6 },
 			])
 			acked = []
 
@@ -867,7 +867,7 @@ describe('SocketChild', () => {
 			await clock.tickAsync(1990)
 			expect(connected).toBeTrue()
 			child.sendCommands([
-				{ payload: buf1, rawName: '', trackingId: 7 } // 1
+				{ payload: buf1, rawName: '', trackingId: 7 }, // 1
 			])
 			expect(getInflightIds(child)).toEqual([1])
 			expect(acked).toEqual([])

@@ -10,7 +10,7 @@ export class AudioMixerInputCommand extends WritableCommand<OmitReadonly<AudioCh
 		mixOption: 1 << 0,
 		gain: 1 << 1,
 		balance: 1 << 2,
-		rcaToXlrEnabled: 1 << 3
+		rcaToXlrEnabled: 1 << 3,
 	}
 	public static readonly rawName = 'CAMI'
 
@@ -54,7 +54,7 @@ export class AudioMixerInputUpdateCommand extends DeserializedCommand<
 			portType: rawCommand.readUInt16BE(6),
 			mixOption: rawCommand.readUInt8(8),
 			gain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(10)),
-			balance: Util.IntToBalance(rawCommand.readInt16BE(12))
+			balance: Util.IntToBalance(rawCommand.readInt16BE(12)),
 		}
 
 		return new AudioMixerInputUpdateCommand(index, properties)
@@ -68,7 +68,7 @@ export class AudioMixerInputUpdateCommand extends DeserializedCommand<
 		state.audio.channels[this.index] = {
 			...this.properties,
 			rcaToXlrEnabled: false,
-			supportsRcaToXlrEnabled: false
+			supportsRcaToXlrEnabled: false,
 		}
 		return `audio.channels.${this.index}`
 	}
@@ -95,7 +95,7 @@ export class AudioMixerInputUpdateV8Command extends DeserializedCommand<AudioCha
 			gain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(10)),
 			balance: Util.IntToBalance(rawCommand.readInt16BE(12)),
 			supportsRcaToXlrEnabled: rawCommand.readUInt8(14) != 0,
-			rcaToXlrEnabled: rawCommand.readUInt8(15) != 0
+			rcaToXlrEnabled: rawCommand.readUInt8(15) != 0,
 		}
 
 		return new AudioMixerInputUpdateV8Command(index, properties)

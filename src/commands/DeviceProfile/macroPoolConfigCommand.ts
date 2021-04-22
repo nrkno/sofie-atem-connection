@@ -11,7 +11,7 @@ export class MacroPoolConfigCommand extends DeserializedCommand<MacroPoolInfo> {
 
 	public static deserialize(rawCommand: Buffer): MacroPoolConfigCommand {
 		return new MacroPoolConfigCommand({
-			macroCount: rawCommand.readUInt8(0)
+			macroCount: rawCommand.readUInt8(0),
 		})
 	}
 

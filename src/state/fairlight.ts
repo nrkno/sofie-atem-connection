@@ -4,7 +4,7 @@ import {
 	FairlightAnalogInputLevel,
 	FairlightAudioSourceType,
 	ExternalPortType,
-	FairlightInputType
+	FairlightInputType,
 } from '../enums'
 
 // export interface FairlightAudioMasterChannel {

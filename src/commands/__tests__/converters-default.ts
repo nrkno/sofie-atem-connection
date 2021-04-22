@@ -1,50 +1,49 @@
 import { PropertyAliasResult, CommandTestConverterSet } from './index.spec'
 import { UpstreamKeyerMaskSettings } from '../../state/video/upstreamKeyers'
 import { Enums, Util } from '../..'
-import * as bigInt from 'big-integer'
 
 export const DefaultCommandConverters: CommandTestConverterSet = {
 	_ver: {
 		idAliases: {},
 		propertyAliases: {
-			protocolVersion: (v: number): PropertyAliasResult => ({ val: v, name: 'version' })
-		}
+			protocolVersion: (v: number): PropertyAliasResult => ({ val: v, name: 'version' }),
+		},
 	},
 	_pin: {
 		idAliases: {},
 		propertyAliases: {
-			name: (val: any): PropertyAliasResult => ({ val, name: 'productIdentifier' })
-		}
+			name: (val: any): PropertyAliasResult => ({ val, name: 'productIdentifier' }),
+		},
 	},
 	_SSC: {
 		idAliases: {
-			ssrcId: 'sSrcId'
+			ssrcId: 'sSrcId',
 		},
 		propertyAliases: {
-			boxes: (val: any): PropertyAliasResult => ({ val, name: 'boxCount' })
+			boxes: (val: any): PropertyAliasResult => ({ val, name: 'boxCount' }),
 		},
-		customMutate: (val: any): any => {
-			if (val.sSrcId === undefined) {
+		customMutate: (val: Record<string, unknown>): any => {
+			if (!('sSrcId' in val)) {
 				val.sSrcId = 0
 			}
 			return val
-		}
+		},
 	},
 	InPr: {
 		idAliases: {},
 		propertyAliases: {
-			id: (val: any): PropertyAliasResult => ({ val, name: 'inputId' })
+			id: (val: any): PropertyAliasResult => ({ val, name: 'inputId' }),
 		},
-		customMutate: (props): any => {
-			props.externalPorts = Util.getComponents(props.availableExternalPorts)
+		customMutate: (props: Record<string, unknown>): any => {
+			props.externalPorts = Util.getComponents(props.availableExternalPorts as any)
 			delete props.availableExternalPorts
 			return props
-		}
+		},
 	},
 	SSBP: {
 		idAliases: {
 			boxId: 'boxIndex',
-			ssrcId: 'sSrcId'
+			ssrcId: 'sSrcId',
 		},
 		propertyAliases: {
 			cropBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
@@ -54,19 +53,19 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			size: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
 			positionX: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100), name: 'x' }),
 			positionY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100), name: 'y' }),
-			inputSource: (v: number): PropertyAliasResult => ({ val: v, name: 'source' })
+			inputSource: (v: number): PropertyAliasResult => ({ val: v, name: 'source' }),
 		},
-		customMutate: (val: any): any => {
-			if (val.sSrcId === undefined) {
+		customMutate: (val: Record<string, unknown>): any => {
+			if (!('sSrcId' in val)) {
 				val.sSrcId = 0
 			}
 			return val
-		}
+		},
 	},
 	CSBP: {
 		idAliases: {
 			boxId: 'boxIndex',
-			ssrcId: 'sSrcId'
+			ssrcId: 'sSrcId',
 		},
 		propertyAliases: {
 			cropBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
@@ -76,8 +75,8 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			size: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
 			positionX: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100), name: 'x' }),
 			positionY: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100), name: 'y' }),
-			inputSource: (v: number): PropertyAliasResult => ({ val: v, name: 'source' })
-		}
+			inputSource: (v: number): PropertyAliasResult => ({ val: v, name: 'source' }),
+		},
 	},
 	SSrc: {
 		idAliases: {},
@@ -94,9 +93,9 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			borderInnerSoftness: (v: number): PropertyAliasResult => ({ val: v }),
 			borderOuterSoftness: (v: number): PropertyAliasResult => ({ val: v }),
 			artFillInput: (v: number): PropertyAliasResult => ({ val: v, name: 'artFillSource' }),
-			artKeyInput: (v: number): PropertyAliasResult => ({ val: v, name: 'artCutSource' })
+			artKeyInput: (v: number): PropertyAliasResult => ({ val: v, name: 'artCutSource' }),
 		},
-		customMutate: (o: any): any => {
+		customMutate: (o: Record<string, unknown>): any => {
 			return {
 				properties: {
 					artFillSource: o.artFillSource,
@@ -105,7 +104,7 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 					artPreMultiplied: o.artPreMultiplied,
 					artClip: o.artClip,
 					artGain: o.artGain,
-					artInvertKey: o.artInvertKey
+					artInvertKey: o.artInvertKey,
 				},
 				border: {
 					borderEnabled: o.borderEnabled,
@@ -120,14 +119,14 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 					borderSaturation: o.borderSaturation,
 					borderLuma: o.borderLuma,
 					borderLightSourceDirection: o.borderLightSourceDirection,
-					borderLightSourceAltitude: o.borderLightSourceAltitude
-				}
+					borderLightSourceAltitude: o.borderLightSourceAltitude,
+				},
 			}
-		}
+		},
 	},
 	CSSc: {
 		idAliases: {
-			ssrcId: 'sSrcId'
+			ssrcId: 'sSrcId',
 		},
 		propertyAliases: {
 			artClip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
@@ -138,12 +137,12 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			borderInnerWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
 			borderLuma: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
 			borderOuterWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
-			borderSaturation: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
-		}
+			borderSaturation: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+		},
 	},
 	DskP: {
 		idAliases: {
-			downstreamKeyerId: 'index'
+			downstreamKeyerId: 'index',
 		},
 		propertyAliases: {
 			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
@@ -152,15 +151,15 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			maskLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
 			maskRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
 			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
-			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) })
+			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
 		},
-		customMutate: (obj: any): any => {
+		customMutate: (obj: Record<string, unknown>): any => {
 			obj['mask'] = {
 				enabled: obj['maskEnabled'],
 				top: obj['maskTop'],
 				bottom: obj['maskBottom'],
 				left: obj['maskLeft'],
-				right: obj['maskRight']
+				right: obj['maskRight'],
 			}
 			delete obj['maskEnabled']
 			delete obj['maskTop']
@@ -168,114 +167,114 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			delete obj['maskLeft']
 			delete obj['maskRight']
 			return obj
-		}
+		},
 	},
 	CDsG: {
 		idAliases: {
-			downstreamKeyerId: 'index'
+			downstreamKeyerId: 'index',
 		},
 		propertyAliases: {
 			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
 			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
-			preMultipliedKey: (v: number): PropertyAliasResult => ({ val: v, name: 'preMultiply' })
-		}
+			preMultipliedKey: (v: number): PropertyAliasResult => ({ val: v, name: 'preMultiply' }),
+		},
 	},
 	DskS: {
 		idAliases: {
-			downstreamKeyerId: 'index'
+			downstreamKeyerId: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	DskB: {
 		idAliases: {
-			downstreamKeyerId: 'index'
+			downstreamKeyerId: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	DDsA: {
 		idAliases: {
-			downstreamKeyerId: 'index'
+			downstreamKeyerId: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	CDsT: {
 		idAliases: {
-			downstreamKeyerId: 'index'
+			downstreamKeyerId: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	CDsR: {
 		idAliases: {
-			downstreamKeyerId: 'index'
+			downstreamKeyerId: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	CDsL: {
 		idAliases: {
-			downstreamKeyerId: 'index'
+			downstreamKeyerId: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	CDsC: {
 		idAliases: {
-			downstreamKeyerId: 'index'
+			downstreamKeyerId: 'index',
 		},
 		propertyAliases: {
-			cutSource: (v: number): PropertyAliasResult => ({ val: v, name: 'input' })
-		}
+			cutSource: (v: number): PropertyAliasResult => ({ val: v, name: 'input' }),
+		},
 	},
 	CDsF: {
 		idAliases: {
-			downstreamKeyerId: 'index'
+			downstreamKeyerId: 'index',
 		},
 		propertyAliases: {
-			fillSource: (v: number): PropertyAliasResult => ({ val: v, name: 'input' })
-		}
+			fillSource: (v: number): PropertyAliasResult => ({ val: v, name: 'input' }),
+		},
 	},
 	CDsM: {
 		idAliases: {
-			downstreamKeyerId: 'index'
+			downstreamKeyerId: 'index',
 		},
 		propertyAliases: {
 			maskEnabled: (val: any): PropertyAliasResult => ({ val, name: 'enabled' }),
 			maskLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'left' }),
 			maskRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'right' }),
 			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'top' }),
-			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'bottom' })
-		}
+			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'bottom' }),
+		},
 	},
 	AMIP: {
 		idAliases: {
-			index: 'index'
+			index: 'index',
 		},
 		propertyAliases: {
 			balance: (v: number): PropertyAliasResult => ({ val: Math.round(v) }),
-			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 })
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 }),
 		},
-		customMutate: (props): any => {
+		customMutate: (props: Record<string, unknown>): any => {
 			delete props.indexOfSourceType
 			return props
 		},
-		processDeserialized: (props): void => {
-			props.gain = Math.round(props.gain * 100) / 100
-		}
+		processDeserialized: (props: Record<string, unknown>): void => {
+			props.gain = Math.round((props.gain as any) * 100) / 100
+		},
 	},
 	CAMI: {
 		idAliases: {
-			index: 'index'
+			index: 'index',
 		},
 		propertyAliases: {
-			balance: (v: number): PropertyAliasResult => ({ val: Math.round(v * 200) / 200 })
+			balance: (v: number): PropertyAliasResult => ({ val: Math.round(v * 200) / 200 }),
 			// 'gain': (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 })
-		}
+		},
 	},
 	AMMO: {
 		idAliases: {},
 		propertyAliases: {
 			programOutFollowFadeToBlack: (val: any): PropertyAliasResult => ({ val, name: 'followFadeToBlack' }),
 			balance: (v: number): PropertyAliasResult => ({ val: Math.round(v) }),
-			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 })
-		}
+			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) / 100 }),
+		},
 	},
 	_top: {
 		idAliases: {},
@@ -286,9 +285,9 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			mixEffectBlocks: (val: any): PropertyAliasResult => ({ val, name: 'mixEffects' }),
 			serialPort: (val: any): PropertyAliasResult => ({ val, name: 'serialPorts' }),
 			videoSources: (val: any): PropertyAliasResult => ({ val, name: 'sources' }),
-			superSource: (val: any): PropertyAliasResult => ({ val, name: 'superSources' })
+			superSource: (val: any): PropertyAliasResult => ({ val, name: 'superSources' }),
 		},
-		customMutate: (props): any => {
+		customMutate: (props: Record<string, unknown>): any => {
 			if (props.multiviewers === undefined) {
 				props.multiviewers = -1
 			}
@@ -300,42 +299,42 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			props.advancedChromaKeyers = props.advancedChromaKeyers || false
 			props.cameraControl = props.cameraControl || false
 			return props
-		}
+		},
 	},
 	_MeC: {
 		idAliases: {
-			index: 'index'
+			index: 'index',
 		},
 		propertyAliases: {
-			balance: (v: number): PropertyAliasResult => ({ val: Math.round(v * 200) / 200 })
-		}
+			balance: (v: number): PropertyAliasResult => ({ val: Math.round(v * 200) / 200 }),
+		},
 	},
 	FTCD: {
 		idAliases: {},
 		propertyAliases: {},
-		customMutate: (obj: any): any => {
+		customMutate: (obj: Record<string, unknown>): any => {
 			delete obj['unknown']
 			delete obj['test3']
 			return obj
-		}
+		},
 	},
 	FTFD: {
 		idAliases: {},
 		propertyAliases: {
-			filename: (val: any): PropertyAliasResult => ({ val, name: 'fileName' })
-		}
+			filename: (val: any): PropertyAliasResult => ({ val, name: 'fileName' }),
+		},
 	},
 	Powr: {
 		idAliases: {},
 		propertyAliases: {},
-		customMutate: (obj: any): any => {
+		customMutate: (obj: Record<string, unknown>): any => {
 			return [obj.pin1, obj.pin2]
-		}
+		},
 	},
 	KePt: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
 		propertyAliases: {
 			pattern: (val: any): PropertyAliasResult => ({ val, name: 'style' }),
@@ -344,13 +343,13 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			softness: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
 			symmetry: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
 			xPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000), name: 'positionX' }),
-			yPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000), name: 'positionY' })
-		}
+			yPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000), name: 'positionY' }),
+		},
 	},
 	CKPt: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
 		propertyAliases: {
 			pattern: (val: any): PropertyAliasResult => ({ val, name: 'style' }),
@@ -359,86 +358,86 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			softness: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
 			symmetry: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
 			xPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000), name: 'positionX' }),
-			yPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000), name: 'positionY' })
-		}
+			yPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000), name: 'positionY' }),
+		},
 	},
 	KeCk: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
 		propertyAliases: {
 			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
 			hue: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
 			lift: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
-			ySuppress: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
-		}
+			ySuppress: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+		},
 	},
 	CKCk: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
 		propertyAliases: {
 			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
 			hue: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
 			lift: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
-			ySuppress: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
-		}
+			ySuppress: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+		},
 	},
 	CKTp: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
 		propertyAliases: {
-			keyType: (v: number): PropertyAliasResult => ({ val: v, name: 'mixEffectKeyType' })
-		}
+			keyType: (v: number): PropertyAliasResult => ({ val: v, name: 'mixEffectKeyType' }),
+		},
 	},
 	KeOn: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	CKOn: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	CKeF: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	KeLm: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
 		propertyAliases: {
 			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
-			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
-		}
+			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+		},
 	},
 	CKLm: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
 		propertyAliases: {
 			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
-			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
-		}
+			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+		},
 	},
 	KeBP: {
 		idAliases: {
-			mixEffect: 'mixEffectIndex'
+			mixEffect: 'mixEffectIndex',
 			// 'upstreamKeyerId': 'keyerIndex'
 		},
 		propertyAliases: {
@@ -449,46 +448,46 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 					maskLeft: Math.round(v.maskLeft * 1000),
 					maskRight: Math.round(v.maskRight * 1000),
 					maskTop: Math.round(v.maskTop * 1000),
-					maskBottom: Math.round(v.maskBottom * 1000)
-				}
+					maskBottom: Math.round(v.maskBottom * 1000),
+				},
 			}),
 			maskEnabled: (v: boolean): PropertyAliasResult => ({ val: v, name: 'maskSettings.maskEnabled' }),
 			maskLeft: (v: number): PropertyAliasResult => ({
 				val: Math.round(v * 1000),
-				name: 'maskSettings.maskLeft'
+				name: 'maskSettings.maskLeft',
 			}),
 			maskRight: (v: number): PropertyAliasResult => ({
 				val: Math.round(v * 1000),
-				name: 'maskSettings.maskRight'
+				name: 'maskSettings.maskRight',
 			}),
 			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000), name: 'maskSettings.maskTop' }),
 			maskBottom: (v: number): PropertyAliasResult => ({
 				val: Math.round(v * 1000),
-				name: 'maskSettings.maskBottom'
-			})
-		}
+				name: 'maskSettings.maskBottom',
+			}),
+		},
 	},
 	KeFS: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	RFlK: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
 		propertyAliases: {
 			keyFrame: (v: number): PropertyAliasResult => ({ val: v, name: 'keyFrameId' }),
-			runToInfinite: (v: number): PropertyAliasResult => ({ val: v, name: 'direction' })
-		}
+			runToInfinite: (v: number): PropertyAliasResult => ({ val: v, name: 'direction' }),
+		},
 	},
 	KeDV: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
 		propertyAliases: {
 			positionX: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
@@ -506,13 +505,13 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			maskLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
 			maskRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
 			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
-			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) })
-		}
+			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+		},
 	},
 	CKDV: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
 		propertyAliases: {
 			positionX: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
@@ -530,345 +529,345 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			maskLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
 			maskRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
 			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
-			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) })
-		}
+			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+		},
 	},
 	CKeC: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	CKMs: {
 		idAliases: {
 			mixEffect: 'mixEffectIndex',
-			upstreamKeyerId: 'keyerIndex'
+			upstreamKeyerId: 'keyerIndex',
 		},
 		propertyAliases: {
 			maskLeft: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
 			maskRight: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
 			maskTop: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
-			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) })
-		}
+			maskBottom: (v: number): PropertyAliasResult => ({ val: Math.round(v * 1000) }),
+		},
 	},
 	TDvP: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
 		propertyAliases: {
 			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
-			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
-		}
+			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+		},
 	},
 	CTDv: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
 		propertyAliases: {
 			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
-			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
-		}
+			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+		},
 	},
 	TStP: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
 		propertyAliases: {
 			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
-			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
-		}
+			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+		},
 	},
 	CTSt: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
 		propertyAliases: {
 			gain: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
-			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) })
-		}
+			clip: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10) }),
+		},
 	},
 	TrPr: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
 		propertyAliases: {
-			previewTransition: (val: any): PropertyAliasResult => ({ val, name: 'preview' })
-		}
+			previewTransition: (val: any): PropertyAliasResult => ({ val, name: 'preview' }),
+		},
 	},
 	CTPr: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
 		propertyAliases: {
-			previewTransition: (val: any): PropertyAliasResult => ({ val, name: 'preview' })
-		}
+			previewTransition: (val: any): PropertyAliasResult => ({ val, name: 'preview' }),
+		},
 	},
 	TrSS: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	CTTp: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	TMxP: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	CTMx: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	TDpP: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	CTDp: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	TWpP: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
 		propertyAliases: {
 			symmetry: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
 			xPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
 			yPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
 			borderSoftness: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
-			borderWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) })
-		}
+			borderWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+		},
 	},
 	CTWp: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
 		propertyAliases: {
 			symmetry: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
 			xPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
 			yPosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
 			borderSoftness: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
-			borderWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) })
-		}
+			borderWidth: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
+		},
 	},
 	TrPs: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
 		propertyAliases: {
-			handlePosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) })
-		}
+			handlePosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
+		},
 	},
 	CTPs: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
 		propertyAliases: {
-			handlePosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) })
-		}
+			handlePosition: (v: number): PropertyAliasResult => ({ val: Math.round(v * 10000) }),
+		},
 	},
 	MRPr: {
 		idAliases: {},
 		propertyAliases: {
-			index: (val: any): PropertyAliasResult => ({ val, name: 'macroIndex' })
-		}
+			index: (val: any): PropertyAliasResult => ({ val, name: 'macroIndex' }),
+		},
 	},
 	MRcS: {
 		idAliases: {},
 		propertyAliases: {
-			index: (val: any): PropertyAliasResult => ({ val, name: 'macroIndex' })
-		}
+			index: (val: any): PropertyAliasResult => ({ val, name: 'macroIndex' }),
+		},
 	},
 	MSRc: {
 		idAliases: {
-			index: 'index'
+			index: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	CMPr: {
 		idAliases: {
-			macroIndex: 'index'
+			macroIndex: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	MvIn: {
 		idAliases: {
-			multiViewerId: 'multiviewIndex'
+			multiViewerId: 'multiviewIndex',
 		},
 		propertyAliases: {
-			supportVuMeter: (val: any): PropertyAliasResult => ({ val, name: 'supportsVuMeter' })
-		}
+			supportVuMeter: (val: any): PropertyAliasResult => ({ val, name: 'supportsVuMeter' }),
+		},
 	},
 	CMvI: {
 		idAliases: {
-			multiViewerId: 'multiviewIndex'
+			multiViewerId: 'multiviewIndex',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	VidM: {
 		idAliases: {},
 		propertyAliases: {
-			videoMode: (val: any): PropertyAliasResult => ({ val, name: 'mode' })
-		}
+			videoMode: (val: any): PropertyAliasResult => ({ val, name: 'mode' }),
+		},
 	},
 	CVdM: {
 		idAliases: {},
 		propertyAliases: {
-			videoMode: (val: any): PropertyAliasResult => ({ val, name: 'mode' })
-		}
+			videoMode: (val: any): PropertyAliasResult => ({ val, name: 'mode' }),
+		},
 	},
 	RCPS: {
 		idAliases: {
-			mediaPlayerId: 'index'
+			mediaPlayerId: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	SCPS: {
 		idAliases: {
-			mediaPlayerId: 'index'
+			mediaPlayerId: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	MPCS: {
 		idAliases: {
-			clipId: 'index'
+			clipId: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	SMPC: {
 		idAliases: {
 			// 'mediaPool': 'index'
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	MPfe: {
 		idAliases: {
 			mediaPool: 'bank',
-			frameIndex: 'index'
+			frameIndex: 'index',
 		},
 		propertyAliases: {
-			filename: (val: any): PropertyAliasResult => ({ val, name: 'fileName' })
-		}
+			filename: (val: any): PropertyAliasResult => ({ val, name: 'fileName' }),
+		},
 	},
 	MPrp: {
 		idAliases: {
-			macroIndex: 'index'
+			macroIndex: 'index',
 		},
 		propertyAliases: {
 			// index: (val: any): PropertyAliasResult => ({ val, name: 'macroIndex' })
-		}
+		},
 	},
 	PrgI: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	CPgI: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	PrvI: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	CPvI: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	DCut: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	DAut: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	FtbS: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	FtbC: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	FtbA: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	FtbP: {
 		idAliases: {
-			mixEffect: 'index'
+			mixEffect: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	AuxS: {
 		idAliases: {
-			auxBus: 'id'
+			auxBus: 'id',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	CAuS: {
 		idAliases: {
-			auxBus: 'id'
+			auxBus: 'id',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	CInL: {
 		idAliases: {
-			inputId: 'id'
+			inputId: 'id',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	MAct: {
 		idAliases: {
-			index: 'index'
+			index: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	FTDa: {
 		idAliases: {},
 		propertyAliases: {
-			body: (v: string): PropertyAliasResult => ({ val: Buffer.from(v, 'base64') })
+			body: (v: string): PropertyAliasResult => ({ val: Buffer.from(v, 'base64') }),
 		},
-		customMutate: (obj: any): any => {
-			obj.size = obj.body.length
+		customMutate: (obj: Record<string, unknown>): any => {
+			obj.size = (obj.body as any).length
 			return obj
-		}
+		},
 	},
 	KKFP: {
 		idAliases: {
 			upstreamKeyerId: 'keyerIndex',
-			mixEffect: 'mixEffectIndex'
+			mixEffect: 'mixEffectIndex',
 		},
 		propertyAliases: {
 			bevelPosition: (val: any): PropertyAliasResult => ({ val, name: 'borderBevelPosition' }),
@@ -890,19 +889,19 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			maskBottom: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
 			maskTop: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
 			maskLeft: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
-			maskRight: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) })
+			maskRight: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
 		},
-		customMutate: (obj: any): any => {
+		customMutate: (obj: Record<string, unknown>): any => {
 			delete obj.maskEnabled
 			return obj
-		}
+		},
 	},
 	MPCE: {
 		idAliases: {
-			mediaPlayerId: 'index'
+			mediaPlayerId: 'index',
 		},
 		propertyAliases: {},
-		customMutate: (obj: any): any => {
+		customMutate: (obj: Record<string, unknown>): any => {
 			obj.clipIndex = 0
 			obj.stillIndex = 0
 			if (obj.sourceType === 1) {
@@ -912,28 +911,28 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			}
 			delete obj.sourceIndex
 			return obj
-		}
+		},
 	},
 	MPSS: {
 		idAliases: {
-			mediaPlayerId: 'index'
+			mediaPlayerId: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	Time: {
 		idAliases: {},
 		propertyAliases: {
-			isDropFrame: (val): PropertyAliasResult => ({ val, name: 'dropFrame' })
-		}
+			isDropFrame: (val): PropertyAliasResult => ({ val, name: 'dropFrame' }),
+		},
 	},
 	FAIP: {
 		idAliases: {
-			index: 'index'
+			index: 'index',
 		},
 		propertyAliases: {
-			supportedConfigurations: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) })
+			supportedConfigurations: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) }),
 		},
-		customMutate: (props): any => {
+		customMutate: (props: Record<string, unknown>): any => {
 			props.activeInputLevel = props.rcaToXlrEnabled
 				? Enums.FairlightAnalogInputLevel.ProLine
 				: Enums.FairlightAnalogInputLevel.Microphone
@@ -945,53 +944,53 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			delete props.supportsRcaToXlr
 
 			return props
-		}
+		},
 	},
 	CFIP: {
 		idAliases: {
-			index: 'index'
+			index: 'index',
 		},
-		propertyAliases: {}
+		propertyAliases: {},
 	},
 	FASD: {
 		idAliases: {
 			index: 'index',
-			source: 'sourceId'
+			source: 'sourceId',
 		},
 		propertyAliases: {
-			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' })
-		}
+			sourceId: (val): PropertyAliasResult => ({ val: BigInt(val), name: 'sourceId' }),
+		},
 	},
 	FASP: {
 		idAliases: {
 			index: 'index',
-			source: 'sourceId'
+			source: 'sourceId',
 		},
 		propertyAliases: {
-			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' }),
+			sourceId: (val): PropertyAliasResult => ({ val: BigInt(val), name: 'sourceId' }),
 			balance: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			gain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			equalizerGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			faderGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			makeUpGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			stereoSimulation: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
-			supportedMixOptions: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) })
-		}
+			supportedMixOptions: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) }),
+		},
 	},
 	CFSP: {
 		idAliases: {
 			index: 'index',
-			source: 'sourceId'
+			source: 'sourceId',
 		},
 		propertyAliases: {
-			sourceId: (val): PropertyAliasResult => ({ val: bigInt(val), name: 'sourceId' }),
+			sourceId: (val): PropertyAliasResult => ({ val: BigInt(val), name: 'sourceId' }),
 			balance: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			gain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			equalizerGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			faderGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			makeUpGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			stereoSimulation: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
-			supportedMixOptions: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) })
-		}
-	}
+			supportedMixOptions: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) }),
+		},
+	},
 }

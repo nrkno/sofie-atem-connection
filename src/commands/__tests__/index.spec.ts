@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/camelcase */
 import { CommandParser } from '../../lib/atemCommandParser'
 import { ProtocolVersion } from '../../enums'
 import { IDeserializedCommand, SymmetricalCommand, ISerializableCommand } from '../CommandBase'
 import { createEmptyState } from '../../__tests__/util'
 import { DefaultCommandConverters } from './converters-default'
 import { V8_0CommandConverters } from './converters-8.0'
+import { readFileSync } from 'fs'
+import { resolve } from 'path'
 
 export type CommandTestConverterSet = { [key: string]: CommandTestConverter }
 export interface PropertyAliasResult {
@@ -30,7 +31,8 @@ export interface TestCase {
 	command: { [key: string]: any }
 }
 
-const TestCases = require('./libatem-data.json') as TestCase[]
+const testCasePath = resolve(__dirname, `./libatem-data.json`)
+const TestCases: TestCase[] = JSON.parse(readFileSync(testCasePath).toString())
 
 function runTestForCommand(commandParser: CommandParser, i: number, testCase: TestCase, allowUnknown?: boolean): void {
 	commandParser.version = testCase.firstVersion
@@ -190,12 +192,12 @@ describe('Commands vs LibAtem', () => {
 		}
 
 		// knownNames = Object.keys(commandParser.commands).sort()
-		const testNames = Array.from(new Set(TestCases.map(c => `${c.name}_${c.firstVersion}`)))
-			.filter(n => knownNames.indexOf(n) !== -1)
+		const testNames = Array.from(new Set(TestCases.map((c) => `${c.name}_${c.firstVersion}`)))
+			.filter((n) => knownNames.indexOf(n) !== -1)
 			.sort()
 
 		// Temporarily ignore these missing cases
-		knownNames = knownNames.filter(n => !n.startsWith('InCm') && !n.startsWith('TlSr'))
+		knownNames = knownNames.filter((n) => !n.startsWith('InCm') && !n.startsWith('TlSr'))
 
 		knownNames.sort()
 

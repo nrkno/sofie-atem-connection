@@ -5,7 +5,8 @@ export interface DataTransferDataProps {
 	body: Buffer
 }
 
-export class DataTransferDataCommand extends BasicWritableCommand<DataTransferDataProps>
+export class DataTransferDataCommand
+	extends BasicWritableCommand<DataTransferDataProps>
 	implements IDeserializedCommand {
 	public static readonly rawName = 'FTDa'
 
@@ -21,7 +22,7 @@ export class DataTransferDataCommand extends BasicWritableCommand<DataTransferDa
 		const properties = {
 			transferId: rawCommand.readUInt16BE(0),
 			size: rawCommand.readUInt16BE(2),
-			body: rawCommand.slice(4, 4 + rawCommand.readUInt16BE(2))
+			body: rawCommand.slice(4, 4 + rawCommand.readUInt16BE(2)),
 		}
 
 		return new DataTransferDataCommand(properties)

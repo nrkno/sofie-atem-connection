@@ -4,7 +4,7 @@ import { UpstreamKeyerTypeSettings } from '../../../state/video/upstreamKeyers'
 export class MixEffectKeyTypeSetCommand extends WritableCommand<UpstreamKeyerTypeSettings> {
 	public static MaskFlags = {
 		mixEffectKeyType: 1 << 0,
-		flyEnabled: 1 << 1
+		flyEnabled: 1 << 1,
 	}
 
 	public static readonly rawName = 'CKTp'

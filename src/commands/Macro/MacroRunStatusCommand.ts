@@ -10,7 +10,7 @@ export class MacroRunStatusUpdateCommand extends DeserializedCommand<MacroPlayer
 			isRunning: Boolean(rawCommand.readUInt8(0) & (1 << 0)),
 			isWaiting: Boolean(rawCommand.readUInt8(0) & (1 << 1)),
 			loop: rawCommand.readUInt8(1) != 0,
-			macroIndex: rawCommand.readUInt16BE(2)
+			macroIndex: rawCommand.readUInt16BE(2),
 		}
 
 		return new MacroRunStatusUpdateCommand(properties)
@@ -24,7 +24,7 @@ export class MacroRunStatusUpdateCommand extends DeserializedCommand<MacroPlayer
 
 export class MacroRunStatusCommand extends WritableCommand<{ loop: boolean }> {
 	public static MaskFlags = {
-		loop: 1 << 0
+		loop: 1 << 0,
 	}
 
 	public static readonly rawName = 'MRCP'

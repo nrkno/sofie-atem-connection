@@ -28,7 +28,7 @@ export class TopologyCommand extends DeserializedCommand<AtemCapabilites & { mul
 
 			// Note: these are defined below as they can overflow in older firmwares
 			advancedChromaKeyers: false,
-			onlyConfigurableOutputs: false
+			onlyConfigurableOutputs: false,
 		}
 
 		// in 7.4?
@@ -43,13 +43,13 @@ export class TopologyCommand extends DeserializedCommand<AtemCapabilites & { mul
 	public applyToState(state: AtemState): string {
 		state.info.capabilities = {
 			...state.info.capabilities,
-			...this.properties
+			...this.properties,
 		}
 		if (this.properties.multiviewers > 0) {
 			state.info.multiviewer = {
 				windowCount: 10,
 				...state.info.multiviewer,
-				count: this.properties.multiviewers
+				count: this.properties.multiviewers,
 			}
 		}
 		return `info.capabilities`

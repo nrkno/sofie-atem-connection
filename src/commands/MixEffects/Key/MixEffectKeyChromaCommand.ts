@@ -8,7 +8,7 @@ export class MixEffectKeyChromaCommand extends WritableCommand<UpstreamKeyerChro
 		gain: 1 << 1,
 		ySuppress: 1 << 2,
 		lift: 1 << 3,
-		narrow: 1 << 4
+		narrow: 1 << 4,
 	}
 	public static readonly rawName = 'CKCk'
 
@@ -59,7 +59,7 @@ export class MixEffectKeyChromaUpdateCommand extends DeserializedCommand<Upstrea
 			gain: rawCommand.readUInt16BE(4),
 			ySuppress: rawCommand.readUInt16BE(6),
 			lift: rawCommand.readUInt16BE(8),
-			narrow: rawCommand.readUInt8(10) === 1
+			narrow: rawCommand.readUInt8(10) === 1,
 		}
 
 		return new MixEffectKeyChromaUpdateCommand(mixEffect, upstreamKeyerId, properties)
@@ -74,7 +74,7 @@ export class MixEffectKeyChromaUpdateCommand extends DeserializedCommand<Upstrea
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		const upstreamKeyer = AtemStateUtil.getUpstreamKeyer(mixEffect, this.upstreamKeyerId)
 		upstreamKeyer.chromaSettings = {
-			...this.properties
+			...this.properties,
 		}
 		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.chromaSettings`
 	}

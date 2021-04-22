@@ -14,7 +14,7 @@ export class StreamingStatsUpdateCommand extends DeserializedCommand<StreamingSt
 	public static deserialize(rawCommand: Buffer): StreamingStatsUpdateCommand {
 		const props: StreamingStateStats = {
 			encodingBitrate: rawCommand.readUInt32BE(0),
-			cacheUsed: rawCommand.readUInt16BE(4)
+			cacheUsed: rawCommand.readUInt16BE(4),
 		}
 
 		return new StreamingStatsUpdateCommand(props)

@@ -19,7 +19,7 @@ export class MediaPoolClipDescriptionCommand extends DeserializedCommand<Omit<Cl
 		const properties = {
 			isUsed: rawCommand.readUInt8(1) === 1,
 			name: Util.bufToNullTerminatedString(rawCommand, 2, 64),
-			frameCount: rawCommand.readUInt16BE(66)
+			frameCount: rawCommand.readUInt16BE(66),
 		}
 
 		return new MediaPoolClipDescriptionCommand(mediaPool, properties)
@@ -30,7 +30,7 @@ export class MediaPoolClipDescriptionCommand extends DeserializedCommand<Omit<Cl
 
 		state.media.clipPool[this.clipId] = {
 			...this.properties,
-			frames: AtemStateUtil.getClip(state, this.clipId).frames // TODO - lengthen/shorten array of frames?
+			frames: AtemStateUtil.getClip(state, this.clipId).frames, // TODO - lengthen/shorten array of frames?
 		}
 		return `media.clipPool.${this.clipId}`
 	}
