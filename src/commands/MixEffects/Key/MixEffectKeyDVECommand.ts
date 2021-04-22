@@ -29,7 +29,7 @@ export class MixEffectKeyDVECommand extends WritableCommand<UpstreamKeyerDVESett
 		maskBottom: 1 << 22,
 		maskLeft: 1 << 23,
 		maskRight: 1 << 24,
-		rate: 1 << 25
+		rate: 1 << 25,
 	}
 	public static readonly rawName = 'CKDV'
 
@@ -134,7 +134,7 @@ export class MixEffectKeyDVEUpdateCommand extends DeserializedCommand<UpstreamKe
 			maskLeft: rawCommand.readUInt16BE(52),
 			maskRight: rawCommand.readUInt16BE(54),
 
-			rate: rawCommand.readUInt8(56)
+			rate: rawCommand.readUInt8(56),
 		}
 
 		return new MixEffectKeyDVEUpdateCommand(mixEffect, upstreamKeyerId, properties)
@@ -151,7 +151,7 @@ export class MixEffectKeyDVEUpdateCommand extends DeserializedCommand<UpstreamKe
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		const upstreamKeyer = AtemStateUtil.getUpstreamKeyer(mixEffect, this.upstreamKeyerId)
 		upstreamKeyer.dveSettings = {
-			...this.properties
+			...this.properties,
 		}
 		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.dveSettings`
 	}

@@ -5,7 +5,7 @@ export class DataTransferCompleteCommand extends DeserializedCommand<{ transferI
 
 	public static deserialize(rawCommand: Buffer): DataTransferCompleteCommand {
 		const properties = {
-			transferId: rawCommand.readUInt16BE(0)
+			transferId: rawCommand.readUInt16BE(0),
 		}
 
 		return new DataTransferCompleteCommand(properties)

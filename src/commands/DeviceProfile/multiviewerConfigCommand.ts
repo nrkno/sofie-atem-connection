@@ -14,12 +14,12 @@ export class MultiviewerConfigCommand extends DeserializedCommand<MultiviewerInf
 		if (version >= ProtocolVersion.V8_1_1) {
 			return new MultiviewerConfigCommand({
 				count: -1,
-				windowCount: rawCommand.readUInt8(1)
+				windowCount: rawCommand.readUInt8(1),
 			})
 		} else {
 			return new MultiviewerConfigCommand({
 				count: rawCommand.readUInt8(0),
-				windowCount: rawCommand.readUInt8(1)
+				windowCount: rawCommand.readUInt8(1),
 			})
 		}
 	}
@@ -29,7 +29,7 @@ export class MultiviewerConfigCommand extends DeserializedCommand<MultiviewerInf
 			state.info.multiviewer = {
 				count: -1,
 				...state.info.multiviewer,
-				windowCount: this.properties.windowCount
+				windowCount: this.properties.windowCount,
 			}
 		} else {
 			state.info.multiviewer = this.properties

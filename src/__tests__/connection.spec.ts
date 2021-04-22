@@ -53,7 +53,7 @@ function createConnection(): BasicAtem {
 		debugBuffers: false,
 		address: '',
 		port: 890,
-		disableMultithreaded: true
+		disableMultithreaded: true,
 	})
 }
 
@@ -63,9 +63,7 @@ function getChild(conn: BasicAtem): ThreadedClass<AtemSocketChildMock> {
 
 function runTest(name: string, filename: string): void {
 	const filePath = resolve(__dirname, `./connection/${filename}.data`)
-	const fileData = readFileSync(filePath)
-		.toString()
-		.split('\n')
+	const fileData = readFileSync(filePath).toString().split('\n')
 
 	describe(name, () => {
 		test(`Connection`, async () => {

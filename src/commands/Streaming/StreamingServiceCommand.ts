@@ -12,7 +12,7 @@ export class StreamingServiceCommand extends WritableCommand<StreamingServicePro
 		serviceName: 1 << 0,
 		url: 1 << 1,
 		key: 1 << 2,
-		bitrates: 1 << 3
+		bitrates: 1 << 3,
 	}
 
 	public serialize(): Buffer {
@@ -42,7 +42,7 @@ export class StreamingServiceUpdateCommand extends DeserializedCommand<Streaming
 			serviceName: bufToNullTerminatedString(rawCommand, 0, 64),
 			url: bufToNullTerminatedString(rawCommand, 64, 512),
 			key: bufToNullTerminatedString(rawCommand, 576, 512),
-			bitrates: [rawCommand.readUInt32BE(1088), rawCommand.readUInt32BE(1092)]
+			bitrates: [rawCommand.readUInt32BE(1088), rawCommand.readUInt32BE(1092)],
 		}
 
 		return new StreamingServiceUpdateCommand(props)
@@ -51,7 +51,7 @@ export class StreamingServiceUpdateCommand extends DeserializedCommand<Streaming
 	public applyToState(state: AtemState): string {
 		if (!state.streaming) {
 			state.streaming = {
-				service: this.properties
+				service: this.properties,
 			}
 		} else {
 			state.streaming.service = this.properties

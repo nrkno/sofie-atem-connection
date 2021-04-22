@@ -11,18 +11,18 @@ export function Create(): AtemState {
 			model: Enums.Model.Unknown,
 			superSources: [],
 			mixEffects: [],
-			power: []
+			power: [],
 		},
 		video: {
 			mixEffects: [],
 			downstreamKeyers: [],
 			auxilliaries: [],
-			superSources: []
+			superSources: [],
 		},
 		media: {
 			stillPool: [],
 			clipPool: [],
-			players: []
+			players: [],
 		},
 		inputs: {},
 		macro: {
@@ -30,18 +30,18 @@ export function Create(): AtemState {
 				isRunning: false,
 				isWaiting: false,
 				loop: false,
-				macroIndex: 0
+				macroIndex: 0,
 			},
 			macroRecorder: {
 				isRecording: false,
-				macroIndex: 0
+				macroIndex: 0,
 			},
-			macroProperties: []
+			macroProperties: [],
 		},
 		settings: {
 			multiViewers: [],
-			videoMode: 0
-		}
+			videoMode: 0,
+		},
 	}
 }
 
@@ -64,7 +64,7 @@ export function getMediaPlayer(state: AtemState, index: number, dontCreate?: boo
 			clipFrame: 0,
 			sourceType: Enums.MediaSourceType.Still,
 			clipIndex: 0,
-			stillIndex: 0
+			stillIndex: 0,
 		}
 
 		if (!dontCreate) {
@@ -82,7 +82,7 @@ export function getClip(state: AtemState, index: number): ClipBank {
 			isUsed: false,
 			name: '',
 			frameCount: 0,
-			frames: []
+			frames: [],
 		})
 	}
 
@@ -100,16 +100,16 @@ export function getMixEffect(state: AtemState, index: number, dontCreate?: boole
 			transitionPosition: {
 				inTransition: false,
 				handlePosition: 0,
-				remainingFrames: 0
+				remainingFrames: 0,
 			},
 			transitionProperties: {
 				style: Enums.TransitionStyle.MIX,
 				selection: 1,
 				nextStyle: Enums.TransitionStyle.MIX,
-				nextSelection: 1
+				nextSelection: 1,
 			},
 			transitionSettings: {},
-			upstreamKeyers: []
+			upstreamKeyers: [],
 		}
 
 		if (!dontCreate) {
@@ -125,7 +125,7 @@ export function getSuperSource(state: AtemState, index: number, dontCreate?: boo
 	if (!ssrc) {
 		ssrc = {
 			index,
-			boxes: [undefined, undefined, undefined, undefined]
+			boxes: [undefined, undefined, undefined, undefined],
 		}
 
 		if (!dontCreate) {
@@ -143,7 +143,7 @@ export function getDownstreamKeyer(state: AtemState, index: number, dontCreate?:
 			isAuto: false,
 			remainingFrames: 0,
 			onAir: false,
-			inTransition: false
+			inTransition: false,
 		}
 
 		if (!dontCreate) {
@@ -171,8 +171,8 @@ export function getUpstreamKeyer(mixEffect: MixEffect, index: number, dontCreate
 				maskTop: 0,
 				maskBottom: 0,
 				maskLeft: 0,
-				maskRight: 0
-			}
+				maskRight: 0,
+			},
 		}
 
 		if (!dontCreate) {

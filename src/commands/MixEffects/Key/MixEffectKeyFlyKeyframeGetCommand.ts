@@ -50,7 +50,7 @@ export class MixEffectKeyFlyKeyframeGetCommand extends DeserializedCommand<Upstr
 			maskTop: rawCommand.readInt16BE(44),
 			maskBottom: rawCommand.readInt16BE(46),
 			maskLeft: rawCommand.readInt16BE(48),
-			maskRight: rawCommand.readInt16BE(50)
+			maskRight: rawCommand.readInt16BE(50),
 		}
 
 		return new MixEffectKeyFlyKeyframeGetCommand(mixEffect, upstreamKeyerId, keyFrameId, properties)
@@ -67,7 +67,7 @@ export class MixEffectKeyFlyKeyframeGetCommand extends DeserializedCommand<Upstr
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		const upstreamKeyer = AtemStateUtil.getUpstreamKeyer(mixEffect, this.upstreamKeyerId)
 		upstreamKeyer.flyKeyframes[this.properties.keyFrameId] = {
-			...this.properties
+			...this.properties,
 		}
 		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.flyKeyframes.${this.properties.keyFrameId}`
 	}

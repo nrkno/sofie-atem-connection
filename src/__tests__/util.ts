@@ -20,45 +20,45 @@ export function createEmptyState(): AtemState {
 		downstreamKeyers: 4,
 		cameraControl: true,
 		advancedChromaKeyers: true,
-		onlyConfigurableOutputs: true
+		onlyConfigurableOutputs: true,
 	}
 	state.info.mixEffects = [
 		{
-			keyCount: 4
+			keyCount: 4,
 		},
 		{
-			keyCount: 4
+			keyCount: 4,
 		},
 		{
-			keyCount: 4
+			keyCount: 4,
 		},
 		{
-			keyCount: 4
-		}
+			keyCount: 4,
+		},
 	]
 	state.info.multiviewer = {
 		count: 255,
-		windowCount: 16
+		windowCount: 16,
 	}
 	state.streaming = {
 		service: {
 			serviceName: '',
 			url: '',
 			key: '',
-			bitrates: [0, 0]
-		}
+			bitrates: [0, 0],
+		},
 	}
 	state.recording = {
 		properties: {
 			filename: '',
 			workingSet1DiskId: 0,
 			workingSet2DiskId: 0,
-			recordInAllCameras: false
+			recordInAllCameras: false,
 		},
-		disks: {}
+		disks: {},
 	}
 	state.audio = {
-		channels: {}
+		channels: {},
 	}
 	state.fairlight = {
 		inputs: {},
@@ -68,13 +68,13 @@ export function createEmptyState(): AtemState {
 			equalizerEnabled: false,
 			makeUpGain: 0,
 			faderGain: 0,
-			followFadeToBlack: false
-		}
+			followFadeToBlack: false,
+		},
 	}
 
 	for (let i = 0; i < 6000; i++) {
 		state.fairlight.inputs[i] = {
-			sources: {}
+			sources: {},
 		}
 	}
 
@@ -86,7 +86,7 @@ export function createEmptyState(): AtemState {
 			}
 			state.settings.multiViewers[i] = {
 				index: i,
-				windows: windows
+				windows: windows,
 			}
 		}
 	}

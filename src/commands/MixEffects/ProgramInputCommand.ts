@@ -35,7 +35,7 @@ export class ProgramInputUpdateCommand extends DeserializedCommand<InputSource> 
 	public static deserialize(rawCommand: Buffer): ProgramInputUpdateCommand {
 		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
-			source: rawCommand.readUInt16BE(2)
+			source: rawCommand.readUInt16BE(2),
 		}
 
 		return new ProgramInputUpdateCommand(mixEffect, properties)

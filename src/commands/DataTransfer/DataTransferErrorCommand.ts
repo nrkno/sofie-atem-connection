@@ -11,7 +11,7 @@ export class DataTransferErrorCommand extends DeserializedCommand<DataTransferEr
 	public static deserialize(rawCommand: Buffer): DataTransferErrorCommand {
 		const properties = {
 			transferId: rawCommand.readUInt16BE(0),
-			errorCode: rawCommand.readUInt8(2)
+			errorCode: rawCommand.readUInt8(2),
 		}
 
 		return new DataTransferErrorCommand(properties)

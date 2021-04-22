@@ -12,7 +12,7 @@ export class RecordingSettingsCommand extends WritableCommand<RecordingStateProp
 		filename: 1 << 0,
 		workingSet1DiskId: 1 << 1,
 		workingSet2DiskId: 1 << 2,
-		recordInAllCameras: 1 << 3
+		recordInAllCameras: 1 << 3,
 	}
 
 	public serialize(): Buffer {
@@ -39,7 +39,7 @@ export class RecordingSettingsUpdateCommand extends DeserializedCommand<Recordin
 			filename: bufToNullTerminatedString(rawCommand, 0, 128),
 			workingSet1DiskId: rawCommand.readUInt32BE(128),
 			workingSet2DiskId: rawCommand.readUInt32BE(132),
-			recordInAllCameras: rawCommand.readUInt8(136) != 0
+			recordInAllCameras: rawCommand.readUInt8(136) != 0,
 		}
 
 		return new RecordingSettingsUpdateCommand(props)
@@ -49,7 +49,7 @@ export class RecordingSettingsUpdateCommand extends DeserializedCommand<Recordin
 		if (!state.recording) {
 			state.recording = {
 				properties: this.properties,
-				disks: {}
+				disks: {},
 			}
 		} else {
 			state.recording.properties = this.properties

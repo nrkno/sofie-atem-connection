@@ -6,7 +6,7 @@ import { OmitReadonly } from '../../../lib/types'
 export class TransitionPropertiesCommand extends WritableCommand<OmitReadonly<TransitionProperties>> {
 	public static MaskFlags = {
 		nextStyle: 1 << 0,
-		nextSelection: 1 << 1
+		nextSelection: 1 << 1,
 	}
 
 	public static readonly rawName = 'CTTp'
@@ -48,7 +48,7 @@ export class TransitionPropertiesUpdateCommand extends DeserializedCommand<Trans
 			style: rawCommand.readUInt8(1),
 			selection: rawCommand.readUInt8(2),
 			nextStyle: rawCommand.readUInt8(3),
-			nextSelection: rawCommand.readUInt8(4)
+			nextSelection: rawCommand.readUInt8(4),
 		}
 
 		return new TransitionPropertiesUpdateCommand(mixEffect, properties)
@@ -61,7 +61,7 @@ export class TransitionPropertiesUpdateCommand extends DeserializedCommand<Trans
 
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionProperties = {
-			...this.properties
+			...this.properties,
 		}
 		return `video.mixEffects.${this.mixEffect}.transitionProperties`
 	}

@@ -89,7 +89,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 		commands: Array<{ rawCommand: ISerializableCommand; trackingId: number }>
 	): Promise<void> {
 		if (this._socketProcess) {
-			const commands2 = commands.map(cmd => {
+			const commands2 = commands.map((cmd) => {
 				if (typeof cmd.rawCommand.serialize !== 'function') {
 					throw new Error(`Command ${cmd.rawCommand.constructor.name} is not serializable`)
 				}
@@ -101,7 +101,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 				return {
 					payload: [...payload],
 					rawName: (cmd.rawCommand.constructor as any).rawName,
-					trackingId: cmd.trackingId
+					trackingId: cmd.trackingId,
 				}
 			})
 
@@ -119,7 +119,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 				{
 					address: this._address,
 					port: this._port,
-					debugBuffers: this._debugBuffers
+					debugBuffers: this._debugBuffers,
 				},
 				async (): Promise<void> => {
 					this.emit('disconnect')
@@ -133,21 +133,21 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 				async (ids: Array<{ packetId: number; trackingId: number }>): Promise<void> => {
 					this.emit(
 						'commandsAck',
-						ids.map(id => id.trackingId)
+						ids.map((id) => id.trackingId)
 					)
-				} // onCommandsAcknowledged
+				}, // onCommandsAcknowledged
 			],
 			{
 				instanceName: 'atem-connection',
 				freezeLimit: this._childProcessTimeout,
 				autoRestart: true,
-				disableMultithreading: this._disableMultithreaded
+				disableMultithreading: this._disableMultithreaded,
 			}
 		)
 
 		ThreadedClassManager.onEvent(socketProcess, 'restarted', () => {
 			this.emit('disconnect')
-			this.connect().catch(error => {
+			this.connect().catch((error) => {
 				const errorMsg = `Failed to reconnect after respawning socket process: ${error}`
 				this.emit('error', errorMsg)
 			})

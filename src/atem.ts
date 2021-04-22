@@ -13,7 +13,7 @@ import {
 	StingerTransitionSettings,
 	SuperSource,
 	TransitionProperties,
-	WipeTransitionSettings
+	WipeTransitionSettings,
 } from './state/video'
 import * as USK from './state/video/upstreamKeyers'
 import { InputChannel } from './state/input'
@@ -25,7 +25,7 @@ import {
 	ClassicAudioMonitorChannel,
 	ClassicAudioMasterChannel,
 	ClassicAudioChannel,
-	ClassicAudioHeadphoneOutputChannel
+	ClassicAudioHeadphoneOutputChannel,
 } from './state/audio'
 import { listVisibleInputs } from './lib/tally'
 import DataTransfer from './dataTransfer/dataTransfer'
@@ -33,7 +33,6 @@ import { RecordingStateProperties } from './state/recording'
 import { OmitReadonly } from './lib/types'
 import { StreamingServiceProperties } from './state/streaming'
 import { commandStringify } from './lib/atemUtil'
-import * as bigInt from 'big-integer'
 import { AdvancedChromaSampleResetProps } from './commands'
 import {
 	FairlightAudioMasterChannel,
@@ -41,7 +40,7 @@ import {
 	FairlightAudioCompressorState,
 	FairlightAudioLimiterState,
 	FairlightAudioEqualizerBandState,
-	FairlightAudioExpanderState
+	FairlightAudioExpanderState,
 } from './state/fairlight'
 import { FairlightDynamicsResetProps } from './commands/Fairlight/common'
 
@@ -72,7 +71,7 @@ interface SentCommand {
 export enum AtemConnectionStatus {
 	CLOSED,
 	CONNECTING,
-	CONNECTED
+	CONNECTED,
 }
 
 export const DEFAULT_PORT = 9910
@@ -94,18 +93,18 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 			address: (options || {}).address || '',
 			port: (options || {}).port || DEFAULT_PORT,
 			disableMultithreaded: (options || {}).disableMultithreaded || false,
-			childProcessTimeout: (options || {}).childProcessTimeout || 600
+			childProcessTimeout: (options || {}).childProcessTimeout || 600,
 		})
 		this.dataTransferManager = new DT.DataTransferManager()
 
-		this.socket.on('commandsReceived', commands => {
+		this.socket.on('commandsReceived', (commands) => {
 			this.emit('receivedCommands', commands)
 			this._mutateState(commands)
 		})
-		this.socket.on('commandsAck', trackingIds => this._resolveCommands(trackingIds))
-		this.socket.on('info', msg => this.emit('info', msg))
-		this.socket.on('debug', msg => this.emit('debug', msg))
-		this.socket.on('error', e => this.emit('error', e))
+		this.socket.on('commandsAck', (trackingIds) => this._resolveCommands(trackingIds))
+		this.socket.on('info', (msg) => this.emit('info', msg))
+		this.socket.on('debug', (msg) => this.emit('debug', msg))
+		this.socket.on('error', (e) => this.emit('error', e))
 		this.socket.on('disconnect', () => {
 			this._status = AtemConnectionStatus.CLOSED
 			this.dataTransferManager.stopCommandSending()
@@ -116,7 +115,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 	}
 
 	private _onInitComplete(): void {
-		this.dataTransferManager.startCommandSending(cmds => this.sendCommands(cmds))
+		this.dataTransferManager.startCommandSending((cmds) => this.sendCommands(cmds))
 		this.emit('connected')
 	}
 
@@ -142,20 +141,20 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 	}
 
 	private sendCommands(commands: ISerializableCommand[]): Array<Promise<void>> {
-		const commands2 = commands.map(cmd => ({
+		const commands2 = commands.map((cmd) => ({
 			rawCommand: cmd,
-			trackingId: this.socket.nextCommandTrackingId
+			trackingId: this.socket.nextCommandTrackingId,
 		}))
 
 		const sendPromise = this.socket.sendCommands(commands2)
 
-		return commands2.map(async cmd => {
+		return commands2.map(async (cmd) => {
 			await sendPromise
 			return new Promise<void>((resolve, reject) => {
 				this._sentQueue[cmd.trackingId] = {
 					command: cmd.rawCommand,
 					resolve,
-					reject
+					reject,
 				}
 			})
 		})
@@ -167,7 +166,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 
 	private _mutateState(commands: IDeserializedCommand[]): void {
 		// Is this the start of a new connection?
-		if (commands.find(cmd => cmd.constructor.name === Commands.VersionCommand.name)) {
+		if (commands.find((cmd) => cmd.constructor.name === Commands.VersionCommand.name)) {
 			// On start of connection, create a new state object
 			this._state = AtemStateUtil.Create()
 			this._status = AtemConnectionStatus.CONNECTING
@@ -176,7 +175,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		const allChangedPaths: string[] = []
 
 		const state = this._state
-		commands.forEach(command => {
+		commands.forEach((command) => {
 			if (state) {
 				try {
 					const changePaths = command.applyToState(state)
@@ -211,7 +210,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 			}
 		})
 
-		const initComplete = commands.find(cmd => cmd.constructor.name === Commands.InitCompleteCommand.name)
+		const initComplete = commands.find((cmd) => cmd.constructor.name === Commands.InitCompleteCommand.name)
 		if (initComplete) {
 			this._status = AtemConnectionStatus.CONNECTED
 			this._onInitComplete()
@@ -221,7 +220,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 	}
 
 	private _resolveCommands(trackingIds: number[]): void {
-		trackingIds.forEach(trackingId => {
+		trackingIds.forEach((trackingId) => {
 			const sent = this._sentQueue[trackingId]
 			if (sent) {
 				sent.resolve()
@@ -235,7 +234,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		const sentQueue = this._sentQueue
 		this._sentQueue = {}
 
-		Object.values(sentQueue).forEach(sent => sent.reject())
+		Object.values(sentQueue).forEach((sent) => sent.reject())
 	}
 }
 
@@ -830,7 +829,7 @@ export class Atem extends BasicAtem {
 		source: string,
 		props: Commands.FairlightMixerSourceCommand['properties']
 	): Promise<void> {
-		const command = new Commands.FairlightMixerSourceCommand(index, bigInt(source))
+		const command = new Commands.FairlightMixerSourceCommand(index, BigInt(source))
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
@@ -840,7 +839,7 @@ export class Atem extends BasicAtem {
 		source: string,
 		props: Partial<OmitReadonly<FairlightAudioCompressorState>>
 	): Promise<void> {
-		const command = new Commands.FairlightMixerSourceCompressorCommand(index, bigInt(source))
+		const command = new Commands.FairlightMixerSourceCompressorCommand(index, BigInt(source))
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
@@ -850,7 +849,7 @@ export class Atem extends BasicAtem {
 		source: string,
 		props: Partial<OmitReadonly<FairlightAudioLimiterState>>
 	): Promise<void> {
-		const command = new Commands.FairlightMixerSourceLimiterCommand(index, bigInt(source))
+		const command = new Commands.FairlightMixerSourceLimiterCommand(index, BigInt(source))
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
@@ -860,7 +859,7 @@ export class Atem extends BasicAtem {
 		source: string,
 		props: Partial<OmitReadonly<FairlightAudioExpanderState>>
 	): Promise<void> {
-		const command = new Commands.FairlightMixerSourceExpanderCommand(index, bigInt(source))
+		const command = new Commands.FairlightMixerSourceExpanderCommand(index, BigInt(source))
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
@@ -871,7 +870,7 @@ export class Atem extends BasicAtem {
 		band: number,
 		props: Partial<OmitReadonly<FairlightAudioEqualizerBandState>>
 	): Promise<void> {
-		const command = new Commands.FairlightMixerSourceEqualizerBandCommand(index, bigInt(source), band)
+		const command = new Commands.FairlightMixerSourceEqualizerBandCommand(index, BigInt(source), band)
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
@@ -881,7 +880,7 @@ export class Atem extends BasicAtem {
 		source: string,
 		props: Partial<FairlightDynamicsResetProps>
 	): Promise<void> {
-		const command = new Commands.FairlightMixerSourceDynamicsResetCommand(index, bigInt(source))
+		const command = new Commands.FairlightMixerSourceDynamicsResetCommand(index, BigInt(source))
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
@@ -891,7 +890,7 @@ export class Atem extends BasicAtem {
 		source: string,
 		props: Partial<Commands.FairlightMixerSourceEqualizerResetCommand['properties']>
 	): Promise<void> {
-		const command = new Commands.FairlightMixerSourceEqualizerResetCommand(index, bigInt(source))
+		const command = new Commands.FairlightMixerSourceEqualizerResetCommand(index, BigInt(source))
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
@@ -901,7 +900,7 @@ export class Atem extends BasicAtem {
 		source: string,
 		props: Commands.FairlightMixerSourceResetPeakLevelsCommand['properties']
 	): Promise<void> {
-		const command = new Commands.FairlightMixerSourceResetPeakLevelsCommand(index, bigInt(source), props)
+		const command = new Commands.FairlightMixerSourceResetPeakLevelsCommand(index, BigInt(source), props)
 		return this.sendCommand(command)
 	}
 

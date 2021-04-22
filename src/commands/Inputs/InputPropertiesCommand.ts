@@ -8,7 +8,7 @@ export class InputPropertiesCommand extends WritableCommand<OmitReadonly<InputCh
 	public static MaskFlags = {
 		longName: 1 << 0,
 		shortName: 1 << 1,
-		externalPortType: 1 << 2
+		externalPortType: 1 << 2,
 	}
 
 	public static readonly rawName = 'CInL'
@@ -55,7 +55,7 @@ export class InputPropertiesUpdateCommand extends DeserializedCommand<InputChann
 			externalPortType: rawCommand.readUInt16BE(30),
 			internalPortType: rawCommand.readUInt8(32),
 			sourceAvailability: rawCommand.readUInt8(34),
-			meAvailability: rawCommand.readUInt8(35)
+			meAvailability: rawCommand.readUInt8(35),
 		}
 
 		return new InputPropertiesUpdateCommand(inputId, properties)
@@ -63,7 +63,7 @@ export class InputPropertiesUpdateCommand extends DeserializedCommand<InputChann
 
 	public applyToState(state: AtemState): string {
 		state.inputs[this.inputId] = {
-			...this.properties
+			...this.properties,
 		}
 		return `inputs.${this.inputId}`
 	}

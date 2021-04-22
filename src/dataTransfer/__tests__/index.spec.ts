@@ -18,7 +18,7 @@ function specToCommandClass(spec: any): Commands.IDeserializedCommand | undefine
 
 function mangleCommand(cmd: any, dir: string): any {
 	const props = { ...cmd.properties }
-	Object.keys(props).forEach(k => {
+	Object.keys(props).forEach((k) => {
 		if (Buffer.isBuffer(props[k])) {
 			const buf = props[k] as Buffer
 			props[k] = { bufferLength: buf.length }
@@ -27,14 +27,14 @@ function mangleCommand(cmd: any, dir: string): any {
 	return {
 		name: cmd.constructor.name,
 		properties: props,
-		direction: dir
+		direction: dir,
 	}
 }
 
 function runDataTransferTest(spec: any): DataTransferManager {
 	const manager = new DataTransferManager()
-	manager.startCommandSending(cmds =>
-		cmds.map(cmd => {
+	manager.startCommandSending((cmds) =>
+		cmds.map((cmd) => {
 			const expectedCmd = spec.shift()
 			const gotCmd = mangleCommand(cmd, 'send')
 			expect(expectedCmd).toEqual(gotCmd)
@@ -61,7 +61,7 @@ test('Test Still upload', async () => {
 	const manager = runDataTransferTest(spec)
 	await manager.uploadStill(2, newBuffer, 'some still', '')
 
-	await new Promise(resolve => setTimeout(resolve, 200))
+	await new Promise((resolve) => setTimeout(resolve, 200))
 
 	// Nothing should be left by this point
 	expect(spec).toHaveLength(0)
@@ -75,7 +75,7 @@ test('Test Wav upload', async () => {
 	const manager = runDataTransferTest(spec)
 	await manager.uploadAudio(1, newBuffer, 'audio file')
 
-	await new Promise(resolve => setTimeout(resolve, 200))
+	await new Promise((resolve) => setTimeout(resolve, 200))
 
 	// Nothing should be left by this point
 	expect(spec).toHaveLength(0)
@@ -89,7 +89,7 @@ test('Test clip upload', async () => {
 	const manager = runDataTransferTest(spec)
 	await manager.uploadClip(1, [newBuffer, newBuffer, newBuffer], 'clip file')
 
-	await new Promise(resolve => setTimeout(resolve, 200))
+	await new Promise((resolve) => setTimeout(resolve, 200))
 
 	// Nothing should be left by this point
 	expect(spec).toHaveLength(0)

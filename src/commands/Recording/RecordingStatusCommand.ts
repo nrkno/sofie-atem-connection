@@ -18,8 +18,8 @@ export class RecordingStatusCommand extends BasicWritableCommand<{ recording: bo
 	}
 }
 
-const errorEnumValues = (Object.values(RecordingError).filter(e => typeof e === 'number') as unknown) as number[]
-const statusEnumValues = (Object.values(RecordingStatus).filter(e => typeof e === 'number') as unknown) as number[]
+const errorEnumValues = (Object.values(RecordingError).filter((e) => typeof e === 'number') as unknown) as number[]
+const statusEnumValues = (Object.values(RecordingStatus).filter((e) => typeof e === 'number') as unknown) as number[]
 
 export class RecordingStatusUpdateCommand extends DeserializedCommand<RecordingStateStatus> {
 	public static readonly rawName = 'RTMS'

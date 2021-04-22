@@ -20,7 +20,7 @@ function _calcActiveMeInputs(inputs: Set<number>, mode: 'program' | 'preview', s
 
 	// Upstream Keyers
 	meRef.upstreamKeyers
-		.filter(usk => {
+		.filter((usk) => {
 			if (usk) {
 				const keyerMask = 1 << (usk.upstreamKeyerId + 1)
 				const isPartOfTransition = meRef.transitionProperties.selection & keyerMask
@@ -37,7 +37,7 @@ function _calcActiveMeInputs(inputs: Set<number>, mode: 'program' | 'preview', s
 				return false
 			}
 		})
-		.forEach(usk => {
+		.forEach((usk) => {
 			if (usk) {
 				inputs.add(usk.fillSource)
 
@@ -52,7 +52,7 @@ function _calcActiveMeInputs(inputs: Set<number>, mode: 'program' | 'preview', s
 	// so we only add them if that's the ME we are currently processing.
 	if (meId === 0) {
 		state.video.downstreamKeyers
-			.filter(dsk => {
+			.filter((dsk) => {
 				if (dsk) {
 					if (mode === 'program') {
 						return dsk.onAir || dsk.inTransition
@@ -68,7 +68,7 @@ function _calcActiveMeInputs(inputs: Set<number>, mode: 'program' | 'preview', s
 					return false
 				}
 			})
-			.forEach(dsk => {
+			.forEach((dsk) => {
 				if (dsk && dsk.sources) {
 					inputs.add(dsk.sources.fillSource)
 					inputs.add(dsk.sources.cutSource)

@@ -7,7 +7,7 @@ export class MixEffectKeyMaskSetCommand extends WritableCommand<UpstreamKeyerMas
 		maskTop: 1 << 1,
 		maskBottom: 1 << 2,
 		maskLeft: 1 << 3,
-		maskRight: 1 << 4
+		maskRight: 1 << 4,
 	}
 
 	public static readonly rawName = 'CKMs'

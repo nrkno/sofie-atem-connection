@@ -2,7 +2,7 @@ import { EventEmitter } from 'events'
 import { SocketType, RemoteInfo } from 'dgram'
 import 'jest-extended'
 import { DEFAULT_PORT } from '../../atem'
-import { InstalledClock } from '@sinonjs/fake-timers'
+import * as fakeTimers from '@sinonjs/fake-timers'
 
 export class Socket extends EventEmitter {
 	public isOpen = false
@@ -16,14 +16,14 @@ export class Socket extends EventEmitter {
 
 	public sendImpl?: (msg: Buffer) => void
 
-	public async emitMessage(clock: InstalledClock, msg: Buffer): Promise<void> {
+	public async emitMessage(clock: fakeTimers.Clock, msg: Buffer): Promise<void> {
 		expect(Buffer.isBuffer(msg)).toBeTruthy()
 
 		const rinfo: RemoteInfo = {
 			address: this.expectedAddress || '127.0.0.1',
 			port: this.expectedPort || DEFAULT_PORT,
 			family: 'IPv4',
-			size: msg.length
+			size: msg.length,
 		}
 		this.emit('message', msg, rinfo)
 
@@ -65,7 +65,7 @@ export class Socket extends EventEmitter {
 		}
 	}
 
-	public close(cb?: Function): void {
+	public close(cb?: () => void): void {
 		this.isOpen = false
 		if (cb) cb()
 	}

@@ -37,7 +37,7 @@ export class TransitionPositionUpdateCommand extends DeserializedCommand<Transit
 		const properties = {
 			inTransition: rawCommand.readUInt8(1) === 1,
 			remainingFrames: rawCommand.readUInt8(2),
-			handlePosition: rawCommand.readUInt16BE(4)
+			handlePosition: rawCommand.readUInt16BE(4),
 		}
 
 		return new TransitionPositionUpdateCommand(mixEffect, properties)
