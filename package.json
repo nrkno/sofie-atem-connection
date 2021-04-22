@@ -41,7 +41,7 @@
     "docs:json": "typedoc --tsconfig tsconfig.docs.json --json docs/typedoc.json --entryPoints src/index.ts",
     "release": "standard-version",
     "reset": "git clean -dfx && git reset --hard && yarn",
-    "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate",
+    "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate --allowPackages caniuse-lite@1.0.30001214",
     "validate:dev-dependencies": "yarn audit --groups devDependencies",
     "license-validate": "yarn sofie-licensecheck"
   },
@@ -55,10 +55,10 @@
     "/LICENSE"
   ],
   "devDependencies": {
-    "@sinonjs/fake-timers": "^6.0.0",
+    "@sinonjs/fake-timers": "^7.0.5",
     "@sofie-automation/code-standard-preset": "^0.2.4",
-    "@types/jest": "^26.0.20",
-    "@types/node": "^14.14.31",
+    "@types/jest": "^26.0.22",
+    "@types/node": "^14.14.41",
     "@types/object-path": "^0.11.0",
     "@types/sinonjs__fake-timers": "^6.0.2",
     "codecov": "^3.8.1",
@@ -70,10 +70,10 @@
     "object-path": "^0.11.5",
     "open-cli": "^6.0.1",
     "rimraf": "^3.0.2",
-    "standard-version": "^9.1.1",
-    "ts-jest": "^26.5.2",
+    "standard-version": "^9.2.0",
+    "ts-jest": "^26.5.5",
     "ts-node": "^9.1.1",
-    "typedoc": "^0.20.28",
+    "typedoc": "^0.20.35",
     "typescript": "~4.0.7"
   },
   "keywords": [
@@ -85,10 +85,10 @@
   ],
   "dependencies": {
     "eventemitter3": "^4.0.7",
-    "exit-hook": "^2.0.0",
+    "exit-hook": "^2.2.1",
     "nanotimer": "^0.3.15",
     "threadedclass": "^0.8.3",
-    "tslib": "^2.1.0",
+    "tslib": "^2.2.0",
     "wavefile": "^8.4.4"
   },
   "standard-version": {
