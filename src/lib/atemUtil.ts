@@ -9,7 +9,7 @@ export function bufToBase64String(buffer: Buffer, start: number, length: number)
 export function bufToNullTerminatedString(buffer: Buffer, start: number, length: number): string {
 	const slice = buffer.slice(start, start + length)
 	const nullIndex = slice.indexOf('\0')
-	return slice.toString('ascii', 0, nullIndex < 0 ? slice.length : nullIndex)
+	return slice.toString('utf8', 0, nullIndex < 0 ? slice.length : nullIndex)
 }
 
 export const COMMAND_CONNECT_HELLO = Buffer.from([

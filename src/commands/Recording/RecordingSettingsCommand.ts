@@ -18,7 +18,7 @@ export class RecordingSettingsCommand extends WritableCommand<RecordingStateProp
 	public serialize(): Buffer {
 		const buffer = Buffer.alloc(144)
 		buffer.writeUInt8(this.flag, 0)
-		buffer.write(this.properties.filename || '', 1, 128)
+		buffer.write(this.properties.filename || '', 1, 128, 'utf8')
 		buffer.writeUInt32BE(this.properties.workingSet1DiskId || 0, 132)
 		buffer.writeUInt32BE(this.properties.workingSet2DiskId || 0, 136)
 		buffer.writeUInt8(this.properties.recordInAllCameras ? 1 : 0, 140)

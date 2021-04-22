@@ -7,6 +7,7 @@ export interface IDeserializedCommand {
 	applyToState(state: AtemState): string | string[]
 }
 
+/** Base type for a receivable command */
 export abstract class DeserializedCommand<T> implements IDeserializedCommand {
 	public static readonly rawName?: string
 	public static readonly minimumVersion?: ProtocolVersion
@@ -24,6 +25,7 @@ export interface ISerializableCommand {
 	serialize(version: ProtocolVersion): Buffer
 }
 
+/** Base command type for a simple writable command, which has a few values which must all be sent */
 export abstract class BasicWritableCommand<T> implements ISerializableCommand {
 	public static readonly rawName?: string
 	public static readonly minimumVersion?: ProtocolVersion
@@ -41,6 +43,7 @@ export abstract class BasicWritableCommand<T> implements ISerializableCommand {
 	public abstract serialize(version: ProtocolVersion): Buffer
 }
 
+/** Base command type for a full writable command, which uses flags to indicate the changed properties */
 export abstract class WritableCommand<T> extends BasicWritableCommand<Partial<T>> {
 	public static readonly MaskFlags?: { [key: string]: number }
 
@@ -52,6 +55,7 @@ export abstract class WritableCommand<T> extends BasicWritableCommand<Partial<T>
 		this.flag = 0
 	}
 
+	/** Update the values of some properties with this command */
 	public updateProps(newProps: Partial<T>): boolean {
 		return this._updateProps(newProps)
 	}
@@ -74,6 +78,7 @@ export abstract class WritableCommand<T> extends BasicWritableCommand<Partial<T>
 	}
 }
 
+/** Base command type for a command which gets sent in both directions */
 export abstract class SymmetricalCommand<T> extends DeserializedCommand<T> implements ISerializableCommand {
 	public abstract serialize(version: ProtocolVersion): Buffer
 }

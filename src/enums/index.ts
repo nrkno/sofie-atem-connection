@@ -15,6 +15,8 @@ export enum Model {
 	Mini = 0x0d,
 	MiniPro = 0x0e,
 	MiniProISO = 0x0f,
+	MiniExtreme = 0x10,
+	MiniExtremeISO = 0x11,
 }
 
 export enum ProtocolVersion {
@@ -125,7 +127,9 @@ export enum SourceAvailability {
 	SuperSourceArt = 1 << 2,
 	SuperSourceBox = 1 << 3,
 	KeySource = 1 << 4,
-	All = Auxiliary | Multiviewer | SuperSourceArt | SuperSourceBox | KeySource,
+	Auxiliary1 = 1 << 5,
+	Auxiliary2 = 1 << 6,
+	All = Auxiliary | Multiviewer | SuperSourceArt | SuperSourceBox | KeySource | Auxiliary1 | Auxiliary2,
 }
 
 export enum MeAvailability {

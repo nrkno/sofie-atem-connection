@@ -17,6 +17,8 @@ This library is used in the [**Sofie** TV News Studio Automation System](https:/
 Due to the nature of the ATEM firmware and its tendency to break things, it is likely that new firmwares will require updates to the library to be fully supported.
 Additionally any newly unimplemented functionality will generally only be written and tested for the latest firmware, even if it was added in an older firmware.
 
+We have no intention of dropping support for older firmwares, but we may do at some point. If we do this will be done in a major version bump, and will only be for significantly older firmware.
+
 It is tested on a variety of models spanning every generation, and the aim is to provide support for every model.
 
 Note: USB control of devices is not supported by this library.
@@ -24,7 +26,6 @@ Note: USB control of devices is not supported by this library.
 ## Technology highlights
 
 - Typescript
-- Yarn
 - Jest
 - standard-version
 - codecov
@@ -45,7 +46,7 @@ yarn
 yarn build
 ```
 
-If you want to make a contribution, feel free to open a PR.
+We welcome any contributions. Please read [our guide](.github/CONTRIBUTING.md) on how to add new commands before raising a PR.
 
 ## Usage
 
