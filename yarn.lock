@@ -5792,10 +5792,10 @@ text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-threadedclass@^0.8.3:
-  version "0.8.3"
-  resolved "https://registry.yarnpkg.com/threadedclass/-/threadedclass-0.8.3.tgz#ee95a7d2c4fe6ca79e7265bba9baa7c6fff83309"
-  integrity sha512-cI6tVYRIIVYxFG7Nykt8NMVflrrdMvyvzAQfgAZdARdU/PaFSGd5Y7wChvJ3DXLsLiFb3datLhfn26K5DTKf+A==
+threadedclass@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/threadedclass/-/threadedclass-0.9.0.tgz#b5258f48f335ff4f82028762af5bf06213d7611b"
+  integrity sha512-zZS92SO6hKMm6uJCecDvdM4dxd2hr6tlkHznN4QVTudXk679GOOtz//6beadIjkrcqXn6NOcT++NMbsRlDJZ6w==
   dependencies:
     callsites "^3.1.0"
     eventemitter3 "^4.0.4"

@@ -62,7 +62,6 @@
     "@types/object-path": "^0.11.0",
     "@types/sinonjs__fake-timers": "^6.0.2",
     "codecov": "^3.8.1",
-    "eslint-plugin-node": "^11.1.0",
     "jest": "^26.6.3",
     "jest-extended": "^0.11.2",
     "jest-haste-map": "^26.6.2",
@@ -87,7 +86,7 @@
     "eventemitter3": "^4.0.7",
     "exit-hook": "^2.2.1",
     "nanotimer": "^0.3.15",
-    "threadedclass": "^0.8.3",
+    "threadedclass": "^0.9.0",
     "tslib": "^2.2.0",
     "wavefile": "^8.4.4"
   },
