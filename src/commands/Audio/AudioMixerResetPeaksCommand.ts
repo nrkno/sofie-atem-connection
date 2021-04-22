@@ -12,7 +12,7 @@ export class AudioMixerResetPeaksCommand extends WritableCommand<ClassicAudioRes
 		all: 1 << 0,
 		input: 1 << 1,
 		master: 1 << 2,
-		monitor: 1 << 3
+		monitor: 1 << 3,
 	}
 	public static readonly rawName = 'RAMP'
 

@@ -10,7 +10,7 @@ export class FairlightMixerMasterCommand extends WritableCommand<OmitReadonly<Fa
 		equalizerGain: 1 << 1,
 		makeUpGain: 1 << 2,
 		faderGain: 1 << 3,
-		followFadeToBlack: 1 << 4
+		followFadeToBlack: 1 << 4,
 	}
 
 	public static readonly rawName = 'CFMP'
@@ -40,7 +40,7 @@ export class FairlightMixerMasterUpdateCommand extends DeserializedCommand<
 			equalizerGain: rawCommand.readInt32BE(4),
 			makeUpGain: rawCommand.readInt32BE(8),
 			faderGain: rawCommand.readInt32BE(12),
-			followFadeToBlack: rawCommand.readUInt8(16) > 0
+			followFadeToBlack: rawCommand.readUInt8(16) > 0,
 		}
 
 		return new FairlightMixerMasterUpdateCommand(properties)
@@ -56,7 +56,7 @@ export class FairlightMixerMasterUpdateCommand extends DeserializedCommand<
 			equalizerBands: new Array(this.properties.bandCount).fill(undefined),
 			// preserve old bands
 			...state.fairlight.master,
-			...Util.omit(this.properties, 'bandCount')
+			...Util.omit(this.properties, 'bandCount'),
 		}
 
 		return `fairlight.master`

@@ -6,7 +6,7 @@ export class FairlightMixerMasterPropertiesCommand extends WritableCommand<
 	OmitReadonly<{ audioFollowVideo: boolean }>
 > {
 	public static MaskFlags = {
-		audioFollowVideo: 1 << 0
+		audioFollowVideo: 1 << 0,
 	}
 
 	public static readonly rawName = 'CMPP'

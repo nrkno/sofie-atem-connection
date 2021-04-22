@@ -23,7 +23,7 @@ export {
 	Recording,
 	Streaming,
 	Fairlight,
-	ColorGeneratorState
+	ColorGeneratorState,
 }
 
 export interface AtemState {

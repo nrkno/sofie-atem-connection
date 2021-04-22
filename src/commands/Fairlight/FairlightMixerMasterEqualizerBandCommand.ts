@@ -13,7 +13,7 @@ export class FairlightMixerMasterEqualizerBandCommand extends WritableCommand<
 		frequencyRange: 1 << 2,
 		frequency: 1 << 3,
 		gain: 1 << 4,
-		qFactor: 1 << 5
+		qFactor: 1 << 5,
 	}
 
 	public static readonly rawName = 'CMBP'
@@ -42,9 +42,7 @@ export class FairlightMixerMasterEqualizerBandCommand extends WritableCommand<
 	}
 }
 
-export class FairlightMixerMasterEqualizerBandUpdateCommand extends DeserializedCommand<
-	FairlightAudioEqualizerBandState
-> {
+export class FairlightMixerMasterEqualizerBandUpdateCommand extends DeserializedCommand<FairlightAudioEqualizerBandState> {
 	public static readonly rawName = 'AMBP'
 
 	public readonly band: number
@@ -65,7 +63,7 @@ export class FairlightMixerMasterEqualizerBandUpdateCommand extends Deserialized
 			frequencyRange: rawCommand.readUInt8(5),
 			frequency: rawCommand.readUInt32BE(8),
 			gain: rawCommand.readInt32BE(12),
-			qFactor: rawCommand.readInt16BE(16)
+			qFactor: rawCommand.readInt16BE(16),
 		}
 
 		return new FairlightMixerMasterEqualizerBandUpdateCommand(band, properties)

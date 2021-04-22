@@ -1,6 +1,4 @@
 import { BasicWritableCommand } from '../CommandBase'
-import { BigInteger } from 'big-integer'
-import * as Util from '../../lib/atemUtil'
 
 export class FairlightMixerSourceResetPeakLevelsCommand extends BasicWritableCommand<{
 	output: boolean
@@ -10,13 +8,9 @@ export class FairlightMixerSourceResetPeakLevelsCommand extends BasicWritableCom
 	public static readonly rawName = 'RFIP'
 
 	public readonly index: number
-	public readonly source: BigInteger
+	public readonly source: bigint
 
-	constructor(
-		index: number,
-		source: BigInteger,
-		properties: FairlightMixerSourceResetPeakLevelsCommand['properties']
-	) {
+	constructor(index: number, source: bigint, properties: FairlightMixerSourceResetPeakLevelsCommand['properties']) {
 		super(properties)
 
 		this.index = index
@@ -26,7 +20,7 @@ export class FairlightMixerSourceResetPeakLevelsCommand extends BasicWritableCom
 	public serialize(): Buffer {
 		const buffer = Buffer.alloc(20)
 		buffer.writeUInt16BE(this.index, 0)
-		Util.bigIntToBuf(buffer, this.source, 8)
+		buffer.writeBigInt64BE(this.source, 8)
 
 		let val = 0
 		if (this.properties.dynamicsInput) {

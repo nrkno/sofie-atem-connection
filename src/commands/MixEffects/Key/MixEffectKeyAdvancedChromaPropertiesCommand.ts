@@ -2,9 +2,7 @@ import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState, AtemStateUtil, InvalidIdError } from '../../../state'
 import { UpstreamKeyerAdvancedChromaProperties } from '../../../state/video/upstreamKeyers'
 
-export class MixEffectKeyAdvancedChromaPropertiesCommand extends WritableCommand<
-	UpstreamKeyerAdvancedChromaProperties
-> {
+export class MixEffectKeyAdvancedChromaPropertiesCommand extends WritableCommand<UpstreamKeyerAdvancedChromaProperties> {
 	public static MaskFlags = {
 		foregroundLevel: 1 << 0,
 		backgroundLevel: 1 << 1,
@@ -18,7 +16,7 @@ export class MixEffectKeyAdvancedChromaPropertiesCommand extends WritableCommand
 		saturation: 1 << 7,
 		red: 1 << 8,
 		green: 1 << 9,
-		blue: 1 << 10
+		blue: 1 << 10,
 	}
 	public static readonly rawName = 'CACK'
 
@@ -56,9 +54,7 @@ export class MixEffectKeyAdvancedChromaPropertiesCommand extends WritableCommand
 	}
 }
 
-export class MixEffectKeyAdvancedChromaPropertiesUpdateCommand extends DeserializedCommand<
-	UpstreamKeyerAdvancedChromaProperties
-> {
+export class MixEffectKeyAdvancedChromaPropertiesUpdateCommand extends DeserializedCommand<UpstreamKeyerAdvancedChromaProperties> {
 	public static readonly rawName = 'KACk'
 
 	public readonly mixEffect: number
@@ -87,7 +83,7 @@ export class MixEffectKeyAdvancedChromaPropertiesUpdateCommand extends Deseriali
 			saturation: rawCommand.readUInt16BE(16),
 			red: rawCommand.readInt16BE(18),
 			green: rawCommand.readInt16BE(20),
-			blue: rawCommand.readInt16BE(22)
+			blue: rawCommand.readInt16BE(22),
 		}
 
 		return new MixEffectKeyAdvancedChromaPropertiesUpdateCommand(mixEffect, upstreamKeyerId, properties)
@@ -103,7 +99,7 @@ export class MixEffectKeyAdvancedChromaPropertiesUpdateCommand extends Deseriali
 		const upstreamKeyer = AtemStateUtil.getUpstreamKeyer(mixEffect, this.upstreamKeyerId)
 		upstreamKeyer.advancedChromaSettings = {
 			...upstreamKeyer.advancedChromaSettings,
-			properties: this.properties
+			properties: this.properties,
 		}
 
 		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.advancedChromaSettings.properties`

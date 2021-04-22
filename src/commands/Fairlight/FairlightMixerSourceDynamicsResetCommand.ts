@@ -1,15 +1,13 @@
 import { WritableCommand } from '../CommandBase'
 import { FairlightDynamicsResetProps } from './common'
-import { BigInteger } from 'big-integer'
-import * as Util from '../../lib/atemUtil'
 
 export class FairlightMixerSourceDynamicsResetCommand extends WritableCommand<FairlightDynamicsResetProps> {
 	public static readonly rawName = 'RICD'
 
 	public readonly index: number
-	public readonly source: BigInteger
+	public readonly source: bigint
 
-	constructor(index: number, source: BigInteger) {
+	constructor(index: number, source: bigint) {
 		super()
 
 		this.index = index
@@ -19,7 +17,7 @@ export class FairlightMixerSourceDynamicsResetCommand extends WritableCommand<Fa
 	public serialize(): Buffer {
 		const buffer = Buffer.alloc(20)
 		buffer.writeUInt16BE(this.index, 0)
-		Util.bigIntToBuf(buffer, this.source, 8)
+		buffer.writeBigInt64BE(this.source, 8)
 
 		let val = 0
 		if (this.properties.dynamics) {

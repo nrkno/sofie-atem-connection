@@ -1,19 +1,17 @@
 import { WritableCommand } from '../CommandBase'
-import { BigInteger } from 'big-integer'
-import * as Util from '../../lib/atemUtil'
 
 export class FairlightMixerSourceEqualizerResetCommand extends WritableCommand<{ equalizer: boolean; band: number }> {
 	public static MaskFlags = {
 		equalizer: 1 << 0,
-		band: 1 << 1
+		band: 1 << 1,
 	}
 
 	public static readonly rawName = 'RICE'
 
 	public readonly index: number
-	public readonly source: BigInteger
+	public readonly source: bigint
 
-	constructor(index: number, source: BigInteger) {
+	constructor(index: number, source: bigint) {
 		super()
 
 		this.index = index
@@ -24,7 +22,7 @@ export class FairlightMixerSourceEqualizerResetCommand extends WritableCommand<{
 		const buffer = Buffer.alloc(20)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(this.index, 2)
-		Util.bigIntToBuf(buffer, this.source, 8)
+		buffer.writeBigInt64BE(this.source, 8)
 
 		buffer.writeUInt8(this.properties.equalizer ? 1 : 0, 16)
 		buffer.writeUInt8(this.properties.band || 0, 17)

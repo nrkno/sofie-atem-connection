@@ -8,7 +8,7 @@ export class FairlightMixerMonitorCommand extends WritableCommand<OmitReadonly<F
 		gain: 1 << 0,
 		inputMasterGain: 1 << 1,
 		inputTalkbackGain: 1 << 3,
-		inputSidetoneGain: 1 << 7
+		inputSidetoneGain: 1 << 7,
 	}
 
 	public static readonly rawName = 'CFMH'
@@ -33,7 +33,7 @@ export class FairlightMixerMonitorUpdateCommand extends DeserializedCommand<Fair
 			gain: rawCommand.readInt32BE(0),
 			inputMasterGain: rawCommand.readInt32BE(4),
 			inputTalkbackGain: rawCommand.readInt32BE(12),
-			inputSidetoneGain: rawCommand.readInt32BE(28)
+			inputSidetoneGain: rawCommand.readInt32BE(28),
 		}
 
 		return new FairlightMixerMonitorUpdateCommand(properties)
@@ -45,7 +45,7 @@ export class FairlightMixerMonitorUpdateCommand extends DeserializedCommand<Fair
 		}
 
 		state.fairlight.monitor = {
-			...this.properties
+			...this.properties,
 		}
 
 		return `fairlight.monitor`

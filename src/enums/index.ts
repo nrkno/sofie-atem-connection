@@ -354,5 +354,5 @@ export enum MultiViewerLayout {
 	ProgramRight = TopLeftSmall | BottomLeftSmall,
 	BottomRightSmall = 8,
 	ProgramLeft = TopRightSmall | BottomRightSmall,
-	ProgramTop = BottomLeftSmall | BottomRightSmall
+	ProgramTop = BottomLeftSmall | BottomRightSmall,
 }

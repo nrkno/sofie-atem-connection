@@ -2,8 +2,6 @@ import { FairlightAudioCompressorState } from '../../state/fairlight'
 import { AtemState, InvalidIdError } from '../../state'
 import { DeserializedCommand, WritableCommand } from '../CommandBase'
 import { OmitReadonly } from '../../lib/types'
-import { BigInteger } from 'big-integer'
-import * as Util from '../../lib/atemUtil'
 
 export class FairlightMixerSourceCompressorCommand extends WritableCommand<
 	OmitReadonly<FairlightAudioCompressorState>
@@ -14,15 +12,15 @@ export class FairlightMixerSourceCompressorCommand extends WritableCommand<
 		ratio: 1 << 2,
 		attack: 1 << 3,
 		hold: 1 << 4,
-		release: 1 << 5
+		release: 1 << 5,
 	}
 
 	public static readonly rawName = 'CICP'
 
 	public readonly index: number
-	public readonly source: BigInteger
+	public readonly source: bigint
 
-	constructor(index: number, source: BigInteger) {
+	constructor(index: number, source: bigint) {
 		super()
 
 		this.index = index
@@ -33,7 +31,7 @@ export class FairlightMixerSourceCompressorCommand extends WritableCommand<
 		const buffer = Buffer.alloc(40)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(this.index, 2)
-		Util.bigIntToBuf(buffer, this.source, 8)
+		buffer.writeBigInt64BE(this.source, 8)
 
 		buffer.writeUInt8(this.properties.compressorEnabled ? 1 : 0, 16)
 		buffer.writeInt32BE(this.properties.threshold || 0, 20)
@@ -50,9 +48,9 @@ export class FairlightMixerSourceCompressorUpdateCommand extends DeserializedCom
 	public static readonly rawName = 'AICP'
 
 	public readonly index: number
-	public readonly source: BigInteger
+	public readonly source: bigint
 
-	constructor(index: number, source: BigInteger, props: FairlightAudioCompressorState) {
+	constructor(index: number, source: bigint, props: FairlightAudioCompressorState) {
 		super(props)
 
 		this.index = index
@@ -61,14 +59,14 @@ export class FairlightMixerSourceCompressorUpdateCommand extends DeserializedCom
 
 	public static deserialize(rawCommand: Buffer): FairlightMixerSourceCompressorUpdateCommand {
 		const index = rawCommand.readUInt16BE(0)
-		const source = Util.bufToBigInt(rawCommand, 8)
+		const source = rawCommand.readBigInt64BE(8)
 		const properties = {
 			compressorEnabled: rawCommand.readUInt8(16) > 0,
 			threshold: rawCommand.readInt32BE(20),
 			ratio: rawCommand.readInt16BE(24),
 			attack: rawCommand.readInt32BE(28),
 			hold: rawCommand.readInt32BE(32),
-			release: rawCommand.readInt32BE(36)
+			release: rawCommand.readInt32BE(36),
 		}
 
 		return new FairlightMixerSourceCompressorUpdateCommand(index, source, properties)

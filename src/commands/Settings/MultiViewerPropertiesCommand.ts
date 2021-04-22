@@ -6,7 +6,7 @@ import { ProtocolVersion, MultiViewerLayout } from '../../enums'
 export class MultiViewerPropertiesCommand extends WritableCommand<MultiViewerPropertiesState> {
 	public static MaskFlags = {
 		layout: 1 << 0,
-		programPreviewSwapped: 1 << 1
+		programPreviewSwapped: 1 << 1,
 	}
 
 	public static readonly rawName = 'CMvP'
@@ -46,7 +46,7 @@ export class MultiViewerPropertiesUpdateCommand extends DeserializedCommand<Mult
 		const multiViewerId = rawCommand.readUInt8(0)
 		const properties = {
 			layout: rawCommand.readUInt8(1) as MultiViewerLayout,
-			programPreviewSwapped: rawCommand.readUInt8(2) > 0
+			programPreviewSwapped: rawCommand.readUInt8(2) > 0,
 		}
 
 		return new MultiViewerPropertiesUpdateCommand(multiViewerId, properties)

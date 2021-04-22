@@ -11,7 +11,7 @@ export class MixEffectKeyAdvancedChromaSampleCommand extends WritableCommand<Ups
 		cursorSize: 1 << 4,
 		sampledY: 1 << 5,
 		sampledCb: 1 << 6,
-		sampledCr: 1 << 7
+		sampledCr: 1 << 7,
 	}
 	public static readonly rawName = 'CACC'
 
@@ -45,9 +45,7 @@ export class MixEffectKeyAdvancedChromaSampleCommand extends WritableCommand<Ups
 	}
 }
 
-export class MixEffectKeyAdvancedChromaSampleUpdateCommand extends DeserializedCommand<
-	UpstreamKeyerAdvancedChromaSample
-> {
+export class MixEffectKeyAdvancedChromaSampleUpdateCommand extends DeserializedCommand<UpstreamKeyerAdvancedChromaSample> {
 	public static readonly rawName = 'KACC'
 
 	public readonly mixEffect: number
@@ -72,7 +70,7 @@ export class MixEffectKeyAdvancedChromaSampleUpdateCommand extends DeserializedC
 
 			sampledY: rawCommand.readUInt16BE(10),
 			sampledCb: rawCommand.readInt16BE(12),
-			sampledCr: rawCommand.readInt16BE(14)
+			sampledCr: rawCommand.readInt16BE(14),
 		}
 
 		return new MixEffectKeyAdvancedChromaSampleUpdateCommand(mixEffect, upstreamKeyerId, properties)
@@ -88,7 +86,7 @@ export class MixEffectKeyAdvancedChromaSampleUpdateCommand extends DeserializedC
 		const upstreamKeyer = AtemStateUtil.getUpstreamKeyer(mixEffect, this.upstreamKeyerId)
 		upstreamKeyer.advancedChromaSettings = {
 			...upstreamKeyer.advancedChromaSettings,
-			sample: this.properties
+			sample: this.properties,
 		}
 
 		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.advancedChromaSettings.sample`

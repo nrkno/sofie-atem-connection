@@ -8,7 +8,7 @@ export class AudioMixerHeadphonesCommand extends WritableCommand<ClassicAudioHea
 		gain: 1 << 0,
 		programOutGain: 1 << 1,
 		talkbackGain: 1 << 2,
-		sidetoneGain: 1 << 3
+		sidetoneGain: 1 << 3,
 	}
 	public static readonly rawName = 'CAMH'
 
@@ -31,7 +31,7 @@ export class AudioMixerHeadphonesUpdateCommand extends DeserializedCommand<Class
 			gain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(0)),
 			programOutGain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(2)),
 			talkbackGain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(4)),
-			sidetoneGain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(6))
+			sidetoneGain: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(6)),
 		}
 
 		return new AudioMixerHeadphonesUpdateCommand(properties)
@@ -44,7 +44,7 @@ export class AudioMixerHeadphonesUpdateCommand extends DeserializedCommand<Class
 
 		state.audio.headphones = {
 			...state.audio.headphones,
-			...this.properties
+			...this.properties,
 		}
 		return `audio.headphones`
 	}

@@ -2,8 +2,6 @@ import { FairlightAudioExpanderState } from '../../state/fairlight'
 import { AtemState, InvalidIdError } from '../../state'
 import { DeserializedCommand, WritableCommand } from '../CommandBase'
 import { OmitReadonly } from '../../lib/types'
-import { BigInteger } from 'big-integer'
-import * as Util from '../../lib/atemUtil'
 
 export class FairlightMixerSourceExpanderCommand extends WritableCommand<OmitReadonly<FairlightAudioExpanderState>> {
 	public static MaskFlags = {
@@ -14,15 +12,15 @@ export class FairlightMixerSourceExpanderCommand extends WritableCommand<OmitRea
 		ratio: 1 << 4,
 		attack: 1 << 5,
 		hold: 1 << 6,
-		release: 1 << 7
+		release: 1 << 7,
 	}
 
 	public static readonly rawName = 'CIXP'
 
 	public readonly index: number
-	public readonly source: BigInteger
+	public readonly source: bigint
 
-	constructor(index: number, source: BigInteger) {
+	constructor(index: number, source: bigint) {
 		super()
 
 		this.index = index
@@ -33,7 +31,7 @@ export class FairlightMixerSourceExpanderCommand extends WritableCommand<OmitRea
 		const buffer = Buffer.alloc(40)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(this.index, 2)
-		Util.bigIntToBuf(buffer, this.source, 8)
+		buffer.writeBigInt64BE(this.source, 8)
 
 		buffer.writeUInt8(this.properties.expanderEnabled ? 1 : 0, 16)
 		buffer.writeUInt8(this.properties.gateEnabled ? 1 : 0, 17)
@@ -52,9 +50,9 @@ export class FairlightMixerSourceExpanderUpdateCommand extends DeserializedComma
 	public static readonly rawName = 'AIXP'
 
 	public readonly index: number
-	public readonly source: BigInteger
+	public readonly source: bigint
 
-	constructor(index: number, source: BigInteger, props: FairlightAudioExpanderState) {
+	constructor(index: number, source: bigint, props: FairlightAudioExpanderState) {
 		super(props)
 
 		this.index = index
@@ -63,7 +61,7 @@ export class FairlightMixerSourceExpanderUpdateCommand extends DeserializedComma
 
 	public static deserialize(rawCommand: Buffer): FairlightMixerSourceExpanderUpdateCommand {
 		const index = rawCommand.readUInt16BE(0)
-		const source = Util.bufToBigInt(rawCommand, 8)
+		const source = rawCommand.readBigInt64BE(8)
 		const properties = {
 			expanderEnabled: rawCommand.readUInt8(16) > 0,
 			gateEnabled: rawCommand.readUInt8(17) > 0,
@@ -72,7 +70,7 @@ export class FairlightMixerSourceExpanderUpdateCommand extends DeserializedComma
 			ratio: rawCommand.readInt16BE(26),
 			attack: rawCommand.readInt32BE(28),
 			hold: rawCommand.readInt32BE(32),
-			release: rawCommand.readInt32BE(36)
+			release: rawCommand.readInt32BE(36),
 		}
 
 		return new FairlightMixerSourceExpanderUpdateCommand(index, source, properties)

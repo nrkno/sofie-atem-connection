@@ -9,7 +9,7 @@ export class FairlightMixerMasterLimiterCommand extends WritableCommand<OmitRead
 		threshold: 1 << 1,
 		attack: 1 << 2,
 		hold: 1 << 3,
-		release: 1 << 4
+		release: 1 << 4,
 	}
 
 	public static readonly rawName = 'CMLP'
@@ -37,7 +37,7 @@ export class FairlightMixerMasterLimiterUpdateCommand extends DeserializedComman
 			threshold: rawCommand.readInt32BE(4),
 			attack: rawCommand.readInt32BE(8),
 			hold: rawCommand.readInt32BE(12),
-			release: rawCommand.readInt32BE(16)
+			release: rawCommand.readInt32BE(16),
 		}
 
 		return new FairlightMixerMasterLimiterUpdateCommand(properties)

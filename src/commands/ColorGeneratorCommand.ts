@@ -5,7 +5,7 @@ export class ColorGeneratorCommand extends WritableCommand<ColorGeneratorState> 
 	public static MaskFlags = {
 		hue: 1 << 0,
 		saturation: 1 << 1,
-		luma: 1 << 2
+		luma: 1 << 2,
 	}
 
 	public static readonly rawName = 'CClV'
@@ -45,7 +45,7 @@ export class ColorGeneratorUpdateCommand extends DeserializedCommand<ColorGenera
 		const properties = {
 			hue: rawCommand.readUInt16BE(2),
 			saturation: rawCommand.readUInt16BE(4),
-			luma: rawCommand.readUInt16BE(6)
+			luma: rawCommand.readUInt16BE(6),
 		}
 
 		return new ColorGeneratorUpdateCommand(auxBus, properties)

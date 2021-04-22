@@ -3,8 +3,6 @@ import { AtemState, InvalidIdError } from '../../state'
 import { DeserializedCommand, WritableCommand } from '../CommandBase'
 import { OmitReadonly } from '../../lib/types'
 import * as AtemUtil from '../../lib/atemUtil'
-import { BigInteger } from 'big-integer'
-import * as Util from '../../lib/atemUtil'
 
 export class FairlightMixerSourceEqualizerBandCommand extends WritableCommand<
 	OmitReadonly<FairlightAudioEqualizerBandState>
@@ -15,16 +13,16 @@ export class FairlightMixerSourceEqualizerBandCommand extends WritableCommand<
 		frequencyRange: 1 << 2,
 		frequency: 1 << 3,
 		gain: 1 << 4,
-		qFactor: 1 << 5
+		qFactor: 1 << 5,
 	}
 
 	public static readonly rawName = 'CEBP'
 
 	public readonly index: number
-	public readonly source: BigInteger
+	public readonly source: bigint
 	public readonly band: number
 
-	public constructor(index: number, source: BigInteger, band: number) {
+	public constructor(index: number, source: bigint, band: number) {
 		super()
 
 		this.index = index
@@ -36,7 +34,7 @@ export class FairlightMixerSourceEqualizerBandCommand extends WritableCommand<
 		const buffer = Buffer.alloc(32)
 		buffer.writeUInt8(this.flag, 0)
 		buffer.writeUInt16BE(this.index, 2)
-		Util.bigIntToBuf(buffer, this.source, 8)
+		buffer.writeBigInt64BE(this.source, 8)
 
 		buffer.writeUInt8(this.band, 16)
 		buffer.writeUInt8(this.properties.bandEnabled ? 1 : 0, 17)
@@ -50,16 +48,14 @@ export class FairlightMixerSourceEqualizerBandCommand extends WritableCommand<
 	}
 }
 
-export class FairlightMixerSourceEqualizerBandUpdateCommand extends DeserializedCommand<
-	FairlightAudioEqualizerBandState
-> {
+export class FairlightMixerSourceEqualizerBandUpdateCommand extends DeserializedCommand<FairlightAudioEqualizerBandState> {
 	public static readonly rawName = 'AEBP'
 
 	public readonly index: number
-	public readonly source: BigInteger
+	public readonly source: bigint
 	public readonly band: number
 
-	constructor(index: number, source: BigInteger, band: number, properties: FairlightAudioEqualizerBandState) {
+	constructor(index: number, source: bigint, band: number, properties: FairlightAudioEqualizerBandState) {
 		super(properties)
 
 		this.index = index
@@ -69,7 +65,7 @@ export class FairlightMixerSourceEqualizerBandUpdateCommand extends Deserialized
 
 	public static deserialize(rawCommand: Buffer): FairlightMixerSourceEqualizerBandUpdateCommand {
 		const index = rawCommand.readUInt16BE(0)
-		const source = Util.bufToBigInt(rawCommand, 8)
+		const source = rawCommand.readBigInt64BE(8)
 		const band = rawCommand.readUInt8(16)
 		const properties = {
 			bandEnabled: rawCommand.readUInt8(17) > 0,
@@ -79,7 +75,7 @@ export class FairlightMixerSourceEqualizerBandUpdateCommand extends Deserialized
 			frequencyRange: rawCommand.readUInt8(21),
 			frequency: rawCommand.readUInt32BE(24),
 			gain: rawCommand.readInt32BE(28),
-			qFactor: rawCommand.readInt16BE(32)
+			qFactor: rawCommand.readInt16BE(32),
 		}
 
 		return new FairlightMixerSourceEqualizerBandUpdateCommand(index, source, band, properties)

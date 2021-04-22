@@ -11,7 +11,7 @@ export class AudioMixerMonitorCommand extends WritableCommand<ClassicAudioMonito
 		solo: 1 << 3,
 		soloSource: 1 << 4,
 		dim: 1 << 5,
-		dimLevel: 1 << 6
+		dimLevel: 1 << 6,
 	}
 	public static readonly rawName = 'CAMm'
 
@@ -42,7 +42,7 @@ export class AudioMixerMonitorUpdateCommand extends DeserializedCommand<ClassicA
 			soloSource: rawCommand.readUInt16BE(6),
 
 			dim: rawCommand.readUInt8(8) > 0,
-			dimLevel: rawCommand.readUInt16BE(10)
+			dimLevel: rawCommand.readUInt16BE(10),
 		}
 
 		return new AudioMixerMonitorUpdateCommand(properties)
@@ -55,7 +55,7 @@ export class AudioMixerMonitorUpdateCommand extends DeserializedCommand<ClassicA
 
 		state.audio.monitor = {
 			...state.audio.monitor,
-			...this.properties
+			...this.properties,
 		}
 		return `audio.monitor`
 	}

@@ -3,7 +3,7 @@ import { WritableCommand } from '../CommandBase'
 export class FairlightMixerMasterEqualizerResetCommand extends WritableCommand<{ equalizer: boolean; band: number }> {
 	public static MaskFlags = {
 		equalizer: 1 << 0,
-		band: 1 << 1
+		band: 1 << 1,
 	}
 
 	public static readonly rawName = 'RMOE'

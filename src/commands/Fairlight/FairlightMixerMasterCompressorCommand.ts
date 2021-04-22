@@ -12,7 +12,7 @@ export class FairlightMixerMasterCompressorCommand extends WritableCommand<
 		ratio: 1 << 2,
 		attack: 1 << 3,
 		hold: 1 << 4,
-		release: 1 << 5
+		release: 1 << 5,
 	}
 
 	public static readonly rawName = 'CMCP'
@@ -42,7 +42,7 @@ export class FairlightMixerMasterCompressorUpdateCommand extends DeserializedCom
 			ratio: rawCommand.readInt16BE(8),
 			attack: rawCommand.readInt32BE(12),
 			hold: rawCommand.readInt32BE(16),
-			release: rawCommand.readInt32BE(20)
+			release: rawCommand.readInt32BE(20),
 		}
 
 		return new FairlightMixerMasterCompressorUpdateCommand(properties)
