@@ -25,7 +25,7 @@ function writeJson(fileName, data) {
 conn.once('connected', () => {
 	writeJson(`./${args[1]}-state.json`, {
 		video: conn.state.video,
-		inputs: conn.state.inputs, // Optimise out the nulls
+		inputs: conn.state.inputs,
 	})
 	console.log('Wrote state file')
 

@@ -2,14 +2,21 @@ import { DeserializedCommand } from '../../CommandBase'
 import { AtemState, AtemStateUtil, InvalidIdError } from '../../../state'
 import { UpstreamKeyerFlyKeyframe } from '../../../state/video/upstreamKeyers'
 
-export class MixEffectKeyFlyKeyframeGetCommand extends DeserializedCommand<UpstreamKeyerFlyKeyframe> {
+export class MixEffectKeyFlyKeyframeGetCommand extends DeserializedCommand<
+	Omit<UpstreamKeyerFlyKeyframe, 'keyFrameId'>
+> {
 	public static readonly rawName = 'KKFP'
 
 	public readonly mixEffect: number
 	public readonly upstreamKeyerId: number
 	public readonly keyFrameId: number
 
-	constructor(mixEffect: number, upstreamKeyerId: number, keyFrameId: number, properties: UpstreamKeyerFlyKeyframe) {
+	constructor(
+		mixEffect: number,
+		upstreamKeyerId: number,
+		keyFrameId: number,
+		properties: Omit<UpstreamKeyerFlyKeyframe, 'keyFrameId'>
+	) {
 		super(properties)
 
 		this.mixEffect = mixEffect
@@ -22,8 +29,6 @@ export class MixEffectKeyFlyKeyframeGetCommand extends DeserializedCommand<Upstr
 		const upstreamKeyerId = rawCommand.readUInt8(1)
 		const keyFrameId = rawCommand.readUInt8(2)
 		const properties = {
-			keyFrameId: keyFrameId,
-
 			sizeX: rawCommand.readUInt32BE(4),
 			sizeY: rawCommand.readUInt32BE(8),
 
@@ -64,11 +69,14 @@ export class MixEffectKeyFlyKeyframeGetCommand extends DeserializedCommand<Upstr
 			throw new InvalidIdError('FlyKeyFrame', this.keyFrameId)
 		}
 
+		const index = this.keyFrameId - 1
+
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		const upstreamKeyer = AtemStateUtil.getUpstreamKeyer(mixEffect, this.upstreamKeyerId)
-		upstreamKeyer.flyKeyframes[this.properties.keyFrameId] = {
+		upstreamKeyer.flyKeyframes[index] = {
 			...this.properties,
+			keyFrameId: this.keyFrameId,
 		}
-		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.flyKeyframes.${this.properties.keyFrameId}`
+		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.flyKeyframes.${index}`
 	}
 }
