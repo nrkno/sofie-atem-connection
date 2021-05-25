@@ -86,15 +86,25 @@ export class FairlightMixerSourceEqualizerBandUpdateCommand extends Deserialized
 			throw new InvalidIdError('Fairlight')
 		}
 
-		if (!state.fairlight.master) {
-			throw new InvalidIdError('Fairlight.Master')
+		const input = state.fairlight.inputs[this.index]
+		if (!input) {
+			throw new InvalidIdError('Fairlight.Inputs', this.index)
 		}
-		if (this.band >= state.fairlight.master.equalizerBands.length) {
+
+		const sourceIdStr = this.source.toString()
+		const source = input.sources[sourceIdStr] || {}
+		input.sources[sourceIdStr] = source
+
+		if (!source.properties) {
+			throw new InvalidIdError('Fairlight.Inputs', this.index)
+		}
+
+		if (this.band >= source.properties.equalizerBands.length) {
 			throw new InvalidIdError('Fairlight.Master.Equalizer', this.band)
 		}
 
-		state.fairlight.master.equalizerBands[this.band] = this.properties
+		source.properties.equalizerBands[this.band] = this.properties
 
-		return `fairlight.master.equalizerBands.${this.band}`
+		return `fairlight.inputs.${this.index}.sources.${sourceIdStr}.properties.equalizerBands.${this.band}`
 	}
 }
