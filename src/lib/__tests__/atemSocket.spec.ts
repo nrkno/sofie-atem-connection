@@ -264,10 +264,10 @@ describe('AtemSocket', () => {
 		mockClear()
 		expect(getChild(socket)).toBeTruthy()
 
-		const cmd = (new ProductIdentifierCommand({
+		const cmd = new ProductIdentifierCommand({
 			model: Model.OneME,
 			productIdentifier: 'ATEM OneME',
-		}) as any) as ISerializableCommand
+		}) as any as ISerializableCommand
 		expect(cmd.serialize).toBeFalsy()
 		try {
 			await socket.sendCommands([{ rawCommand: cmd, trackingId: 1 }])
