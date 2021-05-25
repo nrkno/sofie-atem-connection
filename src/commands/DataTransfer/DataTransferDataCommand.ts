@@ -7,7 +7,8 @@ export interface DataTransferDataProps {
 
 export class DataTransferDataCommand
 	extends BasicWritableCommand<DataTransferDataProps>
-	implements IDeserializedCommand {
+	implements IDeserializedCommand
+{
 	public static readonly rawName = 'FTDa'
 
 	public serialize(): Buffer {
