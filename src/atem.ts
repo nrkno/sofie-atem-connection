@@ -5,7 +5,6 @@ import { ISerializableCommand, IDeserializedCommand } from './commands/CommandBa
 import * as Commands from './commands'
 import * as DataTransferCommands from './commands/DataTransfer'
 import { MediaPlayer, MediaPlayerSource } from './state/media'
-import { MultiViewerSourceState } from './state/settings'
 import {
 	DipTransitionSettings,
 	DVETransitionSettings,
@@ -32,8 +31,6 @@ import DataTransfer from './dataTransfer/dataTransfer'
 import { RecordingStateProperties } from './state/recording'
 import { OmitReadonly } from './lib/types'
 import { StreamingServiceProperties } from './state/streaming'
-import { commandStringify } from './lib/atemUtil'
-import { AdvancedChromaSampleResetProps } from './commands'
 import {
 	FairlightAudioMasterChannel,
 	FairlightAudioMonitorChannel,
@@ -188,14 +185,14 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 					if (e instanceof InvalidIdError) {
 						this.emit(
 							'debug',
-							`Invalid command id: ${e}. Command: ${command.constructor.name} ${commandStringify(
+							`Invalid command id: ${e}. Command: ${command.constructor.name} ${Util.commandStringify(
 								command
 							)}`
 						)
 					} else {
 						this.emit(
 							'error',
-							`MutateState failed: ${e}. Command: ${command.constructor.name} ${commandStringify(
+							`MutateState failed: ${e}. Command: ${command.constructor.name} ${Util.commandStringify(
 								command
 							)}`
 						)
@@ -428,13 +425,6 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	/** @deprecated Use setMultiViewerWindowSource instead */
-	public setMultiViewerSource(
-		newProps: Pick<MultiViewerSourceState, 'windowIndex' | 'source'>,
-		mv = 0
-	): Promise<void> {
-		return this.setMultiViewerWindowSource(newProps.source, mv, newProps.windowIndex)
-	}
 	public setMultiViewerWindowSource(source: number, mv = 0, window = 0): Promise<void> {
 		const command = new Commands.MultiViewerSourceCommand(mv, window, source)
 		return this.sendCommand(command)
@@ -555,7 +545,7 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 	public setUpstreamKeyerAdvancedChromaSampleReset(
-		flags: AdvancedChromaSampleResetProps,
+		flags: Commands.AdvancedChromaSampleResetProps,
 		me = 0,
 		keyer = 0
 	): Promise<void> {
@@ -673,32 +663,6 @@ export class Atem extends BasicAtem {
 		return this.dataTransferManager.uploadAudio(index, Util.convertWAVToRaw(data), name)
 	}
 
-	/** @deprecated Use setClassicAudioMixerInputProps instead */
-	public setAudioMixerInputMixOption(index: number, mixOption: Enums.AudioMixOption): Promise<void> {
-		const command = new Commands.AudioMixerInputCommand(index)
-		command.updateProps({ mixOption })
-		return this.sendCommand(command)
-	}
-
-	/** @deprecated Use setClassicAudioMixerInputProps instead */
-	public setAudioMixerInputGain(index: number, gain: number): Promise<void> {
-		const command = new Commands.AudioMixerInputCommand(index)
-		command.updateProps({ gain })
-		return this.sendCommand(command)
-	}
-
-	/** @deprecated Use setClassicAudioMixerInputProps instead */
-	public setAudioMixerInputBalance(index: number, balance: number): Promise<void> {
-		const command = new Commands.AudioMixerInputCommand(index)
-		command.updateProps({ balance })
-		return this.sendCommand(command)
-	}
-
-	/** @deprecated Use setClassicAudioMixerInputProps instead */
-	public setAudioMixerInputProps(index: number, props: Partial<OmitReadonly<ClassicAudioChannel>>): Promise<void> {
-		return this.setClassicAudioMixerInputProps(index, props)
-	}
-
 	public setClassicAudioMixerInputProps(
 		index: number,
 		props: Partial<OmitReadonly<ClassicAudioChannel>>
@@ -706,18 +670,6 @@ export class Atem extends BasicAtem {
 		const command = new Commands.AudioMixerInputCommand(index)
 		command.updateProps(props)
 		return this.sendCommand(command)
-	}
-
-	/** @deprecated use setClassicAudioMixerMasterProps instead */
-	public setAudioMixerMasterGain(gain: number): Promise<void> {
-		const command = new Commands.AudioMixerMasterCommand()
-		command.updateProps({ gain })
-		return this.sendCommand(command)
-	}
-
-	/** @deprecated use setClassicAudioMixerMasterProps instead */
-	public setAudioMixerMasterProps(props: Partial<ClassicAudioMasterChannel>): Promise<void> {
-		return this.setClassicAudioMixerMasterProps(props)
 	}
 
 	public setClassicAudioMixerMasterProps(props: Partial<ClassicAudioMasterChannel>): Promise<void> {
