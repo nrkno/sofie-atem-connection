@@ -161,16 +161,6 @@ export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<
 			},
 		}
 
-		// input.sources[sourceIdStr] = {
-		// 	...oldSource,
-		// 	properties: {
-		// 		equalizerBands: new Array(this.properties.bandCount).fill(undefined),
-		// 		// preserve old props
-		// 		...(oldSource ? oldSource.properties : {}),
-		// 		...Util.omit(this.properties, 'bandCount'),
-		// 	},
-		// }
-
 		return `fairlight.inputs.${this.index}.sources.${sourceIdStr}.properties`
 	}
 }

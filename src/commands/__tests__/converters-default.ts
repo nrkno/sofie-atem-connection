@@ -933,6 +933,42 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			return obj
 		},
 	},
+	CKFP: {
+		idAliases: {
+			upstreamKeyerId: 'keyerIndex',
+			mixEffect: 'mixEffectIndex',
+			keyFrameId: 'keyFrame',
+		},
+		propertyAliases: {
+			bevelPosition: (val: any): PropertyAliasResult => ({ val, name: 'borderBevelPosition' }),
+			bevelSoftness: (val: any): PropertyAliasResult => ({ val, name: 'borderBevelSoftness' }),
+			innerSoftness: (val: any): PropertyAliasResult => ({ val, name: 'borderInnerSoftness' }),
+			innerWidth: (val: any): PropertyAliasResult => ({ val: Math.round(val * 100), name: 'borderInnerWidth' }),
+			outerSoftness: (val: any): PropertyAliasResult => ({ val, name: 'borderOuterSoftness' }),
+			outerWidth: (val: any): PropertyAliasResult => ({ val: Math.round(val * 100), name: 'borderOuterWidth' }),
+			positionX: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
+			sizeX: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
+			positionY: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
+			sizeY: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
+			rotation: (val: any): PropertyAliasResult => ({ val: Math.round(val * 10) }),
+			borderHue: (val: any): PropertyAliasResult => ({ val: Math.round(val * 10) }),
+			borderLuma: (val: any): PropertyAliasResult => ({ val: Math.round(val * 10) }),
+			borderSaturation: (val: any): PropertyAliasResult => ({ val: Math.round(val * 10) }),
+			lightSourceDirection: (val: any): PropertyAliasResult => ({ val: Math.round(val * 10) }),
+			maskBottom: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
+			maskTop: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
+			maskLeft: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
+			maskRight: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
+		},
+	},
+	SFKF: {
+		idAliases: {
+			upstreamKeyerId: 'keyerIndex',
+			mixEffect: 'mixEffectIndex',
+			keyFrameId: 'keyFrame',
+		},
+		propertyAliases: {},
+	},
 	MPCE: {
 		idAliases: {
 			mediaPlayerId: 'index',

@@ -55,8 +55,8 @@ export class MixEffectKeyDVECommand extends WritableCommand<UpstreamKeyerDVESett
 		buffer.writeInt32BE(this.properties.positionY || 0, 20)
 		buffer.writeInt32BE(this.properties.rotation || 0, 24)
 
-		buffer[28] = this.properties.borderEnabled ? 1 : 0
-		buffer[29] = this.properties.shadowEnabled ? 1 : 0
+		buffer.writeUInt8(this.properties.borderEnabled ? 1 : 0, 28)
+		buffer.writeUInt8(this.properties.shadowEnabled ? 1 : 0, 29)
 		buffer.writeUInt8(this.properties.borderBevel || 0, 30)
 		buffer.writeUInt16BE(this.properties.borderOuterWidth || 0, 32)
 		buffer.writeUInt16BE(this.properties.borderInnerWidth || 0, 34)
@@ -73,7 +73,7 @@ export class MixEffectKeyDVECommand extends WritableCommand<UpstreamKeyerDVESett
 		buffer.writeUInt16BE(this.properties.lightSourceDirection || 0, 48)
 		buffer.writeUInt8(this.properties.lightSourceAltitude || 0, 50)
 
-		buffer[51] = this.properties.maskEnabled ? 1 : 0
+		buffer.writeUInt8(this.properties.maskEnabled ? 1 : 0, 51)
 		buffer.writeUInt16BE(this.properties.maskTop || 0, 52)
 		buffer.writeUInt16BE(this.properties.maskBottom || 0, 54)
 		buffer.writeUInt16BE(this.properties.maskLeft || 0, 56)

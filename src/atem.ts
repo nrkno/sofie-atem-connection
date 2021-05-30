@@ -628,6 +628,24 @@ export class Atem extends BasicAtem {
 		)
 		return this.sendCommand(command)
 	}
+	public storeUpstreamKeyerFlyKeyKeyframe(
+		mixEffect: number,
+		upstreamKeyerId: number,
+		keyframe: number
+	): Promise<void> {
+		const command = new Commands.MixEffectKeyFlyKeyframeStoreCommand(mixEffect, upstreamKeyerId, keyframe)
+		return this.sendCommand(command)
+	}
+	public setUpstreamKeyerFlyKeyKeyframe(
+		mixEffect: number,
+		upstreamKeyerId: number,
+		keyframe: number,
+		properties: Omit<USK.UpstreamKeyerFlyKeyframe, 'keyFrameId'>
+	): Promise<void> {
+		const command = new Commands.MixEffectKeyFlyKeyframeCommand(mixEffect, upstreamKeyerId, keyframe)
+		command.updateProps(properties)
+		return this.sendCommand(command)
+	}
 
 	public setUpstreamKeyerType(newProps: Partial<USK.UpstreamKeyerTypeSettings>, me = 0, keyer = 0): Promise<void> {
 		const command = new Commands.MixEffectKeyTypeSetCommand(me, keyer)
