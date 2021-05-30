@@ -53,7 +53,7 @@ function runDataTransferTest(spec: any): DataTransferManager {
 	return manager
 }
 
-test('Test Still upload', async () => {
+test('Still upload', async () => {
 	const spec: any[] = JSON.parse(readFileSync(path.join(__dirname, './upload-still-sequence.json')).toString())
 
 	const newBuffer = Buffer.alloc(1920 * 1080 * 4, 0)
@@ -67,7 +67,7 @@ test('Test Still upload', async () => {
 	expect(spec).toHaveLength(0)
 })
 
-test('Test Wav upload', async () => {
+test('Wav upload', async () => {
 	const spec: any[] = JSON.parse(readFileSync(path.join(__dirname, './upload-wav-sequence.json')).toString())
 
 	const newBuffer = readFileSync(path.join(__dirname, './sampleAudio.wav'))
@@ -81,7 +81,7 @@ test('Test Wav upload', async () => {
 	expect(spec).toHaveLength(0)
 })
 
-test('Test clip upload', async () => {
+test('clip upload', async () => {
 	const spec: any[] = JSON.parse(readFileSync(path.join(__dirname, './upload-clip-sequence.json')).toString())
 
 	const newBuffer = Buffer.alloc(1920 * 1080 * 4, 0)

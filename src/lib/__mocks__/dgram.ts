@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-standalone-expect */
 import { EventEmitter } from 'events'
 import { SocketType, RemoteInfo } from 'dgram'
 import 'jest-extended'

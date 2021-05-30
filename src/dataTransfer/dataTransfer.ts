@@ -6,7 +6,7 @@ export default abstract class DataTransfer {
 	public readonly storeId: number
 
 	private readonly completionPromise: Promise<DataTransfer>
-	public resolvePromise: (value?: DataTransfer | PromiseLike<DataTransfer> | undefined) => void
+	public resolvePromise: (value: DataTransfer | PromiseLike<DataTransfer>) => void
 	public rejectPromise: (reason?: any) => void
 
 	constructor(transferId: number, storeId: number) {
@@ -21,7 +21,7 @@ export default abstract class DataTransfer {
 			// Ignore
 		}
 
-		this.completionPromise = new Promise((resolve, reject) => {
+		this.completionPromise = new Promise<DataTransfer>((resolve, reject) => {
 			this.resolvePromise = resolve
 			this.rejectPromise = reject
 		})
