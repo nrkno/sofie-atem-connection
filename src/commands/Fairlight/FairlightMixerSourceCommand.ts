@@ -1,4 +1,4 @@
-import { FairlightAudioInput, FairlightAudioSourceProperties } from '../../state/fairlight'
+import { FairlightAudioInput, FairlightAudioSourcePropertiesState } from '../../state/fairlight'
 import { AtemState, InvalidIdError } from '../../state'
 import * as Util from '../../lib/atemUtil'
 import { DeserializedCommand, WritableCommand } from '../CommandBase'
@@ -37,7 +37,14 @@ export class FairlightMixerSourceDeleteCommand extends DeserializedCommand<Recor
 	}
 }
 
-export class FairlightMixerSourceCommand extends WritableCommand<OmitReadonly<FairlightAudioSourceProperties>> {
+export interface FairlightMixerSourceCommandProperties extends FairlightAudioSourcePropertiesState {
+	equalizerEnabled: boolean
+	equalizerGain: number
+
+	makeUpGain: number
+}
+
+export class FairlightMixerSourceCommand extends WritableCommand<OmitReadonly<FairlightMixerSourceCommandProperties>> {
 	public static MaskFlags = {
 		framesDelay: 1 << 0,
 		gain: 1 << 1,
@@ -83,7 +90,7 @@ export class FairlightMixerSourceCommand extends WritableCommand<OmitReadonly<Fa
 }
 
 export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<
-	Omit<FairlightAudioSourceProperties, 'equalizerBands'> & { bandCount: number }
+	FairlightMixerSourceCommandProperties & { bandCount: number }
 > {
 	public static readonly rawName = 'FASP'
 
@@ -137,13 +144,32 @@ export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<
 
 		input.sources[sourceIdStr] = {
 			...oldSource,
+			equalizer: {
+				...oldSource?.equalizer,
+				enabled: this.properties.equalizerEnabled,
+				gain: this.properties.equalizerGain,
+				bands: oldSource?.equalizer?.bands ?? new Array(this.properties.bandCount).fill(undefined),
+			},
+			dynamics: {
+				...oldSource?.dynamics,
+				makeUpGain: this.properties.makeUpGain,
+			},
 			properties: {
-				equalizerBands: new Array(this.properties.bandCount).fill(undefined),
 				// preserve old props
 				...(oldSource ? oldSource.properties : {}),
-				...Util.omit(this.properties, 'bandCount'),
+				...Util.omit(this.properties, 'bandCount', 'equalizerEnabled', 'equalizerGain', 'makeUpGain'),
 			},
 		}
+
+		// input.sources[sourceIdStr] = {
+		// 	...oldSource,
+		// 	properties: {
+		// 		equalizerBands: new Array(this.properties.bandCount).fill(undefined),
+		// 		// preserve old props
+		// 		...(oldSource ? oldSource.properties : {}),
+		// 		...Util.omit(this.properties, 'bandCount'),
+		// 	},
+		// }
 
 		return `fairlight.inputs.${this.index}.sources.${sourceIdStr}.properties`
 	}

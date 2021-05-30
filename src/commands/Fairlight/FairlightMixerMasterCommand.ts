@@ -1,10 +1,15 @@
-import { FairlightAudioMasterChannel } from '../../state/fairlight'
+import { FairlightAudioMasterChannelPropertiesState } from '../../state/fairlight'
 import { AtemState, InvalidIdError } from '../../state'
 import { DeserializedCommand, WritableCommand } from '../CommandBase'
-import { OmitReadonly } from '../../lib/types'
-import * as Util from '../../lib/atemUtil'
 
-export class FairlightMixerMasterCommand extends WritableCommand<OmitReadonly<FairlightAudioMasterChannel>> {
+export interface FairlightMixerMasterCommandProperties extends FairlightAudioMasterChannelPropertiesState {
+	equalizerEnabled: boolean
+	equalizerGain: number
+
+	makeUpGain: number
+}
+
+export class FairlightMixerMasterCommand extends WritableCommand<FairlightMixerMasterCommandProperties> {
 	public static MaskFlags = {
 		equalizerEnabled: 1 << 0,
 		equalizerGain: 1 << 1,
@@ -29,7 +34,7 @@ export class FairlightMixerMasterCommand extends WritableCommand<OmitReadonly<Fa
 }
 
 export class FairlightMixerMasterUpdateCommand extends DeserializedCommand<
-	Omit<FairlightAudioMasterChannel, 'equalizerBands'> & { bandCount: number }
+	FairlightMixerMasterCommandProperties & { bandCount: number }
 > {
 	public static readonly rawName = 'FAMP'
 
@@ -52,11 +57,20 @@ export class FairlightMixerMasterUpdateCommand extends DeserializedCommand<
 		}
 
 		state.fairlight.master = {
-			// default bands to empty
-			equalizerBands: new Array(this.properties.bandCount).fill(undefined),
-			// preserve old bands
-			...state.fairlight.master,
-			...Util.omit(this.properties, 'bandCount'),
+			properties: {
+				faderGain: this.properties.faderGain,
+				followFadeToBlack: this.properties.followFadeToBlack,
+			},
+			dynamics: {
+				...state.fairlight.master?.dynamics,
+				makeUpGain: this.properties.makeUpGain,
+			},
+			equalizer: {
+				...state.fairlight.master?.equalizer,
+				enabled: this.properties.equalizerEnabled,
+				gain: this.properties.equalizerGain,
+				bands: state.fairlight.master?.equalizer?.bands ?? new Array(this.properties.bandCount).fill(undefined), // Assume bands number doesnt change
+			},
 		}
 
 		return `fairlight.master`

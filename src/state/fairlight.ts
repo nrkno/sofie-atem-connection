@@ -8,7 +8,7 @@ import {
 } from '../enums'
 
 export interface FairlightAudioDynamicsState {
-	// makeUpGain: number
+	makeUpGain?: number
 
 	limiter?: FairlightAudioLimiterState
 	compressor?: FairlightAudioCompressorState
@@ -58,16 +58,15 @@ export interface FairlightAudioEqualizerBandState {
 	qFactor: number
 }
 
-export interface FairlightAudioMasterChannel {
-	equalizerEnabled: boolean
-	equalizerGain: number
-	readonly equalizerBands: Array<FairlightAudioEqualizerBandState | undefined>
-
-	makeUpGain: number
+export interface FairlightAudioMasterChannelPropertiesState {
 	/** Gain in decibel, -Infinity to +6dB */
 	faderGain: number
 	followFadeToBlack: boolean
+}
+export interface FairlightAudioMasterChannel {
+	properties?: FairlightAudioMasterChannelPropertiesState
 
+	equalizer?: FairlightAudioEqualizerState
 	dynamics?: Omit<FairlightAudioDynamicsState, 'expander'>
 }
 
@@ -79,11 +78,16 @@ export interface FairlightAudioMonitorChannel {
 }
 
 export interface FairlightAudioSource {
-	properties?: FairlightAudioSourceProperties
-
+	properties?: FairlightAudioSourcePropertiesState
+	equalizer?: FairlightAudioEqualizerState
 	dynamics?: FairlightAudioDynamicsState
 }
-export interface FairlightAudioSourceProperties {
+export interface FairlightAudioEqualizerState {
+	enabled: boolean
+	gain: number
+	readonly bands: Array<FairlightAudioEqualizerBandState | undefined>
+}
+export interface FairlightAudioSourcePropertiesState {
 	readonly sourceType: FairlightAudioSourceType
 
 	readonly maxFramesDelay: number
@@ -95,12 +99,6 @@ export interface FairlightAudioSourceProperties {
 	gain: number
 	balance: number
 	faderGain: number
-
-	equalizerEnabled: boolean
-	equalizerGain: number
-	readonly equalizerBands: Array<FairlightAudioEqualizerBandState | undefined>
-
-	makeUpGain: number
 
 	readonly supportedMixOptions: FairlightAudioMixOption[]
 	mixOption: FairlightAudioMixOption

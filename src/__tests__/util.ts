@@ -65,12 +65,11 @@ export function createEmptyState(cmd?: IDeserializedCommand): AtemState {
 	state.fairlight = {
 		inputs: {},
 		master: {
-			equalizerBands: [undefined, undefined, undefined, undefined, undefined],
-			equalizerGain: 0,
-			equalizerEnabled: false,
-			makeUpGain: 0,
-			faderGain: 0,
-			followFadeToBlack: false,
+			equalizer: {
+				enabled: false,
+				gain: 0,
+				bands: [undefined, undefined, undefined, undefined, undefined],
+			},
 		},
 	}
 
@@ -86,8 +85,11 @@ export function createEmptyState(cmd?: IDeserializedCommand): AtemState {
 
 			if ('source' in cmdAny && typeof cmdAny.source === 'bigint') {
 				input.sources[cmdAny.source.toString()] = {
-					// properties: {
-					// }
+					equalizer: {
+						enabled: false,
+						gain: 0,
+						bands: [undefined, undefined, undefined, undefined, undefined],
+					},
 				}
 			}
 		}

@@ -32,7 +32,6 @@ import { RecordingStateProperties } from './state/recording'
 import { OmitReadonly } from './lib/types'
 import { StreamingServiceProperties } from './state/streaming'
 import {
-	FairlightAudioMasterChannel,
 	FairlightAudioMonitorChannel,
 	FairlightAudioCompressorState,
 	FairlightAudioLimiterState,
@@ -701,7 +700,9 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public setFairlightAudioMixerMasterProps(props: Partial<OmitReadonly<FairlightAudioMasterChannel>>): Promise<void> {
+	public setFairlightAudioMixerMasterProps(
+		props: Partial<Commands.FairlightMixerMasterCommandProperties>
+	): Promise<void> {
 		const command = new Commands.FairlightMixerMasterCommand()
 		command.updateProps(props)
 		return this.sendCommand(command)

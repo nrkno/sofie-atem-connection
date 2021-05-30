@@ -77,12 +77,15 @@ export class FairlightMixerMasterEqualizerBandUpdateCommand extends Deserialized
 		if (!state.fairlight.master) {
 			throw new InvalidIdError('Fairlight.Master')
 		}
-		if (this.band >= state.fairlight.master.equalizerBands.length) {
+		if (!state.fairlight.master.equalizer) {
+			throw new InvalidIdError('Fairlight.Master.Equalizer')
+		}
+		if (this.band >= state.fairlight.master.equalizer.bands.length) {
 			throw new InvalidIdError('Fairlight.Master.Equalizer', this.band)
 		}
 
-		state.fairlight.master.equalizerBands[this.band] = this.properties
+		state.fairlight.master.equalizer.bands[this.band] = this.properties
 
-		return `fairlight.master.equalizerBands.${this.band}`
+		return `fairlight.master.equalizer.bands.${this.band}`
 	}
 }
