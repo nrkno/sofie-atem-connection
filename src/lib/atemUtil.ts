@@ -238,6 +238,14 @@ export function getComponents(val: number): number[] {
 	return res
 }
 
+export function combineComponents(vals: number[]): number {
+	let res = 0
+	for (const val of vals) {
+		res |= val
+	}
+	return res
+}
+
 export function commandStringify(command: IDeserializedCommand | ISerializableCommand): string {
 	return JSON.stringify(command, (_key, value) => (typeof value === 'bigint' ? value.toString() : value))
 }

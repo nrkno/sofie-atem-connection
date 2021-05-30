@@ -5,6 +5,7 @@ import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import { AtemStateUtil, AtemState } from '../state'
 import { createEmptyState } from './util'
+import { getComponents } from '../lib/atemUtil'
 
 function readJson(fileName: string): any {
 	const filePath = resolve(__dirname, fileName)
@@ -41,6 +42,12 @@ function loadRawState(file: string): AtemState {
 				}
 				delete me1.transitionFramesLeft
 				delete me1.inTransition
+			}
+			if (typeof me.transitionProperties.selection === 'number') {
+				;(me.transitionProperties as any).selection = getComponents(me.transitionProperties.selection)
+			}
+			if (typeof me.transitionProperties.nextSelection === 'number') {
+				;(me.transitionProperties as any).nextSelection = getComponents(me.transitionProperties.nextSelection)
 			}
 		}
 	})

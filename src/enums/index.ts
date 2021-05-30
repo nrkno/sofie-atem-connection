@@ -35,6 +35,14 @@ export enum TransitionStyle {
 	STING = 0x04,
 }
 
+export enum TransitionSelection {
+	Background = 1 << 0,
+	Key1 = 1 << 1,
+	Key2 = 1 << 2,
+	Key3 = 1 << 3,
+	Key4 = 1 << 4,
+}
+
 export enum DVEEffect {
 	SwooshTopLeft = 0,
 	SwooshTop = 1,

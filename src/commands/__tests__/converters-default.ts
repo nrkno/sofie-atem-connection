@@ -639,13 +639,18 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 		idAliases: {
 			mixEffect: 'index',
 		},
-		propertyAliases: {},
+		propertyAliases: {
+			selection: (val: any): PropertyAliasResult => ({ val: Util.getComponents(val) }),
+			nextSelection: (val: any): PropertyAliasResult => ({ val: Util.getComponents(val) }),
+		},
 	},
 	CTTp: {
 		idAliases: {
 			mixEffect: 'index',
 		},
-		propertyAliases: {},
+		propertyAliases: {
+			nextSelection: (val: any): PropertyAliasResult => ({ val: Util.getComponents(val) }),
+		},
 	},
 	TMxP: {
 		idAliases: {

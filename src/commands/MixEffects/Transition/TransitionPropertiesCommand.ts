@@ -2,6 +2,7 @@ import { WritableCommand, DeserializedCommand } from '../../CommandBase'
 import { AtemState, AtemStateUtil, InvalidIdError } from '../../../state'
 import { TransitionProperties } from '../../../state/video'
 import { OmitReadonly } from '../../../lib/types'
+import { combineComponents, getComponents } from '../../../lib/atemUtil'
 
 export class TransitionPropertiesCommand extends WritableCommand<OmitReadonly<TransitionProperties>> {
 	public static MaskFlags = {
@@ -25,7 +26,7 @@ export class TransitionPropertiesCommand extends WritableCommand<OmitReadonly<Tr
 
 		buffer.writeUInt8(this.mixEffect, 1)
 		buffer.writeUInt8(this.properties.nextStyle || 0, 2)
-		buffer.writeUInt8(this.properties.nextSelection || 0, 3)
+		buffer.writeUInt8(combineComponents(this.properties.nextSelection || []), 3)
 
 		return buffer
 	}
@@ -46,9 +47,9 @@ export class TransitionPropertiesUpdateCommand extends DeserializedCommand<Trans
 		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
 			style: rawCommand.readUInt8(1),
-			selection: rawCommand.readUInt8(2),
+			selection: getComponents(rawCommand.readUInt8(2)),
 			nextStyle: rawCommand.readUInt8(3),
-			nextSelection: rawCommand.readUInt8(4),
+			nextSelection: getComponents(rawCommand.readUInt8(4)),
 		}
 
 		return new TransitionPropertiesUpdateCommand(mixEffect, properties)

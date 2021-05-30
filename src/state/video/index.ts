@@ -58,10 +58,14 @@ export interface WipeTransitionSettings {
 }
 
 export interface TransitionProperties {
+	/** If in a transition, this is the style of the running transition. If no transition is active it will mirror nextStyle */
 	readonly style: Enum.TransitionStyle
-	readonly selection: number
+	/** If in a transition, this is the selection of the running transition. If no transition is active it will mirror nextSelection */
+	readonly selection: Enum.TransitionSelection[]
+	/** The style for the next transition */
 	nextStyle: Enum.TransitionStyle
-	nextSelection: number
+	/** The selection for the next transition */
+	nextSelection: Enum.TransitionSelection[]
 }
 
 export interface TransitionSettings {

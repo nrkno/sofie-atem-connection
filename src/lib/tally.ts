@@ -11,7 +11,7 @@ function _calcActiveMeInputs(inputs: Set<number>, mode: 'program' | 'preview', s
 	const meRef = AtemStateUtil.getMixEffect(state, meId)
 
 	if (mode === 'preview') {
-		if (meRef.transitionProperties.selection & 1) {
+		if (meRef.transitionProperties.selection.includes(Enums.TransitionSelection.Background)) {
 			inputs.add(meRef.previewInput)
 		}
 	} else {
@@ -22,8 +22,8 @@ function _calcActiveMeInputs(inputs: Set<number>, mode: 'program' | 'preview', s
 	meRef.upstreamKeyers
 		.filter((usk) => {
 			if (usk) {
-				const keyerMask = 1 << (usk.upstreamKeyerId + 1)
-				const isPartOfTransition = meRef.transitionProperties.selection & keyerMask
+				const keyerMask: Enums.TransitionSelection = 1 << (usk.upstreamKeyerId + 1)
+				const isPartOfTransition = meRef.transitionProperties.selection.includes(keyerMask)
 				if (mode === 'program') {
 					if (meRef.transitionPosition.inTransition) {
 						return usk.onAir || isPartOfTransition
@@ -81,7 +81,7 @@ function _calcActiveMeInputs(inputs: Set<number>, mode: 'program' | 'preview', s
 	const isTransitionInPreview =
 		mode === 'preview' && meRef.transitionPreview && meRef.transitionPosition.handlePosition > 0
 	if (isTransitionInProgram || isTransitionInPreview) {
-		if (meRef.transitionProperties.selection & 1) {
+		if (meRef.transitionProperties.selection.includes(Enums.TransitionSelection.Background)) {
 			// Includes background
 			inputs.add(meRef.previewInput)
 		}

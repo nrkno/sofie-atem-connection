@@ -104,9 +104,9 @@ export function getMixEffect(state: AtemState, index: number, dontCreate?: boole
 			},
 			transitionProperties: {
 				style: Enums.TransitionStyle.MIX,
-				selection: 1,
+				selection: [Enums.TransitionSelection.Background],
 				nextStyle: Enums.TransitionStyle.MIX,
-				nextSelection: 1,
+				nextSelection: [Enums.TransitionSelection.Background],
 			},
 			transitionSettings: {},
 			upstreamKeyers: [],
