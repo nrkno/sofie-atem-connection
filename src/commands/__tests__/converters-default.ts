@@ -900,13 +900,13 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 		idAliases: {
 			upstreamKeyerId: 'keyerIndex',
 			mixEffect: 'mixEffectIndex',
+			keyFrameId: 'keyFrame',
 		},
 		propertyAliases: {
 			bevelPosition: (val: any): PropertyAliasResult => ({ val, name: 'borderBevelPosition' }),
 			bevelSoftness: (val: any): PropertyAliasResult => ({ val, name: 'borderBevelSoftness' }),
 			innerSoftness: (val: any): PropertyAliasResult => ({ val, name: 'borderInnerSoftness' }),
 			innerWidth: (val: any): PropertyAliasResult => ({ val: Math.round(val * 100), name: 'borderInnerWidth' }),
-			keyFrame: (val: any): PropertyAliasResult => ({ val, name: 'keyFrameId' }),
 			outerSoftness: (val: any): PropertyAliasResult => ({ val, name: 'borderOuterSoftness' }),
 			outerWidth: (val: any): PropertyAliasResult => ({ val: Math.round(val * 100), name: 'borderOuterWidth' }),
 			positionX: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),

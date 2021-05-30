@@ -1,6 +1,8 @@
+import { FairlightAudioInput } from '../state/fairlight'
+import { IDeserializedCommand } from '../commands'
 import { AtemStateUtil, AtemState, Settings } from '../state'
 
-export function createEmptyState(): AtemState {
+export function createEmptyState(cmd?: IDeserializedCommand): AtemState {
 	const state = AtemStateUtil.Create()
 
 	// These should be the maximum supported by any device.
@@ -72,9 +74,22 @@ export function createEmptyState(): AtemState {
 		},
 	}
 
-	for (let i = 0; i < 6000; i++) {
-		state.fairlight.inputs[i] = {
-			sources: {},
+	if (cmd) {
+		// Some commands need some very specific bits of state defined that are hard to do in a generic way
+		// This is where we do some light (and hopefully generic) inspection of commands and make sure the state bits they need are defined
+		const cmdAny: any = cmd
+		if (cmdAny.constructor.name.includes('Fairlight') && 'index' in cmdAny && typeof cmdAny.index === 'number') {
+			const input: FairlightAudioInput = {
+				sources: {},
+			}
+			state.fairlight.inputs[cmdAny.index] = input
+
+			if ('source' in cmdAny && typeof cmdAny.source === 'bigint') {
+				input.sources[cmdAny.source.toString()] = {
+					// properties: {
+					// }
+				}
+			}
 		}
 	}
 

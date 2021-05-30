@@ -115,7 +115,7 @@ function runTestForCommand(commandParser: CommandParser, i: number, testCase: Te
 
 				expect(cmd.properties).toEqual(mutatedCommand)
 
-				const state = createEmptyState()
+				const state = createEmptyState(cmd)
 				// Ensure state update doesnt error
 				expect(cmd.applyToState(state)).toBeTruthy()
 			})
