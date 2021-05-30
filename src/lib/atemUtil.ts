@@ -241,3 +241,11 @@ export function getComponents(val: number): number[] {
 export function commandStringify(command: IDeserializedCommand | ISerializableCommand): string {
 	return JSON.stringify(command, (_key, value) => (typeof value === 'bigint' ? value.toString() : value))
 }
+
+export function omit<T, K extends keyof T>(o: T, ...keys: K[]): Omit<T, K> {
+	const obj: any = { ...o }
+	for (const key of keys) {
+		delete obj[key]
+	}
+	return obj
+}

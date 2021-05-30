@@ -344,3 +344,15 @@ export enum FairlightInputType {
 	AudioIn = 2,
 	MADI = 4,
 }
+
+export enum MultiViewerLayout {
+	Default = 0,
+	TopLeftSmall = 1,
+	TopRightSmall = 2,
+	ProgramBottom = TopLeftSmall | TopRightSmall,
+	BottomLeftSmall = 4,
+	ProgramRight = TopLeftSmall | BottomLeftSmall,
+	BottomRightSmall = 8,
+	ProgramLeft = TopRightSmall | BottomRightSmall,
+	ProgramTop = BottomLeftSmall | BottomRightSmall,
+}

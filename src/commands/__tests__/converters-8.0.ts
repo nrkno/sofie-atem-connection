@@ -117,4 +117,23 @@ export const V8_0CommandConverters: CommandTestConverterSet = {
 			supportedInputLevels: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) }),
 		},
 	},
+	CMvP: {
+		idAliases: {
+			multiViewerId: 'multiviewIndex',
+		},
+		propertyAliases: {},
+	},
+	MvPr: {
+		idAliases: {
+			multiViewerId: 'multiviewIndex',
+		},
+		propertyAliases: {},
+	},
+	SaMw: {
+		idAliases: {
+			multiViewerId: 'multiviewIndex',
+			windowIndex: 'windowIndex',
+		},
+		propertyAliases: {},
+	},
 }

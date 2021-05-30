@@ -1,6 +1,8 @@
-import { AtemStateUtil, AtemState } from '../state'
+import { FairlightAudioInput } from '../state/fairlight'
+import { IDeserializedCommand } from '../commands'
+import { AtemStateUtil, AtemState, Settings } from '../state'
 
-export function createEmptyState(): AtemState {
+export function createEmptyState(cmd?: IDeserializedCommand): AtemState {
 	const state = AtemStateUtil.Create()
 
 	// These should be the maximum supported by any device.
@@ -62,6 +64,48 @@ export function createEmptyState(): AtemState {
 	}
 	state.fairlight = {
 		inputs: {},
+		master: {
+			equalizer: {
+				enabled: false,
+				gain: 0,
+				bands: [undefined, undefined, undefined, undefined, undefined],
+			},
+		},
+	}
+
+	if (cmd) {
+		// Some commands need some very specific bits of state defined that are hard to do in a generic way
+		// This is where we do some light (and hopefully generic) inspection of commands and make sure the state bits they need are defined
+		const cmdAny: any = cmd
+		if (cmdAny.constructor.name.includes('Fairlight') && 'index' in cmdAny && typeof cmdAny.index === 'number') {
+			const input: FairlightAudioInput = {
+				sources: {},
+			}
+			state.fairlight.inputs[cmdAny.index] = input
+
+			if ('source' in cmdAny && typeof cmdAny.source === 'bigint') {
+				input.sources[cmdAny.source.toString()] = {
+					equalizer: {
+						enabled: false,
+						gain: 0,
+						bands: [undefined, undefined, undefined, undefined, undefined],
+					},
+				}
+			}
+		}
+	}
+
+	if (state.info.multiviewer) {
+		for (let i = 0; i < state.info.multiviewer.count; i++) {
+			const windows: Settings.MultiViewerWindowState[] = []
+			for (let o = 0; o < state.info.multiviewer.windowCount; o++) {
+				windows.push({ windowIndex: o, source: 0, supportsSafeArea: true, supportsVuMeter: true })
+			}
+			state.settings.multiViewers[i] = {
+				index: i,
+				windows: windows,
+			}
+		}
 	}
 
 	return state

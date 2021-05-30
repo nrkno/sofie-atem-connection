@@ -1,4 +1,4 @@
-import { FairlightAudioInput, FairlightAudioSourceProperties } from '../../state/fairlight'
+import { FairlightAudioInput, FairlightAudioSourcePropertiesState } from '../../state/fairlight'
 import { AtemState, InvalidIdError } from '../../state'
 import * as Util from '../../lib/atemUtil'
 import { DeserializedCommand, WritableCommand } from '../CommandBase'
@@ -37,7 +37,14 @@ export class FairlightMixerSourceDeleteCommand extends DeserializedCommand<Recor
 	}
 }
 
-export class FairlightMixerSourceCommand extends WritableCommand<OmitReadonly<FairlightAudioSourceProperties>> {
+export interface FairlightMixerSourceCommandProperties extends FairlightAudioSourcePropertiesState {
+	equalizerEnabled: boolean
+	equalizerGain: number
+
+	makeUpGain: number
+}
+
+export class FairlightMixerSourceCommand extends WritableCommand<OmitReadonly<FairlightMixerSourceCommandProperties>> {
 	public static MaskFlags = {
 		framesDelay: 1 << 0,
 		gain: 1 << 1,
@@ -82,13 +89,15 @@ export class FairlightMixerSourceCommand extends WritableCommand<OmitReadonly<Fa
 	}
 }
 
-export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<FairlightAudioSourceProperties> {
+export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<
+	FairlightMixerSourceCommandProperties & { bandCount: number }
+> {
 	public static readonly rawName = 'FASP'
 
 	public readonly index: number
 	public readonly source: bigint
 
-	constructor(index: number, source: bigint, props: FairlightAudioSourceProperties) {
+	constructor(index: number, source: bigint, props: FairlightMixerSourceUpdateCommand['properties']) {
 		super(props)
 
 		this.index = index
@@ -108,7 +117,7 @@ export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<Fairl
 			hasStereoSimulation: rawCommand.readUInt8(24) > 0,
 			stereoSimulation: rawCommand.readInt16BE(26),
 
-			equalizerBands: rawCommand.readUInt8(28),
+			bandCount: rawCommand.readUInt8(28),
 			equalizerEnabled: rawCommand.readUInt8(29) > 0,
 			equalizerGain: rawCommand.readInt32BE(32),
 			makeUpGain: rawCommand.readInt32BE(36),
@@ -135,9 +144,33 @@ export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<Fairl
 
 		input.sources[sourceIdStr] = {
 			...oldSource,
-			properties: this.properties,
+			equalizer: {
+				...oldSource?.equalizer,
+				enabled: this.properties.equalizerEnabled,
+				gain: this.properties.equalizerGain,
+				bands: oldSource?.equalizer?.bands ?? new Array(this.properties.bandCount).fill(undefined),
+			},
+			dynamics: {
+				...oldSource?.dynamics,
+				makeUpGain: this.properties.makeUpGain,
+			},
+			properties: {
+				// preserve old props
+				...(oldSource ? oldSource.properties : {}),
+				...Util.omit(this.properties, 'bandCount', 'equalizerEnabled', 'equalizerGain', 'makeUpGain'),
+			},
 		}
 
-		return `fairlight.inputs.${this.index}.sources.${sourceIdStr}`
+		// input.sources[sourceIdStr] = {
+		// 	...oldSource,
+		// 	properties: {
+		// 		equalizerBands: new Array(this.properties.bandCount).fill(undefined),
+		// 		// preserve old props
+		// 		...(oldSource ? oldSource.properties : {}),
+		// 		...Util.omit(this.properties, 'bandCount'),
+		// 	},
+		// }
+
+		return `fairlight.inputs.${this.index}.sources.${sourceIdStr}.properties`
 	}
 }

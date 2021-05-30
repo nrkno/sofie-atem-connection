@@ -1,11 +1,10 @@
 import { EventEmitter } from 'eventemitter3'
-import { AtemState, AtemStateUtil, InvalidIdError } from './state'
+import { AtemState, AtemStateUtil, InvalidIdError, ColorGeneratorState } from './state'
 import { AtemSocket } from './lib/atemSocket'
 import { ISerializableCommand, IDeserializedCommand } from './commands/CommandBase'
 import * as Commands from './commands'
 import * as DataTransferCommands from './commands/DataTransfer'
 import { MediaPlayer, MediaPlayerSource } from './state/media'
-import { MultiViewerSourceState } from './state/settings'
 import {
 	DipTransitionSettings,
 	DVETransitionSettings,
@@ -21,13 +20,25 @@ import { DownstreamKeyerGeneral, DownstreamKeyerMask } from './state/video/downs
 import * as DT from './dataTransfer'
 import * as Util from './lib/atemUtil'
 import * as Enums from './enums'
-import { AudioChannel, AudioMasterChannel } from './state/audio'
+import {
+	ClassicAudioMonitorChannel,
+	ClassicAudioMasterChannel,
+	ClassicAudioChannel,
+	ClassicAudioHeadphoneOutputChannel,
+} from './state/audio'
 import { listVisibleInputs } from './lib/tally'
 import DataTransfer from './dataTransfer/dataTransfer'
 import { RecordingStateProperties } from './state/recording'
 import { OmitReadonly } from './lib/types'
 import { StreamingServiceProperties } from './state/streaming'
-import { commandStringify } from './lib/atemUtil'
+import {
+	FairlightAudioMonitorChannel,
+	FairlightAudioCompressorState,
+	FairlightAudioLimiterState,
+	FairlightAudioEqualizerBandState,
+	FairlightAudioExpanderState,
+} from './state/fairlight'
+import { FairlightDynamicsResetProps } from './commands/Fairlight/common'
 
 export interface AtemOptions {
 	address?: string
@@ -173,14 +184,14 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 					if (e instanceof InvalidIdError) {
 						this.emit(
 							'debug',
-							`Invalid command id: ${e}. Command: ${command.constructor.name} ${commandStringify(
+							`Invalid command id: ${e}. Command: ${command.constructor.name} ${Util.commandStringify(
 								command
 							)}`
 						)
 					} else {
 						this.emit(
 							'error',
-							`MutateState failed: ${e}. Command: ${command.constructor.name} ${commandStringify(
+							`MutateState failed: ${e}. Command: ${command.constructor.name} ${Util.commandStringify(
 								command
 							)}`
 						)
@@ -413,8 +424,27 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public setMultiViewerSource(newProps: OmitReadonly<MultiViewerSourceState>, mv = 0): Promise<void> {
-		const command = new Commands.MultiViewerSourceCommand(mv, newProps.windowIndex, newProps.source)
+	public setMultiViewerWindowSource(source: number, mv = 0, window = 0): Promise<void> {
+		const command = new Commands.MultiViewerSourceCommand(mv, window, source)
+		return this.sendCommand(command)
+	}
+	public setMultiViewerWindowSafeAreaEnabled(safeAreaEnabled: boolean, mv = 0, window = 0): Promise<void> {
+		const command = new Commands.MultiViewerWindowSafeAreaCommand(mv, window, safeAreaEnabled)
+		return this.sendCommand(command)
+	}
+	public setMultiViewerWindowVuEnabled(vuEnabled: boolean, mv = 0, window = 0): Promise<void> {
+		const command = new Commands.MultiViewerWindowVuMeterCommand(mv, window, vuEnabled)
+		return this.sendCommand(command)
+	}
+
+	public setMultiViewerVuOpacity(opacity: number, mv = 0): Promise<void> {
+		const command = new Commands.MultiViewerVuOpacityCommand(mv, opacity)
+		return this.sendCommand(command)
+	}
+
+	public setColorGeneratorColour(newProps: Partial<ColorGeneratorState>, index = 0): Promise<void> {
+		const command = new Commands.ColorGeneratorCommand(index)
+		command.updateProps(newProps)
 		return this.sendCommand(command)
 	}
 
@@ -492,6 +522,33 @@ export class Atem extends BasicAtem {
 	): Promise<void> {
 		const command = new Commands.MixEffectKeyChromaCommand(me, keyer)
 		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+
+	public setUpstreamKeyerAdvancedChromaProperties(
+		newProps: Partial<USK.UpstreamKeyerAdvancedChromaProperties>,
+		me = 0,
+		keyer = 0
+	): Promise<void> {
+		const command = new Commands.MixEffectKeyAdvancedChromaPropertiesCommand(me, keyer)
+		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+	public setUpstreamKeyerAdvancedChromaSample(
+		newProps: Partial<USK.UpstreamKeyerAdvancedChromaSample>,
+		me = 0,
+		keyer = 0
+	): Promise<void> {
+		const command = new Commands.MixEffectKeyAdvancedChromaSampleCommand(me, keyer)
+		command.updateProps(newProps)
+		return this.sendCommand(command)
+	}
+	public setUpstreamKeyerAdvancedChromaSampleReset(
+		flags: Commands.AdvancedChromaSampleResetProps,
+		me = 0,
+		keyer = 0
+	): Promise<void> {
+		const command = new Commands.MixEffectKeyAdvancedChromaSampleResetCommand(me, keyer, flags)
 		return this.sendCommand(command)
 	}
 
@@ -605,38 +662,102 @@ export class Atem extends BasicAtem {
 		return this.dataTransferManager.uploadAudio(index, Util.convertWAVToRaw(data), name)
 	}
 
-	public setAudioMixerInputMixOption(index: number, mixOption: Enums.AudioMixOption): Promise<void> {
-		const command = new Commands.AudioMixerInputCommand(index)
-		command.updateProps({ mixOption })
-		return this.sendCommand(command)
-	}
-
-	public setAudioMixerInputGain(index: number, gain: number): Promise<void> {
-		const command = new Commands.AudioMixerInputCommand(index)
-		command.updateProps({ gain })
-		return this.sendCommand(command)
-	}
-
-	public setAudioMixerInputBalance(index: number, balance: number): Promise<void> {
-		const command = new Commands.AudioMixerInputCommand(index)
-		command.updateProps({ balance })
-		return this.sendCommand(command)
-	}
-
-	public setAudioMixerInputProps(index: number, props: Partial<OmitReadonly<AudioChannel>>): Promise<void> {
+	public setClassicAudioMixerInputProps(
+		index: number,
+		props: Partial<OmitReadonly<ClassicAudioChannel>>
+	): Promise<void> {
 		const command = new Commands.AudioMixerInputCommand(index)
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
 
-	public setAudioMixerMasterGain(gain: number): Promise<void> {
+	public setClassicAudioMixerMasterProps(props: Partial<ClassicAudioMasterChannel>): Promise<void> {
 		const command = new Commands.AudioMixerMasterCommand()
-		command.updateProps({ gain })
+		command.updateProps(props)
 		return this.sendCommand(command)
 	}
 
-	public setAudioMixerMasterProps(props: Partial<AudioMasterChannel>): Promise<void> {
-		const command = new Commands.AudioMixerMasterCommand()
+	public setClassicAudioMixerMonitorProps(props: Partial<ClassicAudioMonitorChannel>): Promise<void> {
+		const command = new Commands.AudioMixerMonitorCommand()
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setClassicAudioMixerHeadphonesProps(props: Partial<ClassicAudioHeadphoneOutputChannel>): Promise<void> {
+		const command = new Commands.AudioMixerHeadphonesCommand()
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setClassicAudioResetPeaks(props: Partial<Commands.ClassicAudioResetPeaks>): Promise<void> {
+		const command = new Commands.AudioMixerResetPeaksCommand()
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setClassicAudioMixerProps(props: Commands.AudioMixerPropertiesCommand['properties']): Promise<void> {
+		const command = new Commands.AudioMixerPropertiesCommand(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerMasterProps(
+		props: Partial<Commands.FairlightMixerMasterCommandProperties>
+	): Promise<void> {
+		const command = new Commands.FairlightMixerMasterCommand()
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerMasterCompressorProps(
+		props: Partial<OmitReadonly<FairlightAudioCompressorState>>
+	): Promise<void> {
+		const command = new Commands.FairlightMixerMasterCompressorCommand()
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerMasterLimiterProps(
+		props: Partial<OmitReadonly<FairlightAudioLimiterState>>
+	): Promise<void> {
+		const command = new Commands.FairlightMixerMasterLimiterCommand()
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerMasterEqualizerBandProps(
+		band: number,
+		props: Partial<OmitReadonly<FairlightAudioEqualizerBandState>>
+	): Promise<void> {
+		const command = new Commands.FairlightMixerMasterEqualizerBandCommand(band)
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerMasterEqualizerReset(
+		props: Partial<Commands.FairlightMixerMasterEqualizerResetCommand['properties']>
+	): Promise<void> {
+		const command = new Commands.FairlightMixerMasterEqualizerResetCommand()
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerMasterDynamicsReset(props: Partial<FairlightDynamicsResetProps>): Promise<void> {
+		const command = new Commands.FairlightMixerMasterDynamicsResetCommand()
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerResetPeaks(
+		props: Commands.FairlightMixerResetPeakLevelsCommand['properties']
+	): Promise<void> {
+		const command = new Commands.FairlightMixerResetPeakLevelsCommand(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerMonitorProps(
+		props: Partial<OmitReadonly<FairlightAudioMonitorChannel>>
+	): Promise<void> {
+		const command = new Commands.FairlightMixerMonitorCommand()
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
@@ -663,6 +784,76 @@ export class Atem extends BasicAtem {
 	): Promise<void> {
 		const command = new Commands.FairlightMixerSourceCommand(index, BigInt(source))
 		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerSourceCompressorProps(
+		index: number,
+		source: string,
+		props: Partial<OmitReadonly<FairlightAudioCompressorState>>
+	): Promise<void> {
+		const command = new Commands.FairlightMixerSourceCompressorCommand(index, BigInt(source))
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerSourceLimiterProps(
+		index: number,
+		source: string,
+		props: Partial<OmitReadonly<FairlightAudioLimiterState>>
+	): Promise<void> {
+		const command = new Commands.FairlightMixerSourceLimiterCommand(index, BigInt(source))
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerSourceExpanderProps(
+		index: number,
+		source: string,
+		props: Partial<OmitReadonly<FairlightAudioExpanderState>>
+	): Promise<void> {
+		const command = new Commands.FairlightMixerSourceExpanderCommand(index, BigInt(source))
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerSourceEqualizerBandProps(
+		index: number,
+		source: string,
+		band: number,
+		props: Partial<OmitReadonly<FairlightAudioEqualizerBandState>>
+	): Promise<void> {
+		const command = new Commands.FairlightMixerSourceEqualizerBandCommand(index, BigInt(source), band)
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerSourceDynamicsReset(
+		index: number,
+		source: string,
+		props: Partial<FairlightDynamicsResetProps>
+	): Promise<void> {
+		const command = new Commands.FairlightMixerSourceDynamicsResetCommand(index, BigInt(source))
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerSourceEqualizerReset(
+		index: number,
+		source: string,
+		props: Partial<Commands.FairlightMixerSourceEqualizerResetCommand['properties']>
+	): Promise<void> {
+		const command = new Commands.FairlightMixerSourceEqualizerResetCommand(index, BigInt(source))
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public setFairlightAudioMixerSourceResetPeaks(
+		index: number,
+		source: string,
+		props: Commands.FairlightMixerSourceResetPeakLevelsCommand['properties']
+	): Promise<void> {
+		const command = new Commands.FairlightMixerSourceResetPeakLevelsCommand(index, BigInt(source), props)
 		return this.sendCommand(command)
 	}
 

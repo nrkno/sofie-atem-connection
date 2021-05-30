@@ -9,7 +9,22 @@ import * as Recording from './recording'
 import * as Streaming from './streaming'
 import * as Fairlight from './fairlight'
 import * as AtemStateUtil from './util'
-export { AtemStateUtil, Info, Video, ClassicAudio, Media, Input, Macro, Settings, Recording, Streaming, Fairlight }
+import { ColorGeneratorState } from './color'
+
+export {
+	AtemStateUtil,
+	Info,
+	Video,
+	ClassicAudio,
+	Media,
+	Input,
+	Macro,
+	Settings,
+	Recording,
+	Streaming,
+	Fairlight,
+	ColorGeneratorState,
+}
 
 export interface AtemState {
 	info: Info.DeviceInfo
@@ -22,15 +37,16 @@ export interface AtemState {
 	settings: Settings.SettingsState
 	recording?: Recording.RecordingState
 	streaming?: Streaming.StreamingState
+	colorGenerators?: { [index: number]: ColorGeneratorState | undefined }
 }
 
 export class InvalidIdError extends Error {
-	constructor(message: string, ...ids: number[]) {
+	constructor(message: string, ...ids: Array<number | string>) {
 		super(InvalidIdError.BuildErrorString(message, ids))
 		Object.setPrototypeOf(this, new.target.prototype)
 	}
 
-	private static BuildErrorString(message: string, ids: number[]): string {
+	private static BuildErrorString(message: string, ids: Array<number | string>): string {
 		if (ids && ids.length > 0) {
 			return `${message} ${ids.join('-')} is not valid`
 		} else {
