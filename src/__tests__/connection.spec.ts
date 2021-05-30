@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import { AtemSocketChild } from '../lib/atemSocketChild'
@@ -13,7 +14,7 @@ function cloneJson<T>(v: T): T {
 }
 
 // @ts-ignore
-export class AtemSocketChildMock implements AtemSocketChild {
+class AtemSocketChildMock implements AtemSocketChild {
 	public onDisconnect: () => Promise<void>
 	public onLog: (message: string) => Promise<void>
 	public onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>
@@ -65,6 +66,7 @@ function runTest(name: string, filename: string): void {
 	const filePath = resolve(__dirname, `./connection/${filename}.data`)
 	const fileData = readFileSync(filePath).toString().split('\n')
 
+	// eslint-disable-next-line jest/valid-title
 	describe(name, () => {
 		test(`Connection`, async () => {
 			const conn = createConnection()
@@ -104,7 +106,9 @@ function runTest(name: string, filename: string): void {
 
 			const state = cloneJson(conn.state)
 
+			// eslint-disable-next-line jest/no-standalone-expect
 			expect(commands).not.toBeEmpty()
+			// eslint-disable-next-line jest/no-standalone-expect
 			expect(state).toBeTruthy()
 
 			const state0 = state as AtemState

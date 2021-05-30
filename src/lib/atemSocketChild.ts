@@ -117,7 +117,7 @@ export class AtemSocketChild {
 			this._reconnectTimer = undefined
 		}
 
-		return new Promise((resolve) => {
+		return new Promise<void>((resolve) => {
 			try {
 				this._socket.close(() => resolve())
 			} catch (e) {

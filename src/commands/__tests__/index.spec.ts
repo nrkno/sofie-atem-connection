@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-export */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { CommandParser } from '../../lib/atemCommandParser'
 import { ProtocolVersion } from '../../enums'
@@ -148,6 +149,7 @@ function runTestForCommand(commandParser: CommandParser, i: number, testCase: Te
 				const maskProps = (cmd as any).constructor.MaskFlags
 				if (maskProps) {
 					for (const key of Object.keys(mutatedCommand)) {
+						// eslint-disable-next-line jest/no-conditional-expect
 						expect(maskProps).toHaveProperty(key)
 						// expect(maskProps[key]).not.toBeUndefined()
 					}

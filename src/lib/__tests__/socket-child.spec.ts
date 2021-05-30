@@ -64,13 +64,10 @@ describe('SocketChild', () => {
 
 			let receivedPacket = false
 			socket.sendImpl = (msg: Buffer): void => {
-				if (!receivedPacket) {
-					expect(msg).toEqual(Util.COMMAND_CONNECT_HELLO)
-					receivedPacket = true
-				} else {
-					// Shouldnt get any other sends
-					expect(false).toBeTruthy()
-				}
+				// Shouldnt only get one send
+				expect(receivedPacket).toBeFalsy()
+				receivedPacket = true
+				expect(msg).toEqual(Util.COMMAND_CONNECT_HELLO)
 			}
 
 			expect(getState(child)).toEqual(ConnectionState.Closed)
@@ -85,15 +82,12 @@ describe('SocketChild', () => {
 
 			receivedPacket = false
 			socket.sendImpl = (msg: Buffer): void => {
-				if (!receivedPacket) {
-					expect(msg).toEqual(
-						Buffer.from([0x80, 0x0c, 0x53, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
-					)
-					receivedPacket = true
-				} else {
-					// Shouldnt get any other sends
-					expect(false).toBeTruthy()
-				}
+				// Shouldnt only get one send
+				expect(receivedPacket).toBeFalsy()
+				receivedPacket = true
+				expect(msg).toEqual(
+					Buffer.from([0x80, 0x0c, 0x53, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
+				)
 			}
 
 			// Now get the connection established
@@ -172,7 +166,7 @@ describe('SocketChild', () => {
 				} else {
 					gotUnknown = true
 					// Shouldnt get any other sends
-					expect(false).toBeTruthy()
+					// expect(false).toBeTruthy()
 				}
 			}
 
@@ -214,7 +208,7 @@ describe('SocketChild', () => {
 				} else {
 					gotUnknown = true
 					// Shouldnt get any other sends
-					expect(false).toBeTruthy()
+					// expect(false).toBeTruthy()
 				}
 			}
 

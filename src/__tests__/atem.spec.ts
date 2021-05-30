@@ -177,14 +177,9 @@ describe('Atem', () => {
 			expect(Object.keys(sentQueue)).toHaveLength(0)
 
 			// Finally, it should now resolve without a timeout
-			try {
-				await res
-				// Should not get here
-				expect(false).toBeTruthy()
-			} catch (e) {
-				// Should be the error thrown by sendCommand
-				expect(e).toEqual(35)
-			}
+			// Should be the error thrown by sendCommand
+			await expect(res).rejects.toBe(35)
+
 			// expect(await res).toEqual(cmd)
 		} finally {
 			await conn.destroy()

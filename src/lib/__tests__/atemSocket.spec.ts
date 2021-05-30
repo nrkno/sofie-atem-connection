@@ -20,7 +20,7 @@ import { AtemSocketChild } from '../atemSocketChild'
 jest.mock('../atemSocketChild')
 
 // @ts-ignore
-export class AtemSocketChildMock implements AtemSocketChild {
+class AtemSocketChildMock implements AtemSocketChild {
 	public onDisconnect: () => Promise<void>
 	public onLog: (message: string) => Promise<void>
 	public onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>
@@ -240,14 +240,10 @@ describe('AtemSocket', () => {
 		const socket = createSocket()
 		expect(getChild(socket)).toBeFalsy()
 
-		try {
-			const cmd = new CutCommand(0)
-			await socket.sendCommands([{ rawCommand: cmd, trackingId: 1 }])
-			// Should not get here
-			expect(false).toBeTruthy()
-		} catch (e) {
-			expect(e.message).toEqual('Socket process is not open')
-		}
+		const cmd = new CutCommand(0)
+		await expect(socket.sendCommands([{ rawCommand: cmd, trackingId: 1 }])).rejects.toEqual(
+			new Error('Socket process is not open')
+		)
 
 		// connect was called explicitly
 		expect(AtemSocketChild).toHaveBeenCalledTimes(0)
@@ -269,13 +265,9 @@ describe('AtemSocket', () => {
 			productIdentifier: 'ATEM OneME',
 		}) as any as ISerializableCommand
 		expect(cmd.serialize).toBeFalsy()
-		try {
-			await socket.sendCommands([{ rawCommand: cmd, trackingId: 1 }])
-			// Should not get here
-			expect(false).toBeTruthy()
-		} catch (e) {
-			expect(e.message).toEqual('Command ProductIdentifierCommand is not serializable')
-		}
+		await expect(socket.sendCommands([{ rawCommand: cmd, trackingId: 1 }])).rejects.toEqual(
+			new Error('Command ProductIdentifierCommand is not serializable')
+		)
 
 		// connect was called explicitly
 		expect(AtemSocketChild).toHaveBeenCalledTimes(0)
@@ -609,7 +601,7 @@ describe('AtemSocket', () => {
 		expect(disconnected).toHaveBeenCalledTimes(1)
 		expect(connect).toHaveBeenCalledTimes(1)
 	})
-	// test('receive - thread restart with error', async () => {
+	// testIgnore('receive - thread restart with error', async () => {
 	// 	const socket = createSocket()
 	// 	expect(getChild(socket)).toBeFalsy()
 
