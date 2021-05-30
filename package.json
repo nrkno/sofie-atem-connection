@@ -41,7 +41,7 @@
     "docs:json": "typedoc --tsconfig tsconfig.docs.json --json docs/typedoc.json --entryPoints src/index.ts",
     "release": "standard-version",
     "reset": "git clean -dfx && git reset --hard && yarn",
-    "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate --allowPackages caniuse-lite@1.0.30001214",
+    "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate --allowPackages caniuse-lite@1.0.30001230",
     "validate:dev-dependencies": "yarn audit --groups devDependencies",
     "license-validate": "yarn sofie-licensecheck"
   },
@@ -55,8 +55,8 @@
     "/LICENSE"
   ],
   "devDependencies": {
-    "@sinonjs/fake-timers": "^7.1.0",
-    "@sofie-automation/code-standard-preset": "^0.3.0",
+    "@sinonjs/fake-timers": "^7.1.2",
+    "@sofie-automation/code-standard-preset": "^0.4.1",
     "@types/jest": "^26.0.23",
     "@types/node": "^14.17.1",
     "@types/object-path": "^0.11.0",
@@ -69,9 +69,9 @@
     "rimraf": "^3.0.2",
     "standard-version": "^9.3.0",
     "ts-jest": "^26.5.6",
-    "ts-node": "^9.1.1",
+    "ts-node": "^10.0.0",
     "typedoc": "^0.20.36",
-    "typescript": "~4.0.7"
+    "typescript": "~4.2"
   },
   "keywords": [
     "atem",
