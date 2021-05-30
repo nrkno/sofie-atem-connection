@@ -39,6 +39,7 @@ import {
 	FairlightAudioExpanderState,
 } from './state/fairlight'
 import { FairlightDynamicsResetProps } from './commands/Fairlight/common'
+import { MultiViewerPropertiesState } from './state/settings'
 
 export interface AtemOptions {
 	address?: string
@@ -441,6 +442,11 @@ export class Atem extends BasicAtem {
 		const command = new Commands.MultiViewerVuOpacityCommand(mv, opacity)
 		return this.sendCommand(command)
 	}
+	public setMultiViewerProperties(props: Partial<MultiViewerPropertiesState>, mv = 0): Promise<void> {
+		const command = new Commands.MultiViewerPropertiesCommand(mv)
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
 
 	public setColorGeneratorColour(newProps: Partial<ColorGeneratorState>, index = 0): Promise<void> {
 		const command = new Commands.ColorGeneratorCommand(index)
@@ -640,7 +646,7 @@ export class Atem extends BasicAtem {
 		mixEffect: number,
 		upstreamKeyerId: number,
 		keyframe: number,
-		properties: Omit<USK.UpstreamKeyerFlyKeyframe, 'keyFrameId'>
+		properties: Partial<Omit<USK.UpstreamKeyerFlyKeyframe, 'keyFrameId'>>
 	): Promise<void> {
 		const command = new Commands.MixEffectKeyFlyKeyframeCommand(mixEffect, upstreamKeyerId, keyframe)
 		command.updateProps(properties)
