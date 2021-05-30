@@ -922,6 +922,15 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	public saveStartupState(): Promise<void> {
+		const command = new Commands.StartupStateSaveCommand()
+		return this.sendCommand(command)
+	}
+	public clearStartupState(): Promise<void> {
+		const command = new Commands.StartupStateClearCommand()
+		return this.sendCommand(command)
+	}
+
 	public listVisibleInputs(mode: 'program' | 'preview', me = 0): number[] {
 		if (this.state) {
 			return listVisibleInputs(mode, this.state, me)
