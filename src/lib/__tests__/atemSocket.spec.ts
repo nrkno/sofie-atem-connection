@@ -601,7 +601,7 @@ describe('AtemSocket', () => {
 		const disconnected = jest.fn()
 		socket.on('disconnect', disconnected)
 
-		expect(ThreadedClassManagerSingleton.handlers).toHaveLength(1)
+		expect(ThreadedClassManagerSingleton.handlers).toHaveLength(2) // 2 eventHandlers: 1 for restart, 1 for thread_closed
 		// simulate a restart
 		ThreadedClassManagerSingleton.handlers.forEach(handler => handler())
 
