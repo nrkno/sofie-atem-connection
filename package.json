@@ -105,5 +105,8 @@
     "*.{ts,tsx,js,jsx}": [
       "yarn lint-fix"
     ]
+  },
+  "resolutions": {
+    "trim-newlines": "^4.0.1"
   }
 }
