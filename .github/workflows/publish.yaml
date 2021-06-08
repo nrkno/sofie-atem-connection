@@ -1,0 +1,92 @@
+name: Publish prerelease
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Prepare Environment
+        run: |
+          yarn install
+        env:
+          CI: true
+      - name: Run tests
+        run: |
+          yarn unit
+        env:
+          CI: true
+
+  prerelease:
+    name: Prerelease
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    needs:
+      - test
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - name: Check release is desired
+        id: do-publish
+        run: |
+          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "No Token"
+          elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+            echo "Publish nightly"
+            echo ::set-output name=publish::"nightly"
+          else
+            echo "Publish experimental"
+            echo ::set-output name=publish::"experimental"
+          fi
+      - name: Prepare Environment
+        if: ${{ steps.do-publish.outputs.publish }}
+        run: |
+          yarn install
+        env:
+          CI: true
+      - name: Get the Prerelease tag
+        id: prerelease-tag
+        uses: yuya-takeyama/docker-tag-from-github-ref-action@2b0614b1338c8f19dd9d3ea433ca9bc0cc7057ba
+        with:
+          remove-version-tag-prefix: false
+      - name: Bump version and build
+        if: ${{ steps.do-publish.outputs.publish }}
+        run: |
+          COMMIT_TIMESTAMP=$(git log -1 --pretty=format:%ct HEAD)
+          COMMIT_DATE=$(date -d @$COMMIT_TIMESTAMP +%Y%m%d-%H%M%S)
+          GIT_HASH=$(git rev-parse --short HEAD)
+          PRERELEASE_TAG=nightly-$(echo "${{ steps.prerelease-tag.outputs.tag }}" | sed -r 's/[^a-z0-9]+/-/gi')
+          yarn release --prerelease $PRERELEASE_TAG-$COMMIT_DATE-$GIT_HASH --skip.changelog --skip.tag --skip.commit
+          yarn build
+        env:
+          CI: true
+      - name: Publish to NPM
+        if: ${{ steps.do-publish.outputs.publish }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          yarn publish --access=public --new-version=$NEW_VERSION --network-timeout 100000 --tag "${{ steps.do-publish.outputs.publish }}"
+        env:
+          CI: true
