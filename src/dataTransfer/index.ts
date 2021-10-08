@@ -17,8 +17,11 @@ export class DataTransferManager {
 
 	private readonly stillsLock = new DataLock(0, cmd => this.commandQueue.push(cmd))
 	private readonly clipLocks = [
+		// TODO - this would be better to be dynamically sized based on the model we are connected to
 		new DataLock(1, cmd => this.commandQueue.push(cmd)),
-		new DataLock(2, cmd => this.commandQueue.push(cmd))
+		new DataLock(2, cmd => this.commandQueue.push(cmd)),
+		new DataLock(3, cmd => this.commandQueue.push(cmd)),
+		new DataLock(4, cmd => this.commandQueue.push(cmd))
 	]
 
 	private interval?: NodeJS.Timer
