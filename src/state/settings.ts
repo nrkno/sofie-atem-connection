@@ -18,7 +18,13 @@ export interface MultiViewer {
 	readonly windows: Array<MultiViewerWindowState | undefined>
 }
 
+export interface MediaPool {
+	maxFrames: number[]
+	unassignedFrames: number
+}
+
 export interface SettingsState {
 	readonly multiViewers: Array<MultiViewer | undefined>
 	videoMode: VideoMode
+	mediaPool: MediaPool
 }
