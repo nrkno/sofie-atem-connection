@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://github.com/nrkno/tv-automation-atem-connection/compare/2.3.1...2.4.0) (2021-11-15)
+
+
+### Features
+
+* add support for Media Pool settings ([#121](https://github.com/nrkno/tv-automation-atem-connection/issues/121)) ([b1969c5](https://github.com/nrkno/tv-automation-atem-connection/commit/b1969c54ef308eadc578d6ed93d95e837c0d6e54))
+* add support for Media Pool settings ([#121](https://github.com/nrkno/tv-automation-atem-connection/issues/121)) ([b1969c5](https://github.com/nrkno/tv-automation-atem-connection/commit/b1969c54ef308eadc578d6ed93d95e837c0d6e54))
+
 ### [2.3.1](https://github.com/nrkno/tv-automation-atem-connection/compare/2.3.0...2.3.1) (2021-10-08)
 
 
