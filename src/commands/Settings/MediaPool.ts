@@ -42,8 +42,10 @@ export class MediaPoolSettingsGetCommand extends DeserializedCommand<MediaPoolPr
 	}
 
 	public applyToState(state: AtemState): string {
-		state.settings.mediaPool.maxFrames = this.properties.maxFrames
-		state.settings.mediaPool.unassignedFrames = this.properties.unassignedFrames
+		state.settings.mediaPool = {
+			maxFrames: this.properties.maxFrames,
+			unassignedFrames: this.properties.unassignedFrames
+		}
 		return `settings.mediaPool`
 	}
 }

@@ -26,5 +26,5 @@ export interface MediaPool {
 export interface SettingsState {
 	readonly multiViewers: Array<MultiViewer | undefined>
 	videoMode: VideoMode
-	mediaPool: MediaPool
+	mediaPool?: MediaPool
 }
