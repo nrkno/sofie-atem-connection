@@ -1,5 +1,6 @@
 import { BasicWritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
+import { ProtocolVersion } from '../../enums'
 
 export interface MediaPoolProps {
 	maxFrames: number[]
@@ -7,6 +8,7 @@ export interface MediaPoolProps {
 
 export class MediaPoolSettingsSetCommand extends BasicWritableCommand<MediaPoolProps> {
 	public static readonly rawName = 'CMPS'
+	public static readonly minimumVersion = ProtocolVersion.V8_0
 
 	constructor(maxFrames: number[]) {
 		super({ maxFrames })
@@ -24,6 +26,7 @@ export class MediaPoolSettingsSetCommand extends BasicWritableCommand<MediaPoolP
 
 export class MediaPoolSettingsGetCommand extends DeserializedCommand<MediaPoolProps & { unassignedFrames: number }> {
 	public static readonly rawName = 'MPSp'
+	public static readonly minimumVersion = ProtocolVersion.V8_0
 
 	constructor(maxFrames: number[], unassignedFrames: number) {
 		super({ maxFrames, unassignedFrames })
