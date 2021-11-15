@@ -40,7 +40,8 @@ export function Create(): AtemState {
 		},
 		settings: {
 			multiViewers: [],
-			videoMode: 0
+			videoMode: 0,
+			mediaPool: undefined
 		}
 	}
 }

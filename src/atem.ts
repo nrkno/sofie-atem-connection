@@ -721,4 +721,9 @@ export class Atem extends BasicAtem {
 			return []
 		}
 	}
+
+	public setMediaPoolSettings(props: Commands.MediaPoolProps): Promise<void> {
+		const command = new Commands.MediaPoolSettingsSetCommand(props.maxFrames)
+		return this.sendCommand(command)
+	}
 }
