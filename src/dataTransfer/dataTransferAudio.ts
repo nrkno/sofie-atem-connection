@@ -17,7 +17,7 @@ export default class DataTransferAudio extends DataTransferFrame {
 			transferStoreId: this.storeId,
 			transferIndex: 0,
 			size: this.data.length,
-			mode: Enums.TransferMode.WriteAudio,
+			mode: Enums.TransferMode.Write2,
 		})
 		return [command]
 	}

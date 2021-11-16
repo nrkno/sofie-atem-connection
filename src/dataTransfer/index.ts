@@ -8,6 +8,8 @@ import DataTransferClip from './dataTransferClip'
 import DataTransferAudio from './dataTransferAudio'
 import { ISerializableCommand } from '../commands/CommandBase'
 import DataTransfer from './dataTransfer'
+import MacroLock from './MacroLock'
+import {DataDownloadMacro, DataUploadMacro} from './dataTransferMacro'
 
 const MAX_PACKETS_TO_SEND_PER_TICK = 10
 const MAX_TRANSFER_INDEX = (1 << 16) - 1 // Inclusive maximum
@@ -20,6 +22,7 @@ export class DataTransferManager {
 		new DataLock(1, (cmd) => this.commandQueue.push(cmd)),
 		new DataLock(2, (cmd) => this.commandQueue.push(cmd)),
 	]
+	private readonly macroLock = new MacroLock((cmd) => this.commandQueue.push(cmd))
 
 	private interval?: NodeJS.Timer
 	private exitUnsubscribe?: () => void
@@ -62,10 +65,10 @@ export class DataTransferManager {
 	}
 
 	public handleCommand(command: Commands.IDeserializedCommand): void {
-		const allLocks = [this.stillsLock, ...this.clipLocks]
+		const allLocks = [this.stillsLock, ...this.clipLocks, this.macroLock]
 
 		// try to establish the associated DataLock:
-		let lock: DataLock | undefined
+		let lock: DataLock | MacroLock | undefined
 		if (
 			command.constructor.name === Commands.LockObtainedCommand.name ||
 			command.constructor.name === Commands.LockStateUpdateCommand.name
@@ -131,6 +134,18 @@ export class DataTransferManager {
 		const transfer = new DataTransferAudio(this.nextTransferIndex, 1 + index, data, name)
 		const lock = this.getClipLock(index)
 		return lock.enqueue(transfer)
+	}
+
+	public downloadMacro (index: number): Promise<Buffer> {
+		const transfer = new DataDownloadMacro(this.nextTransferIndex, index)
+
+		return this.macroLock.enqueue(transfer).then(transfer => (transfer as DataDownloadMacro).data)
+	}
+
+	public uploadMacro(index: number, data: Buffer, name: string): Promise<DataTransfer> {
+		const transfer = new DataUploadMacro(this.nextTransferIndex, index, data, name)
+		
+		return this.macroLock.enqueue(transfer)
 	}
 
 	private get nextTransferIndex(): number {

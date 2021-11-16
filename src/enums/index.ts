@@ -221,7 +221,13 @@ export enum TransferMode {
 	NoOp,
 	Write,
 	Clear,
-	WriteAudio = 256,
+	Write2 = 256,
+	Clear2 = 512,
+}
+
+export enum DownloadRequestType {
+	Still,
+	Macro = 3,
 }
 
 export enum VideoMode {
