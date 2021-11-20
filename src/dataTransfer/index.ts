@@ -61,7 +61,7 @@ export class DataTransferManager {
 		}
 	}
 
-	public handleCommand(command: Commands.IDeserializedCommand): void {
+	public async handleCommand(command: Commands.IDeserializedCommand): Promise<void> {
 		const allLocks = [this.stillsLock, ...this.clipLocks]
 
 		// try to establish the associated DataLock:
@@ -94,7 +94,7 @@ export class DataTransferManager {
 
 		// handle actual command
 		if (command.constructor.name === Commands.LockObtainedCommand.name) {
-			lock.lockObtained()
+			await lock.lockObtained()
 		}
 		if (command.constructor.name === Commands.LockStateUpdateCommand.name) {
 			const transferFinished = lock.activeTransfer && lock.activeTransfer.state === Enums.TransferState.Finished
@@ -105,10 +105,11 @@ export class DataTransferManager {
 			}
 		}
 		if (command.constructor.name === Commands.DataTransferErrorCommand.name) {
-			lock.transferErrored(command.properties.errorCode)
+			void lock.transferErrored(command.properties.errorCode)
 		}
 		if (lock.activeTransfer) {
-			lock.activeTransfer.handleCommand(command).forEach((cmd) => this.commandQueue.push(cmd))
+			const cmds = await lock.activeTransfer.handleCommand(command)
+			cmds.forEach((cmd) => this.commandQueue.push(cmd))
 			if (lock.activeTransfer.state === Enums.TransferState.Finished) {
 				lock.transferFinished()
 			}
@@ -120,9 +121,21 @@ export class DataTransferManager {
 		return this.stillsLock.enqueue(transfer)
 	}
 
-	public uploadClip(index: number, data: Array<Buffer>, name: string): Promise<DataTransfer> {
-		const frames = data.map((frame, id) => new DataTransferFrame(this.nextTransferIndex, 1 + index, id, frame))
-		const transfer = new DataTransferClip(index, name, frames)
+	public uploadClip(
+		index: number,
+		data: Iterable<Buffer> | AsyncIterable<Buffer>,
+		name: string
+	): Promise<DataTransfer> {
+		// eslint-disable-next-line @typescript-eslint/no-this-alias
+		const that = this
+		const provideFrame = async function* (): AsyncGenerator<DataTransferFrame> {
+			let id = -1
+			for await (const frame of data) {
+				id++
+				yield new DataTransferFrame(that.nextTransferIndex, 1 + index, id, frame)
+			}
+		}
+		const transfer = new DataTransferClip(index, name, provideFrame())
 		const lock = this.getClipLock(index)
 		return lock.enqueue(transfer)
 	}

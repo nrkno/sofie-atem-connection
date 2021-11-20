@@ -36,17 +36,18 @@ export default class DataLock {
 
 			if (this.isLocked) {
 				// TODO - this flow should never be hit
-				this.lockObtained()
+				void this.lockObtained()
 			} else {
 				this.queueCommand(new Commands.LockStateCommand(this.storeId, true))
 			}
 		}
 	}
 
-	public lockObtained(): void {
+	public async lockObtained(): Promise<void> {
 		this.isLocked = true
 		if (this.activeTransfer && this.activeTransfer.state === Enums.TransferState.Queued) {
-			this.activeTransfer.gotLock().forEach((cmd) => this.queueCommand(cmd))
+			const cmds = await this.activeTransfer.gotLock()
+			cmds.forEach((cmd) => this.queueCommand(cmd))
 		}
 	}
 
@@ -73,18 +74,19 @@ export default class DataLock {
 		this.queueCommand(new Commands.LockStateCommand(this.storeId, false))
 	}
 
-	public transferErrored(code: number): void {
+	public async transferErrored(code: number): Promise<void> {
 		if (this.activeTransfer) {
 			switch (code) {
 				case 1: // Probably means "retry".
 					if (this.activeTransfer instanceof DataTransferClip) {
 						// Retry the last frame.
-						this.activeTransfer.frames[this.activeTransfer.curFrame]
-							.start()
-							.forEach((cmd) => this.queueCommand(cmd))
+						if (this.activeTransfer.curFrame) {
+							this.activeTransfer.curFrame.start().forEach((cmd) => this.queueCommand(cmd))
+						}
 					} else {
 						// Retry the entire transfer.
-						this.activeTransfer.start().forEach((cmd) => this.queueCommand(cmd))
+						const cmds = await this.activeTransfer.start()
+						cmds.forEach((cmd) => this.queueCommand(cmd))
 					}
 					break
 				case 2: // Unknown.
