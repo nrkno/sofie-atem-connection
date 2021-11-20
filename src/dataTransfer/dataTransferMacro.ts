@@ -36,9 +36,10 @@ export class DataDownloadMacro extends DataTransfer {
                 transferId: this.transferId,
                 transferIndex: this.macroIndex
             }))
+        } else if (command.constructor.name === Commands.DataTransferCompleteCommand.name) {
             this.state = TransferState.Finished
             this.resolvePromise(this)
-        }
+		}
 
 		return commands
 	}
