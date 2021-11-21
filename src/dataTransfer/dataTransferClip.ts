@@ -71,7 +71,7 @@ export default class DataTransferClip extends DataTransfer {
 
 	get transferId(): number {
 		if (!this.curFrame) {
-			throw new Error('Current frame not ready')
+			return this._transferId
 		}
 
 		return this.curFrame.transferId
