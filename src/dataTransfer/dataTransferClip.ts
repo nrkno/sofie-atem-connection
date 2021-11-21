@@ -9,6 +9,7 @@ export default class DataTransferClip extends DataTransfer {
 	public readonly name: string
 	public curFrame: DataTransferFrame | undefined
 	private numFrames = 0
+	private started = false
 
 	constructor(
 		clipIndex: number,
@@ -32,10 +33,15 @@ export default class DataTransferClip extends DataTransfer {
 		this.numFrames++
 		this.curFrame.state = Enums.TransferState.Locked
 		commands.push(...this.curFrame.start())
+		this.started = true
 		return commands
 	}
 
 	public async handleCommand(command: Commands.IDeserializedCommand): Promise<Commands.ISerializableCommand[]> {
+		if (!this.started) {
+			await this.waitForStart()
+		}
+
 		const commands: Commands.ISerializableCommand[] = []
 
 		if (!this.curFrame) {
@@ -74,5 +80,15 @@ export default class DataTransferClip extends DataTransfer {
 	public gotLock(): Promise<Commands.ISerializableCommand[]> {
 		this.state = Enums.TransferState.Locked
 		return this.start()
+	}
+
+	private waitForStart(): Promise<void> {
+		return new Promise((resolve) => {
+			setInterval(() => {
+				if (this.started) {
+					resolve()
+				}
+			}, 100)
+		})
 	}
 }
