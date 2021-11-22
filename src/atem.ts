@@ -96,7 +96,9 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 
 		this.socket.on('commandsReceived', (commands) => {
 			this.emit('receivedCommands', commands)
-			this._mutateState(commands)
+			this._mutateState(commands).catch((error) => {
+				this.emit('error', error)
+			})
 		})
 		this.socket.on('commandsAck', (trackingIds) => this._resolveCommands(trackingIds))
 		this.socket.on('info', (msg) => this.emit('info', msg))
@@ -161,7 +163,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		return this.sendCommands([command])[0]
 	}
 
-	private _mutateState(commands: IDeserializedCommand[]): void {
+	private async _mutateState(commands: IDeserializedCommand[]): Promise<void> {
 		// Is this the start of a new connection?
 		if (commands.find((cmd) => cmd.constructor.name === Commands.VersionCommand.name)) {
 			// On start of connection, create a new state object
@@ -172,7 +174,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		const allChangedPaths: string[] = []
 
 		const state = this._state
-		commands.forEach(async (command) => {
+		for (const command of commands) {
 			if (state) {
 				try {
 					const changePaths = command.applyToState(state)
@@ -205,7 +207,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 					await this.dataTransferManager.handleCommand(command)
 				}
 			}
-		})
+		}
 
 		const initComplete = commands.find((cmd) => cmd.constructor.name === Commands.InitCompleteCommand.name)
 		if (initComplete) {
