@@ -683,7 +683,7 @@ export class Atem extends BasicAtem {
 	}
 
 	public uploadAudio(index: number, data: Buffer, name: string): Promise<DataTransfer> {
-		return this.dataTransferManager.uploadAudio(index, Util.convertWAVToRaw(data), name)
+		return this.dataTransferManager.uploadAudio(index, Util.convertWAVToRaw(data, this.state?.info?.model), name)
 	}
 
 	public setClassicAudioMixerInputProps(
