@@ -207,9 +207,9 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 					this.dataTransferManager.handleCommand(command).catch((e) => {
 						this.emit(
 							'error',
-							`MutateState failed: ${e}. Command: ${command.constructor.name} ${Util.commandStringify(
-								command
-							)}`
+							`Data transfer command handling failed: ${e}. Command: ${
+								command.constructor.name
+							} ${Util.commandStringify(command)}`
 						)
 					})
 				}
