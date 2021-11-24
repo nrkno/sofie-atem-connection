@@ -8,6 +8,7 @@ import DataTransferClip from './dataTransferClip'
 import DataTransferAudio from './dataTransferAudio'
 import { ISerializableCommand } from '../commands/CommandBase'
 import DataTransfer from './dataTransfer'
+import PQueue from 'p-queue'
 
 const MAX_PACKETS_TO_SEND_PER_TICK = 10
 const MAX_TRANSFER_INDEX = (1 << 16) - 1 // Inclusive maximum
@@ -25,6 +26,8 @@ export class DataTransferManager {
 	private exitUnsubscribe?: () => void
 
 	private transferIndex = 0
+
+	private pQueue = new PQueue({ concurrency: 1 })
 
 	public startCommandSending(sendCommands: (cmds: ISerializableCommand[]) => Array<Promise<void>>): void {
 		if (!this.interval) {
@@ -62,58 +65,72 @@ export class DataTransferManager {
 	}
 
 	public async handleCommand(command: Commands.IDeserializedCommand): Promise<void> {
-		const allLocks = [this.stillsLock, ...this.clipLocks]
+		this.pQueue
+			.add(async () => {
+				const allLocks = [this.stillsLock, ...this.clipLocks]
 
-		// try to establish the associated DataLock:
-		let lock: DataLock | undefined
-		if (
-			command.constructor.name === Commands.LockObtainedCommand.name ||
-			command.constructor.name === Commands.LockStateUpdateCommand.name
-		) {
-			lock = allLocks[command.properties.index]
-		} else if (typeof command.properties.storeId === 'number') {
-			lock = allLocks[command.properties.storeId]
-		} else if (command.properties.transferId !== undefined || command.properties.transferIndex !== undefined) {
-			for (const _lock of allLocks) {
+				// try to establish the associated DataLock:
+				let lock: DataLock | undefined
 				if (
-					_lock.activeTransfer &&
-					(_lock.activeTransfer.transferId === command.properties.transferId ||
-						_lock.activeTransfer.transferId === command.properties.transferIndex)
+					command.constructor.name === Commands.LockObtainedCommand.name ||
+					command.constructor.name === Commands.LockStateUpdateCommand.name
 				) {
-					lock = _lock
+					lock = allLocks[command.properties.index]
+				} else if (typeof command.properties.storeId === 'number') {
+					lock = allLocks[command.properties.storeId]
+				} else if (
+					command.properties.transferId !== undefined ||
+					command.properties.transferIndex !== undefined
+				) {
+					for (const _lock of allLocks) {
+						if (
+							_lock.activeTransfer &&
+							(_lock.activeTransfer.transferId === command.properties.transferId ||
+								_lock.activeTransfer.transferId === command.properties.transferIndex)
+						) {
+							lock = _lock
+						}
+					}
+				} else {
+					// debugging:
+					console.log('UNKNOWN COMMAND:', command)
+					return
 				}
-			}
-		} else {
-			// debugging:
-			console.log('UNKNOWN COMMAND:', command)
-			return
-		}
 
-		// console.log('CMD', command.constructor.name)
-		if (!lock) return
+				// console.log('CMD', command.constructor.name)
+				if (!lock) return
 
-		// handle actual command
-		if (command.constructor.name === Commands.LockObtainedCommand.name) {
-			await lock.lockObtained()
-		}
-		if (command.constructor.name === Commands.LockStateUpdateCommand.name) {
-			const transferFinished = lock.activeTransfer && lock.activeTransfer.state === Enums.TransferState.Finished
-			if (!command.properties.locked || transferFinished) {
-				lock.lostLock()
-			} else {
-				lock.updateLock(command.properties.locked)
-			}
-		}
-		if (command.constructor.name === Commands.DataTransferErrorCommand.name) {
-			void lock.transferErrored(command.properties.errorCode)
-		}
-		if (lock.activeTransfer) {
-			const cmds = await lock.activeTransfer.handleCommand(command)
-			cmds.forEach((cmd) => this.commandQueue.push(cmd))
-			if (lock.activeTransfer.state === Enums.TransferState.Finished) {
-				lock.transferFinished()
-			}
-		}
+				// handle actual command
+				if (command.constructor.name === Commands.LockObtainedCommand.name) {
+					await lock.lockObtained()
+				}
+				if (command.constructor.name === Commands.LockStateUpdateCommand.name) {
+					const transferFinished =
+						lock.activeTransfer && lock.activeTransfer.state === Enums.TransferState.Finished
+					if (!command.properties.locked || transferFinished) {
+						lock.lostLock()
+					} else {
+						lock.updateLock(command.properties.locked)
+					}
+				}
+				if (command.constructor.name === Commands.DataTransferErrorCommand.name) {
+					lock.transferErrored(command.properties.errorCode).catch((e) => {
+						// TODO - handle this better. it should kill/restart the upload. and should also be logged in some way
+						console.log(`Error when handling transfer error code ${command.properties.errorCode}: ${e}`)
+					})
+				}
+				if (lock.activeTransfer) {
+					const cmds = await lock.activeTransfer.handleCommand(command)
+					cmds.forEach((cmd) => this.commandQueue.push(cmd))
+					if (lock.activeTransfer.state === Enums.TransferState.Finished) {
+						lock.transferFinished()
+					}
+				}
+			})
+			.catch((error) => {
+				// TODO: What should be done with errors here?
+				throw error
+			})
 	}
 
 	public uploadStill(index: number, data: Buffer, name: string, description: string): Promise<DataTransfer> {

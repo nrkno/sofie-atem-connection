@@ -18,7 +18,7 @@ export default class DataTransferFrame extends DataTransfer {
 		this.hash = this.data ? crypto.createHash('md5').update(this.data).digest().toString() : ''
 	}
 
-	public start(): Commands.ISerializableCommand[] {
+	public async start(): Promise<Commands.ISerializableCommand[]> {
 		const command = new Commands.DataTransferUploadRequestCommand({
 			transferId: this.transferId,
 			transferStoreId: this.storeId,
@@ -33,7 +33,7 @@ export default class DataTransferFrame extends DataTransfer {
 		return new Commands.DataTransferFileDescriptionCommand({ fileHash: this.hash, transferId: this.transferId })
 	}
 
-	public handleCommand(command: Commands.IDeserializedCommand): Commands.ISerializableCommand[] {
+	public async handleCommand(command: Commands.IDeserializedCommand): Promise<Commands.ISerializableCommand[]> {
 		const commands: Commands.ISerializableCommand[] = []
 		if (command.constructor.name === Commands.DataTransferUploadContinueCommand.name) {
 			if (this.state === Enums.TransferState.Locked) {
@@ -50,7 +50,7 @@ export default class DataTransferFrame extends DataTransfer {
 		return commands
 	}
 
-	public gotLock(): Commands.ISerializableCommand[] {
+	public async gotLock(): Promise<Commands.ISerializableCommand[]> {
 		this.state = Enums.TransferState.Locked
 		return this.start()
 	}

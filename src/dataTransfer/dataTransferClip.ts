@@ -9,7 +9,6 @@ export default class DataTransferClip extends DataTransfer {
 	public readonly name: string
 	public curFrame: DataTransferFrame | undefined
 	private numFrames = 0
-	private started = false
 
 	constructor(
 		clipIndex: number,
@@ -32,29 +31,24 @@ export default class DataTransferClip extends DataTransfer {
 		}
 		this.numFrames++
 		this.curFrame.state = Enums.TransferState.Locked
-		commands.push(...this.curFrame.start())
-		this.started = true
+		commands.push(...(await this.curFrame.start()))
 		return commands
 	}
 
 	public async handleCommand(command: Commands.IDeserializedCommand): Promise<Commands.ISerializableCommand[]> {
-		if (!this.started) {
-			await this.waitForStart()
-		}
-
 		const commands: Commands.ISerializableCommand[] = []
 
 		if (!this.curFrame) {
 			throw new Error('No frames available for transfer')
 		}
-		commands.push(...this.curFrame.handleCommand(command))
+		commands.push(...(await this.curFrame.handleCommand(command)))
 		if (this.state !== Enums.TransferState.Transferring) this.state = Enums.TransferState.Transferring
 		if (this.curFrame.state === Enums.TransferState.Finished) {
 			this.curFrame = await (await this.frames.next()).value
 			if (this.curFrame) {
 				this.numFrames++
 				this.curFrame.state = Enums.TransferState.Locked
-				commands.push(...this.curFrame.start())
+				commands.push(...(await this.curFrame.start()))
 			} else {
 				const command = new Commands.MediaPoolSetClipCommand({
 					index: this.clipIndex,
@@ -80,15 +74,5 @@ export default class DataTransferClip extends DataTransfer {
 	public gotLock(): Promise<Commands.ISerializableCommand[]> {
 		this.state = Enums.TransferState.Locked
 		return this.start()
-	}
-
-	private waitForStart(): Promise<void> {
-		return new Promise((resolve) => {
-			setInterval(() => {
-				if (this.started) {
-					resolve()
-				}
-			}, 100)
-		})
 	}
 }

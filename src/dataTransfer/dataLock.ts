@@ -36,7 +36,10 @@ export default class DataLock {
 
 			if (this.isLocked) {
 				// TODO - this flow should never be hit
-				void this.lockObtained()
+				this.lockObtained().catch((e) => {
+					// TODO - handle this better. it should kill/restart the upload. and should also be logged in some way
+					console.error(`Error after obtaining lock: ${e}`)
+				})
 			} else {
 				this.queueCommand(new Commands.LockStateCommand(this.storeId, true))
 			}
@@ -81,7 +84,7 @@ export default class DataLock {
 					if (this.activeTransfer instanceof DataTransferClip) {
 						// Retry the last frame.
 						if (this.activeTransfer.curFrame) {
-							this.activeTransfer.curFrame.start().forEach((cmd) => this.queueCommand(cmd))
+							;(await this.activeTransfer.curFrame.start()).forEach((cmd) => this.queueCommand(cmd))
 						}
 					} else {
 						// Retry the entire transfer.
