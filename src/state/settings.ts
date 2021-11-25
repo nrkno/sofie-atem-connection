@@ -24,7 +24,13 @@ export interface MultiViewer {
 	vuOpacity?: number
 }
 
+export interface MediaPool {
+	maxFrames: number[]
+	unassignedFrames: number
+}
+
 export interface SettingsState {
 	readonly multiViewers: Array<MultiViewer | undefined>
 	videoMode: VideoMode
+	mediaPool?: MediaPool
 }

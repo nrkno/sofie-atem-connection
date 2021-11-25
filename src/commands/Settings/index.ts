@@ -1,3 +1,4 @@
+export * from './MediaPool'
 export * from './MultiViewerSourceCommand'
 export * from './MultiViewerPropertiesCommand'
 export * from './MultiViewerVuOpacityCommand'

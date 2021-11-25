@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://github.com/nrkno/tv-automation-atem-connection/compare/2.3.1...2.4.0) (2021-11-15)
+
+
+### Features
+
+* add support for Media Pool settings ([#121](https://github.com/nrkno/tv-automation-atem-connection/issues/121)) ([b1969c5](https://github.com/nrkno/tv-automation-atem-connection/commit/b1969c54ef308eadc578d6ed93d95e837c0d6e54))
+* add support for Media Pool settings ([#121](https://github.com/nrkno/tv-automation-atem-connection/issues/121)) ([b1969c5](https://github.com/nrkno/tv-automation-atem-connection/commit/b1969c54ef308eadc578d6ed93d95e837c0d6e54))
+
+### [2.3.1](https://github.com/nrkno/tv-automation-atem-connection/compare/2.3.0...2.3.1) (2021-10-08)
+
+
+### Bug Fixes
+
+* unable to upload to clip 3 or 4 ([0bd3519](https://github.com/nrkno/tv-automation-atem-connection/commit/0bd3519a463650a0960af2ab3e87982c9082e05b))
+* unable to upload to clip 3 or 4 ([0bd3519](https://github.com/nrkno/tv-automation-atem-connection/commit/0bd3519a463650a0960af2ab3e87982c9082e05b))
+
+## [2.3.0](https://github.com/nrkno/tv-automation-atem-connection/compare/2.2.2...2.3.0) (2021-07-05)
+
+
+### Features
+
+* add mini-extreme and mini-extreme-iso ([51762f8](https://github.com/nrkno/tv-automation-atem-connection/commit/51762f8a0d5567841ff7e7563462f16e8e1f5efd))
+* add mini-extreme and mini-extreme-iso ([51762f8](https://github.com/nrkno/tv-automation-atem-connection/commit/51762f8a0d5567841ff7e7563462f16e8e1f5efd))
+* add new SourceAvailability enum values ([8963dd5](https://github.com/nrkno/tv-automation-atem-connection/commit/8963dd5575403e2998316c98125f434381b688c7))
+* add new SourceAvailability enum values ([8963dd5](https://github.com/nrkno/tv-automation-atem-connection/commit/8963dd5575403e2998316c98125f434381b688c7))
+
+
+### Bug Fixes
+
+* typedoc publishing ([755a331](https://github.com/nrkno/tv-automation-atem-connection/commit/755a33129da23e2f6941a46bc3c4146e3f91eee8))
+* typedoc publishing ([755a331](https://github.com/nrkno/tv-automation-atem-connection/commit/755a33129da23e2f6941a46bc3c4146e3f91eee8))
+* utf8 encode strings ([abcff0c](https://github.com/nrkno/tv-automation-atem-connection/commit/abcff0c74a51b3ffb4880106b87109a7fc72b9ec))
+* utf8 encode strings ([abcff0c](https://github.com/nrkno/tv-automation-atem-connection/commit/abcff0c74a51b3ffb4880106b87109a7fc72b9ec))
+
 ### [2.2.2](https://github.com/nrkno/tv-automation-atem-connection/compare/2.2.1...2.2.2) (2021-03-03)
 
 ### [2.2.1](https://github.com/nrkno/tv-automation-atem-connection/compare/2.2.0...2.2.1) (2021-03-03)

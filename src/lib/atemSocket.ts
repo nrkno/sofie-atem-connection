@@ -146,11 +146,13 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 		)
 
 		ThreadedClassManager.onEvent(socketProcess, 'restarted', () => {
-			this.emit('disconnect')
 			this.connect().catch((error) => {
 				const errorMsg = `Failed to reconnect after respawning socket process: ${error}`
 				this.emit('error', errorMsg)
 			})
+		})
+		ThreadedClassManager.onEvent(socketProcess, 'thread_closed', () => {
+			this.emit('disconnect')
 		})
 
 		await socketProcess.connect(this._address, this._port)
