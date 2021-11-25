@@ -27,7 +27,8 @@
   "scripts": {
     "build": "rimraf dist && yarn build:main",
     "build:main": "tsc -p tsconfig.build.json",
-    "lint": "tsc --noEmit && eslint . --ext .ts --ext .js --ext .tsx --ext .jsx --ignore-pattern dist",
+    "lint:raw": "eslint --ext .ts --ext .js --ext .tsx --ext .jsx --ignore-pattern dist",
+    "lint": "yarn lint:raw .",
     "lint-fix": "yarn lint --fix",
     "unit": "jest --forceExit",
     "test": "yarn lint && yarn unit",
@@ -56,21 +57,21 @@
   ],
   "devDependencies": {
     "@sinonjs/fake-timers": "^7.1.2",
-    "@sofie-automation/code-standard-preset": "^0.4.1",
-    "@types/jest": "^26.0.23",
-    "@types/node": "^14.17.1",
+    "@sofie-automation/code-standard-preset": "^0.5.0",
+    "@types/jest": "^26.0.24",
+    "@types/node": "^14.17.34",
     "@types/object-path": "^0.11.1",
-    "@types/sinonjs__fake-timers": "^6.0.2",
-    "codecov": "^3.8.2",
+    "@types/sinonjs__fake-timers": "^6.0.4",
+    "codecov": "^3.8.3",
     "jest": "^26.6.3",
     "jest-extended": "^0.11.2",
     "object-path": "^0.11.8",
     "open-cli": "^6.0.1",
     "rimraf": "^3.0.2",
-    "standard-version": "^9.3.0",
+    "standard-version": "^9.3.2",
     "ts-jest": "^26.5.6",
-    "ts-node": "^10.0.0",
-    "typedoc": "^0.20.36",
+    "ts-node": "^10.4.0",
+    "typedoc": "^0.20.37",
     "typescript": "~4.2"
   },
   "keywords": [
@@ -86,7 +87,7 @@
     "nanotimer": "^0.3.15",
     "p-queue": "^6.6.2",
     "threadedclass": "^0.9.0",
-    "tslib": "^2.2.0",
+    "tslib": "^2.3.1",
     "wavefile": "^8.4.4"
   },
   "standard-version": {
@@ -94,11 +95,6 @@
     "tagPrefix": ""
   },
   "prettier": "@sofie-automation/code-standard-preset/.prettierrc.json",
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "*.{css,json,md,scss}": [
       "prettier --write"
@@ -106,8 +102,5 @@
     "*.{ts,tsx,js,jsx}": [
       "yarn lint-fix"
     ]
-  },
-  "resolutions": {
-    "trim-newlines": "^4.0.1"
   }
 }
