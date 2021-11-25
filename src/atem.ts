@@ -202,14 +202,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 
 			for (const commandName in DataTransferCommands) {
 				if (command.constructor.name === commandName) {
-					this.dataTransferManager.handleCommand(command).catch((e) => {
-						this.emit(
-							'error',
-							`Data transfer command handling failed: ${e}. Command: ${
-								command.constructor.name
-							} ${Util.commandStringify(command)}`
-						)
-					})
+					this.dataTransferManager.queueCommand(command)
 				}
 			}
 		}

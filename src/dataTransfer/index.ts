@@ -64,7 +64,7 @@ export class DataTransferManager {
 		}
 	}
 
-	public async handleCommand(command: Commands.IDeserializedCommand): Promise<void> {
+	public queueCommand(command: Commands.IDeserializedCommand): void {
 		this.pQueue
 			.add(async () => {
 				const allLocks = [this.stillsLock, ...this.clipLocks]
