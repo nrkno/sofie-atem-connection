@@ -172,7 +172,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		const allChangedPaths: string[] = []
 
 		const state = this._state
-		commands.forEach((command) => {
+		for (const command of commands) {
 			if (state) {
 				try {
 					const changePaths = command.applyToState(state)
@@ -202,10 +202,10 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 
 			for (const commandName in DataTransferCommands) {
 				if (command.constructor.name === commandName) {
-					this.dataTransferManager.handleCommand(command)
+					this.dataTransferManager.queueCommand(command)
 				}
 			}
-		})
+		}
 
 		const initComplete = commands.find((cmd) => cmd.constructor.name === Commands.InitCompleteCommand.name)
 		if (initComplete) {
@@ -671,15 +671,20 @@ export class Atem extends BasicAtem {
 		)
 	}
 
-	public uploadClip(index: number, frames: Array<Buffer>, name: string): Promise<DataTransfer> {
+	public uploadClip(
+		index: number,
+		frames: Iterable<Buffer> | AsyncIterable<Buffer>,
+		name: string
+	): Promise<DataTransfer> {
 		if (!this.state) return Promise.reject()
 		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
 		if (!resolution) return Promise.reject()
-		const data: Array<Buffer> = []
-		for (const frame of frames) {
-			data.push(Util.convertRGBAToYUV422(resolution.width, resolution.height, frame))
+		const provideFrame = async function* (): AsyncGenerator<Buffer> {
+			for await (const frame of frames) {
+				yield Util.convertRGBAToYUV422(resolution.width, resolution.height, frame)
+			}
 		}
-		return this.dataTransferManager.uploadClip(index, data, name)
+		return this.dataTransferManager.uploadClip(index, provideFrame(), name)
 	}
 
 	public uploadAudio(index: number, data: Buffer, name: string): Promise<DataTransfer> {

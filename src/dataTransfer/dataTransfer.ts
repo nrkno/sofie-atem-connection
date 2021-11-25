@@ -35,8 +35,8 @@ export default abstract class DataTransfer {
 		return this.completionPromise
 	}
 
-	public abstract start(): Commands.ISerializableCommand[]
+	public abstract start(): Promise<Commands.ISerializableCommand[]>
 
-	public abstract handleCommand(command: Commands.IDeserializedCommand): Commands.ISerializableCommand[]
-	public abstract gotLock(): Commands.ISerializableCommand[]
+	public abstract handleCommand(command: Commands.IDeserializedCommand): Promise<Commands.ISerializableCommand[]>
+	public abstract gotLock(): Promise<Commands.ISerializableCommand[]>
 }

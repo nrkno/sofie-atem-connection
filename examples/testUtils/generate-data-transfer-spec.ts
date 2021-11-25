@@ -35,9 +35,9 @@ nb.on('connected', async () => {
 		})
 	})
 	nb.on('receivedCommands', (cmds) => {
-		cmds.forEach((cmd): void => {
+		cmds.forEach(async (cmd): Promise<void> => {
 			commands.push(procCmd(cmd, 'recv'))
-			transfer.handleCommand(cmd)
+			transfer.queueCommand(cmd)
 		})
 	})
 

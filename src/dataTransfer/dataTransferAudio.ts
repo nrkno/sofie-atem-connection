@@ -11,7 +11,7 @@ export default class DataTransferAudio extends DataTransferFrame {
 		this.name = name
 	}
 
-	public start(): Commands.ISerializableCommand[] {
+	public async start(): Promise<Commands.ISerializableCommand[]> {
 		const command = new Commands.DataTransferUploadRequestCommand({
 			transferId: this.transferId,
 			transferStoreId: this.storeId,
