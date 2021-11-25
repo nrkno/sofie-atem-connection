@@ -82,7 +82,7 @@ jobs:
 
     needs:
       - test
-      - validate-dependencies
+      # - validate-dependencies
 
     steps:
       - uses: actions/checkout@v2
@@ -144,57 +144,57 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
 
-  validate-dependencies:
-    name: Validate production dependencies
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    timeout-minutes: 15
+  # validate-dependencies:
+  #   name: Validate production dependencies
+  #   runs-on: ubuntu-latest
+  #   continue-on-error: true
+  #   timeout-minutes: 15
 
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-      - name: Prepare Environment
-        run: |
-          yarn install
-        env:
-          CI: true
-      - name: Validate production dependencies
-        run: |
-          if ! git log --format=oneline -n 1 | grep -q "\[ignore-audit\]"; then
-            yarn validate:dependencies
-          else
-            echo "Skipping audit"
-          fi
-        env:
-          CI: true
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Use Node.js 14.x
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: 14.x
+  #     - name: Prepare Environment
+  #       run: |
+  #         yarn install
+  #       env:
+  #         CI: true
+  #     - name: Validate production dependencies
+  #       run: |
+  #         if ! git log --format=oneline -n 1 | grep -q "\[ignore-audit\]"; then
+  #           yarn validate:dependencies
+  #         else
+  #           echo "Skipping audit"
+  #         fi
+  #       env:
+  #         CI: true
 
-  validate-all-dependencies:
-    name: Validate all dependencies
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    timeout-minutes: 15
+  # validate-all-dependencies:
+  #   name: Validate all dependencies
+  #   runs-on: ubuntu-latest
+  #   continue-on-error: true
+  #   timeout-minutes: 15
 
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-      - name: Prepare Environment
-        run: |
-          yarn install
-        env:
-          CI: true
-      - name: Validate production dependencies
-        run: |
-          yarn validate:dependencies
-        env:
-          CI: true
-      - name: Validate dev dependencies
-        run: |
-          yarn validate:dev-dependencies
-        env:
-          CI: true
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Use Node.js 14.x
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: 14.x
+  #     - name: Prepare Environment
+  #       run: |
+  #         yarn install
+  #       env:
+  #         CI: true
+  #     - name: Validate production dependencies
+  #       run: |
+  #         yarn validate:dependencies
+  #       env:
+  #         CI: true
+  #     - name: Validate dev dependencies
+  #       run: |
+  #         yarn validate:dev-dependencies
+  #       env:
+  #         CI: true
