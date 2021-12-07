@@ -1,7 +1,7 @@
 import exitHook = require('exit-hook')
 
 import { Commands, Enums } from '..'
-import DataLock from './dataLock'
+import DataLock, { DummyLock } from './dataLock'
 import DataTransferFrame from './dataTransferFrame'
 import DataTransferStill from './dataTransferStill'
 import DataTransferClip from './dataTransferClip'
@@ -9,6 +9,7 @@ import DataTransferAudio from './dataTransferAudio'
 import { ISerializableCommand } from '../commands/CommandBase'
 import DataTransfer from './dataTransfer'
 import PQueue from 'p-queue'
+import DataTransferMultiViewerLabel from './dataTransferMultiViewerLabel'
 
 const MAX_PACKETS_TO_SEND_PER_TICK = 10
 const MAX_TRANSFER_INDEX = (1 << 16) - 1 // Inclusive maximum
@@ -17,6 +18,7 @@ export class DataTransferManager {
 	private readonly commandQueue: Array<ISerializableCommand> = []
 
 	private readonly stillsLock = new DataLock(0, (cmd) => this.commandQueue.push(cmd))
+	public readonly labelsLock = new DummyLock((cmd) => this.commandQueue.push(cmd))
 	private readonly clipLocks = [
 		// TODO - this would be better to be dynamically sized based on the model we are connected to
 		new DataLock(1, (cmd) => this.commandQueue.push(cmd)),
@@ -70,10 +72,11 @@ export class DataTransferManager {
 	public queueCommand(command: Commands.IDeserializedCommand): void {
 		this.pQueue
 			.add(async () => {
-				const allLocks = [this.stillsLock, ...this.clipLocks]
+				const allLocks = [this.stillsLock, ...this.clipLocks, this.labelsLock]
 
 				// try to establish the associated DataLock:
-				let lock: DataLock | undefined
+				let lock: DataLock | DummyLock | undefined
+
 				if (
 					command.constructor.name === Commands.LockObtainedCommand.name ||
 					command.constructor.name === Commands.LockStateUpdateCommand.name
@@ -104,10 +107,10 @@ export class DataTransferManager {
 				if (!lock) return
 
 				// handle actual command
-				if (command.constructor.name === Commands.LockObtainedCommand.name) {
+				if (command.constructor.name === Commands.LockObtainedCommand.name && 'lockObtained' in lock) {
 					await lock.lockObtained()
 				}
-				if (command.constructor.name === Commands.LockStateUpdateCommand.name) {
+				if (command.constructor.name === Commands.LockStateUpdateCommand.name && 'lockObtained' in lock) {
 					const transferFinished =
 						lock.activeTransfer && lock.activeTransfer.state === Enums.TransferState.Finished
 					if (!command.properties.locked || transferFinished) {
@@ -139,6 +142,11 @@ export class DataTransferManager {
 	public uploadStill(index: number, data: Buffer, name: string, description: string): Promise<DataTransfer> {
 		const transfer = new DataTransferStill(this.nextTransferIndex, index, data, name, description)
 		return this.stillsLock.enqueue(transfer)
+	}
+
+	public uploadMultiViewerLabel(index: number, data: Buffer): Promise<DataTransfer> {
+		const transfer = new DataTransferMultiViewerLabel(this.nextTransferIndex, index, data)
+		return this.labelsLock.enqueue(transfer)
 	}
 
 	public uploadClip(
