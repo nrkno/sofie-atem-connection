@@ -1,9 +1,11 @@
+import { DownloadRequestType } from '../../enums'
 import { BasicWritableCommand } from '../CommandBase'
 
 export interface DataTransferDownloadRequestProps {
 	transferId: number
 	transferStoreId: number
 	transferIndex: number
+	transferType: DownloadRequestType
 }
 
 export class DataTransferDownloadRequestCommand extends BasicWritableCommand<DataTransferDownloadRequestProps> {
@@ -13,10 +15,9 @@ export class DataTransferDownloadRequestCommand extends BasicWritableCommand<Dat
 		const buffer = Buffer.alloc(12)
 		buffer.writeUInt16BE(this.properties.transferId, 0)
 		buffer.writeUInt16BE(this.properties.transferStoreId, 2)
-		buffer.writeUInt8(this.properties.transferIndex, 7)
+		buffer.writeUInt16BE(this.properties.transferIndex, 6)
 
-		buffer.writeUInt16BE(0x00f9, 8)
-		buffer.writeUInt16BE(0x020f, 10)
+		buffer.writeUInt8(this.properties.transferType, 8)
 
 		return buffer
 	}
