@@ -224,6 +224,14 @@ export enum TransferMode {
 	WriteAudio = 256,
 }
 
+export enum VideoFormat {
+	SD,
+	HD720,
+	HD1080,
+	UHD4K,
+	UDH8K,
+}
+
 export enum VideoMode {
 	N525i5994NTSC = 0,
 	P625i50PAL = 1,

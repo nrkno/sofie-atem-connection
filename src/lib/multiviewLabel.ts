@@ -1,4 +1,7 @@
 import { FontFace } from 'freetype2'
+import { VideoFormat, VideoMode } from '../enums'
+import { AtemState } from '../state'
+import { getVideoModeInfo } from './atemUtil'
 
 /**
  * Colour lookup table for converting 8bit grey to the atem encoding
@@ -25,7 +28,15 @@ interface ResolutionSpec {
 	yPadTop: number
 	fontHeight: number
 }
-const HD1080: ResolutionSpec = {
+const Res4K: ResolutionSpec = {
+	width: 640,
+	height: 100,
+	xPad: 10,
+	yPadBottom: 8,
+	yPadTop: 4,
+	fontHeight: 48,
+}
+const Res1080: ResolutionSpec = {
 	width: 320,
 	height: 50,
 	xPad: 10,
@@ -33,7 +44,7 @@ const HD1080: ResolutionSpec = {
 	yPadTop: 4,
 	fontHeight: 28,
 }
-const HD720: ResolutionSpec = {
+const Res720: ResolutionSpec = {
 	width: 320, // TODO - is this correct for all models?
 	height: 40,
 	xPad: 10,
@@ -54,24 +65,25 @@ function calculateWidthAndTrimText(
 	width: number
 	str: string
 } {
-	let width = 0
+	let trimmedStr = '' // currently measured string
+	let advanceWidth = 0 // width including advance to next char
+	let textWidth = 0 // width assuming it ends after this char
 
-	let trimmedStr = ''
 	for (let i = 0; i < str.length; i++) {
 		const ch = face.loadChar(str.charCodeAt(i), { render: false })
 
-		const afterWidth = width + ch.metrics.horiAdvance / 64
-		if (afterWidth > maxWidth) {
+		if (advanceWidth + ch.metrics.width / 64 > maxWidth) {
 			// Char makes the string too wide
 			break
 		}
 
 		// We can keep this char
-		width = afterWidth
+		textWidth = advanceWidth + ch.metrics.width / 64
+		advanceWidth = advanceWidth + ch.metrics.horiAdvance / 64
 		trimmedStr += str[i]
 	}
 
-	return { str: trimmedStr, width: width }
+	return { str: trimmedStr, width: textWidth }
 }
 
 function drawTextToBuffer(
@@ -143,17 +155,93 @@ function drawTextToBuffer(
 	}
 }
 
-interface GenerateMultiviewerLabelProps {
-	_1080: boolean
-	_720: boolean
-	_4K: boolean
+export interface GenerateMultiviewerLabelProps {
+	HD1080: boolean
+	HD720: boolean
+	UHD4K: boolean
 }
-export function generateMultiviewerLabel(face: FontFace, str: string, _props: GenerateMultiviewerLabelProps): Buffer {
-	// TODO - use props
-	const buffer = Buffer.alloc(320 * 90)
 
-	drawTextToBuffer(face, buffer, HD1080, str, 0, 320)
-	drawTextToBuffer(face, buffer, HD720, str, 50, 320)
+/**
+ * Generate a label for the multiviewer at multiple resolutions
+ * @param face freetype2.FontFace to draw with
+ * @param str String to write
+ * @param props Specify which resolutions to generate for
+ * @returns Buffer
+ */
+export function generateMultiviewerLabel(face: FontFace, str: string, props: GenerateMultiviewerLabelProps): Buffer {
+	// Calculate the sizes
+	let width: number | undefined
+	let height = 0
+	if (props.UHD4K) {
+		if (!width) width = Res4K.width
+		height += Res4K.height
+	}
+	if (props.HD1080) {
+		if (!width) width = Res1080.width
+		height += Res1080.height
+	}
+	if (props.HD720) {
+		if (!width) width = Res720.width
+		height += Res720.height
+	}
+
+	if (!width || !height) throw new Error('At least one resolution must be chosen!')
+
+	const buffer = Buffer.alloc(width * height)
+	const width2 = width
+
+	let yOffset = 0
+	const drawRes = (spec: ResolutionSpec): void => {
+		drawTextToBuffer(face, buffer, spec, str, yOffset, width2)
+		yOffset += spec.height
+	}
+
+	if (props.UHD4K) drawRes(Res4K)
+	if (props.HD1080) drawRes(Res1080)
+	if (props.HD720) drawRes(Res720)
 
 	return buffer
+}
+
+export function calculateGenerateMultiviewerLabelProps(state: AtemState | null): GenerateMultiviewerLabelProps | null {
+	if (state && state.info.supportedVideoModes) {
+		const res: GenerateMultiviewerLabelProps = {
+			UHD4K: false,
+			HD1080: false,
+			HD720: false,
+		}
+
+		const multiViewerModes = new Set<VideoMode>()
+		for (const info of state.info.supportedVideoModes) {
+			for (const mode of info.multiviewerModes) {
+				multiViewerModes.add(mode)
+			}
+		}
+
+		for (const mode of multiViewerModes.values()) {
+			const format = getVideoModeInfo(mode)?.format
+			switch (format) {
+				case VideoFormat.HD720:
+					res.HD720 = true
+					break
+				case VideoFormat.HD1080:
+					res.HD1080 = true
+					break
+				case VideoFormat.UHD4K:
+					res.UHD4K = true
+					break
+				case VideoFormat.UDH8K:
+					// TODO
+					break
+				case undefined:
+				case VideoFormat.SD:
+					// unsupported
+					break
+			}
+		}
+
+		return res
+	}
+
+	return null
 }

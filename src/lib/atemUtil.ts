@@ -75,16 +75,41 @@ export function convertRGBAToYUV422(width: number, height: number, data: Buffer)
 }
 
 export interface VideoModeInfo {
+	format: Enums.VideoFormat
 	width: number
 	height: number
 }
 
-const dimsPAL: Pick<VideoModeInfo, 'width' | 'height'> = { width: 720, height: 576 }
-const dimsNTSC: Pick<VideoModeInfo, 'width' | 'height'> = { width: 640, height: 480 }
-const dims720p: Pick<VideoModeInfo, 'width' | 'height'> = { width: 1280, height: 720 }
-const dims1080p: Pick<VideoModeInfo, 'width' | 'height'> = { width: 1920, height: 1080 }
-const dims4k: Pick<VideoModeInfo, 'width' | 'height'> = { width: 3840, height: 2160 }
-const dims8k: Pick<VideoModeInfo, 'width' | 'height'> = { width: 7680, height: 4260 }
+const dimsPAL: Pick<VideoModeInfo, 'width' | 'height' | 'format'> = {
+	format: Enums.VideoFormat.SD,
+	width: 720,
+	height: 576,
+}
+const dimsNTSC: Pick<VideoModeInfo, 'width' | 'height' | 'format'> = {
+	format: Enums.VideoFormat.SD,
+	width: 640,
+	height: 480,
+}
+const dims720p: Pick<VideoModeInfo, 'width' | 'height' | 'format'> = {
+	format: Enums.VideoFormat.HD720,
+	width: 1280,
+	height: 720,
+}
+const dims1080p: Pick<VideoModeInfo, 'width' | 'height' | 'format'> = {
+	format: Enums.VideoFormat.HD1080,
+	width: 1920,
+	height: 1080,
+}
+const dims4k: Pick<VideoModeInfo, 'width' | 'height' | 'format'> = {
+	format: Enums.VideoFormat.UHD4K,
+	width: 3840,
+	height: 2160,
+}
+const dims8k: Pick<VideoModeInfo, 'width' | 'height' | 'format'> = {
+	format: Enums.VideoFormat.UDH8K,
+	width: 7680,
+	height: 4260,
+}
 const VideoModeInfoImpl: { [key in Enums.VideoMode]: VideoModeInfo } = {
 	[Enums.VideoMode.N525i5994NTSC]: {
 		...dimsNTSC,
