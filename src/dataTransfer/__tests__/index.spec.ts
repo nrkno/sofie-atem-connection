@@ -44,7 +44,7 @@ function runDataTransferTest(spec: any): DataTransferManager {
 				const nextCmd = spec.shift()
 				const nextCmd2 = specToCommandClass(nextCmd)
 				if (!nextCmd2) throw new Error(`Failed specToCommandClass ${nextCmd.name}`)
-				manager.queueCommand(nextCmd2)
+				manager.queueHandleCommand(nextCmd2)
 			}
 
 			return Promise.resolve()

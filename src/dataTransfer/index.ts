@@ -1,59 +1,73 @@
 import exitHook = require('exit-hook')
 
-import { Commands, Enums } from '..'
-import DataLock, { DummyLock } from './dataLock'
-import DataTransferFrame from './dataTransferFrame'
-import DataTransferStill from './dataTransferStill'
-import DataTransferClip from './dataTransferClip'
-import DataTransferAudio from './dataTransferAudio'
-import { ISerializableCommand } from '../commands/CommandBase'
-import DataTransfer from './dataTransfer'
-import PQueue from 'p-queue'
-import DataTransferMultiViewerLabel from './dataTransferMultiViewerLabel'
-import MacroLock from './MacroLock'
+import { DataTransferLockingQueue, DataTransferSimpleQueue, DataTransferQueueBase } from './dataTransferQueue'
+import DataTransferUploadStill from './dataTransferUploadStill'
+import { DataTransferUploadClipFrame, DataTransferUploadClip } from './dataTransferUploadClip'
+import DataTransferUploadAudio from './dataTransferUploadAudio'
+import { IDeserializedCommand, ISerializableCommand } from '../commands/CommandBase'
+import DataTransferUploadMultiViewerLabel from './dataTransferUploadMultiViewerLabel'
 import { DataDownloadMacro, DataUploadMacro } from './dataTransferMacro'
+import { LockObtainedCommand, LockStateUpdateCommand } from '../commands/DataTransfer'
 
 const MAX_PACKETS_TO_SEND_PER_TICK = 10
 const MAX_TRANSFER_INDEX = (1 << 16) - 1 // Inclusive maximum
 
 export class DataTransferManager {
-	private readonly commandQueue: Array<ISerializableCommand> = []
+	#nextTransferIdInner = 0
+	readonly #nextTransferId = (): number => {
+		const index = this.#nextTransferIdInner++
+		if (this.#nextTransferIdInner > MAX_TRANSFER_INDEX) this.#nextTransferIdInner = 0
+		return index
+	}
 
-	private readonly stillsLock = new DataLock(0, (cmd) => this.commandQueue.push(cmd))
-	public readonly labelsLock = new DummyLock((cmd) => this.commandQueue.push(cmd))
-	private readonly clipLocks = [
-		// TODO - this would be better to be dynamically sized based on the model we are connected to
-		new DataLock(1, (cmd) => this.commandQueue.push(cmd)),
-		new DataLock(2, (cmd) => this.commandQueue.push(cmd)),
-		new DataLock(3, (cmd) => this.commandQueue.push(cmd)),
-		new DataLock(4, (cmd) => this.commandQueue.push(cmd)),
-	]
-	private readonly macroLock = new MacroLock((cmd) => this.commandQueue.push(cmd))
+	readonly #sendLockCommand = (/*lock: DataTransferLockingQueue,*/ cmd: ISerializableCommand): void => {
+		Promise.all(this.#rawSendCommands([cmd])).catch(() => {
+			console.log('Failed to send lock command')
+		})
+	}
+
+	readonly #stillsLock = new DataTransferLockingQueue(0, this.#sendLockCommand, this.#nextTransferId)
+	readonly #clipLocks = new Map<number, DataTransferLockingQueue>() // clipLocks get dynamically allocated
+	readonly #labelsLock = new DataTransferSimpleQueue(this.#nextTransferId)
+	readonly #macroLock = new DataTransferSimpleQueue(this.#nextTransferId)
+
+	readonly #rawSendCommands: (cmds: ISerializableCommand[]) => Array<Promise<void>>
 
 	private interval?: NodeJS.Timer
 	private exitUnsubscribe?: () => void
 
-	private transferIndex = 0
+	constructor(rawSendCommands: (cmds: ISerializableCommand[]) => Array<Promise<void>>) {
+		this.#rawSendCommands = rawSendCommands
+	}
 
-	private pQueue = new PQueue({ concurrency: 1 })
+	private get allLocks() {
+		return [this.#stillsLock, ...this.#clipLocks.values(), this.#labelsLock]
+	}
 
-	public startCommandSending(sendCommands: (cmds: ISerializableCommand[]) => Array<Promise<void>>): void {
+	/**
+	 * Start sending of commands
+	 * This is called once the connection has received the initial state data
+	 */
+	public startCommandSending(): void {
+		// TODO - abort any active transfers
+
 		if (!this.interval) {
 			// New connection means a new queue
-			this.commandQueue.splice(0, this.commandQueue.length)
+			for (const lock of this.allLocks) {
+				lock.clearQueueAndAbort(new Error('Restarting connection'))
+			}
 
 			this.interval = setInterval(() => {
-				if (this.commandQueue.length <= 0) {
-					return
+				for (const lock of this.allLocks) {
+					const commandsToSend = lock.popQueuedCommands(MAX_PACKETS_TO_SEND_PER_TICK) // Take some, it is unlikely that multiple will run at once
+					if (commandsToSend) {
+						Promise.all(this.#rawSendCommands(commandsToSend)).catch(() => {
+							// Failed to send/queue something, so abort it
+							lock.tryAbortTransfer(new Error('Command send failed'))
+						})
+					}
 				}
-
-				const commandsToSend = this.commandQueue.splice(0, MAX_PACKETS_TO_SEND_PER_TICK)
-				// The only way commands are rejected is if the connection dies, so if any reject then we fail
-				Promise.all(sendCommands(commandsToSend)).catch((e) => {
-					// TODO - handle this better. it should kill/restart the upload. and should also be logged in some way
-					console.log(`Transfer send error: ${e}`)
-				})
-			}, 0)
+			}, 2) // TODO - refine this. perhaps we can stop and restart the interval?
 		}
 		if (!this.exitUnsubscribe) {
 			this.exitUnsubscribe = exitHook(() => {
@@ -61,7 +75,16 @@ export class DataTransferManager {
 			})
 		}
 	}
+
+	/**
+	 * Stop sending of commands
+	 * This is called once the connection is disconnected
+	 */
 	public stopCommandSending(): void {
+		for (const lock of this.allLocks) {
+			lock.clearQueueAndAbort(new Error('Stopping connection'))
+		}
+
 		if (this.exitUnsubscribe) {
 			this.exitUnsubscribe()
 			this.exitUnsubscribe = undefined
@@ -72,135 +95,111 @@ export class DataTransferManager {
 		}
 	}
 
-	public queueCommand(command: Commands.IDeserializedCommand): void {
-		this.pQueue
-			.add(async () => {
-				const allLocks = [this.stillsLock, ...this.clipLocks, this.labelsLock]
+	/**
+	 * Queue the handling of a received command
+	 * We do it via a queue as some of the handlers need to be async, and we don't want to block state updates from happening in parallel
+	 */
+	public queueHandleCommand(command: IDeserializedCommand): void {
+		if (command instanceof LockObtainedCommand || command instanceof LockStateUpdateCommand) {
+			let lock: DataTransferLockingQueue | undefined
+			if (command.properties.index === 0) {
+				lock = this.#stillsLock
+			} else if (command.properties.index >= 100) {
+				// Looks like a special lock that we arent expecting
+				// Ignore it for now
+				return
+			} else {
+				lock = this.#clipLocks.get(command.properties.index)
+			}
 
-				// try to establish the associated DataLock:
-				let lock: DataLock | MacroLock | DummyLock | undefined
+			// Must be a clip that we aren't expecting
+			if (!lock)
+				lock = new DataTransferLockingQueue(
+					command.properties.index,
+					this.#sendLockCommand,
+					this.#nextTransferId
+				)
 
-				if (
-					command.constructor.name === Commands.LockObtainedCommand.name ||
-					command.constructor.name === Commands.LockStateUpdateCommand.name
-				) {
-					lock = allLocks[command.properties.index]
-				} else if (typeof command.properties.storeId === 'number') {
-					lock = allLocks[command.properties.storeId]
-				} else if (
-					command.properties.transferId !== undefined ||
-					command.properties.transferIndex !== undefined
-				) {
-					for (const _lock of allLocks) {
-						if (
-							_lock.activeTransfer &&
-							(_lock.activeTransfer.transferId === command.properties.transferId ||
-								_lock.activeTransfer.transferId === command.properties.transferIndex)
-						) {
-							lock = _lock
-						}
-					}
-				} else {
-					// debugging:
-					console.log('UNKNOWN COMMAND:', command)
-					return
-				}
+			// handle actual command
+			if (command instanceof LockObtainedCommand) {
+				lock.lockObtained()
+			} else if (command instanceof LockStateUpdateCommand) {
+				lock.updateLock(command.properties.locked)
+			}
 
-				// console.log('CMD', command.constructor.name)
-				if (!lock) return
+			return
+		}
 
-				// handle actual command
-				if (command.constructor.name === Commands.LockObtainedCommand.name && 'lockObtained' in lock) {
-					await lock.lockObtained()
+		// If this command is for a transfer
+		if (command.properties.transferId !== undefined) {
+			// try to establish the associated DataLock:
+			let lock: DataTransferQueueBase | undefined
+			for (const _lock of this.allLocks) {
+				if (_lock.currentTransferId === command.properties.transferId) {
+					lock = _lock
 				}
-				if (command.constructor.name === Commands.LockStateUpdateCommand.name && 'lockObtained' in lock) {
-					const transferFinished =
-						lock.activeTransfer && lock.activeTransfer.state === Enums.TransferState.Finished
-					if (!command.properties.locked || transferFinished) {
-						lock.lostLock()
-					} else {
-						lock.updateLock(command.properties.locked)
-					}
-				}
-				if (command.constructor.name === Commands.DataTransferErrorCommand.name) {
-					lock.transferErrored(command.properties.errorCode).catch((e) => {
-						// TODO - handle this better. it should kill/restart the upload. and should also be logged in some way
-						console.log(`Error when handling transfer error code ${command.properties.errorCode}: ${e}`)
-					})
-				}
-				if (lock.activeTransfer) {
-					const cmds = await lock.activeTransfer.handleCommand(command)
-					cmds.forEach((cmd) => this.commandQueue.push(cmd))
-					if (lock.activeTransfer.state === Enums.TransferState.Finished) {
-						lock.transferFinished()
-					}
-				}
-			})
-			.catch((error) => {
-				// TODO: What should be done with errors here?
-				throw error
-			})
+			}
+
+			// console.log('CMD', command.constructor.name)
+			// Doesn't appear to be for a known lock
+			// TODO - should we fire an abort back just in case?
+			if (!lock) return
+
+			lock.handleCommand(command)
+			// } else {
+			// 	// debugging:
+			// 	console.log('UNKNOWN COMMAND:', command)
+		}
 	}
 
-	public uploadStill(index: number, data: Buffer, name: string, description: string): Promise<DataTransfer> {
-		const transfer = new DataTransferStill(this.nextTransferIndex, index, data, name, description)
-		return this.stillsLock.enqueue(transfer)
+	public uploadStill(index: number, data: Buffer, name: string, description: string): Promise<void> {
+		const transfer = new DataTransferUploadStill(index, data, name, description)
+		return this.#stillsLock.enqueue(transfer)
 	}
 
-	public uploadMultiViewerLabel(index: number, data: Buffer): Promise<DataTransfer> {
-		const transfer = new DataTransferMultiViewerLabel(this.nextTransferIndex, index, data)
-		return this.labelsLock.enqueue(transfer)
-	}
-
-	public uploadClip(
-		index: number,
-		data: Iterable<Buffer> | AsyncIterable<Buffer>,
-		name: string
-	): Promise<DataTransfer> {
-		// eslint-disable-next-line @typescript-eslint/no-this-alias
-		const that = this
-		const provideFrame = async function* (): AsyncGenerator<DataTransferFrame> {
+	public uploadClip(index: number, data: Iterable<Buffer> | AsyncIterable<Buffer>, name: string): Promise<void> {
+		const provideFrame = async function* (): AsyncGenerator<DataTransferUploadClipFrame, undefined> {
 			let id = -1
 			for await (const frame of data) {
 				id++
-				yield new DataTransferFrame(that.nextTransferIndex, 1 + index, id, frame)
+				yield new DataTransferUploadClipFrame(index, id, frame)
 			}
+			return undefined
 		}
-		const transfer = new DataTransferClip(index, name, provideFrame())
+		const transfer = new DataTransferUploadClip(index, name, provideFrame(), this.#nextTransferId)
 		const lock = this.getClipLock(index)
 		return lock.enqueue(transfer)
 	}
 
-	public uploadAudio(index: number, data: Buffer, name: string): Promise<DataTransfer> {
-		const transfer = new DataTransferAudio(this.nextTransferIndex, 1 + index, data, name)
+	public uploadAudio(index: number, data: Buffer, name: string): Promise<void> {
+		const transfer = new DataTransferUploadAudio(index, data, name)
 		const lock = this.getClipLock(index)
 		return lock.enqueue(transfer)
 	}
 
 	public downloadMacro(index: number): Promise<Buffer> {
-		const transfer = new DataDownloadMacro(this.nextTransferIndex, index)
+		const transfer = new DataDownloadMacro(index)
 
-		return this.macroLock.enqueue(transfer).then((transfer) => (transfer as DataDownloadMacro).data)
+		return this.#macroLock.enqueue(transfer)
 	}
 
-	public uploadMacro(index: number, data: Buffer, name: string): Promise<DataTransfer> {
-		const transfer = new DataUploadMacro(this.nextTransferIndex, index, data, name)
+	public uploadMacro(index: number, data: Buffer, name: string): Promise<void> {
+		const transfer = new DataUploadMacro(index, data, name)
 
-		return this.macroLock.enqueue(transfer)
+		return this.#macroLock.enqueue(transfer)
 	}
 
-	private get nextTransferIndex(): number {
-		const index = this.transferIndex++
-		if (this.transferIndex > MAX_TRANSFER_INDEX) this.transferIndex = 0
-		return index
+	public uploadMultiViewerLabel(index: number, data: Buffer): Promise<void> {
+		const transfer = new DataTransferUploadMultiViewerLabel(index, data)
+		return this.#labelsLock.enqueue(transfer)
 	}
 
-	private getClipLock(index: number): DataLock {
-		const lock = this.clipLocks[index]
+	private getClipLock(index: number): DataTransferLockingQueue {
+		const lock = this.#clipLocks.get(index)
 		if (lock) {
 			return lock
 		} else {
-			throw new Error('Invalid clip id')
+			throw new Error('Invalid clip index')
 		}
 	}
 }

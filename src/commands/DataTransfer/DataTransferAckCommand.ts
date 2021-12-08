@@ -17,7 +17,7 @@ export class DataTransferAckCommand extends SymmetricalCommand<DataTransferAckPr
 		return new DataTransferAckCommand(properties)
 	}
 
-	public serialize () {
+	public serialize() {
 		const buffer = Buffer.alloc(4)
 
 		buffer.writeUInt16BE(this.properties.transferId)

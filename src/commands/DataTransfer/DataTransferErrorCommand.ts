@@ -1,8 +1,15 @@
 import { DeserializedCommand } from '../CommandBase'
 
+/** The known error codes */
+export enum ErrorCode {
+	Retry = 1,
+	NotFound = 2,
+	NotLocked = 5, // Maybe
+}
+
 export interface DataTransferErrorProps {
 	transferId: number
-	errorCode: number
+	errorCode: ErrorCode
 }
 
 export class DataTransferErrorCommand extends DeserializedCommand<DataTransferErrorProps> {

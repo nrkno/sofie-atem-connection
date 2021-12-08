@@ -27,7 +27,6 @@ import {
 	ClassicAudioHeadphoneOutputChannel,
 } from './state/audio'
 import { listVisibleInputs } from './lib/tally'
-import DataTransfer from './dataTransfer/dataTransfer'
 import { RecordingStateProperties } from './state/recording'
 import { OmitReadonly } from './lib/types'
 import { StreamingServiceProperties } from './state/streaming'
@@ -92,7 +91,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 			disableMultithreaded: (options || {}).disableMultithreaded || false,
 			childProcessTimeout: (options || {}).childProcessTimeout || 600,
 		})
-		this.dataTransferManager = new DT.DataTransferManager()
+		this.dataTransferManager = new DT.DataTransferManager(this.sendCommands.bind(this))
 
 		this.socket.on('commandsReceived', (commands) => {
 			this.emit('receivedCommands', commands)
@@ -112,7 +111,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 	}
 
 	private _onInitComplete(): void {
-		this.dataTransferManager.startCommandSending((cmds) => this.sendCommands(cmds))
+		this.dataTransferManager.startCommandSending()
 		this.emit('connected')
 	}
 
@@ -201,8 +200,9 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 			}
 
 			for (const commandName in DataTransferCommands) {
+				// TODO - this is fragile
 				if (command.constructor.name === commandName) {
-					this.dataTransferManager.queueCommand(command)
+					this.dataTransferManager.queueHandleCommand(command)
 				}
 			}
 		}
@@ -659,7 +659,7 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public uploadStill(index: number, data: Buffer, name: string, description: string): Promise<DataTransfer> {
+	public uploadStill(index: number, data: Buffer, name: string, description: string): Promise<void> {
 		if (!this.state) return Promise.reject()
 		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
 		if (!resolution) return Promise.reject()
@@ -671,11 +671,7 @@ export class Atem extends BasicAtem {
 		)
 	}
 
-	public uploadClip(
-		index: number,
-		frames: Iterable<Buffer> | AsyncIterable<Buffer>,
-		name: string
-	): Promise<DataTransfer> {
+	public uploadClip(index: number, frames: Iterable<Buffer> | AsyncIterable<Buffer>, name: string): Promise<void> {
 		if (!this.state) return Promise.reject()
 		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
 		if (!resolution) return Promise.reject()
@@ -687,7 +683,7 @@ export class Atem extends BasicAtem {
 		return this.dataTransferManager.uploadClip(index, provideFrame(), name)
 	}
 
-	public uploadAudio(index: number, data: Buffer, name: string): Promise<DataTransfer> {
+	public uploadAudio(index: number, data: Buffer, name: string): Promise<void> {
 		return this.dataTransferManager.uploadAudio(index, Util.convertWAVToRaw(data, this.state?.info?.model), name)
 	}
 

@@ -1,7 +1,7 @@
 import { DeserializedCommand } from '../CommandBase'
 import { AtemState } from '../../state'
 import { SupportedVideoMode } from '../../state/info'
-import { VideoMode } from '../../enums'
+import { ProtocolVersion, VideoMode } from '../../enums'
 
 export class VideoMixerConfigCommand extends DeserializedCommand<Array<SupportedVideoMode>> {
 	public static readonly rawName = '_VMC'
@@ -10,18 +10,21 @@ export class VideoMixerConfigCommand extends DeserializedCommand<Array<Supported
 		super(properties)
 	}
 
-	public static deserialize(rawCommand: Buffer): VideoMixerConfigCommand {
+	public static deserialize(rawCommand: Buffer, version: ProtocolVersion): VideoMixerConfigCommand {
 		const modes: Array<SupportedVideoMode> = []
+
+		const hasRequiresReconfig = version >= ProtocolVersion.V8_0
+		const size = hasRequiresReconfig ? 13 : 12
 
 		const count = rawCommand.readUInt16BE(0)
 		for (let i = 0; i < count; i++) {
-			const baseOffset = 4 + i * 13
+			const baseOffset = 4 + i * size
 
 			modes.push({
 				mode: rawCommand.readUInt8(baseOffset),
 				multiviewerModes: readVideoModeBitmask(rawCommand.readUInt32BE(baseOffset + 4)),
 				downConvertModes: readVideoModeBitmask(rawCommand.readUInt32BE(baseOffset + 8)),
-				requiresReconfig: rawCommand.readUInt8(baseOffset + 12) !== 0,
+				requiresReconfig: hasRequiresReconfig ? rawCommand.readUInt8(baseOffset + 12) !== 0 : false,
 			})
 		}
 

@@ -1,11 +1,10 @@
-import { DownloadRequestType } from '../../enums'
 import { BasicWritableCommand } from '../CommandBase'
 
 export interface DataTransferDownloadRequestProps {
 	transferId: number
 	transferStoreId: number
 	transferIndex: number
-	transferType: DownloadRequestType
+	transferType: number
 }
 
 export class DataTransferDownloadRequestCommand extends BasicWritableCommand<DataTransferDownloadRequestProps> {
