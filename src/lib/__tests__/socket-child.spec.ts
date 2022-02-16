@@ -40,11 +40,11 @@ function createSocketChild(
 			port: DEFAULT_PORT,
 			debugBuffers: false,
 		},
-		onDisconnect || ((): Promise<void> => Promise.resolve()),
+		onDisconnect || (async (): Promise<void> => Promise.resolve()),
 		// async msg => { console.log(msg) },
-		(): Promise<void> => Promise.resolve(),
-		onCommandsReceived || ((): Promise<void> => Promise.resolve()),
-		onCommandsAcknowledged || ((): Promise<void> => Promise.resolve())
+		async (): Promise<void> => Promise.resolve(),
+		onCommandsReceived || (async (): Promise<void> => Promise.resolve()),
+		onCommandsAcknowledged || (async (): Promise<void> => Promise.resolve())
 	)
 }
 
@@ -241,7 +241,7 @@ describe('SocketChild', () => {
 
 	test('Inbound commands', async () => {
 		let gotCmds: number[] = []
-		const child = createSocketChild((buf) => {
+		const child = createSocketChild(async (buf) => {
 			gotCmds.push(buf.length)
 			return Promise.resolve()
 		})
@@ -295,7 +295,7 @@ describe('SocketChild', () => {
 
 	test('Inbound commands - around wrap', async () => {
 		let gotCmds: number[] = []
-		const child = createSocketChild((buf) => {
+		const child = createSocketChild(async (buf) => {
 			gotCmds.push(buf.length)
 			return Promise.resolve()
 		})

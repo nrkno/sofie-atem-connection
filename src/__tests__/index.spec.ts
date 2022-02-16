@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Atem, Enums } from '../index'
 import { createEmptyState } from './util'
 

@@ -54,7 +54,9 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 
 		if (!this._socketProcess) {
 			this._socketProcess = await this._createSocketProcess()
-			this._exitUnsubscribe = exitHook(() => this.destroy())
+			this._exitUnsubscribe = exitHook(() => {
+				this.destroy().catch(() => null)
+			})
 		} else {
 			await this._socketProcess.connect(this._address, this._port)
 		}

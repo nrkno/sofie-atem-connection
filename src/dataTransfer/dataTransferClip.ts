@@ -71,7 +71,7 @@ export default class DataTransferClip extends DataTransfer {
 		return this.curFrame.transferId
 	}
 
-	public gotLock(): Promise<Commands.ISerializableCommand[]> {
+	public async gotLock(): Promise<Commands.ISerializableCommand[]> {
 		this.state = Enums.TransferState.Locked
 		return this.start()
 	}

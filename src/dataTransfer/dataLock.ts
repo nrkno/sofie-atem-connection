@@ -18,7 +18,7 @@ export default class DataLock {
 		this.isLocked = false
 	}
 
-	public enqueue(transfer: DataTransfer): Promise<DataTransfer> {
+	public async enqueue(transfer: DataTransfer): Promise<DataTransfer> {
 		this.taskQueue.push(transfer)
 		if (!this.activeTransfer) {
 			this.dequeueAndRun()

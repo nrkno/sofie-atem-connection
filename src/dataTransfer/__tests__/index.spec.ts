@@ -34,7 +34,7 @@ function mangleCommand(cmd: any, dir: string): any {
 function runDataTransferTest(spec: any): DataTransferManager {
 	const manager = new DataTransferManager()
 	manager.startCommandSending((cmds) =>
-		cmds.map((cmd) => {
+		cmds.map(async (cmd) => {
 			const expectedCmd = spec.shift()
 			const gotCmd = mangleCommand(cmd, 'send')
 			expect(expectedCmd).toEqual(gotCmd)

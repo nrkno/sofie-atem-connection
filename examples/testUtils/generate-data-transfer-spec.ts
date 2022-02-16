@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Atem } from '../../dist'
 import { DataTransferManager } from '../../dist/dataTransfer'
 import * as fs from 'fs'
@@ -29,7 +30,7 @@ nb.on('connected', async () => {
 
 	const transfer = new DataTransferManager()
 	transfer.startCommandSending((cmds) => {
-		return cmds.map((cmd) => {
+		return cmds.map(async (cmd) => {
 			commands.push(procCmd(cmd, 'send'))
 			return nb.sendCommand(cmd)
 		})

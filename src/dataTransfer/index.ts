@@ -136,12 +136,12 @@ export class DataTransferManager {
 			})
 	}
 
-	public uploadStill(index: number, data: Buffer, name: string, description: string): Promise<DataTransfer> {
+	public async uploadStill(index: number, data: Buffer, name: string, description: string): Promise<DataTransfer> {
 		const transfer = new DataTransferStill(this.nextTransferIndex, index, data, name, description)
 		return this.stillsLock.enqueue(transfer)
 	}
 
-	public uploadClip(
+	public async uploadClip(
 		index: number,
 		data: Iterable<Buffer> | AsyncIterable<Buffer>,
 		name: string
@@ -160,7 +160,7 @@ export class DataTransferManager {
 		return lock.enqueue(transfer)
 	}
 
-	public uploadAudio(index: number, data: Buffer, name: string): Promise<DataTransfer> {
+	public async uploadAudio(index: number, data: Buffer, name: string): Promise<DataTransfer> {
 		const transfer = new DataTransferAudio(this.nextTransferIndex, 1 + index, data, name)
 		const lock = this.getClipLock(index)
 		return lock.enqueue(transfer)

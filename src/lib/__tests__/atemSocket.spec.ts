@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/ban-types */
 import {
 	CutCommand,
@@ -31,15 +32,15 @@ class AtemSocketChildMock implements AtemSocketChild {
 		// this._address = options.address
 		// this._port = options.port
 
-		this.onDisconnect = (): Promise<void> => Promise.resolve()
+		this.onDisconnect = async (): Promise<void> => Promise.resolve()
 		this.onLog = async (msg): Promise<void> => console.log(msg)
-		this.onCommandsReceived = (): Promise<void> => Promise.resolve()
-		this.onCommandsAcknowledged = (): Promise<void> => Promise.resolve()
+		this.onCommandsReceived = async (): Promise<void> => Promise.resolve()
+		this.onCommandsAcknowledged = async (): Promise<void> => Promise.resolve()
 	}
 
-	public connect = jest.fn(() => Promise.resolve())
-	public disconnect = jest.fn(() => Promise.resolve())
-	public sendCommands = jest.fn(() => Promise.resolve())
+	public connect = jest.fn(async () => Promise.resolve())
+	public disconnect = jest.fn(async () => Promise.resolve())
+	public sendCommands = jest.fn(async () => Promise.resolve())
 }
 
 const AtemSocketChildSingleton = new AtemSocketChildMock()
@@ -85,10 +86,10 @@ describe('AtemSocket', () => {
 		AtemSocketChildSingleton.sendCommands.mockClear()
 
 		if (!lite) {
-			AtemSocketChildSingleton.onLog = (): Promise<void> => Promise.resolve()
-			AtemSocketChildSingleton.onDisconnect = (): Promise<void> => Promise.resolve()
-			AtemSocketChildSingleton.onCommandsAcknowledged = (): Promise<void> => Promise.resolve()
-			AtemSocketChildSingleton.onCommandsReceived = (): Promise<void> => Promise.resolve()
+			AtemSocketChildSingleton.onLog = async (): Promise<void> => Promise.resolve()
+			AtemSocketChildSingleton.onDisconnect = async (): Promise<void> => Promise.resolve()
+			AtemSocketChildSingleton.onCommandsAcknowledged = async (): Promise<void> => Promise.resolve()
+			AtemSocketChildSingleton.onCommandsReceived = async (): Promise<void> => Promise.resolve()
 		}
 	}
 	beforeEach(() => {
@@ -589,7 +590,7 @@ describe('AtemSocket', () => {
 		mockClear()
 		expect(getChild(socket)).toBeTruthy()
 
-		const connect = (socket.connect = jest.fn(() => Promise.resolve()))
+		const connect = (socket.connect = jest.fn(async () => Promise.resolve()))
 
 		const disconnected = jest.fn()
 		socket.on('disconnect', disconnected)

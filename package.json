@@ -41,9 +41,9 @@
     "docs:json": "typedoc --tsconfig tsconfig.docs.json --json docs/typedoc.json --entryPoints src/index.ts",
     "release": "standard-version",
     "reset": "git clean -dfx && git reset --hard && yarn",
-    "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate --allowPackages caniuse-lite@1.0.30001230",
+    "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate",
     "validate:dev-dependencies": "yarn audit --groups devDependencies",
-    "license-validate": "yarn sofie-licensecheck"
+    "license-validate": "yarn sofie-licensecheck --allowPackages caniuse-lite@1.0.30001312"
   },
   "engines": {
     "node": ">=12.20"

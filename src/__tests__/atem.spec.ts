@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Atem, DEFAULT_PORT } from '../atem'
 import { CutCommand } from '../commands'
 import { promisify } from 'util'
