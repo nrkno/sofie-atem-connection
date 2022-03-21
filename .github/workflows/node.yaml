@@ -41,7 +41,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [14.x, 16.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -60,11 +60,11 @@ jobs:
         env:
           CI: true
       - name: Send coverage
+        uses: codecov/codecov-action@v2
         if: matrix.node-version == '14.x'
-        run: |
-          yarn send-coverage
-        env:
-          CI: true
+        with:
+          fail_ci_if_error: true
+          # name: codecov-umbrella
       - name: Check docs generation
         if: matrix.node-version == '14.x'
         run: |

@@ -32,9 +32,9 @@ class AtemSocketChildMock implements AtemSocketChild {
 		this.onCommandsAcknowledged = onCommandsAcknowledged
 	}
 
-	public connect = jest.fn(() => Promise.resolve())
-	public disconnect = jest.fn(() => Promise.resolve())
-	public sendCommands = jest.fn(() => Promise.resolve())
+	public connect = jest.fn(async () => Promise.resolve())
+	public disconnect = jest.fn(async () => Promise.resolve())
+	public sendCommands = jest.fn(async () => Promise.resolve())
 }
 
 ;(AtemSocketChild as any).mockImplementation(
@@ -84,6 +84,7 @@ function runTest(name: string, filename: string): void {
 				}
 			})
 
+			// eslint-disable-next-line @typescript-eslint/no-for-in-array
 			for (const i in fileData) {
 				const buffer = Buffer.from(fileData[i].trim(), 'hex')
 				await child.onCommandsReceived(buffer, i)
@@ -99,6 +100,7 @@ function runTest(name: string, filename: string): void {
 			)
 
 			const commands: IDeserializedCommand[] = []
+			// eslint-disable-next-line @typescript-eslint/no-for-in-array
 			for (const i in fileData) {
 				const buffer = Buffer.from(fileData[i].trim(), 'hex')
 				commands.push(...parser(buffer))

@@ -70,15 +70,14 @@ function runTestForCommand(commandParser: CommandParser, i: number, testCase: Te
 				const p = newProp.name.split('.')
 
 				let o = mutatedCommand
-				let i: string | undefined = p.shift()! // assuming we'll get at least one entry
-				do {
+				for (let i = p.shift(); i !== undefined; i = p.shift()) {
 					if (p.length) {
 						o[i] = { ...o[i] }
 						o = o[i]
 					} else {
 						o[i] = newProp.val
 					}
-				} while ((i = p.shift()))
+				}
 			} else {
 				mutatedCommand[newKey] = newProp.val
 			}

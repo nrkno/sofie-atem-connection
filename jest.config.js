@@ -9,7 +9,7 @@ module.exports = {
 		'^.+\\.(ts|tsx)$': 'ts-jest',
 	},
 	testMatch: ['**/__tests__/**/*.spec.(ts|js)'],
-	setupFilesAfterEnv: ['jest-extended'],
+	setupFilesAfterEnv: ['jest-extended/all'],
 	testEnvironment: 'node',
 	coverageThreshold: {
 		global: {

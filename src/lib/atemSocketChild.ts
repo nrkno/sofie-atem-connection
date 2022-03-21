@@ -78,26 +78,28 @@ export class AtemSocketChild {
 
 	private startTimers(): void {
 		if (!this._reconnectTimer) {
-			this._reconnectTimer = setInterval(async () => {
+			this._reconnectTimer = setInterval(() => {
 				if (this._lastReceivedAt + CONNECTION_TIMEOUT > Date.now()) {
 					// We heard from the atem recently
 					return
 				}
 
-				try {
-					await this.restartConnection()
-				} catch (e) {
+				this.restartConnection().catch((e) => {
 					this.log(`Reconnect failed: ${e}`)
-				}
+				})
 			}, CONNECTION_RETRY_INTERVAL)
 		}
 		// Check for retransmits every 10 milliseconds
 		if (!this._retransmitTimer) {
-			this._retransmitTimer = setInterval(() => this._checkForRetransmit(), 10)
+			this._retransmitTimer = setInterval(() => {
+				this._checkForRetransmit().catch((e) => {
+					this.log(`Failed to retransmit: ${e?.message ?? e}`)
+				})
+			}, 10)
 		}
 	}
 
-	public connect(address: string, port: number): Promise<void> {
+	public async connect(address: string, port: number): Promise<void> {
 		this.startTimers()
 
 		this._address = address
@@ -106,7 +108,7 @@ export class AtemSocketChild {
 		return this.restartConnection()
 	}
 
-	public disconnect(): Promise<void> {
+	public async disconnect(): Promise<void> {
 		// Stop timers, as they just cause pointless work now.
 		if (this._retransmitTimer) {
 			clearInterval(this._retransmitTimer)
@@ -123,7 +125,7 @@ export class AtemSocketChild {
 			} catch (e) {
 				resolve()
 			}
-		}).then(() => {
+		}).then(async () => {
 			this._connectionState = ConnectionState.Closed
 			this._createSocket()
 			return this.onDisconnect()
@@ -192,12 +194,14 @@ export class AtemSocketChild {
 		this._socket = createSocket('udp4')
 		this._socket.bind()
 		this._socket.on('message', (packet, rinfo) => this._receivePacket(packet, rinfo))
-		this._socket.on('error', async (err) => {
+		this._socket.on('error', (err) => {
 			this.log(`Connection error: ${err}`)
 
 			if (this._connectionState === ConnectionState.Established) {
 				// If connection is open, then restart. Otherwise the reconnectTimer will handle it
-				await this.restartConnection()
+				this.restartConnection().catch((e) => {
+					this.log(`Failed to restartConnection: ${e?.message ?? e}`)
+				})
 			}
 		})
 
@@ -212,7 +216,7 @@ export class AtemSocketChild {
 		return packetId === ackId || ((pktIsShortlyBefore || pktIsBeforeWrap) && !pktIsShortlyAfter)
 	}
 
-	private async _receivePacket(packet: Buffer, rinfo: RemoteInfo): Promise<void> {
+	private _receivePacket(packet: Buffer, rinfo: RemoteInfo): void {
 		if (this._debugBuffers) this.log(`RECV ${packet.toString('hex')}`)
 		this._lastReceivedAt = Date.now()
 		const length = packet.readUInt16BE(0) & 0x07ff
@@ -279,7 +283,9 @@ export class AtemSocketChild {
 			}
 		}
 
-		await Promise.all(ps)
+		Promise.all(ps).catch((e) => {
+			this.log(`Failed to receivePacket: ${e?.message ?? e}`)
+		})
 	}
 
 	private _sendPacket(packet: Buffer): void {
@@ -346,7 +352,7 @@ export class AtemSocketChild {
 		}
 	}
 
-	private _checkForRetransmit(): Promise<void> {
+	private async _checkForRetransmit(): Promise<void> {
 		for (const sentPacket of this._inFlight) {
 			if (sentPacket.lastSent + IN_FLIGHT_TIMEOUT < Date.now()) {
 				if (

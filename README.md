@@ -1,7 +1,7 @@
 # Sofie: The Modern TV News Studio Automation System (ATEM connection library)
 
-[![Node CI](https://github.com/nrkno/tv-automation-atem-connection/actions/workflows/node.yaml/badge.svg)](https://github.com/nrkno/tv-automation-atem-connection/actions/workflows/node.yaml)
-[![codecov](https://codecov.io/gh/nrkno/tv-automation-atem-connection/branch/master/graph/badge.svg)](https://codecov.io/gh/nrkno/tv-automation-atem-connection)
+[![Node CI](https://github.com/nrkno/sofie-atem-connection/actions/workflows/node.yaml/badge.svg)](https://github.com/nrkno/sofie-atem-connection/actions/workflows/node.yaml)
+[![codecov](https://codecov.io/gh/nrkno/sofie-atem-connection/branch/master/graph/badge.svg)](https://codecov.io/gh/nrkno/sofie-atem-connection/)
 [![npm](https://img.shields.io/npm/v/atem-connection)](https://www.npmjs.com/package/atem-connection)
 
 This library is used in the [**Sofie** TV News Studio Automation System](https://github.com/nrkno/Sofie-TV-automation/) for connecting to Blackmagic Design ATEM devices.
@@ -74,7 +74,7 @@ myAtem.on('stateChanged', (state, pathToChange) => {
 
 ### Documentation
 
-You can find the generated type docs [here](https://nrkno.github.io/tv-automation-atem-connection/).
+You can find the generated type docs [here](https://nrkno.github.io/sofie-atem-connection/).
 
 ### Events
 
