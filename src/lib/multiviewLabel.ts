@@ -159,6 +159,7 @@ export interface GenerateMultiviewerLabelProps {
 	HD1080: boolean
 	HD720: boolean
 	UHD4K: boolean
+	UHD8K: boolean
 }
 
 /**
@@ -172,6 +173,7 @@ export function generateMultiviewerLabel(face: FontFace, str: string, props: Gen
 	// Calculate the sizes
 	let width: number | undefined
 	let height = 0
+	// TODO UDH8K
 	if (props.UHD4K) {
 		if (!width) width = Res4K.width
 		height += Res4K.height
@@ -196,6 +198,7 @@ export function generateMultiviewerLabel(face: FontFace, str: string, props: Gen
 		yOffset += spec.height
 	}
 
+	// TODO UDH8K
 	if (props.UHD4K) drawRes(Res4K)
 	if (props.HD1080) drawRes(Res1080)
 	if (props.HD720) drawRes(Res720)
@@ -204,10 +207,11 @@ export function generateMultiviewerLabel(face: FontFace, str: string, props: Gen
 }
 
 export function calculateGenerateMultiviewerLabelProps(
-	state: Readonly<AtemState> | null
+	state: Readonly<Pick<AtemState, 'info'>> | null
 ): GenerateMultiviewerLabelProps | null {
 	if (state && state.info.supportedVideoModes) {
 		const res: GenerateMultiviewerLabelProps = {
+			UHD8K: false,
 			UHD4K: false,
 			HD1080: false,
 			HD720: false,
@@ -215,8 +219,10 @@ export function calculateGenerateMultiviewerLabelProps(
 
 		const multiViewerModes = new Set<VideoMode>()
 		for (const info of state.info.supportedVideoModes) {
-			for (const mode of info.multiviewerModes) {
-				multiViewerModes.add(mode)
+			if (!info.requiresReconfig) {
+				for (const mode of info.multiviewerModes) {
+					multiViewerModes.add(mode)
+				}
 			}
 		}
 
@@ -233,7 +239,7 @@ export function calculateGenerateMultiviewerLabelProps(
 					res.UHD4K = true
 					break
 				case VideoFormat.UDH8K:
-					// TODO
+					res.UHD8K = true
 					break
 				case undefined:
 				case VideoFormat.SD:

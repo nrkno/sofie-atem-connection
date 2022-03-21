@@ -970,7 +970,14 @@ export class Atem extends BasicAtem {
 	 * @returns Promise that resolves once upload is complete
 	 */
 	public writeMultiviewerLabel(inputId: number, buffer: Buffer): Promise<void> {
-		// TODO - validate input data looks sane and wont crash atem
+		// Verify the buffer doesnt contain data that is 'out of bounds' and will crash the atem
+		const badValues = new Set([255, 254])
+		for (const val of buffer) {
+			if (badValues.has(val)) {
+				throw new Error(`Buffer contains invalid value ${val}`)
+			}
+		}
+
 		return this.dataTransferManager.uploadMultiViewerLabel(inputId, buffer)
 	}
 
@@ -987,6 +994,7 @@ export class Atem extends BasicAtem {
 		const fontFace = await this.#multiviewerFontFace
 
 		const buffer = generateMultiviewerLabel(fontFace, text, props)
+		// Note: we should probably validate the buffer looks like it doesn't contain crashy data, but as we generate we can trust it
 		return this.dataTransferManager.uploadMultiViewerLabel(inputId, buffer)
 	}
 }

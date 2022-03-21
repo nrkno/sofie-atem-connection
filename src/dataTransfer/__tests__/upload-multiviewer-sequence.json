@@ -1,0 +1,249 @@
+[
+	{
+		"name": "DataTransferUploadRequestCommand",
+		"properties": {
+			"transferId": 0,
+			"transferStoreId": 65535,
+			"transferIndex": 11001,
+			"size": 28800,
+			"mode": 513
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferUploadContinueCommand",
+		"properties": {
+			"transferId": 0,
+			"chunkSize": 1396,
+			"chunkCount": 216
+		},
+		"direction": "recv"
+	},
+	{
+		"name": "DataTransferFileDescriptionCommand",
+		"properties": {
+			"name": "Label",
+			"description": "",
+			"fileHash": "T�9z�;{\u0012r����-��",
+			"transferId": 0
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 1392
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 960
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferCompleteCommand",
+		"properties": {
+			"transferId": 0
+		},
+		"direction": "recv"
+	}
+]

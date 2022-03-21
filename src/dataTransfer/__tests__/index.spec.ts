@@ -94,3 +94,17 @@ test('clip upload', async () => {
 	// Nothing should be left by this point
 	expect(spec).toHaveLength(0)
 }, 10000)
+
+test('multiviewer label', async () => {
+	const spec: any[] = JSON.parse(readFileSync(path.join(__dirname, './upload-multiviewer-sequence.json')).toString())
+
+	const newBuffer = Buffer.alloc(320 * 90)
+
+	const manager = runDataTransferTest(spec)
+	await manager.uploadMultiViewerLabel(11001, newBuffer)
+
+	await new Promise((resolve) => setTimeout(resolve, 200))
+
+	// Nothing should be left by this point
+	expect(spec).toHaveLength(0)
+}, 10000)
