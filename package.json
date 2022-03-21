@@ -43,7 +43,7 @@
     "reset": "git clean -dfx && git reset --hard && yarn",
     "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate",
     "validate:dev-dependencies": "yarn audit --groups devDependencies",
-    "license-validate": "yarn sofie-licensecheck --allowPackages caniuse-lite@1.0.30001312"
+    "license-validate": "yarn sofie-licensecheck --allowPackages caniuse-lite@1.0.30001319"
   },
   "engines": {
     "node": "^14.18 || ^16.14"
