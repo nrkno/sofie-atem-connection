@@ -74,7 +74,7 @@ export abstract class DataTransferQueueBase {
 	}
 
 	/** Queue a transfer to be performed */
-	public enqueue<T>(transfer: DataTransfer<T>): Promise<T> {
+	public async enqueue<T>(transfer: DataTransfer<T>): Promise<T> {
 		this.taskQueue.push(transfer)
 		if (!this.activeTransfer) {
 			this.dequeueAndRun()
@@ -292,7 +292,7 @@ export class DataTransferLockingQueue extends DataTransferQueueBase {
 }
 
 export class DataTransferSimpleQueue extends DataTransferQueueBase {
-	protected startTransfer(transfer: DataTransfer<any>, transferId: number): Promise<ProgressTransferResult> {
+	protected async startTransfer(transfer: DataTransfer<any>, transferId: number): Promise<ProgressTransferResult> {
 		return transfer.startTransfer(transferId)
 	}
 

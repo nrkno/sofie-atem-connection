@@ -674,6 +674,7 @@ describe('Multiview Label', () => {
 		expect(buffer.length).toBe(640 * 190)
 	})
 
+	// eslint-disable-next-line jest/no-commented-out-tests
 	// test('Constellation 8K', () => {
 	// 	const info: AtemState['info'] = {
 

@@ -164,12 +164,16 @@ export class DataTransferManager {
 		}
 	}
 
-	public uploadStill(index: number, data: Buffer, name: string, description: string): Promise<void> {
+	public async uploadStill(index: number, data: Buffer, name: string, description: string): Promise<void> {
 		const transfer = new DataTransferUploadStill(index, data, name, description)
 		return this.#stillsLock.enqueue(transfer)
 	}
 
-	public uploadClip(index: number, data: Iterable<Buffer> | AsyncIterable<Buffer>, name: string): Promise<void> {
+	public async uploadClip(
+		index: number,
+		data: Iterable<Buffer> | AsyncIterable<Buffer>,
+		name: string
+	): Promise<void> {
 		const provideFrame = async function* (): AsyncGenerator<DataTransferUploadClipFrame, undefined> {
 			let id = -1
 			for await (const frame of data) {
@@ -183,25 +187,25 @@ export class DataTransferManager {
 		return lock.enqueue(transfer)
 	}
 
-	public uploadAudio(index: number, data: Buffer, name: string): Promise<void> {
+	public async uploadAudio(index: number, data: Buffer, name: string): Promise<void> {
 		const transfer = new DataTransferUploadAudio(index, data, name)
 		const lock = this.getClipLock(index)
 		return lock.enqueue(transfer)
 	}
 
-	public downloadMacro(index: number): Promise<Buffer> {
+	public async downloadMacro(index: number): Promise<Buffer> {
 		const transfer = new DataDownloadMacro(index)
 
 		return this.#macroLock.enqueue(transfer)
 	}
 
-	public uploadMacro(index: number, data: Buffer, name: string): Promise<void> {
+	public async uploadMacro(index: number, data: Buffer, name: string): Promise<void> {
 		const transfer = new DataUploadMacro(index, data, name)
 
 		return this.#macroLock.enqueue(transfer)
 	}
 
-	public uploadMultiViewerLabel(index: number, data: Buffer): Promise<void> {
+	public async uploadMultiViewerLabel(index: number, data: Buffer): Promise<void> {
 		const transfer = new DataTransferUploadMultiViewerLabel(index, data)
 		return this.#labelsLock.enqueue(transfer)
 	}
