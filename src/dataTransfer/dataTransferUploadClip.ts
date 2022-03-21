@@ -3,6 +3,9 @@ import { DataTransferFileDescriptionCommand, DataTransferUploadRequestCommand } 
 import { DataTransfer, DataTransferState, ProgressTransferResult } from './dataTransfer'
 import { DataTransferUploadBuffer } from './dataTransferUploadBuffer'
 import { MediaPoolClearClipCommand, MediaPoolSetClipCommand } from '../commands/Media'
+import debug0 = require('debug')
+
+const debug = debug0('atem-connection:data-transfer:upload-clip')
 
 export type DataTransferFrameGenerator =
 	| Generator<DataTransferUploadClipFrame, undefined>
@@ -67,22 +70,30 @@ export class DataTransferUploadClip extends DataTransfer<void> {
 
 		// TODO - is oldState appropriate here?
 		const frameResult = await this.#currentFrame.handleCommand(command, oldState)
+		debug(
+			`handleCommand: ${DataTransferState[frameResult.newState]} - Giving ${frameResult.commands.length} commands`
+		)
 
 		if (frameResult.newState === DataTransferState.Finished) {
 			// Get the next frame
 			this.#currentFrame = await this.nextFrame()
+			debug(`Start next frame (${!!this.#currentFrame})`)
 			if (this.#currentFrame) {
 				this.#numFrames++
 
-				const newFrameResult = await this.#currentFrame.startTransfer(this.#nextTransferId())
+				const newId = this.#nextTransferId()
+				const newFrameResult = await this.#currentFrame.startTransfer(newId)
 
 				return {
-					newState: DataTransferState.Transferring,
+					newState: DataTransferState.Ready,
+					newId: newId,
 					commands: [...frameResult.commands, ...newFrameResult.commands],
 				}
 			} else {
 				// Looks like we finished
 				this.resolvePromise()
+
+				debug(`Clip complete`)
 
 				return {
 					newState: DataTransferState.Finished,
@@ -117,6 +128,7 @@ export class DataTransferUploadClipFrame extends DataTransferUploadBuffer {
 	}
 
 	public async startTransfer(transferId: number): Promise<ProgressTransferResult> {
+		debug(`Start transfer ${transferId} (${this.data.length})`)
 		const command = new DataTransferUploadRequestCommand({
 			transferId: transferId,
 			transferStoreId: this.#clipIndex + 1,
@@ -132,6 +144,7 @@ export class DataTransferUploadClipFrame extends DataTransferUploadBuffer {
 	}
 
 	protected generateDescriptionCommand(transferId: number): ISerializableCommand {
+		debug(`Generate frame description for transfer ${transferId}`)
 		return new DataTransferFileDescriptionCommand({
 			name: undefined,
 			description: undefined,

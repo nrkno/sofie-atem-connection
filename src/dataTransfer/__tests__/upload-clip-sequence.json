@@ -179938,14 +179938,6 @@
 		"direction": "recv"
 	},
 	{
-		"name": "LockStateUpdateCommand",
-		"properties": {
-			"index": 2,
-			"locked": true
-		},
-		"direction": "recv"
-	},
-	{
 		"name": "DataTransferCompleteCommand",
 		"properties": {
 			"transferId": 12928

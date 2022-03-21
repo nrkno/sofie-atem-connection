@@ -8,9 +8,12 @@ import { IDeserializedCommand, ISerializableCommand } from '../commands/CommandB
 import DataTransferUploadMultiViewerLabel from './dataTransferUploadMultiViewerLabel'
 import { DataDownloadMacro, DataUploadMacro } from './dataTransferMacro'
 import { LockObtainedCommand, LockStateUpdateCommand } from '../commands/DataTransfer'
+import debug0 from 'debug'
 
 const MAX_PACKETS_TO_SEND_PER_TICK = 10
 const MAX_TRANSFER_INDEX = (1 << 16) - 1 // Inclusive maximum
+
+const debug = debug0('atem-connection:data-transfer:manager')
 
 export class DataTransferManager {
 	#nextTransferIdInner = 0
@@ -21,7 +24,8 @@ export class DataTransferManager {
 	}
 
 	readonly #sendLockCommand = (/*lock: DataTransferLockingQueue,*/ cmd: ISerializableCommand): void => {
-		Promise.all(this.#rawSendCommands([cmd])).catch(() => {
+		Promise.all(this.#rawSendCommands([cmd])).catch((e) => {
+			debug(`Failed to send lock command: ${e}`)
 			console.log('Failed to send lock command')
 		})
 	}
@@ -48,19 +52,23 @@ export class DataTransferManager {
 	 * Start sending of commands
 	 * This is called once the connection has received the initial state data
 	 */
-	public startCommandSending(): void {
+	public startCommandSending(skipUnlockAll?: boolean): void {
 		// TODO - abort any active transfers
 
 		if (!this.interval) {
 			// New connection means a new queue
-			for (const lock of this.allLocks) {
-				lock.clearQueueAndAbort(new Error('Restarting connection'))
+			if (!skipUnlockAll) {
+				debug(`Clearing all held locks`)
+				for (const lock of this.allLocks) {
+					lock.clearQueueAndAbort(new Error('Restarting connection'))
+				}
 			}
 
 			this.interval = setInterval(() => {
 				for (const lock of this.allLocks) {
 					const commandsToSend = lock.popQueuedCommands(MAX_PACKETS_TO_SEND_PER_TICK) // Take some, it is unlikely that multiple will run at once
-					if (commandsToSend) {
+					if (commandsToSend && commandsToSend.length > 0) {
+						// debug(`Sending ${commandsToSend.length} commands `)
 						Promise.all(this.#rawSendCommands(commandsToSend)).catch(() => {
 							// Failed to send/queue something, so abort it
 							lock.tryAbortTransfer(new Error('Command send failed'))
@@ -71,6 +79,8 @@ export class DataTransferManager {
 		}
 		if (!this.exitUnsubscribe) {
 			this.exitUnsubscribe = exitHook(() => {
+				debug(`Exit auto-cleanup`)
+				// TODO - replace this with a WeakRef to the parent class?
 				this.stopCommandSending()
 			})
 		}
@@ -81,6 +91,7 @@ export class DataTransferManager {
 	 * This is called once the connection is disconnected
 	 */
 	public stopCommandSending(): void {
+		debug('Stopping command sending')
 		for (const lock of this.allLocks) {
 			lock.clearQueueAndAbort(new Error('Stopping connection'))
 		}
@@ -100,6 +111,7 @@ export class DataTransferManager {
 	 * We do it via a queue as some of the handlers need to be async, and we don't want to block state updates from happening in parallel
 	 */
 	public queueHandleCommand(command: IDeserializedCommand): void {
+		debug(`Received command ${command.constructor.name}: ${JSON.stringify(command)}`)
 		if (command instanceof LockObtainedCommand || command instanceof LockStateUpdateCommand) {
 			let lock: DataTransferLockingQueue | undefined
 			if (command.properties.index === 0) {
@@ -109,7 +121,7 @@ export class DataTransferManager {
 				// Ignore it for now
 				return
 			} else {
-				lock = this.#clipLocks.get(command.properties.index)
+				lock = this.#clipLocks.get(command.properties.index - 1)
 			}
 
 			// Must be a clip that we aren't expecting
@@ -197,6 +209,10 @@ export class DataTransferManager {
 	private getClipLock(index: number): DataTransferLockingQueue {
 		const lock = this.#clipLocks.get(index)
 		if (lock) {
+			return lock
+		} else if (index >= 0 && index < 20) {
+			const lock = new DataTransferLockingQueue(index + 1, this.#sendLockCommand, this.#nextTransferId)
+			this.#clipLocks.set(index, lock)
 			return lock
 		} else {
 			throw new Error('Invalid clip index')

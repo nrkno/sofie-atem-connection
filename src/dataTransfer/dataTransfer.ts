@@ -59,4 +59,5 @@ export abstract class DataTransfer<T> {
 export interface ProgressTransferResult {
 	newState: DataTransferState
 	commands: ISerializableCommand[]
+	newId?: number
 }

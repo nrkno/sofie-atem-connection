@@ -32,12 +32,11 @@ function mangleCommand(cmd: any, dir: string): any {
 }
 
 function runDataTransferTest(spec: any): DataTransferManager {
-	const manager = new DataTransferManager()
-	manager.startCommandSending((cmds) =>
+	const manager = new DataTransferManager((cmds) =>
 		cmds.map((cmd) => {
 			const expectedCmd = spec.shift()
 			const gotCmd = mangleCommand(cmd, 'send')
-			expect(expectedCmd).toEqual(gotCmd)
+			expect(gotCmd).toEqual(expectedCmd)
 
 			while (spec.length > 0) {
 				if (spec[0].direction !== 'recv') break
@@ -50,6 +49,7 @@ function runDataTransferTest(spec: any): DataTransferManager {
 			return Promise.resolve()
 		})
 	)
+	manager.startCommandSending(true)
 	return manager
 }
 

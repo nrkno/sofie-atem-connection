@@ -9,6 +9,9 @@ import {
 } from '../commands/DataTransfer'
 import * as crypto from 'crypto'
 import { DataTransfer, ProgressTransferResult, DataTransferState } from './dataTransfer'
+import debug0 = require('debug')
+
+const debug = debug0('atem-connection:data-transfer:upload-buffer')
 
 export abstract class DataTransferUploadBuffer extends DataTransfer<void> {
 	protected readonly hash: string
@@ -66,9 +69,9 @@ export abstract class DataTransferUploadBuffer extends DataTransfer<void> {
 			const nextChunks = this.getNextChunks(command.properties)
 			result.commands.push(...nextChunks)
 
-			return result
+			// if (nextChunks.length === 0) this.abort(new Error('Ran out of data'))
 
-			// TODO - should we abort if there is no more data, as it suggests something got corrupt/lost?
+			return result
 		} else if (command instanceof DataTransferCompleteCommand) {
 			// Atem reports that it recieved everything
 			if (oldState === DataTransferState.Transferring) {
@@ -105,6 +108,8 @@ export abstract class DataTransferUploadBuffer extends DataTransfer<void> {
 			)
 			this.#bytesSent += chunkSize
 		}
+
+		debug(`Generated ${commands.length} chunks for size ${chunkSize}`)
 
 		return commands
 	}

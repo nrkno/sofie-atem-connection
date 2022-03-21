@@ -2,6 +2,9 @@ import { IDeserializedCommand, ISerializableCommand } from '../commands/CommandB
 import { DataTransfer, DataTransferState, ProgressTransferResult } from './dataTransfer'
 import { LockStateCommand } from '../commands/DataTransfer'
 import PQueue from 'p-queue'
+import debug0 = require('debug')
+
+const debug = debug0('atem-connection:data-transfer:upload-buffer')
 
 export interface ActiveTransfer {
 	id: number
@@ -50,7 +53,21 @@ export abstract class DataTransferQueueBase {
 	/** Pop some queued commands from the active transfer */
 	public popQueuedCommands(maxCount: number): ISerializableCommand[] | null {
 		if (this.activeTransfer) {
-			return this.activeTransfer.queuedCommands.splice(0, maxCount)
+			if (
+				this.activeTransfer.queuedCommands.length === 0 &&
+				this.activeTransfer.state === DataTransferState.Finished
+			) {
+				// This has now truely finished, so fire up the next thing
+
+				// Transfer reports as having finished, so clear tracker and start the next
+				this.transferCompleted()
+				this.activeTransfer = undefined
+
+				this.dequeueAndRun()
+				return []
+			} else {
+				return this.activeTransfer.queuedCommands.splice(0, maxCount)
+			}
 		} else {
 			return null
 		}
@@ -114,7 +131,7 @@ export abstract class DataTransferQueueBase {
 						transfer.queuedCommands.push(...result.commands)
 
 						// if (transfer.state === DataTransferState.)
-						if (transfer.state === DataTransferState.Finished) {
+						if (transfer.state === DataTransferState.Finished && transfer.queuedCommands.length === 0) {
 							// Transfer reports as having finished, so clear tracker and start the next
 							this.transferCompleted()
 							this.activeTransfer = undefined
@@ -192,14 +209,18 @@ export abstract class DataTransferQueueBase {
 				transfer.state = result.newState
 				transfer.queuedCommands.push(...result.commands)
 
-				if (transfer.state === DataTransferState.Finished) {
-					// Transfer reports as having finished, so clear tracker and start the next
-					this.transferCompleted()
-					this.activeTransfer = undefined
-
-					this.dequeueAndRun()
+				if (transfer.state !== DataTransferState.Finished && transfer.queuedCommands.length === 0) {
+					// // Transfer reports as having finished, so clear tracker and start the next
+					// this.transferCompleted()
+					// this.activeTransfer = undefined
+					// this.dequeueAndRun()
 				} else {
 					// Looks to be progressing along
+
+					// If the transfer provided a new id, track it
+					if (result.newId !== undefined) {
+						transfer.id = result.newId
+					}
 				}
 			})
 			.catch((e) => {
@@ -224,6 +245,7 @@ export class DataTransferLockingQueue extends DataTransferQueueBase {
 	}
 
 	protected async startTransfer(transfer: DataTransfer<any>, transferId: number): Promise<ProgressTransferResult> {
+		debug(`Starting transfer ${transferId} (Already locked = ${this.isLocked})`)
 		if (this.isLocked) {
 			// Get the transfer going immediately
 			return transfer.startTransfer(transferId)
@@ -256,12 +278,16 @@ export class DataTransferLockingQueue extends DataTransferQueueBase {
 	}
 
 	protected transferCompleted(): void {
-		// Make sure that we don't try to start the next before the unlock completes
-		// TODO - is this durable?
-		this.isLocked = false
+		if (this.isLocked) {
+			// Make sure that we don't try to start the next before the unlock completes
+			// TODO - is this durable?
+			this.isLocked = false
 
-		// Unlock the pool
-		this.#sendLockCommand(new LockStateCommand(this.#storeId, false))
+			debug(`Completing transfer`)
+
+			// Unlock the pool
+			this.#sendLockCommand(new LockStateCommand(this.#storeId, false))
+		}
 	}
 }
 
