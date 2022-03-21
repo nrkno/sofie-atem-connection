@@ -39,6 +39,11 @@ import {
 } from './state/fairlight'
 import { FairlightDynamicsResetProps } from './commands/Fairlight/common'
 import { MultiViewerPropertiesState } from './state/settings'
+import { calculateGenerateMultiviewerLabelProps, generateMultiviewerLabel } from './lib/multiviewLabel'
+import { FontFace, NewMemoryFace } from 'freetype2'
+import PLazy = require('p-lazy')
+import { readFile } from 'fs/promises'
+import path = require('path')
 
 export interface AtemOptions {
 	address?: string
@@ -236,8 +241,15 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 }
 
 export class Atem extends BasicAtem {
+	#multiviewerFontFace: Promise<FontFace>
+
 	constructor(options?: AtemOptions) {
 		super(options)
+
+		this.#multiviewerFontFace = PLazy.from(async () => {
+			const fontFile = await readFile(path.join(__dirname, '../assets/roboto/Roboto-Regular.ttf'))
+			return NewMemoryFace(fontFile)
+		})
 	}
 
 	public changeProgramInput(input: number, me = 0): Promise<void> {
@@ -949,5 +961,32 @@ export class Atem extends BasicAtem {
 	public setMediaPoolSettings(props: Commands.MediaPoolProps): Promise<void> {
 		const command = new Commands.MediaPoolSettingsSetCommand(props.maxFrames)
 		return this.sendCommand(command)
+	}
+
+	/**
+	 * Write a custom multiviewer label buffer
+	 * @param inputId The input id
+	 * @param buffer Label buffer
+	 * @returns Promise that resolves once upload is complete
+	 */
+	public writeMultiviewerLabel(inputId: number, buffer: Buffer): Promise<void> {
+		// TODO - validate input data looks sane and wont crash atem
+		return this.dataTransferManager.uploadMultiViewerLabel(inputId, buffer)
+	}
+
+	/**
+	 * Generate and upload a multiviewer label
+	 * @param inputId The input id
+	 * @param text Label text
+	 * @returns Promise that resolves once upload is complete
+	 */
+	public async drawMultiviewerLabel(inputId: number, text: string): Promise<void> {
+		const props = calculateGenerateMultiviewerLabelProps(this.state ?? null)
+		if (!props) throw new Error(`Failed to determine render properties`)
+
+		const fontFace = await this.#multiviewerFontFace
+
+		const buffer = generateMultiviewerLabel(fontFace, text, props)
+		return this.dataTransferManager.uploadMultiViewerLabel(inputId, buffer)
 	}
 }

@@ -92,7 +92,7 @@ export abstract class DataTransferQueueBase {
 	 * This is done in the queue, and calls back out to this.startTransfer
 	 */
 	protected tryStartTransfer(): void {
-		if (!this.activeTransfer) {
+		if (this.activeTransfer) {
 			this.handleCommandQueue
 				.add(
 					async () => {

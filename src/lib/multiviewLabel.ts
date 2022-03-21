@@ -34,7 +34,7 @@ const Res4K: ResolutionSpec = {
 	xPad: 10,
 	yPadBottom: 8,
 	yPadTop: 4,
-	fontHeight: 48,
+	fontHeight: 46,
 }
 const Res1080: ResolutionSpec = {
 	width: 320,
@@ -42,7 +42,7 @@ const Res1080: ResolutionSpec = {
 	xPad: 10,
 	yPadBottom: 8,
 	yPadTop: 4,
-	fontHeight: 28,
+	fontHeight: 26,
 }
 const Res720: ResolutionSpec = {
 	width: 320, // TODO - is this correct for all models?
@@ -50,7 +50,7 @@ const Res720: ResolutionSpec = {
 	xPad: 10,
 	yPadBottom: 8,
 	yPadTop: 4,
-	fontHeight: 18,
+	fontHeight: 16,
 }
 
 // const transparentColour = 0 // encoded value
@@ -203,7 +203,9 @@ export function generateMultiviewerLabel(face: FontFace, str: string, props: Gen
 	return buffer
 }
 
-export function calculateGenerateMultiviewerLabelProps(state: AtemState | null): GenerateMultiviewerLabelProps | null {
+export function calculateGenerateMultiviewerLabelProps(
+	state: Readonly<AtemState> | null
+): GenerateMultiviewerLabelProps | null {
 	if (state && state.info.supportedVideoModes) {
 		const res: GenerateMultiviewerLabelProps = {
 			UHD4K: false,
