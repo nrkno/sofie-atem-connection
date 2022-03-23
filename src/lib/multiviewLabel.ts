@@ -5,7 +5,8 @@ import { getVideoModeInfo } from './atemUtil'
 
 /**
  * Colour lookup table for converting 8bit grey to the atem encoding
- * Note: not every colour is available, so values have been extrapolated to fill in the gaps
+ * Note: not every colour is available, so values have been extrapolated to fill in the gaps.
+ * Also the background colour has been filled in for lower values, to ensure that the text doesnt accidentally remove the background
  */
 const colourLookupTable = [
 	14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
@@ -20,6 +21,14 @@ const colourLookupTable = [
 	79, 121, 113, 176, 176, 177, 211, 75, 75, 120, 82, 82, 93, 98, 122, 122, 53, 115, 115, 45, 55, 34, 34,
 ]
 
+function fillResolutionSpec(spec: Omit<ResolutionSpec, 'cornerRight'>): ResolutionSpec {
+	return {
+		...spec,
+		cornerRight: spec.corner.map((buf) => {
+			return Buffer.from(buf).reverse()
+		}),
+	}
+}
 interface ResolutionSpec {
 	width: number
 	height: number
@@ -27,35 +36,72 @@ interface ResolutionSpec {
 	yPadBottom: number
 	yPadTop: number
 	fontHeight: number
+
+	borderColour: number
+	corner: Buffer[]
+	cornerRight: Buffer[]
 }
-const Res4K: ResolutionSpec = {
+const Res4K = fillResolutionSpec({
 	width: 640,
 	height: 100,
 	xPad: 10,
 	yPadBottom: 8,
 	yPadTop: 4,
 	fontHeight: 46,
-}
-const Res1080: ResolutionSpec = {
+
+	borderColour: 0x05,
+	corner: [
+		Buffer.from([0, 0, 0, 0, 0, 0, 223, 2, 162, 220, 20]),
+		Buffer.from([0, 0, 0, 0, 223, 195, 20, 5, 5, 5, 5]),
+		Buffer.from([0, 0, 0, 7, 3, 5, 5, 110, 141, 124, 29]),
+		Buffer.from([0, 0, 7, 220, 5, 200, 97, 14, 14, 14, 14]),
+		Buffer.from([0, 223, 3, 5, 209, 29, 14, 14, 14, 14, 14]),
+		Buffer.from([0, 219, 5, 200, 29, 14, 14, 14, 14, 14, 14]),
+		Buffer.from([223, 20, 5, 97, 14, 14, 14, 14, 14, 14, 14]),
+		Buffer.from([2, 5, 110, 14, 14, 14, 14, 14, 14, 14, 14]),
+		Buffer.from([162, 5, 141, 14, 14, 14, 14, 14, 14, 14, 14]),
+		Buffer.from([220, 5, 124, 14, 14, 14, 14, 14, 14, 14, 14]),
+		Buffer.from([20, 5, 29, 14, 14, 14, 14, 14, 14, 14, 14]),
+	],
+})
+const Res1080 = fillResolutionSpec({
 	width: 320,
 	height: 50,
 	xPad: 10,
 	yPadBottom: 8,
 	yPadTop: 4,
 	fontHeight: 26,
-}
-const Res720: ResolutionSpec = {
+
+	borderColour: 0x05,
+	corner: [
+		Buffer.from([0, 0, 1, 229, 230, 20]),
+		Buffer.from([0, 7, 158, 5, 5, 5]),
+		Buffer.from([1, 158, 5, 23, 37, 101]),
+		Buffer.from([229, 5, 23, 29, 14, 14]),
+		Buffer.from([230, 5, 37, 14, 14, 14]),
+		Buffer.from([20, 5, 101, 14, 14, 14]),
+	],
+})
+const Res720 = fillResolutionSpec({
 	width: 320, // TODO - is this correct for all models?
 	height: 40,
 	xPad: 10,
 	yPadBottom: 8,
 	yPadTop: 4,
-	fontHeight: 16,
-}
+	fontHeight: 17,
+
+	borderColour: 170,
+	corner: [
+		Buffer.from([0, 0, 160, 169]),
+		Buffer.from([0, 165, 165, 169]),
+		Buffer.from([160, 165, 56, 14]),
+		Buffer.from([169, 169, 14, 14]),
+	],
+})
 
 // const transparentColour = 0 // encoded value
 const bgColour = colourLookupTable[0] // 'background' value
-const borderColour = 0x05 // encoded value
+// const borderColour = 0x05 // encoded value
 
 function calculateWidthAndTrimText(
 	face: FontFace,
@@ -113,13 +159,31 @@ function drawTextToBuffer(
 		const isBorder = y == 0 || y == 1 || y === boundaryHeight - 1 || y === boundaryHeight - 2
 
 		if (isBorder) {
-			drawHorizontalLine(y, 0, boundaryWidth, borderColour)
+			drawHorizontalLine(y, 0, boundaryWidth, spec.borderColour)
 		} else {
-			drawHorizontalLine(y, 0, 2, borderColour)
-			drawHorizontalLine(y, boundaryWidth - 2, 2, borderColour)
+			drawHorizontalLine(y, 0, 2, spec.borderColour)
+			drawHorizontalLine(y, boundaryWidth - 2, 2, spec.borderColour)
 
 			drawHorizontalLine(y, 2, boundaryWidth - 4, bgColour)
 		}
+	}
+
+	// Patch on the rounded corners
+	for (let i = 0; i < spec.corner.length; i++) {
+		const cornerBufferLeft = spec.corner[i]
+		const cornerBufferRight = spec.cornerRight[i]
+
+		const offsetTopLeft = (boundaryYOffset + i) * bufferWidth + boundaryXOffset
+		cornerBufferLeft.copy(buffer, offsetTopLeft)
+
+		const offsetBottomLeft = (boundaryYOffset + boundaryHeight - i - 1) * bufferWidth + boundaryXOffset
+		cornerBufferLeft.copy(buffer, offsetBottomLeft)
+
+		const offsetTopRight = offsetTopLeft + boundaryWidth - cornerBufferRight.length
+		cornerBufferRight.copy(buffer, offsetTopRight)
+
+		const offsetBottomRight = offsetBottomLeft + boundaryWidth - cornerBufferRight.length
+		cornerBufferRight.copy(buffer, offsetBottomRight)
 	}
 
 	const maxLeft = boundaryXOffset + spec.width + spec.xPad
