@@ -39,11 +39,9 @@ import {
 } from './state/fairlight'
 import { FairlightDynamicsResetProps } from './commands/Fairlight/common'
 import { MultiViewerPropertiesState } from './state/settings'
-import { calculateGenerateMultiviewerLabelProps, generateMultiviewerLabel } from './lib/multiviewLabel'
-import { FontFace, NewMemoryFace } from 'freetype2'
+import { calculateGenerateMultiviewerLabelProps, generateMultiviewerLabel, loadFont } from './lib/multiviewLabel'
+import { FontFace } from 'freetype2'
 import PLazy = require('p-lazy')
-import { readFile } from 'fs/promises'
-import path = require('path')
 
 export interface AtemOptions {
 	address?: string
@@ -246,10 +244,25 @@ export class Atem extends BasicAtem {
 	constructor(options?: AtemOptions) {
 		super(options)
 
-		this.#multiviewerFontFace = PLazy.from(async () => {
-			const fontFile = await readFile(path.join(__dirname, '../assets/roboto/Roboto-Regular.ttf'))
-			return NewMemoryFace(fontFile)
-		})
+		this.#multiviewerFontFace = PLazy.from(async () => loadFont())
+	}
+
+	/**
+	 * Set the font to use for the multiviewer, or reset to default
+	 */
+	public async setMultiviewerFontFace(font: FontFace | string | null): Promise<void> {
+		let loadedFont: FontFace
+		if (font) {
+			if (typeof font === 'string') {
+				loadedFont = await loadFont(font)
+			} else {
+				loadedFont = font
+			}
+		} else {
+			loadedFont = await loadFont()
+		}
+
+		this.#multiviewerFontFace = Promise.resolve(loadedFont)
 	}
 
 	public async changeProgramInput(input: number, me = 0): Promise<void> {

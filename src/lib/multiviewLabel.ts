@@ -1,7 +1,9 @@
-import { FontFace } from 'freetype2'
+import { FontFace, NewMemoryFace } from 'freetype2'
 import { VideoFormat, VideoMode } from '../enums'
 import { AtemState } from '../state'
 import { getVideoModeInfo } from './atemUtil'
+import { readFile } from 'fs/promises'
+import path = require('path')
 
 /**
  * Colour lookup table for converting 8bit grey to the atem encoding
@@ -148,7 +150,7 @@ function drawTextToBuffer(
 	const bufferXOffset = Math.floor((bufferWidth - spec.width) / 2)
 
 	// Fill background of boundary, and a 2px border
-	const boundaryYOffset = Math.max(Math.floor((spec.height - boundaryHeight) / 2), 0) + bufferYOffset
+	const boundaryYOffset = Math.max(Math.floor((spec.height - boundaryHeight) / 2.5), 0) + bufferYOffset
 	const boundaryXOffset = Math.max(Math.floor((spec.width - boundaryWidth) / 2), 0) + bufferXOffset
 	function drawHorizontalLine(y: number, xOffset: number, length: number, colour: number): void {
 		const offset = (boundaryYOffset + y) * bufferWidth + boundaryXOffset + xOffset
@@ -316,4 +318,11 @@ export function calculateGenerateMultiviewerLabelProps(
 	}
 
 	return null
+}
+
+export async function loadFont(fontPath?: string): Promise<FontFace> {
+	if (!fontPath) fontPath = path.join(__dirname, '../../assets/roboto/Roboto-Regular.ttf')
+
+	const fontFile = await readFile(fontPath)
+	return NewMemoryFace(fontFile)
 }
