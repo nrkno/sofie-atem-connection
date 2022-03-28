@@ -46,8 +46,8 @@ interface ResolutionSpec {
 const Res4K = fillResolutionSpec({
 	width: 640,
 	height: 100,
-	xPad: 10,
-	yPadBottom: 8,
+	xPad: 16,
+	yPadBottom: 16,
 	yPadTop: 4,
 	fontHeight: 46,
 
