@@ -136,17 +136,19 @@ function calculateWidthAndTrimText(
 
 function drawTextToBuffer(
 	face: FontFace,
+	fontScale: number,
 	buffer: Buffer,
 	spec: ResolutionSpec,
 	rawText: string,
 	bufferYOffset: number,
 	bufferWidth: number
 ): void {
-	face.setPixelSizes(spec.fontHeight, spec.fontHeight)
+	const fontHeight = spec.fontHeight * fontScale
+	face.setPixelSizes(fontHeight, fontHeight)
 
 	const { width: textWidth, str: newStr } = calculateWidthAndTrimText(face, rawText, spec.width - spec.xPad * 2)
 	const boundaryWidth = Math.floor(textWidth + spec.xPad * 2)
-	const boundaryHeight = Math.floor(spec.fontHeight + spec.yPadTop + spec.yPadBottom)
+	const boundaryHeight = Math.floor(fontHeight + spec.yPadTop + spec.yPadBottom)
 	const bufferXOffset = Math.floor((bufferWidth - spec.width) / 2)
 
 	// Fill background of boundary, and a 2px border
@@ -190,7 +192,7 @@ function drawTextToBuffer(
 
 	const maxLeft = boundaryXOffset + spec.width + spec.xPad
 	let charLeft = boundaryXOffset + spec.xPad
-	const textTop = boundaryYOffset + spec.fontHeight + spec.yPadTop
+	const textTop = boundaryYOffset + fontHeight + spec.yPadTop
 
 	// Draw text characters
 	for (let i = 0; i < newStr.length; i++) {
@@ -239,7 +241,12 @@ export interface GenerateMultiviewerLabelProps {
  * @param props Specify which resolutions to generate for
  * @returns Buffer
  */
-export function generateMultiviewerLabel(face: FontFace, str: string, props: GenerateMultiviewerLabelProps): Buffer {
+export function generateMultiviewerLabel(
+	face: FontFace,
+	fontScale: number,
+	str: string,
+	props: GenerateMultiviewerLabelProps
+): Buffer {
 	// Calculate the sizes
 	let width: number | undefined
 	let height = 0
@@ -264,7 +271,7 @@ export function generateMultiviewerLabel(face: FontFace, str: string, props: Gen
 
 	let yOffset = 0
 	const drawRes = (spec: ResolutionSpec): void => {
-		drawTextToBuffer(face, buffer, spec, str, yOffset, width2)
+		drawTextToBuffer(face, fontScale, buffer, spec, str, yOffset, width2)
 		yOffset += spec.height
 	}
 
@@ -325,8 +332,7 @@ export function calculateGenerateMultiviewerLabelProps(
 }
 
 export async function loadFont(fontPath?: string): Promise<FontFace> {
-	// if (!fontPath) fontPath = path.join(__dirname, '../../assets/roboto/Roboto-Regular.ttf')
-	if (!fontPath) fontPath = path.join(__dirname, '../../assets/Helvetica.ttf')
+	if (!fontPath) fontPath = path.join(__dirname, '../../assets/roboto/Roboto-Regular.ttf')
 
 	const fontFile = await readFile(fontPath)
 	return NewMemoryFace(fontFile)

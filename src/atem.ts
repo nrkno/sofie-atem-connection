@@ -240,11 +240,13 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 
 export class Atem extends BasicAtem {
 	#multiviewerFontFace: Promise<FontFace>
+	#multiviewerFontScale: number
 
 	constructor(options?: AtemOptions) {
 		super(options)
 
 		this.#multiviewerFontFace = PLazy.from(async () => loadFont())
+		this.#multiviewerFontScale = 1.0
 	}
 
 	/**
@@ -263,6 +265,17 @@ export class Atem extends BasicAtem {
 		}
 
 		this.#multiviewerFontFace = Promise.resolve(loadedFont)
+	}
+	/**
+	 * Set the scale factor for the multiviewer text. Default is 1
+	 */
+	public setMultiviewerFontScale(scale: number | null): void {
+		if (typeof scale === 'number') {
+			if (scale <= 0) throw new Error('Scale must be greater than 0')
+			this.#multiviewerFontScale = scale
+		} else if (scale === null) {
+			this.#multiviewerFontScale = 1.0
+		}
 	}
 
 	public async changeProgramInput(input: number, me = 0): Promise<void> {
@@ -1019,7 +1032,7 @@ export class Atem extends BasicAtem {
 
 		const fontFace = await this.#multiviewerFontFace
 
-		const buffer = generateMultiviewerLabel(fontFace, text, props)
+		const buffer = generateMultiviewerLabel(fontFace, this.#multiviewerFontScale, text, props)
 		// Note: we should probably validate the buffer looks like it doesn't contain crashy data, but as we generate we can trust it
 		return this.dataTransferManager.uploadMultiViewerLabel(inputId, buffer)
 	}
