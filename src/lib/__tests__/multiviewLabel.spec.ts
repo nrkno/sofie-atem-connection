@@ -116,7 +116,7 @@ describe('Multiview Label', () => {
 			UHD8K: false,
 		})
 
-		const buffer = generateMultiviewerLabel(font, '', result!)
+		const buffer = generateMultiviewerLabel(font, 1, '', result!)
 		expect(buffer.length).toBe(320 * 90)
 	})
 
@@ -292,7 +292,7 @@ describe('Multiview Label', () => {
 			UHD8K: false,
 		})
 
-		const buffer = generateMultiviewerLabel(font, '', result!)
+		const buffer = generateMultiviewerLabel(font, 1, '', result!)
 		expect(buffer.length).toBe(320 * 90)
 	})
 
@@ -462,7 +462,7 @@ describe('Multiview Label', () => {
 			UHD8K: false,
 		})
 
-		const buffer = generateMultiviewerLabel(font, '', result!)
+		const buffer = generateMultiviewerLabel(font, 1, '', result!)
 		expect(buffer.length).toBe(640 * 190)
 	})
 
@@ -670,7 +670,7 @@ describe('Multiview Label', () => {
 			UHD8K: false,
 		})
 
-		const buffer = generateMultiviewerLabel(font, '', result!)
+		const buffer = generateMultiviewerLabel(font, 1, '', result!)
 		expect(buffer.length).toBe(640 * 190)
 	})
 
