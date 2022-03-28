@@ -70,9 +70,9 @@ const Res1080 = fillResolutionSpec({
 	width: 320,
 	height: 50,
 	xPad: 10,
-	yPadBottom: 8,
+	yPadBottom: 10,
 	yPadTop: 4,
-	fontHeight: 26,
+	fontHeight: 24,
 
 	borderColour: 0x05,
 	corner: [
@@ -87,9 +87,9 @@ const Res1080 = fillResolutionSpec({
 const Res720 = fillResolutionSpec({
 	width: 320, // TODO - is this correct for all models?
 	height: 40,
-	xPad: 10,
-	yPadBottom: 8,
-	yPadTop: 4,
+	xPad: 6,
+	yPadBottom: 6,
+	yPadTop: 2,
 	fontHeight: 17,
 
 	borderColour: 170,
@@ -145,8 +145,8 @@ function drawTextToBuffer(
 	face.setPixelSizes(spec.fontHeight, spec.fontHeight)
 
 	const { width: textWidth, str: newStr } = calculateWidthAndTrimText(face, rawText, spec.width - spec.xPad * 2)
-	const boundaryWidth = textWidth + spec.xPad * 2
-	const boundaryHeight = spec.fontHeight + spec.yPadTop + spec.yPadBottom
+	const boundaryWidth = Math.floor(textWidth + spec.xPad * 2)
+	const boundaryHeight = Math.floor(spec.fontHeight + spec.yPadTop + spec.yPadBottom)
 	const bufferXOffset = Math.floor((bufferWidth - spec.width) / 2)
 
 	// Fill background of boundary, and a 2px border
@@ -194,6 +194,8 @@ function drawTextToBuffer(
 
 	// Draw text characters
 	for (let i = 0; i < newStr.length; i++) {
+		face.setTransform(undefined, [charLeft * 64, 0])
+
 		const ch = face.loadChar(newStr.charCodeAt(i), { render: true })
 
 		const endCharLeft = charLeft + ch.metrics.horiAdvance / 64
@@ -202,16 +204,18 @@ function drawTextToBuffer(
 			break
 		}
 
-		const charTop = textTop - ch.metrics.horiBearingY / 64
+		const charTop = Math.floor(textTop - ch.metrics.horiBearingY / 64)
 
-		if (ch.bitmap) {
+		if (ch.bitmap && typeof ch.bitmapLeft === 'number') {
+			const bitmapLeft = Math.floor(ch.bitmapLeft)
+
 			for (let y = 0; y < ch.bitmap.height; y++) {
 				for (let x = 0; x < ch.bitmap.width; x++) {
 					const rawCol = ch.bitmap.buffer[x + y * ch.bitmap.width]
 					const myCol = colourLookupTable[rawCol]
 					if (myCol !== undefined) {
 						// If we have a colour, update the image
-						buffer[x + charLeft + (y + charTop) * bufferWidth] = myCol
+						buffer[x + bitmapLeft + (y + charTop) * bufferWidth] = myCol
 					}
 				}
 			}
@@ -321,7 +325,8 @@ export function calculateGenerateMultiviewerLabelProps(
 }
 
 export async function loadFont(fontPath?: string): Promise<FontFace> {
-	if (!fontPath) fontPath = path.join(__dirname, '../../assets/roboto/Roboto-Regular.ttf')
+	// if (!fontPath) fontPath = path.join(__dirname, '../../assets/roboto/Roboto-Regular.ttf')
+	if (!fontPath) fontPath = path.join(__dirname, '../../assets/Helvetica.ttf')
 
 	const fontFile = await readFile(fontPath)
 	return NewMemoryFace(fontFile)
