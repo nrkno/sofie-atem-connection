@@ -31,16 +31,28 @@ function fillResolutionSpec(spec: Omit<ResolutionSpec, 'cornerRight'>): Resoluti
 		}),
 	}
 }
+/**
+ * Properties about how to generate the label for each resolution
+ */
 interface ResolutionSpec {
+	/** Max width of the generated image */
 	width: number
+	/** Max height of the generated image */
 	height: number
+	/** Horizontal padding inside the border */
 	xPad: number
+	/** Bottom padding inside the border */
 	yPadBottom: number
+	/** Top padding inside the border */
 	yPadTop: number
+	/** Base font height to use */
 	fontHeight: number
 
+	/** Color to draw the straight border edges in */
 	borderColour: number
+	/** Array of buffer fragments for the top left corner */
 	corner: Buffer[]
+	/** Array of buffer fragments for the top right corner */
 	cornerRight: Buffer[]
 }
 const Res4K = fillResolutionSpec({
@@ -283,6 +295,11 @@ export function generateMultiviewerLabel(
 	return buffer
 }
 
+/**
+ * Determine which resolutions should be included in the multiview label drawing
+ * @param state Current device state
+ * @returns Properties to draw with, or null if they could not be determined
+ */
 export function calculateGenerateMultiviewerLabelProps(
 	state: Readonly<Pick<AtemState, 'info'>> | null
 ): GenerateMultiviewerLabelProps | null {
@@ -331,6 +348,10 @@ export function calculateGenerateMultiviewerLabelProps(
 	return null
 }
 
+/**
+ * Load a font file to freetype2
+ * @param fontPath Path to file
+ */
 export async function loadFont(fontPath?: string): Promise<FontFace> {
 	if (!fontPath) fontPath = path.join(__dirname, '../../assets/roboto/Roboto-Regular.ttf')
 

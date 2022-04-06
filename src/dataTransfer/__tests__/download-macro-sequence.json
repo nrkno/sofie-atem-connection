@@ -1,0 +1,37 @@
+[
+	{
+		"name": "DataTransferDownloadRequestCommand",
+		"properties": {
+			"transferId": 0,
+			"transferStoreId": 65535,
+			"transferIndex": 4,
+			"transferType": 3
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 24
+			}
+		},
+		"direction": "recv"
+	},
+	{
+		"name": "DataTransferAckCommand",
+		"properties": {
+			"transferId": 0,
+			"transferIndex": 4
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferCompleteCommand",
+		"properties": {
+			"transferId": 0
+		},
+		"direction": "recv"
+	}
+]

@@ -1,0 +1,48 @@
+[
+	{
+		"name": "DataTransferUploadRequestCommand",
+		"properties": {
+			"transferId": 0,
+			"transferStoreId": 65535,
+			"transferIndex": 4,
+			"mode": 768,
+			"size": 400
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferUploadContinueCommand",
+		"properties": {
+			"transferId": 0,
+			"chunkSize": 1396,
+			"chunkCount": 180
+		},
+		"direction": "recv"
+	},
+	{
+		"name": "DataTransferFileDescriptionCommand",
+		"properties": {
+			"name": "test macro",
+			"fileHash": "",
+			"transferId": 0
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferDataCommand",
+		"properties": {
+			"transferId": 0,
+			"body": {
+				"bufferLength": 400
+			}
+		},
+		"direction": "send"
+	},
+	{
+		"name": "DataTransferCompleteCommand",
+		"properties": {
+			"transferId": 0
+		},
+		"direction": "recv"
+	}
+]

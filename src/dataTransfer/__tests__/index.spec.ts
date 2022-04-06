@@ -9,7 +9,11 @@ function specToCommandClass(spec: any): Commands.IDeserializedCommand | undefine
 		if (spec.name === commandName) {
 			const cmdCons = (DataTransferCommands as any)[commandName]
 			const cmd = new cmdCons(spec.properties)
-			cmd.properties = spec.properties
+			if ('_properties' in cmd) {
+				cmd._properties = spec.properties
+			} else {
+				cmd.properties = spec.properties
+			}
 			return cmd
 		}
 	}
@@ -102,6 +106,30 @@ test('multiviewer label', async () => {
 
 	const manager = runDataTransferTest(spec)
 	await manager.uploadMultiViewerLabel(11001, newBuffer)
+
+	await new Promise((resolve) => setTimeout(resolve, 200))
+
+	// Nothing should be left by this point
+	expect(spec).toHaveLength(0)
+}, 10000)
+
+test('macro download', async () => {
+	const spec: any[] = JSON.parse(readFileSync(path.join(__dirname, './download-macro-sequence.json')).toString())
+
+	const manager = runDataTransferTest(spec)
+	await manager.downloadMacro(4)
+
+	await new Promise((resolve) => setTimeout(resolve, 200))
+
+	// Nothing should be left by this point
+	expect(spec).toHaveLength(0)
+}, 10000)
+
+test('macro upload', async () => {
+	const spec: any[] = JSON.parse(readFileSync(path.join(__dirname, './upload-macro-sequence.json')).toString())
+
+	const manager = runDataTransferTest(spec)
+	await manager.uploadMacro(4, Buffer.alloc(400), 'test macro')
 
 	await new Promise((resolve) => setTimeout(resolve, 200))
 

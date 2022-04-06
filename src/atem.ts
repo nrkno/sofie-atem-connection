@@ -463,6 +463,13 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	public async downloadMacro(index: number): Promise<Buffer> {
+		return this.dataTransferManager.downloadMacro(index)
+	}
+	public async uploadMacro(index: number, name: string, data: Buffer): Promise<void> {
+		return this.dataTransferManager.uploadMacro(index, data, name)
+	}
+
 	public async setMultiViewerWindowSource(source: number, mv = 0, window = 0): Promise<void> {
 		const command = new Commands.MultiViewerSourceCommand(mv, window, source)
 		return this.sendCommand(command)

@@ -6,7 +6,8 @@ import { DataTransferUploadClipFrame, DataTransferUploadClip } from './dataTrans
 import DataTransferUploadAudio from './dataTransferUploadAudio'
 import { IDeserializedCommand, ISerializableCommand } from '../commands/CommandBase'
 import DataTransferUploadMultiViewerLabel from './dataTransferUploadMultiViewerLabel'
-import { DataDownloadMacro, DataUploadMacro } from './dataTransferMacro'
+import { DataTransferDownloadMacro } from './dataTransferDownloadMacro'
+import { DataTransferUploadMacro } from './dataTransferUploadMacro'
 import { LockObtainedCommand, LockStateUpdateCommand } from '../commands/DataTransfer'
 import debug0 from 'debug'
 
@@ -45,7 +46,7 @@ export class DataTransferManager {
 	}
 
 	private get allLocks() {
-		return [this.#stillsLock, ...this.#clipLocks.values(), this.#labelsLock]
+		return [this.#stillsLock, ...this.#clipLocks.values(), this.#labelsLock, this.#macroLock]
 	}
 
 	/**
@@ -69,9 +70,9 @@ export class DataTransferManager {
 					const commandsToSend = lock.popQueuedCommands(MAX_PACKETS_TO_SEND_PER_TICK) // Take some, it is unlikely that multiple will run at once
 					if (commandsToSend && commandsToSend.length > 0) {
 						// debug(`Sending ${commandsToSend.length} commands `)
-						Promise.all(this.#rawSendCommands(commandsToSend)).catch(() => {
+						Promise.all(this.#rawSendCommands(commandsToSend)).catch((e) => {
 							// Failed to send/queue something, so abort it
-							lock.tryAbortTransfer(new Error('Command send failed'))
+							lock.tryAbortTransfer(new Error(`Command send failed: ${e}`))
 						})
 					}
 				}
@@ -194,13 +195,13 @@ export class DataTransferManager {
 	}
 
 	public async downloadMacro(index: number): Promise<Buffer> {
-		const transfer = new DataDownloadMacro(index)
+		const transfer = new DataTransferDownloadMacro(index)
 
 		return this.#macroLock.enqueue(transfer)
 	}
 
 	public async uploadMacro(index: number, data: Buffer, name: string): Promise<void> {
-		const transfer = new DataUploadMacro(index, data, name)
+		const transfer = new DataTransferUploadMacro(index, data, name)
 
 		return this.#macroLock.enqueue(transfer)
 	}

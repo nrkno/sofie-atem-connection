@@ -4,16 +4,13 @@ import {
 	DataTransferDataCommand,
 	DataTransferDownloadRequestCommand,
 	DataTransferErrorCommand,
-	DataTransferFileDescriptionCommand,
-	DataTransferUploadRequestCommand,
 	ErrorCode,
 } from '../commands/DataTransfer'
-import { IDeserializedCommand, ISerializableCommand } from '../commands/CommandBase'
+import { IDeserializedCommand } from '../commands/CommandBase'
 import { DataTransfer, ProgressTransferResult, DataTransferState } from './dataTransfer'
-import { DataTransferUploadBuffer } from './dataTransferUploadBuffer'
 
 // TODO - this should be reimplemented on top of a generic DataTransferDownloadBuffer class
-export class DataDownloadMacro extends DataTransfer<Buffer> {
+export class DataTransferDownloadMacro extends DataTransfer<Buffer> {
 	#data = Buffer.alloc(0)
 
 	constructor(public readonly macroIndex: number) {
@@ -83,35 +80,5 @@ export class DataDownloadMacro extends DataTransfer<Buffer> {
 		}
 
 		return { newState: oldState, commands: [] }
-	}
-}
-
-export class DataUploadMacro extends DataTransferUploadBuffer {
-	constructor(public readonly macroIndex: number, public readonly data: Buffer, private name: string) {
-		super(data)
-	}
-
-	public async startTransfer(transferId: number): Promise<ProgressTransferResult> {
-		const command = new DataTransferUploadRequestCommand({
-			transferId: transferId,
-			transferStoreId: 0xffff,
-			transferIndex: this.macroIndex,
-			size: this.data.length,
-			mode: 768,
-		})
-
-		return {
-			newState: DataTransferState.Ready,
-			commands: [command],
-		}
-	}
-
-	protected generateDescriptionCommand(transferId: number): ISerializableCommand {
-		return new DataTransferFileDescriptionCommand({
-			name: this.name,
-			description: undefined,
-			fileHash: '',
-			transferId: transferId,
-		})
 	}
 }
