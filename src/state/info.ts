@@ -1,4 +1,4 @@
-import { Model, ProtocolVersion } from '../enums'
+import { Model, ProtocolVersion, VideoMode } from '../enums'
 
 export interface AtemCapabilites {
 	readonly mixEffects: number
@@ -73,4 +73,14 @@ export interface DeviceInfo {
 	mediaPool?: MediaPoolInfo
 	multiviewer?: MultiviewerInfo
 	lastTime?: TimeInfo
+	supportedVideoModes?: Readonly<Array<SupportedVideoMode>>
+}
+
+export interface SupportedVideoMode {
+	mode: VideoMode
+
+	requiresReconfig: boolean
+
+	multiviewerModes: Array<VideoMode>
+	downConvertModes: Array<VideoMode>
 }

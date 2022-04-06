@@ -27,7 +27,6 @@ import {
 	ClassicAudioHeadphoneOutputChannel,
 } from './state/audio'
 import { listVisibleInputs } from './lib/tally'
-import DataTransfer from './dataTransfer/dataTransfer'
 import { RecordingStateProperties } from './state/recording'
 import { OmitReadonly } from './lib/types'
 import { StreamingServiceProperties } from './state/streaming'
@@ -40,6 +39,9 @@ import {
 } from './state/fairlight'
 import { FairlightDynamicsResetProps } from './commands/Fairlight/common'
 import { MultiViewerPropertiesState } from './state/settings'
+import { calculateGenerateMultiviewerLabelProps, generateMultiviewerLabel, loadFont } from './lib/multiviewLabel'
+import { FontFace } from 'freetype2'
+import PLazy = require('p-lazy')
 
 export interface AtemOptions {
 	address?: string
@@ -92,7 +94,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 			disableMultithreaded: (options || {}).disableMultithreaded || false,
 			childProcessTimeout: (options || {}).childProcessTimeout || 600,
 		})
-		this.dataTransferManager = new DT.DataTransferManager()
+		this.dataTransferManager = new DT.DataTransferManager(this.sendCommands.bind(this))
 
 		this.socket.on('commandsReceived', (commands) => {
 			this.emit('receivedCommands', commands)
@@ -112,7 +114,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 	}
 
 	private _onInitComplete(): void {
-		this.dataTransferManager.startCommandSending((cmds) => this.sendCommands(cmds))
+		this.dataTransferManager.startCommandSending()
 		this.emit('connected')
 	}
 
@@ -201,8 +203,9 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 			}
 
 			for (const commandName in DataTransferCommands) {
+				// TODO - this is fragile
 				if (command.constructor.name === commandName) {
-					this.dataTransferManager.queueCommand(command)
+					this.dataTransferManager.queueHandleCommand(command)
 				}
 			}
 		}
@@ -236,8 +239,43 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 }
 
 export class Atem extends BasicAtem {
+	#multiviewerFontFace: Promise<FontFace>
+	#multiviewerFontScale: number
+
 	constructor(options?: AtemOptions) {
 		super(options)
+
+		this.#multiviewerFontFace = PLazy.from(async () => loadFont())
+		this.#multiviewerFontScale = 1.0
+	}
+
+	/**
+	 * Set the font to use for the multiviewer, or reset to default
+	 */
+	public async setMultiviewerFontFace(font: FontFace | string | null): Promise<void> {
+		let loadedFont: FontFace
+		if (font) {
+			if (typeof font === 'string') {
+				loadedFont = await loadFont(font)
+			} else {
+				loadedFont = font
+			}
+		} else {
+			loadedFont = await loadFont()
+		}
+
+		this.#multiviewerFontFace = Promise.resolve(loadedFont)
+	}
+	/**
+	 * Set the scale factor for the multiviewer text. Default is 1
+	 */
+	public setMultiviewerFontScale(scale: number | null): void {
+		if (typeof scale === 'number') {
+			if (scale <= 0) throw new Error('Scale must be greater than 0')
+			this.#multiviewerFontScale = scale
+		} else if (scale === null) {
+			this.#multiviewerFontScale = 1.0
+		}
 	}
 
 	public async changeProgramInput(input: number, me = 0): Promise<void> {
@@ -423,6 +461,13 @@ export class Atem extends BasicAtem {
 		const command = new Commands.MacroRunStatusCommand()
 		command.updateProps({ loop })
 		return this.sendCommand(command)
+	}
+
+	public async downloadMacro(index: number): Promise<Buffer> {
+		return this.dataTransferManager.downloadMacro(index)
+	}
+	public async uploadMacro(index: number, name: string, data: Buffer): Promise<void> {
+		return this.dataTransferManager.uploadMacro(index, data, name)
 	}
 
 	public async setMultiViewerWindowSource(source: number, mv = 0, window = 0): Promise<void> {
@@ -666,7 +711,7 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public async uploadStill(index: number, data: Buffer, name: string, description: string): Promise<DataTransfer> {
+	public async uploadStill(index: number, data: Buffer, name: string, description: string): Promise<void> {
 		if (!this.state) return Promise.reject()
 		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
 		if (!resolution) return Promise.reject()
@@ -682,7 +727,7 @@ export class Atem extends BasicAtem {
 		index: number,
 		frames: Iterable<Buffer> | AsyncIterable<Buffer>,
 		name: string
-	): Promise<DataTransfer> {
+	): Promise<void> {
 		if (!this.state) return Promise.reject()
 		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
 		if (!resolution) return Promise.reject()
@@ -694,7 +739,7 @@ export class Atem extends BasicAtem {
 		return this.dataTransferManager.uploadClip(index, provideFrame(), name)
 	}
 
-	public async uploadAudio(index: number, data: Buffer, name: string): Promise<DataTransfer> {
+	public async uploadAudio(index: number, data: Buffer, name: string): Promise<void> {
 		return this.dataTransferManager.uploadAudio(index, Util.convertWAVToRaw(data, this.state?.info?.model), name)
 	}
 
@@ -962,5 +1007,40 @@ export class Atem extends BasicAtem {
 	public async setMediaPoolSettings(props: Commands.MediaPoolProps): Promise<void> {
 		const command = new Commands.MediaPoolSettingsSetCommand(props.maxFrames)
 		return this.sendCommand(command)
+	}
+
+	/**
+	 * Write a custom multiviewer label buffer
+	 * @param inputId The input id
+	 * @param buffer Label buffer
+	 * @returns Promise that resolves once upload is complete
+	 */
+	public async writeMultiviewerLabel(inputId: number, buffer: Buffer): Promise<void> {
+		// Verify the buffer doesnt contain data that is 'out of bounds' and will crash the atem
+		const badValues = new Set([255, 254])
+		for (const val of buffer) {
+			if (badValues.has(val)) {
+				throw new Error(`Buffer contains invalid value ${val}`)
+			}
+		}
+
+		return this.dataTransferManager.uploadMultiViewerLabel(inputId, buffer)
+	}
+
+	/**
+	 * Generate and upload a multiviewer label
+	 * @param inputId The input id
+	 * @param text Label text
+	 * @returns Promise that resolves once upload is complete
+	 */
+	public async drawMultiviewerLabel(inputId: number, text: string): Promise<void> {
+		const props = calculateGenerateMultiviewerLabelProps(this.state ?? null)
+		if (!props) throw new Error(`Failed to determine render properties`)
+
+		const fontFace = await this.#multiviewerFontFace
+
+		const buffer = generateMultiviewerLabel(fontFace, this.#multiviewerFontScale, text, props)
+		// Note: we should probably validate the buffer looks like it doesn't contain crashy data, but as we generate we can trust it
+		return this.dataTransferManager.uploadMultiViewerLabel(inputId, buffer)
 	}
 }

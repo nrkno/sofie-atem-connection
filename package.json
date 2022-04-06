@@ -27,7 +27,7 @@
   "scripts": {
     "build": "rimraf dist && yarn build:main",
     "build:main": "tsc -p tsconfig.build.json",
-    "lint:raw": "eslint --ext .ts --ext .js --ext .tsx --ext .jsx --ignore-pattern dist",
+    "lint:raw": "eslint --ext .ts --ext .js --ext .tsx --ext .jsx ",
     "lint": "yarn lint:raw .",
     "lint-fix": "yarn lint --fix",
     "unit": "jest --forceExit",
@@ -50,6 +50,7 @@
   },
   "files": [
     "/dist",
+    "/assets",
     "/CHANGELOG.md",
     "/README.md",
     "/LICENSE"
@@ -57,6 +58,7 @@
   "devDependencies": {
     "@sinonjs/fake-timers": "^7.1.2",
     "@sofie-automation/code-standard-preset": "~2.0",
+    "@types/debug": "^4.1.7",
     "@types/jest": "^27.4.1",
     "@types/node": "^14.18.12",
     "@types/object-path": "^0.11.1",
@@ -80,9 +82,12 @@
     "video"
   ],
   "dependencies": {
+    "debug": "^4.3.4",
     "eventemitter3": "^4.0.7",
     "exit-hook": "^2.2.1",
+    "freetype2": "^1.0.6",
     "nanotimer": "^0.3.15",
+    "p-lazy": "^3.1.0",
     "p-queue": "^6.6.2",
     "threadedclass": "^1.0.1",
     "tslib": "^2.3.1",

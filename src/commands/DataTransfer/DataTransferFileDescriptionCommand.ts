@@ -2,8 +2,8 @@ import { BasicWritableCommand } from '../CommandBase'
 
 export interface DataTransferFileDescriptionProps {
 	transferId: number
-	name?: string
-	description?: string
+	name: string | undefined
+	description: string | undefined
 	fileHash: string
 }
 

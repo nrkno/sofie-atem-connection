@@ -198,7 +198,7 @@ describe('Commands vs LibAtem', () => {
 			.sort()
 
 		// Temporarily ignore these missing cases
-		knownNames = knownNames.filter((n) => !n.startsWith('InCm') && !n.startsWith('TlSr'))
+		knownNames = knownNames.filter((n) => !n.startsWith('InCm') && !n.startsWith('TlSr') && !n.startsWith('_VMC'))
 
 		knownNames.sort()
 

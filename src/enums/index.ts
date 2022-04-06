@@ -217,11 +217,12 @@ export enum SuperSourceArtOption {
 	Foreground,
 }
 
-export enum TransferMode {
-	NoOp,
-	Write,
-	Clear,
-	WriteAudio = 256,
+export enum VideoFormat {
+	SD,
+	HD720,
+	HD1080,
+	UHD4K,
+	UDH8K,
 }
 
 export enum VideoMode {
@@ -258,13 +259,6 @@ export enum VideoMode {
 
 	N1080p30 = 26,
 	N1080p60 = 27,
-}
-
-export enum TransferState {
-	Queued,
-	Locked,
-	Transferring,
-	Finished,
 }
 
 export enum MediaSourceType {

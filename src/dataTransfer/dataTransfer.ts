@@ -1,18 +1,22 @@
-import { Commands, Enums } from '..'
+import { IDeserializedCommand, ISerializableCommand } from '../commands/CommandBase'
 
-export default abstract class DataTransfer {
-	public state: Enums.TransferState = Enums.TransferState.Queued
-	public readonly _transferId: number
-	public readonly storeId: number
+export enum DataTransferState {
+	/** Waiting for strt */
+	Pending,
+	/** Started, waiting for first response */
+	Ready,
+	/** In progress */
+	Transferring,
+	/** Finished */
+	Finished,
+}
 
-	private readonly completionPromise: Promise<DataTransfer>
-	public resolvePromise: (value: DataTransfer | PromiseLike<DataTransfer>) => void
-	public rejectPromise: (reason?: any) => void
+export abstract class DataTransfer<T> {
+	readonly #completionPromise: Promise<T>
+	protected resolvePromise: (value: T | PromiseLike<T>) => void
+	protected rejectPromise: (reason?: any) => void
 
-	constructor(transferId: number, storeId: number) {
-		this._transferId = transferId
-		this.storeId = storeId
-
+	constructor() {
 		// Make typescript happy
 		this.resolvePromise = (): void => {
 			// Ignore
@@ -21,22 +25,39 @@ export default abstract class DataTransfer {
 			// Ignore
 		}
 
-		this.completionPromise = new Promise<DataTransfer>((resolve, reject) => {
+		this.#completionPromise = new Promise<T>((resolve, reject) => {
 			this.resolvePromise = resolve
 			this.rejectPromise = reject
 		})
 	}
 
-	get transferId(): number {
-		return this._transferId
+	/** Get the promise that will resolve upon completion/failure of the transfer */
+	get promise(): Promise<T> {
+		return this.#completionPromise
 	}
 
-	get promise(): Promise<DataTransfer> {
-		return this.completionPromise
+	/** Start the transfer */
+	public abstract startTransfer(transferId: number): Promise<ProgressTransferResult>
+
+	/** Restart the current transfer */
+	public async restartTransfer(transferId: number): Promise<ProgressTransferResult> {
+		return this.startTransfer(transferId)
 	}
 
-	public abstract start(): Promise<Commands.ISerializableCommand[]>
+	/** Handle a received command that is for the transfer */
+	public abstract handleCommand(
+		command: IDeserializedCommand,
+		oldState: DataTransferState
+	): Promise<ProgressTransferResult>
 
-	public abstract handleCommand(command: Commands.IDeserializedCommand): Promise<Commands.ISerializableCommand[]>
-	public abstract gotLock(): Promise<Commands.ISerializableCommand[]>
+	/** The current transfer has been aborted and should report failure */
+	public abort(reason: Error): void {
+		this.rejectPromise(reason)
+	}
+}
+
+export interface ProgressTransferResult {
+	newState: DataTransferState
+	commands: ISerializableCommand[]
+	newId?: number
 }
