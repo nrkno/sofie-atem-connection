@@ -73,6 +73,7 @@ export interface FairlightAudioMasterChannel {
 export interface FairlightAudioMonitorChannel {
 	gain: number
 	inputMasterGain: number
+	inputMasterMuted: boolean
 	inputTalkbackGain: number
 	inputSidetoneGain: number
 }

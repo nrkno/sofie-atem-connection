@@ -7,6 +7,7 @@ export class FairlightMixerMonitorCommand extends WritableCommand<OmitReadonly<F
 	public static MaskFlags = {
 		gain: 1 << 0,
 		inputMasterGain: 1 << 1,
+		inputMasterMuted: 1 << 2,
 		inputTalkbackGain: 1 << 3,
 		inputSidetoneGain: 1 << 7,
 	}
@@ -19,6 +20,7 @@ export class FairlightMixerMonitorCommand extends WritableCommand<OmitReadonly<F
 
 		buffer.writeInt32BE(this.properties.gain || 0, 4)
 		buffer.writeInt32BE(this.properties.inputMasterGain || 0, 8)
+		buffer.writeUInt8(this.properties.inputMasterMuted ? 0 : 1, 12)
 		buffer.writeInt32BE(this.properties.inputTalkbackGain || 0, 16)
 		buffer.writeInt32BE(this.properties.inputSidetoneGain || 0, 32)
 		return buffer
@@ -32,6 +34,7 @@ export class FairlightMixerMonitorUpdateCommand extends DeserializedCommand<Fair
 		const properties = {
 			gain: rawCommand.readInt32BE(0),
 			inputMasterGain: rawCommand.readInt32BE(4),
+			inputMasterMuted: rawCommand.readUInt8(8) === 0,
 			inputTalkbackGain: rawCommand.readInt32BE(12),
 			inputSidetoneGain: rawCommand.readInt32BE(28),
 		}
