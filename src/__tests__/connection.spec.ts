@@ -87,7 +87,7 @@ function runTest(name: string, filename: string): void {
 			// eslint-disable-next-line @typescript-eslint/no-for-in-array
 			for (const i in fileData) {
 				const buffer = Buffer.from(fileData[i].trim(), 'hex')
-				await child.onCommandsReceived(buffer, i)
+				await child.onCommandsReceived(buffer, Number(i))
 			}
 
 			expect(errors).toEqual([])
