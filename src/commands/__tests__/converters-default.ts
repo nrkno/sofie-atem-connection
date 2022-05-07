@@ -1109,6 +1109,7 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			inputMasterGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			inputSidetoneGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			inputTalkbackGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			inputMasterEnabled: (val: boolean): PropertyAliasResult => ({ val: !val, name: 'inputMasterMuted' }),
 		},
 	},
 	CFMH: {
@@ -1118,6 +1119,7 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			inputMasterGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			inputSidetoneGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			inputTalkbackGain: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
+			inputMasterEnabled: (val: boolean): PropertyAliasResult => ({ val: !val, name: 'inputMasterMuted' }),
 		},
 	},
 	MOCP: {
