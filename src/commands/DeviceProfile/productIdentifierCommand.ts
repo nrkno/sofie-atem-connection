@@ -27,6 +27,7 @@ export class ProductIdentifierCommand extends DeserializedCommand<Pick<DeviceInf
 			case Enums.Model.TwoMEBS4K:
 			case Enums.Model.Constellation:
 			case Enums.Model.Constellation8K:
+			case Enums.Model.ConstellationHD4ME:
 				state.info.power = [false, false]
 				break
 			default:

@@ -1,5 +1,5 @@
 import { FontFace, NewMemoryFace } from 'freetype2'
-import { VideoFormat, VideoMode } from '../enums'
+import { Model, VideoFormat, VideoMode } from '../enums'
 import { AtemState } from '../state'
 import { getVideoModeInfo } from './atemUtil'
 import { readFile } from 'fs/promises'
@@ -357,4 +357,8 @@ export async function loadFont(fontPath?: string): Promise<FontFace> {
 
 	const fontFile = await readFile(fontPath)
 	return NewMemoryFace(fontFile)
+}
+
+export function hasInternalMultiviewerLabelGeneration(modelId: Model): boolean {
+	return modelId >= Model.Mini
 }

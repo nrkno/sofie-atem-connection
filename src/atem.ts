@@ -39,7 +39,12 @@ import {
 } from './state/fairlight'
 import { FairlightDynamicsResetProps } from './commands/Fairlight/common'
 import { MultiViewerPropertiesState } from './state/settings'
-import { calculateGenerateMultiviewerLabelProps, generateMultiviewerLabel, loadFont } from './lib/multiviewLabel'
+import {
+	calculateGenerateMultiviewerLabelProps,
+	generateMultiviewerLabel,
+	hasInternalMultiviewerLabelGeneration,
+	loadFont,
+} from './lib/multiviewLabel'
 import { FontFace } from 'freetype2'
 import PLazy = require('p-lazy')
 
@@ -1009,6 +1014,10 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	public hasInternalMultiviewerLabelGeneration(): boolean {
+		return !!this.state && hasInternalMultiviewerLabelGeneration(this.state?.info.model)
+	}
+
 	/**
 	 * Write a custom multiviewer label buffer
 	 * @param inputId The input id
@@ -1016,6 +1025,8 @@ export class Atem extends BasicAtem {
 	 * @returns Promise that resolves once upload is complete
 	 */
 	public async writeMultiviewerLabel(inputId: number, buffer: Buffer): Promise<void> {
+		if (this.hasInternalMultiviewerLabelGeneration()) throw new Error(`ATEM doesn't support custom labels`)
+
 		// Verify the buffer doesnt contain data that is 'out of bounds' and will crash the atem
 		const badValues = new Set([255, 254])
 		for (const val of buffer) {
@@ -1034,6 +1045,8 @@ export class Atem extends BasicAtem {
 	 * @returns Promise that resolves once upload is complete
 	 */
 	public async drawMultiviewerLabel(inputId: number, text: string): Promise<void> {
+		if (this.hasInternalMultiviewerLabelGeneration()) throw new Error(`ATEM doesn't support custom labels`)
+
 		const props = calculateGenerateMultiviewerLabelProps(this.state ?? null)
 		if (!props) throw new Error(`Failed to determine render properties`)
 

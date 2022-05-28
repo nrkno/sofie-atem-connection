@@ -17,6 +17,9 @@ export enum Model {
 	MiniProISO = 0x0f,
 	MiniExtreme = 0x10,
 	MiniExtremeISO = 0x11,
+	ConstellationHD1ME = 0x12,
+	ConstellationHD2ME = 0x13,
+	ConstellationHD4ME = 0x14,
 }
 
 export enum ProtocolVersion {
