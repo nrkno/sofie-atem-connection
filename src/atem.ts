@@ -47,6 +47,8 @@ import {
 } from './lib/multiviewLabel'
 import { FontFace } from 'freetype2'
 import PLazy = require('p-lazy')
+import { TimeCommand } from './commands'
+import { TimeInfo } from './state/info'
 
 export interface AtemOptions {
 	address?: string
@@ -64,6 +66,7 @@ export type AtemEvents = {
 	disconnected: []
 	stateChanged: [AtemState, string[]]
 	receivedCommands: [IDeserializedCommand[]]
+	updatedTime: [TimeInfo]
 }
 
 interface SentCommand {
@@ -180,7 +183,9 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 
 		const state = this._state
 		for (const command of commands) {
-			if (state) {
+			if (command instanceof TimeCommand) {
+				this.emit('updatedTime', command.properties)
+			} else if (state) {
 				try {
 					const changePaths = command.applyToState(state)
 					if (!Array.isArray(changePaths)) {

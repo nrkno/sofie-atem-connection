@@ -1,4 +1,3 @@
-import { AtemState } from '../state'
 import { TimeInfo } from '../state/info'
 import * as Enums from '../enums'
 import { BasicWritableCommand } from '.'
@@ -39,9 +38,9 @@ export class TimeCommand extends SymmetricalCommand<TimeInfo> {
 		return new TimeCommand(properties)
 	}
 
-	public applyToState(state: AtemState): string {
-		state.info.lastTime = this.properties
-		return 'info.lastTime'
+	public applyToState(): string[] {
+		// Not stored in the state
+		return []
 	}
 }
 

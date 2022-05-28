@@ -72,7 +72,7 @@ export interface DeviceInfo {
 	macroPool?: MacroPoolInfo
 	mediaPool?: MediaPoolInfo
 	multiviewer?: MultiviewerInfo
-	lastTime?: TimeInfo
+	// lastTime?: TimeInfo
 	supportedVideoModes?: Readonly<Array<SupportedVideoMode>>
 }
 
