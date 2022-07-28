@@ -1,5 +1,7 @@
+/**
+ * Note: this file wants as few imports as possible, as it gets loaded in a worker-thread and may require its own webpack bundle
+ */
 import { createSocket, Socket, RemoteInfo } from 'dgram'
-import * as Util from './atemUtil'
 import * as NanoTimer from 'nanotimer'
 
 const IN_FLIGHT_TIMEOUT = 60 // ms
@@ -8,6 +10,11 @@ const CONNECTION_RETRY_INTERVAL = 1000 // ms
 const MAX_PACKET_RETRIES = 10
 const MAX_PACKET_ID = 1 << 15 // Atem expects 15 not 16 bits before wrapping
 const MAX_PACKET_PER_ACK = 16
+
+export const COMMAND_CONNECT_HELLO = Buffer.from([
+	0x10, 0x14, 0x53, 0xab, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00,
+])
 
 export enum ConnectionState {
 	Closed = 0x00,
@@ -147,7 +154,7 @@ export class AtemSocketChild {
 		this.log('reconnect')
 
 		// Try doing reconnect
-		this._sendPacket(Util.COMMAND_CONNECT_HELLO)
+		this._sendPacket(COMMAND_CONNECT_HELLO)
 		this._connectionState = ConnectionState.SynSent
 	}
 

@@ -12,11 +12,6 @@ export function bufToNullTerminatedString(buffer: Buffer, start: number, length:
 	return slice.toString('utf8', 0, nullIndex < 0 ? slice.length : nullIndex)
 }
 
-export const COMMAND_CONNECT_HELLO = Buffer.from([
-	0x10, 0x14, 0x53, 0xab, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-	0x00,
-])
-
 /**
  * @todo: BALTE - 2018-5-24:
  * Create util functions that handle proper colour spaces in UHD.

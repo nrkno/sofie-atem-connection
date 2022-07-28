@@ -1,7 +1,6 @@
 jest.mock('dgram')
 import { Socket } from '../__mocks__/dgram'
-import { AtemSocketChild, ConnectionState, PacketFlag } from '../atemSocketChild'
-import { Util } from '../..'
+import { AtemSocketChild, COMMAND_CONNECT_HELLO, ConnectionState, PacketFlag } from '../atemSocketChild'
 import * as fakeTimers from '@sinonjs/fake-timers'
 import { DEFAULT_PORT } from '../../atem'
 
@@ -67,7 +66,7 @@ describe('SocketChild', () => {
 				// Shouldnt only get one send
 				expect(receivedPacket).toBeFalsy()
 				receivedPacket = true
-				expect(msg).toEqual(Util.COMMAND_CONNECT_HELLO)
+				expect(msg).toEqual(COMMAND_CONNECT_HELLO)
 			}
 
 			expect(getState(child)).toEqual(ConnectionState.Closed)

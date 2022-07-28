@@ -4,7 +4,7 @@ import exitHook = require('exit-hook')
 import { VersionCommand, ISerializableCommand, IDeserializedCommand } from '../commands'
 import { DEFAULT_PORT } from '../atem'
 import { threadedClass, ThreadedClass, ThreadedClassManager, Promisify } from 'threadedclass'
-import { AtemSocketChild } from './atemSocketChild'
+import type { AtemSocketChild } from './atemSocketChild'
 
 export interface AtemSocketOptions {
 	address: string
