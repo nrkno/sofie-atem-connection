@@ -2,6 +2,66 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/nrkno/sofie-atem-connection/compare/2.4.0...3.0.0) (2022-07-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* make transition nextSelection and selection be an array of enums, instead of a bitmask
+* replace big-integer with native bigint
+* drop node 10
+
+### Features
+
+* add constellation hd models ([c9b2971](https://github.com/nrkno/sofie-atem-connection/commit/c9b2971e737b6f71e39bb0a2fe5b66fb2c763d3c))
+* add ids for SDI range ([498e9ef](https://github.com/nrkno/sofie-atem-connection/commit/498e9efff7b67a10fd2e9e5f31f56d53e02f63f1))
+* add new commands to atem class ([c1467d2](https://github.com/nrkno/sofie-atem-connection/commit/c1467d27ad0f49b32d7d6bc4429828869c8906ac))
+* add support for using generators with uploadClip ([#122](https://github.com/nrkno/sofie-atem-connection/issues/122)) ([97fe5af](https://github.com/nrkno/sofie-atem-connection/commit/97fe5af938a600297867b9911b5b783e4b49bf15))
+* advanced chroma keyer ([e8dcf62](https://github.com/nrkno/sofie-atem-connection/commit/e8dcf622699a0e7f6faaf5a959912683aa6ac846))
+* classic audio ([bf949bd](https://github.com/nrkno/sofie-atem-connection/commit/bf949bda8da7025adf2471f55dea2a123a4d917b))
+* classic audio reset peaks ([3d62c37](https://github.com/nrkno/sofie-atem-connection/commit/3d62c37b9562072709d2d7e7f32e666a812a7c2e))
+* color generators ([c4f5a12](https://github.com/nrkno/sofie-atem-connection/commit/c4f5a12f32a3cb7f8fd9bac3321524aed530f739))
+* customisable font scale ([951d121](https://github.com/nrkno/sofie-atem-connection/commit/951d1217b1e4acb1ca88a004e92a93c349c8802a))
+* data-transfer refactoring ([a597571](https://github.com/nrkno/sofie-atem-connection/commit/a597571e836b0c7932b79f9b50cf448778f46fee))
+* drop node 10 ([1e66bf5](https://github.com/nrkno/sofie-atem-connection/commit/1e66bf521e3d4796d74f1eec80b010bcce17bb90))
+* expose new commands on atem class ([efbeb3d](https://github.com/nrkno/sofie-atem-connection/commit/efbeb3dff40afe91a348bedf2fee5bcb768f96e7))
+* fairlight headphone master muted ([8ee2621](https://github.com/nrkno/sofie-atem-connection/commit/8ee26214add88e165b3af29fa05a29c700ff8822))
+* figure out required multiview resolutions from state ([ee66311](https://github.com/nrkno/sofie-atem-connection/commit/ee66311a380b28ec0a9c81e21abf41bd9958c560))
+* macro data transfers ([3aaea78](https://github.com/nrkno/sofie-atem-connection/commit/3aaea7874ad950fa6eb64dce2dabe194c604bc81))
+* make transition nextSelection and selection be an array of enums, instead of a bitmask ([cd19ac1](https://github.com/nrkno/sofie-atem-connection/commit/cd19ac14b0d7628dc11bb8acb30c343b9bec87d1))
+* most of remaining fairlight audio ([6cedb95](https://github.com/nrkno/sofie-atem-connection/commit/6cedb954877567c80a33bebc57ee075e2fe864cb))
+* move lastTime off of the state, into its own event ([2337013](https://github.com/nrkno/sofie-atem-connection/commit/233701343d44c494018bc6dd4f8a772d90f4ea85))
+* multiviewer properties ([50421b6](https://github.com/nrkno/sofie-atem-connection/commit/50421b6190dab566afd23771efa66e9391679fc5))
+* parse supportedVideoModes ([d199934](https://github.com/nrkno/sofie-atem-connection/commit/d1999348b89cd25f3c785e43921aed10d81943d9))
+* remaining multiviewer commands ([f241a0c](https://github.com/nrkno/sofie-atem-connection/commit/f241a0c43d8da41e9f91ef782a9aa2945230d322))
+* replace big-integer with native bigint ([3683968](https://github.com/nrkno/sofie-atem-connection/commit/3683968139e5da62ecebb0505e57f09f9e33a10d))
+* rounded corners on multiviewer labels ([f8b44bf](https://github.com/nrkno/sofie-atem-connection/commit/f8b44bf17c952097f5ef12a1fac081c0372879cb))
+* startup state commands ([7d54c00](https://github.com/nrkno/sofie-atem-connection/commit/7d54c003e1c516ca058b5336958a27868e834e27))
+* upstream keyer keyframe commands ([087b918](https://github.com/nrkno/sofie-atem-connection/commit/087b9187dc854c0d9dd727a9747d188182033742))
+
+
+### Bug Fixes
+
+* audio encoding on newer atems ([1bcaf83](https://github.com/nrkno/sofie-atem-connection/commit/1bcaf8330c5e253fb544eed4cf06ea69e34ed08c))
+* expose multiviewer properties command ([16c3cdd](https://github.com/nrkno/sofie-atem-connection/commit/16c3cdd6b7fedb4770a2841ff193b1930de7eeb5))
+* expose startup state commands ([1fecaa3](https://github.com/nrkno/sofie-atem-connection/commit/1fecaa38787ff2251d2e7e371a9d3f55f9ddef61))
+* FairlightMixerSourceEqualizerBandCommand incorrect state updating ([be8c961](https://github.com/nrkno/sofie-atem-connection/commit/be8c96133489cd6b5bb6f9d960b95f2dede4d2ed))
+* FTDC signals end of macro download ([a22861f](https://github.com/nrkno/sofie-atem-connection/commit/a22861fca082e1c8f896f729c4bf5218ee3209b0))
+* improve multiviewer text rendering ([9c06dd2](https://github.com/nrkno/sofie-atem-connection/commit/9c06dd22000f1c3145d95d808af88b4881a1ce75))
+* lint and updates ([b321988](https://github.com/nrkno/sofie-atem-connection/commit/b321988cba698dee6443a4986fe48b81279cffd2))
+* MixEffectKeyFlyKeyframeGetCommand using wrong state array index ([ffb347e](https://github.com/nrkno/sofie-atem-connection/commit/ffb347e023cdaa54277e9ab6f4e8930661327cf9))
+* multiview upload ([9109e33](https://github.com/nrkno/sofie-atem-connection/commit/9109e33ed7b9b6f4d2d27505f2e55dbfa522df46))
+* reduce cross worker-thread boundary code imports ([0de261e](https://github.com/nrkno/sofie-atem-connection/commit/0de261e03905e6706d0537a48f75189cca616fd0))
+* replace freetype2 with @julusian/freetype2 ([ab0e528](https://github.com/nrkno/sofie-atem-connection/commit/ab0e5283c0af5da5c9679cb92ed0f36c67517521))
+* restructure fairlight eq state to be more logical (for users) ([8bd5c28](https://github.com/nrkno/sofie-atem-connection/commit/8bd5c2858eb76c3aee4737cf9686960615104b91))
+* tests ([f8145aa](https://github.com/nrkno/sofie-atem-connection/commit/f8145aa7ef03cd35e4b7ea0a58de45642ffa631d))
+* tweak 4k sizings ([8387b4a](https://github.com/nrkno/sofie-atem-connection/commit/8387b4aedb804566882b6eadaea74cdc8a9f9f35))
+* update threadedclass ([50377ec](https://github.com/nrkno/sofie-atem-connection/commit/50377ecb44912a91a8d17a0e9f63af387eb44848))
+* Updated URLs to match the renamed repo ([947b77d](https://github.com/nrkno/sofie-atem-connection/commit/947b77de684a2958c9dc47abce00189ab40f2b5c))
+* Updated URLs to match the renamed repo ([51183bd](https://github.com/nrkno/sofie-atem-connection/commit/51183bda0ddfd22c2c04cd54d2a7742d8387efb9))
+* uploading unit tests ([47fcc05](https://github.com/nrkno/sofie-atem-connection/commit/47fcc053d092207ea2aeafd218ffc90d14dac79e))
+* use custom font. better vertical alignment ([346ecb6](https://github.com/nrkno/sofie-atem-connection/commit/346ecb6d88e27fc1866f4f60e86dbf37a96d324e))
+
 ## [2.4.0](https://github.com/nrkno/tv-automation-atem-connection/compare/2.3.1...2.4.0) (2021-11-15)
 
 
