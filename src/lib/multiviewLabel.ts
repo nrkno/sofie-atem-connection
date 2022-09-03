@@ -281,6 +281,9 @@ export function generateMultiviewerLabel(
 	const buffer = Buffer.alloc(width * height)
 	const width2 = width
 
+	// Don't draw border when name is cleared
+	if (!str) return buffer
+
 	let yOffset = 0
 	const drawRes = (spec: ResolutionSpec): void => {
 		drawTextToBuffer(face, fontScale, buffer, spec, str, yOffset, width2)
