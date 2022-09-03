@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.0.1](https://github.com/nrkno/sofie-atem-connection/compare/3.0.0...3.0.1) (2022-09-03)
+
+
+### Bug Fixes
+
+* draw blank buffer when input has no name ([4f5b50c](https://github.com/nrkno/sofie-atem-connection/commit/4f5b50c1ec199bf5ab440fc136644a82cf9ff0b9))
+
 ## [3.0.0](https://github.com/nrkno/sofie-atem-connection/compare/2.4.0...3.0.0) (2022-07-28)
 
 
