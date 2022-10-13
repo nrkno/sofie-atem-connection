@@ -23,12 +23,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 16
-      - uses: ./.github/actions/setup-meteor
       - name: Prepare Environment
         run: |
           yarn
-          yarn build:packages
-        env:
+          yarn build:packages        env:
           CI: true
 
       - name: SonarCloud Scan
