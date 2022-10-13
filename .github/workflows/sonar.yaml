@@ -26,7 +26,7 @@ jobs:
       - name: Prepare Environment
         run: |
           yarn
-          yarn build:packages        env:
+        env:
           CI: true
 
       - name: SonarCloud Scan
