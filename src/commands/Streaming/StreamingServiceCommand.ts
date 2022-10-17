@@ -43,6 +43,7 @@ export class StreamingServiceUpdateCommand extends DeserializedCommand<Streaming
 			url: bufToNullTerminatedString(rawCommand, 64, 512),
 			key: bufToNullTerminatedString(rawCommand, 576, 512),
 			bitrates: [rawCommand.readUInt32BE(1088), rawCommand.readUInt32BE(1092)],
+			audioBitrates: [rawCommand.readUInt32BE(1104), rawCommand.readUInt32BE(1108)],
 		}
 
 		return new StreamingServiceUpdateCommand(props)
