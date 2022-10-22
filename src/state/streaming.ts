@@ -8,7 +8,7 @@ export interface StreamingState {
 
 	duration?: Timecode
 
-	audiobitrates?: StreamingAudiobitrates
+	audioBitrates?: StreamingAudioBitrates
 }
 
 export interface StreamingStateStatus {
@@ -29,7 +29,7 @@ export interface StreamingServiceProperties {
 	bitrates: [number, number]
 }
 
-export interface StreamingAudiobitrates {
-	upto30fps: number
-	morethan30fps: number
+export interface StreamingAudioBitrates {
+	lowBitrate: number
+	highBitrate: number
 }
