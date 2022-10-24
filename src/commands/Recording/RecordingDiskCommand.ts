@@ -4,7 +4,7 @@ import { DeserializedCommand, BasicWritableCommand } from '../CommandBase'
 import { RecordingDiskProperties } from '../../state/recording'
 import { bufToNullTerminatedString } from '../../lib/atemUtil'
 
-export class RecordingRequestSwitchDiskCommand extends BasicWritableCommand<{}> {
+export class RecordingRequestSwitchDiskCommand extends BasicWritableCommand<Record<string, never>> {
 	public static readonly rawName = 'RMSp'
 	public static readonly minimumVersion = ProtocolVersion.V8_1_1
 
@@ -44,7 +44,7 @@ export class RecordingDiskInfoUpdateCommand extends DeserializedCommand<Deletabl
 			recordingTimeAvailable: rawCommand.readUInt32BE(4),
 			status: rawStatus & ~this.DeleteStatusFlag,
 			isDelete: (rawStatus & this.DeleteStatusFlag) === this.DeleteStatusFlag,
-			volumeName: bufToNullTerminatedString(rawCommand, 10, 64)
+			volumeName: bufToNullTerminatedString(rawCommand, 10, 64),
 		}
 
 		return new RecordingDiskInfoUpdateCommand(diskId, props)

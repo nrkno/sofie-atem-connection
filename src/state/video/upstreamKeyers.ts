@@ -62,6 +62,39 @@ export interface UpstreamKeyerChromaSettings {
 	narrow: boolean
 }
 
+export interface UpstreamKeyerAdvancedChromaSettings {
+	properties?: UpstreamKeyerAdvancedChromaProperties
+	sample?: UpstreamKeyerAdvancedChromaSample
+}
+
+export interface UpstreamKeyerAdvancedChromaProperties {
+	foregroundLevel: number
+	backgroundLevel: number
+	keyEdge: number
+
+	spillSuppression: number
+	flareSuppression: number
+
+	brightness: number
+	contrast: number
+	saturation: number
+	red: number
+	green: number
+	blue: number
+}
+
+export interface UpstreamKeyerAdvancedChromaSample {
+	enableCursor: boolean
+	preview: boolean
+	cursorX: number
+	cursorY: number
+	cursorSize: number
+
+	sampledY: number
+	sampledCb: number
+	sampledCr: number
+}
+
 export interface UpstreamKeyerLumaSettings {
 	preMultiplied: boolean
 	clip: number
@@ -89,6 +122,7 @@ export interface UpstreamKeyerFlySettings {
 export interface UpstreamKeyer extends UpstreamKeyerBase {
 	dveSettings?: UpstreamKeyerDVESettings
 	chromaSettings?: UpstreamKeyerChromaSettings
+	advancedChromaSettings?: UpstreamKeyerAdvancedChromaSettings
 	lumaSettings?: UpstreamKeyerLumaSettings
 	patternSettings?: UpstreamKeyerPatternSettings
 	flyKeyframes: [UpstreamKeyerFlyKeyframe | undefined, UpstreamKeyerFlyKeyframe | undefined]

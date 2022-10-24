@@ -3,7 +3,7 @@ import { ProtocolVersion } from '../../enums'
 
 export class DownstreamKeyAutoCommand extends WritableCommand<{ isTowardsOnAir: boolean }> {
 	public static readonly MaskFlags = {
-		isTowardsOnAir: 1
+		isTowardsOnAir: 1,
 	}
 	public static readonly rawName = 'DDsA'
 

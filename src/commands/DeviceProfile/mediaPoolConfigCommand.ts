@@ -12,7 +12,7 @@ export class MediaPoolConfigCommand extends DeserializedCommand<MediaPoolInfo> {
 	public static deserialize(rawCommand: Buffer): MediaPoolConfigCommand {
 		return new MediaPoolConfigCommand({
 			stillCount: rawCommand.readUInt8(0),
-			clipCount: rawCommand.readUInt8(1)
+			clipCount: rawCommand.readUInt8(1),
 		})
 	}
 

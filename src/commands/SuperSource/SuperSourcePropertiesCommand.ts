@@ -25,7 +25,7 @@ export class SuperSourcePropertiesCommand extends WritableCommand<SuperSourcePro
 		borderSaturation: 1 << 16,
 		borderLuma: 1 << 17,
 		borderLightSourceDirection: 1 << 18,
-		borderLightSourceAltitude: 1 << 19
+		borderLightSourceAltitude: 1 << 19,
 	}
 	public static readonly rawName = 'CSSc'
 
@@ -71,7 +71,7 @@ export class SuperSourcePropertiesV8Command extends WritableCommand<SuperSourceP
 		artPreMultiplied: 1 << 3,
 		artClip: 1 << 4,
 		artGain: 1 << 5,
-		artInvertKey: 1 << 6
+		artInvertKey: 1 << 6,
 	}
 
 	public static readonly rawName = 'CSSc'
@@ -117,7 +117,7 @@ export class SuperSourceBorderCommand extends WritableCommand<SuperSourceBorder>
 		borderSaturation: 1 << 9,
 		borderLuma: 1 << 10,
 		borderLightSourceDirection: 1 << 11,
-		borderLightSourceAltitude: 1 << 12
+		borderLightSourceAltitude: 1 << 12,
 	}
 
 	public static readonly rawName = 'CSBd'
@@ -170,7 +170,7 @@ export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{
 				artPreMultiplied: rawCommand.readUInt8(5) === 1,
 				artClip: rawCommand.readUInt16BE(6),
 				artGain: rawCommand.readUInt16BE(8),
-				artInvertKey: rawCommand.readUInt8(10) === 1
+				artInvertKey: rawCommand.readUInt8(10) === 1,
 			},
 
 			border: {
@@ -186,8 +186,8 @@ export class SuperSourcePropertiesUpdateCommand extends DeserializedCommand<{
 				borderSaturation: rawCommand.readUInt16BE(24),
 				borderLuma: rawCommand.readUInt16BE(26),
 				borderLightSourceDirection: rawCommand.readUInt16BE(28),
-				borderLightSourceAltitude: rawCommand.readUInt8(30)
-			}
+				borderLightSourceAltitude: rawCommand.readUInt8(30),
+			},
 		}
 
 		return new SuperSourcePropertiesUpdateCommand(properties)
@@ -226,7 +226,7 @@ export class SuperSourcePropertiesUpdateV8Command extends DeserializedCommand<Su
 			artPreMultiplied: rawCommand.readUInt8(7) === 1,
 			artClip: rawCommand.readUInt16BE(8),
 			artGain: rawCommand.readUInt16BE(10),
-			artInvertKey: rawCommand.readUInt8(12) === 1
+			artInvertKey: rawCommand.readUInt8(12) === 1,
 		}
 
 		return new SuperSourcePropertiesUpdateV8Command(ssrcId, properties)
@@ -239,7 +239,7 @@ export class SuperSourcePropertiesUpdateV8Command extends DeserializedCommand<Su
 
 		const supersource = AtemStateUtil.getSuperSource(state, this.ssrcId)
 		supersource.properties = {
-			...this.properties
+			...this.properties,
 		}
 		return `video.superSources.${this.ssrcId}.properties`
 	}
@@ -272,7 +272,7 @@ export class SuperSourceBorderUpdateCommand extends DeserializedCommand<SuperSou
 			borderSaturation: rawCommand.readUInt16BE(14),
 			borderLuma: rawCommand.readUInt16BE(16),
 			borderLightSourceDirection: rawCommand.readUInt16BE(18),
-			borderLightSourceAltitude: rawCommand.readUInt8(20)
+			borderLightSourceAltitude: rawCommand.readUInt8(20),
 		}
 
 		return new SuperSourceBorderUpdateCommand(ssrcId, properties)

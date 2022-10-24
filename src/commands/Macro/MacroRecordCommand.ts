@@ -19,8 +19,8 @@ export class MacroRecordCommand extends BasicWritableCommand<{ name: string; des
 		buffer.writeUInt16BE(this.index, 0)
 		buffer.writeUInt16BE(name.length, 2)
 		buffer.writeUInt16BE(description.length, 4)
-		buffer.write(name, 6)
-		buffer.write(description, 6 + name.length)
+		buffer.write(name, 6, 'utf8')
+		buffer.write(description, 6 + name.length, 'utf8')
 		return buffer
 	}
 }

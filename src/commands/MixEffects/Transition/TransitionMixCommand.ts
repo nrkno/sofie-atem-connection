@@ -35,7 +35,7 @@ export class TransitionMixUpdateCommand extends DeserializedCommand<MixTransitio
 	public static deserialize(rawCommand: Buffer): TransitionMixUpdateCommand {
 		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
-			rate: rawCommand.readUInt8(1)
+			rate: rawCommand.readUInt8(1),
 		}
 
 		return new TransitionMixUpdateCommand(mixEffect, properties)
@@ -48,7 +48,7 @@ export class TransitionMixUpdateCommand extends DeserializedCommand<MixTransitio
 
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionSettings.mix = {
-			...this.properties
+			...this.properties,
 		}
 		return `video.mixEffects.${this.mixEffect}.transitionSettings.mix`
 	}

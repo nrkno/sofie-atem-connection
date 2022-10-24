@@ -18,8 +18,8 @@ export class StreamingStatusCommand extends BasicWritableCommand<{ streaming: bo
 	}
 }
 
-const errorEnumValues = (Object.values(StreamingError).filter(e => typeof e === 'number') as unknown) as number[]
-const statusEnumValues = (Object.values(StreamingStatus).filter(e => typeof e === 'number') as unknown) as number[]
+const errorEnumValues = Object.values(StreamingError).filter((e) => typeof e === 'number') as unknown as number[]
+const statusEnumValues = Object.values(StreamingStatus).filter((e) => typeof e === 'number') as unknown as number[]
 
 export class StreamingStatusUpdateCommand extends DeserializedCommand<StreamingStateStatus> {
 	public static readonly rawName = 'StRS'

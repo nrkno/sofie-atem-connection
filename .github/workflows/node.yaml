@@ -24,6 +24,7 @@ jobs:
       - name: Prepare Environment
         run: |
           yarn install
+          yarn build
         env:
           CI: true
       - name: Run typecheck and linter
@@ -35,12 +36,12 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    continue-on-error: true
     timeout-minutes: 15
 
     strategy:
+      fail-fast: false
       matrix:
-        node-version: [12.x, 14.x, 15.x]
+        node-version: [14.x, 16.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -59,11 +60,11 @@ jobs:
         env:
           CI: true
       - name: Send coverage
+        uses: codecov/codecov-action@v2
         if: matrix.node-version == '14.x'
-        run: |
-          yarn send-coverage
-        env:
-          CI: true
+        with:
+          fail_ci_if_error: true
+          # name: codecov-umbrella
       - name: Check docs generation
         if: matrix.node-version == '14.x'
         run: |
@@ -71,75 +72,9 @@ jobs:
         env:
           CI: true
 
-  prerelease:
-    name: Prerelease
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    timeout-minutes: 15
-
-    # only run for branches
-    if: contains(github.ref, 'refs/heads/')
-
-    needs:
-      - test
-
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-      - name: Check release is desired
-        id: do-publish
-        run: |
-          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
-            echo "No Token"
-          elif git log --format=oneline -n 1 | grep -q "\[publish\]"; then
-            echo "Publish experimental"
-            echo ::set-output name=publish::"experimental"
-          elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
-            echo "Publish nightly"
-            echo ::set-output name=publish::"nightly"
-          else
-            echo "Skip"
-          fi
-      - name: Prepare Environment
-        if: ${{ steps.do-publish.outputs.publish }}
-        run: |
-          yarn install
-        env:
-          CI: true
-      - name: Get the Prerelease tag
-        id: prerelease-tag
-        uses: yuya-takeyama/docker-tag-from-github-ref-action@2b0614b1338c8f19dd9d3ea433ca9bc0cc7057ba
-        with:
-          remove-version-tag-prefix: false
-      - name: Bump version and build
-        if: ${{ steps.do-publish.outputs.publish }}
-        run: |
-          COMMIT_TIMESTAMP=$(git log -1 --pretty=format:%ct HEAD)
-          COMMIT_DATE=$(date -d @$COMMIT_TIMESTAMP +%Y%m%d-%H%M%S)
-          GIT_HASH=$(git rev-parse --short HEAD)
-          PRERELEASE_TAG=nightly-$(echo "${{ steps.prerelease-tag.outputs.tag }}" | sed -r 's/[^a-z0-9]+/-/gi')
-          yarn release --prerelease $PRERELEASE_TAG-$COMMIT_DATE-$GIT_HASH --skip.changelog --skip.tag --skip.commit
-          yarn build
-        env:
-          CI: true
-      - name: Publish to NPM
-        if: ${{ steps.do-publish.outputs.publish }}
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >> ~/.npmrc
-          NEW_VERSION=$(node -p "require('./package.json').version")
-          yarn publish --access=public --new-version=$NEW_VERSION --network-timeout 100000 --tag "${{ steps.do-publish.outputs.publish }}"
-        env:
-          CI: true
-
   release:
     name: Release
     runs-on: ubuntu-latest
-    continue-on-error: true
     timeout-minutes: 15
 
     # only run for tags
@@ -147,7 +82,7 @@ jobs:
 
     needs:
       - test
-      - validate-dependencies
+      # - validate-dependencies
 
     steps:
       - uses: actions/checkout@v2
@@ -209,57 +144,57 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
 
-  validate-dependencies:
-    name: Validate production dependencies
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    timeout-minutes: 15
+  # validate-dependencies:
+  #   name: Validate production dependencies
+  #   runs-on: ubuntu-latest
+  #   continue-on-error: true
+  #   timeout-minutes: 15
 
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-      - name: Prepare Environment
-        run: |
-          yarn install
-        env:
-          CI: true
-      - name: Validate production dependencies
-        run: |
-          if ! git log --format=oneline -n 1 | grep -q "\[ignore-audit\]"; then
-            yarn validate:dependencies
-          else
-            echo "Skipping audit"
-          fi
-        env:
-          CI: true
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Use Node.js 14.x
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: 14.x
+  #     - name: Prepare Environment
+  #       run: |
+  #         yarn install
+  #       env:
+  #         CI: true
+  #     - name: Validate production dependencies
+  #       run: |
+  #         if ! git log --format=oneline -n 1 | grep -q "\[ignore-audit\]"; then
+  #           yarn validate:dependencies
+  #         else
+  #           echo "Skipping audit"
+  #         fi
+  #       env:
+  #         CI: true
 
-  validate-all-dependencies:
-    name: Validate all dependencies
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    timeout-minutes: 15
+  # validate-all-dependencies:
+  #   name: Validate all dependencies
+  #   runs-on: ubuntu-latest
+  #   continue-on-error: true
+  #   timeout-minutes: 15
 
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-      - name: Prepare Environment
-        run: |
-          yarn install
-        env:
-          CI: true
-      - name: Validate production dependencies
-        run: |
-          yarn validate:dependencies
-        env:
-          CI: true
-      - name: Validate dev dependencies
-        run: |
-          yarn validate:dev-dependencies
-        env:
-          CI: true
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Use Node.js 14.x
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: 14.x
+  #     - name: Prepare Environment
+  #       run: |
+  #         yarn install
+  #       env:
+  #         CI: true
+  #     - name: Validate production dependencies
+  #       run: |
+  #         yarn validate:dependencies
+  #       env:
+  #         CI: true
+  #     - name: Validate dev dependencies
+  #       run: |
+  #         yarn validate:dev-dependencies
+  #       env:
+  #         CI: true

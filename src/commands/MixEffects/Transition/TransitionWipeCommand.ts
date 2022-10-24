@@ -13,7 +13,7 @@ export class TransitionWipeCommand extends WritableCommand<WipeTransitionSetting
 		xPosition: 1 << 6,
 		yPosition: 1 << 7,
 		reverseDirection: 1 << 8,
-		flipFlop: 1 << 9
+		flipFlop: 1 << 9,
 	}
 
 	public static readonly rawName = 'CTWp'
@@ -71,7 +71,7 @@ export class TransitionWipeUpdateCommand extends DeserializedCommand<WipeTransit
 			xPosition: rawCommand.readUInt16BE(12),
 			yPosition: rawCommand.readUInt16BE(14),
 			reverseDirection: rawCommand.readUInt8(16) === 1,
-			flipFlop: rawCommand.readUInt8(17) === 1
+			flipFlop: rawCommand.readUInt8(17) === 1,
 		}
 
 		return new TransitionWipeUpdateCommand(mixEffect, properties)
@@ -84,7 +84,7 @@ export class TransitionWipeUpdateCommand extends DeserializedCommand<WipeTransit
 
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		mixEffect.transitionSettings.wipe = {
-			...this.properties
+			...this.properties,
 		}
 		return `video.mixEffects.${this.mixEffect}.transitionSettings.wipe`
 	}

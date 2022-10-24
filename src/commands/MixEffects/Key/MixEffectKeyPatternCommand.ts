@@ -10,7 +10,7 @@ export class MixEffectKeyPatternCommand extends WritableCommand<UpstreamKeyerPat
 		softness: 1 << 3,
 		positionX: 1 << 4,
 		positionY: 1 << 5,
-		invert: 1 << 6
+		invert: 1 << 6,
 	}
 
 	public static readonly rawName = 'CKPt'
@@ -66,7 +66,7 @@ export class MixEffectKeyUpdateCommand extends DeserializedCommand<UpstreamKeyer
 			softness: rawCommand.readUInt16BE(8),
 			positionX: rawCommand.readUInt16BE(10),
 			positionY: rawCommand.readUInt16BE(12),
-			invert: rawCommand.readUInt8(14) === 1
+			invert: rawCommand.readUInt8(14) === 1,
 		}
 
 		return new MixEffectKeyUpdateCommand(mixEffect, upstreamKeyerId, properties)
@@ -81,7 +81,7 @@ export class MixEffectKeyUpdateCommand extends DeserializedCommand<UpstreamKeyer
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		const upstreamKeyer = AtemStateUtil.getUpstreamKeyer(mixEffect, this.upstreamKeyerId)
 		upstreamKeyer.patternSettings = {
-			...this.properties
+			...this.properties,
 		}
 		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.patternSettings`
 	}

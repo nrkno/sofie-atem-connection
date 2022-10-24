@@ -1,8 +1,15 @@
 import { DeserializedCommand } from '../CommandBase'
 
+/** The known error codes */
+export enum ErrorCode {
+	Retry = 1,
+	NotFound = 2,
+	NotLocked = 5, // Maybe
+}
+
 export interface DataTransferErrorProps {
 	transferId: number
-	errorCode: number
+	errorCode: ErrorCode
 }
 
 export class DataTransferErrorCommand extends DeserializedCommand<DataTransferErrorProps> {
@@ -11,7 +18,7 @@ export class DataTransferErrorCommand extends DeserializedCommand<DataTransferEr
 	public static deserialize(rawCommand: Buffer): DataTransferErrorCommand {
 		const properties = {
 			transferId: rawCommand.readUInt16BE(0),
-			errorCode: rawCommand.readUInt8(2)
+			errorCode: rawCommand.readUInt8(2),
 		}
 
 		return new DataTransferErrorCommand(properties)

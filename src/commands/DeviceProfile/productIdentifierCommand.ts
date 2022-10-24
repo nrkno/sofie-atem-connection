@@ -10,7 +10,7 @@ export class ProductIdentifierCommand extends DeserializedCommand<Pick<DeviceInf
 	public static deserialize(rawCommand: Buffer): ProductIdentifierCommand {
 		const properties = {
 			productIdentifier: Util.bufToNullTerminatedString(rawCommand, 0, 40),
-			model: rawCommand.readUInt8(40)
+			model: rawCommand.readUInt8(40),
 		}
 
 		return new ProductIdentifierCommand(properties)
@@ -27,6 +27,7 @@ export class ProductIdentifierCommand extends DeserializedCommand<Pick<DeviceInf
 			case Enums.Model.TwoMEBS4K:
 			case Enums.Model.Constellation:
 			case Enums.Model.Constellation8K:
+			case Enums.Model.ConstellationHD4ME:
 				state.info.power = [false, false]
 				break
 			default:

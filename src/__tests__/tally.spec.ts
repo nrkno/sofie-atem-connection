@@ -5,6 +5,7 @@ import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import { AtemStateUtil, AtemState } from '../state'
 import { createEmptyState } from './util'
+import { getComponents } from '../lib/atemUtil'
 
 function readJson(fileName: string): any {
 	const filePath = resolve(__dirname, fileName)
@@ -15,7 +16,7 @@ function readJson(fileName: string): any {
 function loadRawState(file: string): AtemState {
 	const loadedState: AtemState = {
 		...AtemStateUtil.Create(),
-		...readJson(`./tally/${file}-state.json`)
+		...readJson(`./tally/${file}-state.json`),
 	}
 
 	if (!loadedState.info.capabilities) {
@@ -29,7 +30,7 @@ function loadRawState(file: string): AtemState {
 		videoState.mixEffects = videoState.ME
 	}
 
-	loadedState.video.mixEffects.forEach(me => {
+	loadedState.video.mixEffects.forEach((me) => {
 		// Lazy fix up moving some state properties
 		if (me) {
 			const me1 = me as any
@@ -37,10 +38,16 @@ function loadRawState(file: string): AtemState {
 				me.transitionPosition = {
 					inTransition: me1.inTransition,
 					handlePosition: me1.transitionPosition,
-					remainingFrames: me1.transitionFramesLeft
+					remainingFrames: me1.transitionFramesLeft,
 				}
 				delete me1.transitionFramesLeft
 				delete me1.inTransition
+			}
+			if (typeof me.transitionProperties.selection === 'number') {
+				;(me.transitionProperties as any).selection = getComponents(me.transitionProperties.selection)
+			}
+			if (typeof me.transitionProperties.nextSelection === 'number') {
+				;(me.transitionProperties as any).nextSelection = getComponents(me.transitionProperties.nextSelection)
 			}
 		}
 	})
@@ -64,7 +71,7 @@ function loadTally(file: string): { program: number[]; preview: number[] } {
 
 	return {
 		program: program.sort(),
-		preview: preview.sort()
+		preview: preview.sort(),
 	}
 }
 

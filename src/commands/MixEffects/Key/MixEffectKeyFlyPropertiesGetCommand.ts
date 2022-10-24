@@ -22,7 +22,7 @@ export class MixEffectKeyFlyPropertiesGetCommand extends DeserializedCommand<Ups
 			isASet: rawCommand.readUInt8(2) === 1,
 			isBSet: rawCommand.readUInt8(3) === 1,
 			isAtKeyFrame: rawCommand.readUInt8(6),
-			runToInfiniteIndex: rawCommand.readUInt8(7)
+			runToInfiniteIndex: rawCommand.readUInt8(7),
 		}
 		return new MixEffectKeyFlyPropertiesGetCommand(mixEffect, upstreamKeyerId, properties)
 	}
@@ -36,7 +36,7 @@ export class MixEffectKeyFlyPropertiesGetCommand extends DeserializedCommand<Ups
 		const mixEffect = AtemStateUtil.getMixEffect(state, this.mixEffect)
 		const upstreamKeyer = AtemStateUtil.getUpstreamKeyer(mixEffect, this.upstreamKeyerId)
 		upstreamKeyer.flyProperties = {
-			...this.properties
+			...this.properties,
 		}
 		return `video.mixEffects.${this.mixEffect}.upstreamKeyers.${this.upstreamKeyerId}.flyProperties`
 	}

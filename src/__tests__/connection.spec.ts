@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import { AtemSocketChild } from '../lib/atemSocketChild'
@@ -13,7 +14,7 @@ function cloneJson<T>(v: T): T {
 }
 
 // @ts-ignore
-export class AtemSocketChildMock implements AtemSocketChild {
+class AtemSocketChildMock implements AtemSocketChild {
 	public onDisconnect: () => Promise<void>
 	public onLog: (message: string) => Promise<void>
 	public onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>
@@ -31,9 +32,9 @@ export class AtemSocketChildMock implements AtemSocketChild {
 		this.onCommandsAcknowledged = onCommandsAcknowledged
 	}
 
-	public connect = jest.fn(() => Promise.resolve())
-	public disconnect = jest.fn(() => Promise.resolve())
-	public sendCommands = jest.fn(() => Promise.resolve())
+	public connect = jest.fn(async () => Promise.resolve())
+	public disconnect = jest.fn(async () => Promise.resolve())
+	public sendCommands = jest.fn(async () => Promise.resolve())
 }
 
 ;(AtemSocketChild as any).mockImplementation(
@@ -53,7 +54,7 @@ function createConnection(): BasicAtem {
 		debugBuffers: false,
 		address: '',
 		port: 890,
-		disableMultithreaded: true
+		disableMultithreaded: true,
 	})
 }
 
@@ -63,10 +64,9 @@ function getChild(conn: BasicAtem): ThreadedClass<AtemSocketChildMock> {
 
 function runTest(name: string, filename: string): void {
 	const filePath = resolve(__dirname, `./connection/${filename}.data`)
-	const fileData = readFileSync(filePath)
-		.toString()
-		.split('\n')
+	const fileData = readFileSync(filePath).toString().split('\n')
 
+	// eslint-disable-next-line jest/valid-title
 	describe(name, () => {
 		test(`Connection`, async () => {
 			const conn = createConnection()
@@ -84,9 +84,10 @@ function runTest(name: string, filename: string): void {
 				}
 			})
 
+			// eslint-disable-next-line @typescript-eslint/no-for-in-array
 			for (const i in fileData) {
 				const buffer = Buffer.from(fileData[i].trim(), 'hex')
-				await child.onCommandsReceived(buffer, i)
+				await child.onCommandsReceived(buffer, Number(i))
 			}
 
 			expect(errors).toEqual([])
@@ -99,6 +100,7 @@ function runTest(name: string, filename: string): void {
 			)
 
 			const commands: IDeserializedCommand[] = []
+			// eslint-disable-next-line @typescript-eslint/no-for-in-array
 			for (const i in fileData) {
 				const buffer = Buffer.from(fileData[i].trim(), 'hex')
 				commands.push(...parser(buffer))
@@ -106,7 +108,9 @@ function runTest(name: string, filename: string): void {
 
 			const state = cloneJson(conn.state)
 
+			// eslint-disable-next-line jest/no-standalone-expect
 			expect(commands).not.toBeEmpty()
+			// eslint-disable-next-line jest/no-standalone-expect
 			expect(state).toBeTruthy()
 
 			const state0 = state as AtemState
@@ -184,4 +188,5 @@ describe('connection', () => {
 	runTest('mini pro v8.2', 'mini-pro-v8.2')
 	runTest('mini pro iso v8.4', 'mini-pro-iso-v8.4')
 	runTest('mini extreme v8.6', 'mini-extreme-v8.6')
+	runTest('constellation hd 2me v8.7', 'constellation-2me-hd-v8.7.0')
 })

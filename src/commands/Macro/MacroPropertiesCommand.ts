@@ -24,7 +24,7 @@ export class MacroPropertiesUpdateCommand extends DeserializedCommand<MacroPrope
 			isUsed: rawCommand.readUInt8(2) != 0,
 			hasUnsupportedOps: rawCommand.readUInt8(3) != 0,
 			name: '',
-			description: ''
+			description: '',
 		}
 
 		if (nameLen > 0) {
@@ -46,7 +46,7 @@ export class MacroPropertiesUpdateCommand extends DeserializedCommand<MacroPrope
 export class MacroPropertiesCommand extends WritableCommand<OmitReadonly<MacroPropertiesState>> {
 	public static MaskFlags = {
 		name: 1 << 0,
-		description: 1 << 1
+		description: 1 << 1,
 	}
 
 	public static readonly rawName = 'CMPr'
@@ -68,8 +68,8 @@ export class MacroPropertiesCommand extends WritableCommand<OmitReadonly<MacroPr
 		buffer.writeUInt16BE(this.macroIndex, 2)
 		buffer.writeUInt16BE(name.length, 4)
 		buffer.writeUInt16BE(description.length, 6)
-		buffer.write(name, 8, 'ascii')
-		buffer.write(description, 8 + name.length, 'ascii')
+		buffer.write(name, 8, 'utf8')
+		buffer.write(description, 8 + name.length, 'utf8')
 
 		return buffer
 	}

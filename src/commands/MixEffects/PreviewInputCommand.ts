@@ -38,7 +38,7 @@ export class PreviewInputUpdateCommand extends DeserializedCommand<InputSource> 
 	public static deserialize(rawCommand: Buffer): PreviewInputUpdateCommand {
 		const mixEffect = rawCommand.readUInt8(0)
 		const properties = {
-			source: rawCommand.readUInt16BE(2)
+			source: rawCommand.readUInt16BE(2),
 		}
 
 		return new PreviewInputUpdateCommand(mixEffect, properties)

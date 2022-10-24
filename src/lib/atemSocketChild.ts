@@ -1,5 +1,7 @@
+/**
+ * Note: this file wants as few imports as possible, as it gets loaded in a worker-thread and may require its own webpack bundle
+ */
 import { createSocket, Socket, RemoteInfo } from 'dgram'
-import * as Util from './atemUtil'
 import * as NanoTimer from 'nanotimer'
 
 const IN_FLIGHT_TIMEOUT = 60 // ms
@@ -9,10 +11,15 @@ const MAX_PACKET_RETRIES = 10
 const MAX_PACKET_ID = 1 << 15 // Atem expects 15 not 16 bits before wrapping
 const MAX_PACKET_PER_ACK = 16
 
+export const COMMAND_CONNECT_HELLO = Buffer.from([
+	0x10, 0x14, 0x53, 0xab, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00,
+])
+
 export enum ConnectionState {
 	Closed = 0x00,
 	SynSent = 0x01,
-	Established = 0x02
+	Established = 0x02,
 }
 
 export enum PacketFlag {
@@ -20,7 +27,7 @@ export enum PacketFlag {
 	NewSessionId = 0x02,
 	IsRetransmit = 0x04,
 	RetransmitRequest = 0x08,
-	AckReply = 0x10
+	AckReply = 0x10,
 }
 
 interface InFlightPacket {
@@ -78,26 +85,28 @@ export class AtemSocketChild {
 
 	private startTimers(): void {
 		if (!this._reconnectTimer) {
-			this._reconnectTimer = setInterval(async () => {
+			this._reconnectTimer = setInterval(() => {
 				if (this._lastReceivedAt + CONNECTION_TIMEOUT > Date.now()) {
 					// We heard from the atem recently
 					return
 				}
 
-				try {
-					await this.restartConnection()
-				} catch (e) {
+				this.restartConnection().catch((e) => {
 					this.log(`Reconnect failed: ${e}`)
-				}
+				})
 			}, CONNECTION_RETRY_INTERVAL)
 		}
 		// Check for retransmits every 10 milliseconds
 		if (!this._retransmitTimer) {
-			this._retransmitTimer = setInterval(() => this._checkForRetransmit(), 10)
+			this._retransmitTimer = setInterval(() => {
+				this._checkForRetransmit().catch((e) => {
+					this.log(`Failed to retransmit: ${e?.message ?? e}`)
+				})
+			}, 10)
 		}
 	}
 
-	public connect(address: string, port: number): Promise<void> {
+	public async connect(address: string, port: number): Promise<void> {
 		this.startTimers()
 
 		this._address = address
@@ -106,7 +115,7 @@ export class AtemSocketChild {
 		return this.restartConnection()
 	}
 
-	public disconnect(): Promise<void> {
+	public async disconnect(): Promise<void> {
 		// Stop timers, as they just cause pointless work now.
 		if (this._retransmitTimer) {
 			clearInterval(this._retransmitTimer)
@@ -117,13 +126,13 @@ export class AtemSocketChild {
 			this._reconnectTimer = undefined
 		}
 
-		return new Promise(resolve => {
+		return new Promise<void>((resolve) => {
 			try {
 				this._socket.close(() => resolve())
 			} catch (e) {
 				resolve()
 			}
-		}).then(() => {
+		}).then(async () => {
 			this._connectionState = ConnectionState.Closed
 			this._createSocket()
 			return this.onDisconnect()
@@ -145,17 +154,17 @@ export class AtemSocketChild {
 		this.log('reconnect')
 
 		// Try doing reconnect
-		this._sendPacket(Util.COMMAND_CONNECT_HELLO)
+		this._sendPacket(COMMAND_CONNECT_HELLO)
 		this._connectionState = ConnectionState.SynSent
 	}
 
 	private log(message: string): void {
 		// tslint:disable-next-line: no-floating-promises
-		this.onLog(message)
+		void this.onLog(message)
 	}
 
 	public sendCommands(commands: Array<{ payload: number[]; rawName: string; trackingId: number }>): void {
-		commands.forEach(cmd => {
+		commands.forEach((cmd) => {
 			this.sendCommand(cmd.payload, cmd.rawName, cmd.trackingId)
 		})
 	}
@@ -184,7 +193,7 @@ export class AtemSocketChild {
 			trackingId,
 			lastSent: Date.now(),
 			payload: buffer,
-			resent: 0
+			resent: 0,
 		})
 	}
 
@@ -192,12 +201,14 @@ export class AtemSocketChild {
 		this._socket = createSocket('udp4')
 		this._socket.bind()
 		this._socket.on('message', (packet, rinfo) => this._receivePacket(packet, rinfo))
-		this._socket.on('error', async err => {
+		this._socket.on('error', (err) => {
 			this.log(`Connection error: ${err}`)
 
 			if (this._connectionState === ConnectionState.Established) {
 				// If connection is open, then restart. Otherwise the reconnectTimer will handle it
-				await this.restartConnection()
+				this.restartConnection().catch((e) => {
+					this.log(`Failed to restartConnection: ${e?.message ?? e}`)
+				})
 			}
 		})
 
@@ -212,7 +223,7 @@ export class AtemSocketChild {
 		return packetId === ackId || ((pktIsShortlyBefore || pktIsBeforeWrap) && !pktIsShortlyAfter)
 	}
 
-	private async _receivePacket(packet: Buffer, rinfo: RemoteInfo): Promise<void> {
+	private _receivePacket(packet: Buffer, rinfo: RemoteInfo): void {
 		if (this._debugBuffers) this.log(`RECV ${packet.toString('hex')}`)
 		this._lastReceivedAt = Date.now()
 		const length = packet.readUInt16BE(0) & 0x07ff
@@ -262,11 +273,11 @@ export class AtemSocketChild {
 			if (flags & PacketFlag.AckReply) {
 				const ackPacketId = packet.readUInt16BE(4)
 				const ackedCommands: Array<{ packetId: number; trackingId: number }> = []
-				this._inFlight = this._inFlight.filter(pkt => {
+				this._inFlight = this._inFlight.filter((pkt) => {
 					if (this._isPacketCoveredByAck(ackPacketId, pkt.packetId)) {
 						ackedCommands.push({
 							packetId: pkt.packetId,
-							trackingId: pkt.trackingId
+							trackingId: pkt.trackingId,
 						})
 						return false
 					} else {
@@ -279,7 +290,9 @@ export class AtemSocketChild {
 			}
 		}
 
-		await Promise.all(ps)
+		Promise.all(ps).catch((e) => {
+			this.log(`Failed to receivePacket: ${e?.message ?? e}`)
+		})
 	}
 
 	private _sendPacket(packet: Buffer): void {
@@ -325,7 +338,7 @@ export class AtemSocketChild {
 		// The atem will ask for MAX_PACKET_ID to be retransmitted when it really wants 0
 		fromId = fromId % MAX_PACKET_ID
 
-		const fromIndex = this._inFlight.findIndex(pkt => pkt.packetId === fromId)
+		const fromIndex = this._inFlight.findIndex((pkt) => pkt.packetId === fromId)
 		if (fromIndex === -1) {
 			// fromId is not inflight, so we cannot resend. only fix is to abort
 			this.log(`Unable to resend: ${fromId}`)
@@ -346,7 +359,7 @@ export class AtemSocketChild {
 		}
 	}
 
-	private _checkForRetransmit(): Promise<void> {
+	private async _checkForRetransmit(): Promise<void> {
 		for (const sentPacket of this._inFlight) {
 			if (sentPacket.lastSent + IN_FLIGHT_TIMEOUT < Date.now()) {
 				if (

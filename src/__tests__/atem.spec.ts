@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Atem, DEFAULT_PORT } from '../atem'
 import { CutCommand } from '../commands'
 import { promisify } from 'util'
@@ -33,10 +34,10 @@ describe('Atem', () => {
 				debugBuffers: false,
 				disableMultithreaded: true,
 				log: (conn as any)._log,
-				port: DEFAULT_PORT
+				port: DEFAULT_PORT,
 			})
 		} finally {
-			conn.destroy()
+			await conn.destroy()
 		}
 	})
 	test('constructor test 2', async () => {
@@ -53,10 +54,10 @@ describe('Atem', () => {
 				debugBuffers: true,
 				disableMultithreaded: false,
 				log: (conn as any)._log,
-				port: 23
+				port: 23,
 			})
 		} finally {
-			conn.destroy()
+			await conn.destroy()
 		}
 	})
 
@@ -75,7 +76,7 @@ describe('Atem', () => {
 			expect(socket.connect).toHaveBeenCalledTimes(1)
 			expect(socket.connect).toHaveBeenCalledWith('127.9.8.7', 98)
 		} finally {
-			conn.destroy()
+			await conn.destroy()
 		}
 	})
 
@@ -94,7 +95,7 @@ describe('Atem', () => {
 			expect(socket.disconnect).toHaveBeenCalledTimes(1)
 			expect(socket.disconnect).toHaveBeenCalledWith()
 		} finally {
-			conn.destroy()
+			await conn.destroy()
 		}
 	})
 
@@ -109,13 +110,13 @@ describe('Atem', () => {
 			let nextId = 123
 			Object.defineProperty(socket, 'nextCommandTrackingId', {
 				get: jest.fn(() => nextId++),
-				set: jest.fn()
+				set: jest.fn(),
 			})
 			expect(socket.nextCommandTrackingId).toEqual(123)
 
 			socket.sendCommands = jest.fn(() => Promise.resolve(35) as any)
 
-			const sentQueue = (conn as any)._sentQueue as object
+			const sentQueue = (conn as any)._sentQueue as Record<string, unknown>
 			expect(Object.keys(sentQueue)).toHaveLength(0)
 
 			const cmd = new CutCommand(0)
@@ -127,8 +128,8 @@ describe('Atem', () => {
 			expect(socket.sendCommands).toHaveBeenCalledWith([
 				{
 					rawCommand: cmd,
-					trackingId: 124
-				}
+					trackingId: 124,
+				},
 			])
 
 			// Trigger the ack, and it should switfy resolve
@@ -138,7 +139,7 @@ describe('Atem', () => {
 			// Finally, it should now resolve without a timeout
 			expect(await res).toBeUndefined()
 		} finally {
-			conn.destroy()
+			await conn.destroy()
 		}
 	}, 500)
 
@@ -153,13 +154,13 @@ describe('Atem', () => {
 			let nextId = 123
 			Object.defineProperty(socket, 'nextCommandTrackingId', {
 				get: jest.fn(() => nextId++),
-				set: jest.fn()
+				set: jest.fn(),
 			})
 			expect(socket.nextCommandTrackingId).toEqual(123)
 
 			socket.sendCommands = jest.fn(() => Promise.reject(35) as any)
 
-			const sentQueue = (conn as any)._sentQueue as object
+			const sentQueue = (conn as any)._sentQueue as Record<string, unknown>
 			expect(Object.keys(sentQueue)).toHaveLength(0)
 
 			const cmd = new CutCommand(0)
@@ -170,24 +171,19 @@ describe('Atem', () => {
 			expect(socket.sendCommands).toHaveBeenCalledWith([
 				{
 					rawCommand: cmd,
-					trackingId: 124
-				}
+					trackingId: 124,
+				},
 			])
 
 			expect(Object.keys(sentQueue)).toHaveLength(0)
 
 			// Finally, it should now resolve without a timeout
-			try {
-				await res
-				// Should not get here
-				expect(false).toBeTruthy()
-			} catch (e) {
-				// Should be the error thrown by sendCommand
-				expect(e).toEqual(35)
-			}
+			// Should be the error thrown by sendCommand
+			await expect(res).rejects.toBe(35)
+
 			// expect(await res).toEqual(cmd)
 		} finally {
-			conn.destroy()
+			await conn.destroy()
 		}
 	}, 500)
 })

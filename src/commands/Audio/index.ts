@@ -1,2 +1,6 @@
+export * from './AudioMixerHeadphonesCommand'
 export * from './AudioMixerInputCommand'
 export * from './AudioMixerMasterCommand'
+export * from './AudioMixerMonitorCommand'
+export * from './AudioMixerPropertiesCommand'
+export * from './AudioMixerResetPeaksCommand'

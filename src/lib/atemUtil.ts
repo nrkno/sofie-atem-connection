@@ -1,6 +1,6 @@
 import * as Enums from '../enums'
 import WaveFile = require('wavefile')
-import * as bigInt from 'big-integer'
+import type { IDeserializedCommand, ISerializableCommand } from '../commands'
 
 export function bufToBase64String(buffer: Buffer, start: number, length: number): string {
 	return buffer.toString('base64', start, start + length)
@@ -9,50 +9,8 @@ export function bufToBase64String(buffer: Buffer, start: number, length: number)
 export function bufToNullTerminatedString(buffer: Buffer, start: number, length: number): string {
 	const slice = buffer.slice(start, start + length)
 	const nullIndex = slice.indexOf('\0')
-	return slice.toString('ascii', 0, nullIndex < 0 ? slice.length : nullIndex)
+	return slice.toString('utf8', 0, nullIndex < 0 ? slice.length : nullIndex)
 }
-
-const UINT63_MAX = bigInt.one.shiftLeft(63)
-const UINT64_MAX = bigInt.one.shiftLeft(64)
-export function bufToBigInt(buffer: Buffer, start: number): bigInt.BigInteger {
-	const hex = buffer.toString('hex', start, start + 8)
-	const rawVal = bigInt(hex, 16)
-	if (rawVal.greater(UINT63_MAX)) {
-		return UINT64_MAX.subtract(rawVal).negate()
-	} else {
-		return rawVal
-	}
-}
-
-export function bigIntToBuf(buffer: Buffer, val: bigInt.BigInteger, start: number): void {
-	if (val.isNegative()) val = UINT64_MAX.subtract(val.negate())
-
-	const str = val.toString(16).padStart(16, '0')
-	buffer.write(str, start, 'hex')
-}
-
-export const COMMAND_CONNECT_HELLO = Buffer.from([
-	0x10,
-	0x14,
-	0x53,
-	0xab,
-	0x00,
-	0x00,
-	0x00,
-	0x00,
-	0x00,
-	0x3a,
-	0x00,
-	0x00,
-	0x01,
-	0x00,
-	0x00,
-	0x00,
-	0x00,
-	0x00,
-	0x00,
-	0x00
-])
 
 /**
  * @todo: BALTE - 2018-5-24:
@@ -112,113 +70,138 @@ export function convertRGBAToYUV422(width: number, height: number, data: Buffer)
 }
 
 export interface VideoModeInfo {
+	format: Enums.VideoFormat
 	width: number
 	height: number
 }
 
-const dimsPAL: Pick<VideoModeInfo, 'width' | 'height'> = { width: 720, height: 576 }
-const dimsNTSC: Pick<VideoModeInfo, 'width' | 'height'> = { width: 640, height: 480 }
-const dims720p: Pick<VideoModeInfo, 'width' | 'height'> = { width: 1280, height: 720 }
-const dims1080p: Pick<VideoModeInfo, 'width' | 'height'> = { width: 1920, height: 1080 }
-const dims4k: Pick<VideoModeInfo, 'width' | 'height'> = { width: 3840, height: 2160 }
-const dims8k: Pick<VideoModeInfo, 'width' | 'height'> = { width: 7680, height: 4260 }
+const dimsPAL: Pick<VideoModeInfo, 'width' | 'height' | 'format'> = {
+	format: Enums.VideoFormat.SD,
+	width: 720,
+	height: 576,
+}
+const dimsNTSC: Pick<VideoModeInfo, 'width' | 'height' | 'format'> = {
+	format: Enums.VideoFormat.SD,
+	width: 640,
+	height: 480,
+}
+const dims720p: Pick<VideoModeInfo, 'width' | 'height' | 'format'> = {
+	format: Enums.VideoFormat.HD720,
+	width: 1280,
+	height: 720,
+}
+const dims1080p: Pick<VideoModeInfo, 'width' | 'height' | 'format'> = {
+	format: Enums.VideoFormat.HD1080,
+	width: 1920,
+	height: 1080,
+}
+const dims4k: Pick<VideoModeInfo, 'width' | 'height' | 'format'> = {
+	format: Enums.VideoFormat.UHD4K,
+	width: 3840,
+	height: 2160,
+}
+const dims8k: Pick<VideoModeInfo, 'width' | 'height' | 'format'> = {
+	format: Enums.VideoFormat.UDH8K,
+	width: 7680,
+	height: 4260,
+}
 const VideoModeInfoImpl: { [key in Enums.VideoMode]: VideoModeInfo } = {
 	[Enums.VideoMode.N525i5994NTSC]: {
-		...dimsNTSC
+		...dimsNTSC,
 	},
 	[Enums.VideoMode.P625i50PAL]: {
-		...dimsPAL
+		...dimsPAL,
 	},
 	[Enums.VideoMode.N525i5994169]: {
-		...dimsNTSC
+		...dimsNTSC,
 	},
 	[Enums.VideoMode.P625i50169]: {
-		...dimsPAL
+		...dimsPAL,
 	},
 
 	[Enums.VideoMode.P720p50]: {
-		...dims720p
+		...dims720p,
 	},
 	[Enums.VideoMode.N720p5994]: {
-		...dims720p
+		...dims720p,
 	},
 	[Enums.VideoMode.P1080i50]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.N1080i5994]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.N1080p2398]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.N1080p24]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.P1080p25]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.N1080p2997]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.P1080p50]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.N1080p5994]: {
-		...dims1080p
+		...dims1080p,
 	},
 
 	[Enums.VideoMode.N4KHDp2398]: {
-		...dims4k
+		...dims4k,
 	},
 	[Enums.VideoMode.N4KHDp24]: {
-		...dims4k
+		...dims4k,
 	},
 	[Enums.VideoMode.P4KHDp25]: {
-		...dims4k
+		...dims4k,
 	},
 	[Enums.VideoMode.N4KHDp2997]: {
-		...dims4k
+		...dims4k,
 	},
 
 	[Enums.VideoMode.P4KHDp5000]: {
-		...dims4k
+		...dims4k,
 	},
 	[Enums.VideoMode.N4KHDp5994]: {
-		...dims4k
+		...dims4k,
 	},
 
 	[Enums.VideoMode.N8KHDp2398]: {
-		...dims8k
+		...dims8k,
 	},
 	[Enums.VideoMode.N8KHDp24]: {
-		...dims8k
+		...dims8k,
 	},
 	[Enums.VideoMode.P8KHDp25]: {
-		...dims8k
+		...dims8k,
 	},
 	[Enums.VideoMode.N8KHDp2997]: {
-		...dims8k
+		...dims8k,
 	},
 	[Enums.VideoMode.P8KHDp50]: {
-		...dims8k
+		...dims8k,
 	},
 	[Enums.VideoMode.N8KHDp5994]: {
-		...dims8k
+		...dims8k,
 	},
 
 	[Enums.VideoMode.N1080p30]: {
-		...dims1080p
+		...dims1080p,
 	},
 	[Enums.VideoMode.N1080p60]: {
-		...dims1080p
-	}
+		...dims1080p,
+	},
 }
 
 export function getVideoModeInfo(videoMode: Enums.VideoMode): VideoModeInfo | undefined {
 	return VideoModeInfoImpl[videoMode]
 }
 
-export function convertWAVToRaw(inputBuffer: Buffer): Buffer {
+export function convertWAVToRaw(inputBuffer: Buffer, model: Enums.Model | undefined): Buffer {
 	const wav = new (WaveFile as any)(inputBuffer)
 
 	if (wav.fmt.bitsPerSample !== 24) {
@@ -232,11 +215,22 @@ export function convertWAVToRaw(inputBuffer: Buffer): Buffer {
 	const buffer = Buffer.from(wav.data.samples)
 	const buffer2 = Buffer.alloc(buffer.length)
 	for (let i = 0; i < buffer.length; i += 3) {
-		// 24bit samples, change endian
+		// 24bit samples, change endian from wavfile to atem requirements
 		buffer2.writeUIntBE(buffer.readUIntLE(i, 3), i, 3)
 	}
 
-	return buffer2
+	if (model === undefined || model >= Enums.Model.PS4K) {
+		// If we don't know the model, assume we want the newer mode as that is more likely
+		// Newer models want a weird byte order
+		const buffer3 = Buffer.alloc(buffer2.length)
+		for (let i = 0; i < buffer.length; i += 4) {
+			buffer3.writeUIntBE(buffer2.readUIntLE(i, 4), i, 4)
+		}
+
+		return buffer3
+	} else {
+		return buffer2
+	}
 }
 
 export function UInt16BEToDecibel(input: number): number {
@@ -275,8 +269,22 @@ export function getComponents(val: number): number[] {
 	return res
 }
 
-export function commandStringify(command: any): string {
-	return JSON.stringify(command, (_key, value) =>
-		typeof value === 'bigint' || bigInt.isInstance(value) ? value.toString() : value
-	)
+export function combineComponents(vals: number[]): number {
+	let res = 0
+	for (const val of vals) {
+		res |= val
+	}
+	return res
+}
+
+export function commandStringify(command: IDeserializedCommand | ISerializableCommand): string {
+	return JSON.stringify(command, (_key, value) => (typeof value === 'bigint' ? value.toString() : value))
+}
+
+export function omit<T, K extends keyof T>(o: T, ...keys: K[]): Omit<T, K> {
+	const obj: any = { ...o }
+	for (const key of keys) {
+		delete obj[key]
+	}
+	return obj
 }

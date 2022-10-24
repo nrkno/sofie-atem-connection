@@ -1,3 +1,4 @@
+/* eslint-disable no-process-exit */
 const fs = require('fs')
 const path = require('path')
 const { AtemSocket } = require('../../../dist/lib/atemSocket')
@@ -11,36 +12,34 @@ if (args.length < 2) {
 }
 
 const socket = new AtemSocket({
-    debug: false,
-    log: console.log,
-    disableMultithreaded: true,
-    address: args[0],
-    port: DEFAULT_PORT
+	debug: false,
+	log: console.log,
+	disableMultithreaded: true,
+	address: args[0],
+	port: DEFAULT_PORT,
 })
 socket.on('disconnect', () => {
-    console.log('disconnect')
-    process.exit(1)
+	console.log('disconnect')
+	process.exit(1)
 })
-
 
 const output = []
 
-socket.on('commandsReceived', cmds => {
-    const initComplete = cmds.find(cmd => cmd.constructor.name === 'InitCompleteCommand')
-    if (initComplete) {
-        console.log('complete')
+socket.on('commandsReceived', (cmds) => {
+	const initComplete = cmds.find((cmd) => cmd.constructor.name === 'InitCompleteCommand')
+	if (initComplete) {
+		console.log('complete')
 		const filePath = path.resolve(__dirname, `./${args[1]}.data`)
-        fs.writeFileSync(filePath, output.join('\n'))
-        process.exit(0)
-    }
+		fs.writeFileSync(filePath, output.join('\n'))
+		process.exit(0)
+	}
 })
 
-const origParse = (socket._parseCommands).bind(socket)
+const origParse = socket._parseCommands.bind(socket)
 socket._parseCommands = (payload) => {
-    output.push(payload.toString('hex'))
-    return origParse(payload)
+	output.push(payload.toString('hex'))
+	return origParse(payload)
 }
-
 
 socket.connect()
 console.log('connecting')

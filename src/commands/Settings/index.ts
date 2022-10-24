@@ -1,2 +1,7 @@
+export * from './MediaPool'
 export * from './MultiViewerSourceCommand'
+export * from './MultiViewerPropertiesCommand'
+export * from './MultiViewerVuOpacityCommand'
+export * from './MultiViewerWindowVuMeterCommand'
+export * from './MultiViewerWindowSafeAreaCommand'
 export * from './VideoMode'

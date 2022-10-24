@@ -4,38 +4,100 @@ import {
 	FairlightAnalogInputLevel,
 	FairlightAudioSourceType,
 	ExternalPortType,
-	FairlightInputType
+	FairlightInputType,
 } from '../enums'
 
-// export interface FairlightAudioMasterChannel {
-// 	equalizerEnabled: boolean
-// 	equalizerGain: number
-// 	makeUpGain: number
-// 	/** Gain in decibel, -Infinity to +6dB */
-// 	faderGain: number
-// 	followFadeToBlack: boolean
-// }
+export interface FairlightAudioDynamicsState {
+	makeUpGain?: number
+
+	limiter?: FairlightAudioLimiterState
+	compressor?: FairlightAudioCompressorState
+	expander?: FairlightAudioExpanderState
+}
+
+export interface FairlightAudioLimiterState {
+	limiterEnabled: boolean
+	threshold: number
+	attack: number
+	hold: number
+	release: number
+}
+
+export interface FairlightAudioCompressorState {
+	compressorEnabled: boolean
+	threshold: number
+	ratio: number
+	attack: number
+	hold: number
+	release: number
+}
+
+export interface FairlightAudioExpanderState {
+	expanderEnabled: boolean
+	gateEnabled: boolean
+	threshold: number
+	range: number
+	ratio: number
+	attack: number
+	hold: number
+	release: number
+}
+
+export interface FairlightAudioEqualizerBandState {
+	bandEnabled: boolean
+
+	readonly supportedShapes: number[] // TODO
+	shape: number // TODO
+
+	readonly supportedFrequencyRanges: number[] // TODO
+	frequencyRange: number // TODO
+
+	frequency: number
+
+	gain: number
+	qFactor: number
+}
+
+export interface FairlightAudioMasterChannelPropertiesState {
+	/** Gain in decibel, -Infinity to +6dB */
+	faderGain: number
+	followFadeToBlack: boolean
+}
+export interface FairlightAudioMasterChannel {
+	properties?: FairlightAudioMasterChannelPropertiesState
+
+	equalizer?: FairlightAudioEqualizerState
+	dynamics?: Omit<FairlightAudioDynamicsState, 'expander'>
+}
+
+export interface FairlightAudioMonitorChannel {
+	gain: number
+	inputMasterGain: number
+	inputMasterMuted: boolean
+	inputTalkbackGain: number
+	inputSidetoneGain: number
+}
 
 export interface FairlightAudioSource {
-	properties?: FairlightAudioSourceProperties
+	properties?: FairlightAudioSourcePropertiesState
+	equalizer?: FairlightAudioEqualizerState
+	dynamics?: FairlightAudioDynamicsState
 }
-export interface FairlightAudioSourceProperties {
+export interface FairlightAudioEqualizerState {
+	enabled: boolean
+	gain: number
+	readonly bands: Array<FairlightAudioEqualizerBandState | undefined>
+}
+export interface FairlightAudioSourcePropertiesState {
 	readonly sourceType: FairlightAudioSourceType
 
 	readonly maxFramesDelay: number
 	framesDelay: number
 
-	// TODO - mono vs stereo
-
-	gain: number
-
 	readonly hasStereoSimulation: boolean
 	stereoSimulation: number
 
-	readonly equalizerBands: number
-	equalizerEnabled: boolean
-	equalizerGain: number
-	makeUpGain: number
+	gain: number
 	balance: number
 	faderGain: number
 
@@ -46,7 +108,14 @@ export interface FairlightAudioSourceProperties {
 export interface FairlightAudioInput {
 	properties?: FairlightAudioInputProperties
 	sources: { [sourceId: string]: FairlightAudioSource | undefined }
+
+	// analog?: FairlightAudioInputAnalog
 }
+
+// export interface FairlightAudioInputAnalog {
+// 	readonly supportedInputLevels: FairlightAnalogInputLevel[]
+// 	inputLevel: FairlightAnalogInputLevel
+// }
 
 export interface FairlightAudioInputProperties {
 	readonly inputType: FairlightInputType
@@ -61,5 +130,8 @@ export interface FairlightAudioInputProperties {
 
 export interface AtemFairlightAudioState {
 	inputs: { [input: number]: FairlightAudioInput | undefined }
-	// master?: FairlightAudioMasterChannel
+	master?: FairlightAudioMasterChannel
+	monitor?: FairlightAudioMonitorChannel
+
+	audioFollowVideoCrossfadeTransitionEnabled?: boolean
 }

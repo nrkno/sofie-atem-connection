@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Atem } from '../../dist'
 import { DataTransferManager } from '../../dist/dataTransfer'
 import * as fs from 'fs'
@@ -14,7 +15,7 @@ nb.on('connected', async () => {
 
 	const procCmd = (cmd: any, dir: string): any => {
 		const props = { ...cmd.properties }
-		Object.keys(props).forEach(k => {
+		Object.keys(props).forEach((k) => {
 			if (Buffer.isBuffer(props[k])) {
 				const buf = props[k] as Buffer
 				props[k] = { bufferLength: buf.length }
@@ -23,21 +24,21 @@ nb.on('connected', async () => {
 		return {
 			name: cmd.constructor.name,
 			properties: props,
-			direction: dir
+			direction: dir,
 		}
 	}
 
 	const transfer = new DataTransferManager()
-	transfer.startCommandSending(cmds => {
-		return cmds.map(cmd => {
+	transfer.startCommandSending((cmds) => {
+		return cmds.map(async (cmd) => {
 			commands.push(procCmd(cmd, 'send'))
 			return nb.sendCommand(cmd)
 		})
 	})
-	nb.on('receivedCommands', cmds => {
-		cmds.forEach((cmd): void => {
+	nb.on('receivedCommands', (cmds) => {
+		cmds.forEach(async (cmd): Promise<void> => {
 			commands.push(procCmd(cmd, 'recv'))
-			transfer.handleCommand(cmd)
+			transfer.queueCommand(cmd)
 		})
 	})
 
@@ -48,7 +49,7 @@ nb.on('connected', async () => {
 
 	console.log('uploaded')
 
-	await new Promise(resolve => setTimeout(resolve, 1000))
+	await new Promise((resolve) => setTimeout(resolve, 1000))
 
 	// console.log(JSON.stringify({
 	// 	sent: sentCommands,
@@ -58,4 +59,7 @@ nb.on('connected', async () => {
 
 	process.exit(0)
 })
-nb.connect('10.42.13.98', 9910)
+nb.connect('10.42.13.98', 9910).catch((e) => {
+	console.error(e)
+	process.exit(0)
+})

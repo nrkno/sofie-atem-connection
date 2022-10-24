@@ -15,7 +15,7 @@ export class LockStateCommand extends BasicWritableCommand<LockStateProps> {
 	public serialize(): Buffer {
 		const buffer = Buffer.alloc(4)
 		buffer.writeUInt16BE(this.properties.index, 0)
-		buffer[2] = this.properties.locked ? 1 : 0
+		buffer.writeUInt8(this.properties.locked ? 1 : 0, 2)
 		return buffer
 	}
 }
@@ -26,7 +26,7 @@ export class LockStateUpdateCommand extends DeserializedCommand<LockStateProps> 
 	public static deserialize(rawCommand: Buffer): LockStateUpdateCommand {
 		const properties = {
 			index: rawCommand.readUInt16BE(0),
-			locked: rawCommand.readUInt8(2) === 1
+			locked: rawCommand.readUInt8(2) === 1,
 		}
 
 		return new LockStateUpdateCommand(properties)

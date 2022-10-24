@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/ban-types */
 import {
 	CutCommand,
 	ProductIdentifierCommand,
@@ -6,7 +8,7 @@ import {
 	PreviewInputUpdateCommand,
 	ISerializableCommand,
 	BasicWritableCommand,
-	DeserializedCommand
+	DeserializedCommand,
 } from '../../commands'
 import { ProtocolVersion, Model } from '../../enums'
 import { AtemSocket } from '../atemSocket'
@@ -19,7 +21,7 @@ import { AtemSocketChild } from '../atemSocketChild'
 jest.mock('../atemSocketChild')
 
 // @ts-ignore
-export class AtemSocketChildMock implements AtemSocketChild {
+class AtemSocketChildMock implements AtemSocketChild {
 	public onDisconnect: () => Promise<void>
 	public onLog: (message: string) => Promise<void>
 	public onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>
@@ -30,15 +32,15 @@ export class AtemSocketChildMock implements AtemSocketChild {
 		// this._address = options.address
 		// this._port = options.port
 
-		this.onDisconnect = (): Promise<void> => Promise.resolve()
+		this.onDisconnect = async (): Promise<void> => Promise.resolve()
 		this.onLog = async (msg): Promise<void> => console.log(msg)
-		this.onCommandsReceived = (): Promise<void> => Promise.resolve()
-		this.onCommandsAcknowledged = (): Promise<void> => Promise.resolve()
+		this.onCommandsReceived = async (): Promise<void> => Promise.resolve()
+		this.onCommandsAcknowledged = async (): Promise<void> => Promise.resolve()
 	}
 
-	public connect = jest.fn(() => Promise.resolve())
-	public disconnect = jest.fn(() => Promise.resolve())
-	public sendCommands = jest.fn(() => Promise.resolve())
+	public connect = jest.fn(async () => Promise.resolve())
+	public disconnect = jest.fn(async () => Promise.resolve())
+	public sendCommands = jest.fn(async () => Promise.resolve())
 }
 
 const AtemSocketChildSingleton = new AtemSocketChildMock()
@@ -67,7 +69,7 @@ class ThreadedClassManagerMock {
 		return {
 			stop: (): void => {
 				// Ignore
-			}
+			},
 		}
 	}
 }
@@ -75,7 +77,7 @@ const ThreadedClassManagerSingleton = new ThreadedClassManagerMock()
 jest.spyOn(ThreadedClassManager, 'onEvent').mockImplementation(ThreadedClassManagerSingleton.onEvent)
 
 describe('AtemSocket', () => {
-	let clock: fakeTimers.InstalledClock
+	let clock: fakeTimers.Clock
 
 	function mockClear(lite?: boolean): void {
 		;(AtemSocketChild as any).mockClear()
@@ -84,10 +86,10 @@ describe('AtemSocket', () => {
 		AtemSocketChildSingleton.sendCommands.mockClear()
 
 		if (!lite) {
-			AtemSocketChildSingleton.onLog = (): Promise<void> => Promise.resolve()
-			AtemSocketChildSingleton.onDisconnect = (): Promise<void> => Promise.resolve()
-			AtemSocketChildSingleton.onCommandsAcknowledged = (): Promise<void> => Promise.resolve()
-			AtemSocketChildSingleton.onCommandsReceived = (): Promise<void> => Promise.resolve()
+			AtemSocketChildSingleton.onLog = async (): Promise<void> => Promise.resolve()
+			AtemSocketChildSingleton.onDisconnect = async (): Promise<void> => Promise.resolve()
+			AtemSocketChildSingleton.onCommandsAcknowledged = async (): Promise<void> => Promise.resolve()
+			AtemSocketChildSingleton.onCommandsReceived = async (): Promise<void> => Promise.resolve()
 		}
 	}
 	beforeEach(() => {
@@ -105,7 +107,7 @@ describe('AtemSocket', () => {
 			address: '',
 			port: 890,
 			disableMultithreaded: true,
-			childProcessTimeout: 100
+			childProcessTimeout: 100,
 		})
 	}
 
@@ -239,14 +241,10 @@ describe('AtemSocket', () => {
 		const socket = createSocket()
 		expect(getChild(socket)).toBeFalsy()
 
-		try {
-			const cmd = new CutCommand(0)
-			await socket.sendCommands([{ rawCommand: cmd, trackingId: 1 }])
-			// Should not get here
-			expect(false).toBeTruthy()
-		} catch (e) {
-			expect(e.message).toEqual('Socket process is not open')
-		}
+		const cmd = new CutCommand(0)
+		await expect(socket.sendCommands([{ rawCommand: cmd, trackingId: 1 }])).rejects.toEqual(
+			new Error('Socket process is not open')
+		)
 
 		// connect was called explicitly
 		expect(AtemSocketChild).toHaveBeenCalledTimes(0)
@@ -263,18 +261,14 @@ describe('AtemSocket', () => {
 		mockClear()
 		expect(getChild(socket)).toBeTruthy()
 
-		const cmd = (new ProductIdentifierCommand({
+		const cmd = new ProductIdentifierCommand({
 			model: Model.OneME,
-			productIdentifier: 'ATEM OneME'
-		}) as any) as ISerializableCommand
+			productIdentifier: 'ATEM OneME',
+		}) as any as ISerializableCommand
 		expect(cmd.serialize).toBeFalsy()
-		try {
-			await socket.sendCommands([{ rawCommand: cmd, trackingId: 1 }])
-			// Should not get here
-			expect(false).toBeTruthy()
-		} catch (e) {
-			expect(e.message).toEqual('Command ProductIdentifierCommand is not serializable')
-		}
+		await expect(socket.sendCommands([{ rawCommand: cmd, trackingId: 1 }])).rejects.toEqual(
+			new Error('Command ProductIdentifierCommand is not serializable')
+		)
 
 		// connect was called explicitly
 		expect(AtemSocketChild).toHaveBeenCalledTimes(0)
@@ -314,8 +308,8 @@ describe('AtemSocket', () => {
 			{
 				payload: expectedBuffer,
 				rawName: 'TEST',
-				trackingId: cmdId
-			}
+				trackingId: cmdId,
+			},
 		])
 	})
 
@@ -442,7 +436,7 @@ describe('AtemSocket', () => {
 			0x00,
 			0x00,
 			0x01,
-			0x23
+			0x23,
 		])
 		const testCmd2 = Buffer.from([
 			0,
@@ -453,7 +447,7 @@ describe('AtemSocket', () => {
 			0x01,
 			0x00,
 			0x04,
-			0x44
+			0x44,
 		])
 		const pktId = 822
 		expect(AtemSocketChildSingleton.onCommandsReceived).toBeDefined()
@@ -558,7 +552,7 @@ describe('AtemSocket', () => {
 			0x00,
 			0x00,
 			0x01,
-			0x23
+			0x23,
 		])
 		const testCmd2 = Buffer.from([
 			0,
@@ -569,7 +563,7 @@ describe('AtemSocket', () => {
 			0x01,
 			0x00,
 			0x04,
-			0x44
+			0x44,
 		])
 		const pktId = 822
 		expect(AtemSocketChildSingleton.onCommandsReceived).toBeDefined()
@@ -596,19 +590,19 @@ describe('AtemSocket', () => {
 		mockClear()
 		expect(getChild(socket)).toBeTruthy()
 
-		const connect = (socket.connect = jest.fn(() => Promise.resolve()))
+		const connect = (socket.connect = jest.fn(async () => Promise.resolve()))
 
 		const disconnected = jest.fn()
 		socket.on('disconnect', disconnected)
 
-		expect(ThreadedClassManagerSingleton.handlers).toHaveLength(1)
+		expect(ThreadedClassManagerSingleton.handlers).toHaveLength(2) // 2 eventHandlers: 1 for restart, 1 for thread_closed
 		// simulate a restart
-		ThreadedClassManagerSingleton.handlers.forEach(handler => handler())
+		ThreadedClassManagerSingleton.handlers.forEach((handler) => handler())
 
 		expect(disconnected).toHaveBeenCalledTimes(1)
 		expect(connect).toHaveBeenCalledTimes(1)
 	})
-	// test('receive - thread restart with error', async () => {
+	// testIgnore('receive - thread restart with error', async () => {
 	// 	const socket = createSocket()
 	// 	expect(getChild(socket)).toBeFalsy()
 

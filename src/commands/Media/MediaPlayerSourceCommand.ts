@@ -6,7 +6,7 @@ export class MediaPlayerSourceCommand extends WritableCommand<MediaPlayerSource>
 	public static MaskFlags = {
 		sourceType: 1 << 0,
 		stillIndex: 1 << 1,
-		clipIndex: 1 << 2
+		clipIndex: 1 << 2,
 	}
 
 	public static readonly rawName = 'MPSS'
@@ -46,7 +46,7 @@ export class MediaPlayerSourceUpdateCommand extends DeserializedCommand<MediaPla
 		const properties = {
 			sourceType: rawCommand.readUInt8(1),
 			stillIndex: rawCommand.readUInt8(2),
-			clipIndex: rawCommand.readUInt8(3)
+			clipIndex: rawCommand.readUInt8(3),
 		}
 
 		return new MediaPlayerSourceUpdateCommand(mediaPlayerId, properties)
@@ -59,7 +59,7 @@ export class MediaPlayerSourceUpdateCommand extends DeserializedCommand<MediaPla
 
 		state.media.players[this.mediaPlayerId] = {
 			...AtemStateUtil.getMediaPlayer(state, this.mediaPlayerId),
-			...this.properties
+			...this.properties,
 		}
 		return `media.players.${this.mediaPlayerId}`
 	}
