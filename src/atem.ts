@@ -902,4 +902,185 @@ export class Atem extends BasicAtem {
 
 		return Promise.reject()
 	}
+	
+	//Set camera iris between 0.0 - 1.0
+	public setCameraIris(cameraId: number, irisLevel: number, isRel: boolean | false): Promise<void> {
+		var camera = this.state!.cameras[cameraId];
+		if(camera !== undefined) {
+			//Add our new value after copying the previous values
+			camera.iris = irisLevel;
+			camera.command = "iris";
+
+			const command = new Commands.CameraControlCommand(cameraId, camera, isRel);
+			return this.sendCommand(command)
+		}
+
+		return Promise.reject()
+	}
+
+	//Set camera to enable auto iris
+	public setCameraAutoIris(cameraId: number): Promise<void> {
+		var camera = this.state!.cameras[cameraId];
+		if(camera !== undefined) {
+			//Add our new value after copying the previous values
+			camera.autoIris = true;
+			camera.command = "autoIris";
+
+			const command = new Commands.CameraControlCommand(cameraId, camera, false);
+			return this.sendCommand(command)
+		}
+
+		return Promise.reject()
+	}
+
+	//Set camera focus between 0.0 - 1.0
+	public setCameraFocus(cameraId: number, focusLevel: number, isRel: boolean | false): Promise<void> {
+		var camera = this.state!.cameras[cameraId];
+		if(camera !== undefined) {
+			//Add our new value after copying the previous values
+			camera.focus = focusLevel;
+			camera.command = "focus";
+
+			const command = new Commands.CameraControlCommand(cameraId, camera, isRel);
+			return this.sendCommand(command)
+		}
+
+		return Promise.reject()
+	}
+
+	//Set camera to enable auto focus
+	public setCameraAutoFocus(cameraId: number): Promise<void> {
+		var camera = this.state!.cameras[cameraId];
+		if(camera !== undefined) {
+			//Add our new value after copying the previous values
+			camera.autoFocused = true;
+			camera.command = "autoFocus";
+
+			const command = new Commands.CameraControlCommand(cameraId, camera, false);
+			return this.sendCommand(command)
+		}
+
+		return Promise.reject()
+	}
+
+	//Set camera zoom position between 0.0 - 1.0
+	public setCameraZoomPosition(cameraId: number, zoomPosition: number, isRel: boolean | false): Promise<void> {
+		var camera = this.state!.cameras[cameraId];
+		if(camera !== undefined) {
+			//Add our new value after copying the previous values
+			camera.zoomPosition = zoomPosition;
+			camera.command = "zoomPosition";
+
+			const command = new Commands.CameraControlCommand(cameraId, camera, isRel);
+			return this.sendCommand(command)
+		}
+
+		return Promise.reject()
+	}
+
+	//Set camera zoom speed between 0.0 - 1.0
+	public setCameraZoomSpeed(cameraId: number, zoomSpeed: number, isRel: boolean | false): Promise<void> {
+		var camera = this.state!.cameras[cameraId];
+		if(camera !== undefined) {
+			//Add our new value after copying the previous values
+			camera.zoomSpeed = zoomSpeed;
+			camera.command = "zoomSpeed";
+
+			const command = new Commands.CameraControlCommand(cameraId, camera, isRel);
+			return this.sendCommand(command)
+		}
+
+		return Promise.reject()
+	}
+
+	//Set the lift RGBY between -1.0-1.0
+	public setCameraLiftRGBY(cameraId: number, r: number, g: number, b: number, y: number, isRel: boolean | false): Promise<void> {
+		var camera = this.state!.cameras[cameraId];
+		if(camera !== undefined) {
+			//Add our new value after copying the previous values
+			camera.liftRGBY = [r, g, b, y];
+			camera.command = "liftRGBY";
+
+			const command = new Commands.CameraControlCommand(cameraId, camera, isRel);
+			return this.sendCommand(command)
+		}
+
+		return Promise.reject()
+	}
+
+	//Set the gamma RGBY between -1.0-1.0
+	public setCameraGammaRGBY(cameraId: number, r: number, g: number, b: number, y: number, isRel: boolean | false): Promise<void> {
+		var camera = this.state!.cameras[cameraId];
+		if(camera !== undefined) {
+			//Add our new value after copying the previous values
+			camera.gammaRGBY = [r, g, b, y];
+			camera.command = "gammaRGBY";
+
+			const command = new Commands.CameraControlCommand(cameraId, camera, isRel);
+			return this.sendCommand(command)
+		}
+
+		return Promise.reject()
+	}
+
+	//Set the gain RGBY between -1.0-1.0
+	public setCameraGainRGBY(cameraId: number, r: number, g: number, b: number, y: number, isRel: boolean | false): Promise<void> {
+		var camera = this.state!.cameras[cameraId];
+		if(camera !== undefined) {
+			//Add our new value after copying the previous values
+			camera.gainRGBY = [r, g, b, y];
+			camera.command = "gainRGBY";
+
+			const command = new Commands.CameraControlCommand(cameraId, camera, isRel);
+			return this.sendCommand(command)
+		}
+
+		return Promise.reject()
+	}
+
+	//Set the contrast value between 0 - 1.0
+	public setCameraContrast(cameraId: number, contrast: number, isRel: boolean | false): Promise<void> {
+		var camera = this.state!.cameras[cameraId];
+		if(camera !== undefined) {
+			//Add our new value after copying the previous values
+			camera.contrast = contrast;
+			camera.command = "contrast";
+
+			const command = new Commands.CameraControlCommand(cameraId, camera, isRel);
+			return this.sendCommand(command)
+		}
+
+		return Promise.reject()
+	}
+
+	//Set the contrast value between 0 - 1.0
+	public setCameraLumMix(cameraId: number, lumMix: number, isRel: boolean | false): Promise<void> {
+		var camera = this.state!.cameras[cameraId];
+		if(camera !== undefined) {
+			//Add our new value after copying the previous values
+			camera.lumMix = lumMix;
+			camera.command = "lumMix";
+
+			const command = new Commands.CameraControlCommand(cameraId, camera, isRel);
+			return this.sendCommand(command)
+		}
+
+		return Promise.reject()
+	}
+
+	//Set the contrast value between 0 - 1.0
+	public setCameraHueSat(cameraId: number, hue: number, sat: number, isRel: boolean | false): Promise<void> {
+		var camera = this.state!.cameras[cameraId];
+		if(camera !== undefined) {
+			//Add our new value after copying the previous values
+			camera.hue = hue;
+			camera.saturation = sat;
+			camera.command = "hueSat";
+
+			const command = new Commands.CameraControlCommand(cameraId, camera, isRel);
+			return this.sendCommand(command)
+		}
+
+		return Promise.reject()
+	}
 }
