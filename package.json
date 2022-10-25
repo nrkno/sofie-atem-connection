@@ -39,14 +39,14 @@
     "docs:test": "yarn docs:html",
     "docs:html": "typedoc --tsconfig tsconfig.docs.json --entryPoints src/index.ts --excludePrivate --theme default --out docs",
     "docs:json": "typedoc --tsconfig tsconfig.docs.json --json docs/typedoc.json --entryPoints src/index.ts",
-    "release": "standard-version",
+    "release": "sofie-version",
     "reset": "git clean -dfx && git reset --hard && yarn",
     "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate",
     "validate:dev-dependencies": "yarn audit --groups devDependencies",
     "license-validate": "yarn sofie-licensecheck --allowPackages caniuse-lite@1.0.30001319"
   },
   "engines": {
-    "node": "^14.18 || ^16.14"
+    "node": "^14.18 || ^16.14 || ^18.0"
   },
   "files": [
     "/dist",
@@ -57,7 +57,7 @@
   ],
   "devDependencies": {
     "@sinonjs/fake-timers": "^7.1.2",
-    "@sofie-automation/code-standard-preset": "2.1.0-nightly-fix-prerelease-identifier-20221025-145608-b70a022.0",
+    "@sofie-automation/code-standard-preset": "2.1.0-nightly-fix-prerelease-identifier-20221025-151015-35eb75c.0",
     "@types/debug": "^4.1.7",
     "@types/jest": "^28.1.6",
     "@types/node": "^14.18.22",
@@ -68,7 +68,6 @@
     "object-path": "^0.11.8",
     "open-cli": "^7.1.0",
     "rimraf": "^3.0.2",
-    "standard-version": "^9.5.0",
     "ts-jest": "^28.0.7",
     "ts-node": "^10.9.1",
     "typedoc": "^0.22.18",
