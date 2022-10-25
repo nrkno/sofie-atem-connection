@@ -1,4 +1,5 @@
 /* eslint-disable no-process-exit */
+/* eslint-disable node/no-missing-require */
 /**
  * A small helper script to generate a test case for the tally tests
  */
