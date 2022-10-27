@@ -649,10 +649,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sofie-automation/code-standard-preset@2.1.0-nightly-fix-prerelease-identifier-20221025-151015-35eb75c.0":
-  version "2.1.0-nightly-fix-prerelease-identifier-20221025-151015-35eb75c.0"
-  resolved "https://registry.yarnpkg.com/@sofie-automation/code-standard-preset/-/code-standard-preset-2.1.0-nightly-fix-prerelease-identifier-20221025-151015-35eb75c.0.tgz#e43bad849946867e002b51ec5a74d310d74e395d"
-  integrity sha512-OwP1vUIY5ihOHdVQeKMyaAVD1NXSMjITloSI9hBONGUWioKG6v8swjqEEIdMasSDQ3ESwB860zX9J11YhKbTgQ==
+"@sofie-automation/code-standard-preset@~2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@sofie-automation/code-standard-preset/-/code-standard-preset-2.1.0.tgz#1ab26753caebd0c3178da63c89d04666d0c30079"
+  integrity sha512-+Xq6UCnODToY/nqA5N9Tls5Ot21LItU4XYZCYuoKxjb2JZlu+7W2dBNI5wKaSfBiLbXtdP2/n7475jMCjM3OVQ==
   dependencies:
     "@typescript-eslint/eslint-plugin" "^5.41.0"
     "@typescript-eslint/parser" "^5.41.0"

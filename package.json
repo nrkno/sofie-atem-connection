@@ -57,7 +57,7 @@
   ],
   "devDependencies": {
     "@sinonjs/fake-timers": "^7.1.2",
-    "@sofie-automation/code-standard-preset": "2.1.0-nightly-fix-prerelease-identifier-20221025-151015-35eb75c.0",
+    "@sofie-automation/code-standard-preset": "~2.1.0",
     "@types/debug": "^4.1.7",
     "@types/jest": "^29.2.0",
     "@types/node": "^14.18.22",
