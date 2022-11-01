@@ -1,6 +1,13 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [Convential Commits](https://www.conventionalcommits.org/en/v1.0.0/#specification) for commit guidelines.
+
+## [3.1.0](https://github.com/nrkno/sofie-atem-connection/compare/3.0.1...v3.1.0) (Tue Nov 01 2022)
+
+
+### Features
+
+* streaming audio bitrates (#130) [f105231](https://github.com/nrkno/sofie-atem-connection/commit/f105231b8f065d1b0ded4b8dcc6707e3ffbc6286)
 
 ### [3.0.1](https://github.com/nrkno/sofie-atem-connection/compare/3.0.0...3.0.1) (2022-09-03)
 
