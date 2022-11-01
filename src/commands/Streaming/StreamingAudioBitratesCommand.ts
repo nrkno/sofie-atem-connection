@@ -21,7 +21,7 @@ export class StreamingAudioBitratesCommand extends SymmetricalCommand<StreamingA
 	}
 
 	public static deserialize(rawCommand: Buffer): StreamingAudioBitratesCommand {
-        const lowBitrate = rawCommand.readUInt32BE(0)
+		const lowBitrate = rawCommand.readUInt32BE(0)
 		const highBitrate = rawCommand.readUInt32BE(4)
 
 		return new StreamingAudioBitratesCommand(lowBitrate, highBitrate)
@@ -29,11 +29,11 @@ export class StreamingAudioBitratesCommand extends SymmetricalCommand<StreamingA
 
 	public applyToState(state: AtemState): string {
 		const audioBitrates = {
-            lowBitrate: this.properties.lowBitrate,
-            highBitrate: this.properties.highBitrate,
-        }
+			lowBitrate: this.properties.lowBitrate,
+			highBitrate: this.properties.highBitrate,
+		}
 		if (!state.streaming) {
-             throw new InvalidIdError('Streaming')
+			throw new InvalidIdError('Streaming')
 		} else {
 			state.streaming.audioBitrates = audioBitrates
 		}
