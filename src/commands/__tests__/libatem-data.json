@@ -3254,7 +3254,8 @@
 		"firstVersion": 131102,
 		"bytes": "00-10-00-00-53-54-41-42-7B-36-6D-D7-1B-27-66-8D",
 		"command": {
-			"Bitrates": [2067164631, 455566989]
+			"lowBitrate": 2067164631,
+			"highBitrate": 455566989
 		},
 		"commandHash": "91-0D-34-BC-4F-EB-61-EF-C5-92-90-CB-DD-C2-99-82-C2-BD-3E-ED-41-6D-92-03-1C-65-07-86-9C-2D-0D-82"
 	},
@@ -3263,7 +3264,8 @@
 		"firstVersion": 131102,
 		"bytes": "00-10-00-00-53-54-41-42-7A-35-AD-C8-0A-E8-B4-56",
 		"command": {
-			"Bitrates": [2050338248, 183022678]
+			"lowBitrate": 2050338248,
+			"highBitrate": 183022678
 		},
 		"commandHash": "91-0D-34-BC-4F-EB-61-EF-C5-92-90-CB-DD-C2-99-82-C2-BD-3E-ED-41-6D-92-03-1C-65-07-86-9C-2D-0D-82"
 	},
@@ -3272,7 +3274,8 @@
 		"firstVersion": 131102,
 		"bytes": "00-10-00-00-53-54-41-42-50-B7-DC-65-2C-90-D6-39",
 		"command": {
-			"Bitrates": [1354226789, 747689529]
+			"lowBitrate": 1354226789,
+			"highBitrate": 747689529
 		},
 		"commandHash": "91-0D-34-BC-4F-EB-61-EF-C5-92-90-CB-DD-C2-99-82-C2-BD-3E-ED-41-6D-92-03-1C-65-07-86-9C-2D-0D-82"
 	},
@@ -3281,7 +3284,8 @@
 		"firstVersion": 131102,
 		"bytes": "00-10-00-00-53-54-41-42-1B-D8-0A-A0-0B-F9-DC-42",
 		"command": {
-			"Bitrates": [467143328, 200924226]
+			"lowBitrate": 467143328,
+			"highBitrate": 200924226
 		},
 		"commandHash": "91-0D-34-BC-4F-EB-61-EF-C5-92-90-CB-DD-C2-99-82-C2-BD-3E-ED-41-6D-92-03-1C-65-07-86-9C-2D-0D-82"
 	},
@@ -3290,7 +3294,8 @@
 		"firstVersion": 131102,
 		"bytes": "00-10-00-00-53-54-41-42-13-31-CD-5C-4F-DC-C6-42",
 		"command": {
-			"Bitrates": [322030940, 1339868738]
+			"lowBitrate": 322030940,
+			"highBitrate": 1339868738
 		},
 		"commandHash": "91-0D-34-BC-4F-EB-61-EF-C5-92-90-CB-DD-C2-99-82-C2-BD-3E-ED-41-6D-92-03-1C-65-07-86-9C-2D-0D-82"
 	},
@@ -3299,7 +3304,8 @@
 		"firstVersion": 131102,
 		"bytes": "00-10-00-00-53-54-41-42-5D-E4-16-3C-30-72-F8-6B",
 		"command": {
-			"Bitrates": [1575228988, 812841067]
+			"lowBitrate": 1575228988,
+			"highBitrate": 812841067
 		},
 		"commandHash": "91-0D-34-BC-4F-EB-61-EF-C5-92-90-CB-DD-C2-99-82-C2-BD-3E-ED-41-6D-92-03-1C-65-07-86-9C-2D-0D-82"
 	},
@@ -3308,7 +3314,8 @@
 		"firstVersion": 131102,
 		"bytes": "00-10-00-00-53-54-41-42-16-D7-42-A3-2F-E9-60-5B",
 		"command": {
-			"Bitrates": [383206051, 803823707]
+			"lowBitrate": 383206051,
+			"highBitrate": 803823707
 		},
 		"commandHash": "91-0D-34-BC-4F-EB-61-EF-C5-92-90-CB-DD-C2-99-82-C2-BD-3E-ED-41-6D-92-03-1C-65-07-86-9C-2D-0D-82"
 	},
@@ -3317,7 +3324,8 @@
 		"firstVersion": 131102,
 		"bytes": "00-10-00-00-53-54-41-42-26-89-6F-80-5A-E8-1F-DD",
 		"command": {
-			"Bitrates": [646541184, 1525161949]
+			"lowBitrate": 646541184,
+			"highBitrate": 1525161949
 		},
 		"commandHash": "91-0D-34-BC-4F-EB-61-EF-C5-92-90-CB-DD-C2-99-82-C2-BD-3E-ED-41-6D-92-03-1C-65-07-86-9C-2D-0D-82"
 	},
@@ -3326,7 +3334,8 @@
 		"firstVersion": 131102,
 		"bytes": "00-10-00-00-53-54-41-42-54-53-C7-72-79-CB-BA-71",
 		"command": {
-			"Bitrates": [1414776690, 2043394673]
+			"lowBitrate": 1414776690,
+			"highBitrate": 2043394673
 		},
 		"commandHash": "91-0D-34-BC-4F-EB-61-EF-C5-92-90-CB-DD-C2-99-82-C2-BD-3E-ED-41-6D-92-03-1C-65-07-86-9C-2D-0D-82"
 	},
@@ -3335,7 +3344,8 @@
 		"firstVersion": 131102,
 		"bytes": "00-10-00-00-53-54-41-42-67-98-98-A6-69-54-05-94",
 		"command": {
-			"Bitrates": [1738053798, 1767114132]
+			"lowBitrate": 1738053798,
+			"highBitrate": 1767114132
 		},
 		"commandHash": "91-0D-34-BC-4F-EB-61-EF-C5-92-90-CB-DD-C2-99-82-C2-BD-3E-ED-41-6D-92-03-1C-65-07-86-9C-2D-0D-82"
 	},

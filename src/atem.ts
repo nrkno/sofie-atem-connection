@@ -971,6 +971,11 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	public async setStreamingAudioBitrates(lowBitrate: number, highBitrate: number): Promise<void> {
+		const command = new Commands.StreamingAudioBitratesCommand(lowBitrate, highBitrate)
+		return this.sendCommand(command)
+	}
+
 	public async startRecording(): Promise<void> {
 		const command = new Commands.RecordingStatusCommand(true)
 		return this.sendCommand(command)
