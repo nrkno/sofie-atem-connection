@@ -3,6 +3,7 @@
  */
 import { createSocket, Socket, RemoteInfo } from 'dgram'
 import * as NanoTimer from 'nanotimer'
+import { performance } from 'perf_hooks'
 
 const IN_FLIGHT_TIMEOUT = 60 // ms
 const CONNECTION_TIMEOUT = 5000 // ms
@@ -52,7 +53,7 @@ export class AtemSocketChild {
 	private _port: number
 	private _socket: Socket
 
-	private _lastReceivedAt: number = Date.now()
+	private _lastReceivedAt: number = performance.now()
 	private _lastReceivedPacketId = 0
 	private _inFlight: InFlightPacket[] = []
 	private readonly _ackTimer = new NanoTimer()
@@ -86,7 +87,7 @@ export class AtemSocketChild {
 	private startTimers(): void {
 		if (!this._reconnectTimer) {
 			this._reconnectTimer = setInterval(() => {
-				if (this._lastReceivedAt + CONNECTION_TIMEOUT > Date.now()) {
+				if (this._lastReceivedAt + CONNECTION_TIMEOUT > performance.now()) {
 					// We heard from the atem recently
 					return
 				}
@@ -191,7 +192,7 @@ export class AtemSocketChild {
 		this._inFlight.push({
 			packetId,
 			trackingId,
-			lastSent: Date.now(),
+			lastSent: performance.now(),
 			payload: buffer,
 			resent: 0,
 		})
@@ -225,7 +226,7 @@ export class AtemSocketChild {
 
 	private _receivePacket(packet: Buffer, rinfo: RemoteInfo): void {
 		if (this._debugBuffers) this.log(`RECV ${packet.toString('hex')}`)
-		this._lastReceivedAt = Date.now()
+		this._lastReceivedAt = performance.now()
 		const length = packet.readUInt16BE(0) & 0x07ff
 		if (length !== rinfo.size) return
 
@@ -349,7 +350,7 @@ export class AtemSocketChild {
 			for (let i = fromIndex; i < this._inFlight.length; i++) {
 				const sentPacket = this._inFlight[i]
 				if (sentPacket.packetId === fromId || !this._isPacketCoveredByAck(fromId, sentPacket.packetId)) {
-					sentPacket.lastSent = Date.now()
+					sentPacket.lastSent = performance.now()
 					sentPacket.resent++
 
 					// this.log(`${Date.now()} Resending ${sentPacket.packetId} Last=${this._nextSendPacketId - 1}`)
@@ -361,7 +362,7 @@ export class AtemSocketChild {
 
 	private async _checkForRetransmit(): Promise<void> {
 		for (const sentPacket of this._inFlight) {
-			if (sentPacket.lastSent + IN_FLIGHT_TIMEOUT < Date.now()) {
+			if (sentPacket.lastSent + IN_FLIGHT_TIMEOUT < performance.now()) {
 				if (
 					sentPacket.resent <= MAX_PACKET_RETRIES &&
 					this._isPacketCoveredByAck(this._nextSendPacketId, sentPacket.packetId)
