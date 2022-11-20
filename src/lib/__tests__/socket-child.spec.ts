@@ -3,6 +3,8 @@ import { Socket } from '../__mocks__/dgram'
 import { AtemSocketChild, COMMAND_CONNECT_HELLO, ConnectionState, PacketFlag } from '../atemSocketChild'
 import * as fakeTimers from '@sinonjs/fake-timers'
 import { DEFAULT_PORT } from '../../atem'
+import { performance } from 'perf_hooks'
+import * as sinon from 'sinon'
 
 const ADDRESS = '127.0.0.1'
 
@@ -52,8 +54,15 @@ describe('SocketChild', () => {
 	beforeEach(() => {
 		clock = fakeTimers.install()
 	})
+	beforeAll(() => {
+		const startup = Date.now()
+		sinon.stub(performance, 'now').callsFake(() => Date.now() - startup)
+	})
 	afterEach(() => {
 		clock.uninstall()
+	})
+	afterAll(() => {
+		sinon.restore()
 	})
 
 	test('Establish connection', async () => {
