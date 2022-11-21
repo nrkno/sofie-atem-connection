@@ -368,10 +368,11 @@ export class AtemSocketChild {
 		} else {
 			this.log(`Resending from ${fromId} to ${this._inFlight[this._inFlight.length - 1].packetId}`)
 			// Resend from the requested
+			const now = performance.now()
 			for (let i = fromIndex; i < this._inFlight.length; i++) {
 				const sentPacket = this._inFlight[i]
 				if (sentPacket.packetId === fromId || !this._isPacketCoveredByAck(fromId, sentPacket.packetId)) {
-					sentPacket.lastSent = performance.now()
+					sentPacket.lastSent = now
 					sentPacket.resent++
 
 					// this.log(`${Date.now()} Resending ${sentPacket.packetId} Last=${this._nextSendPacketId - 1}`)
@@ -382,8 +383,10 @@ export class AtemSocketChild {
 	}
 
 	private async _checkForRetransmit(): Promise<void> {
+		if (!this._inFlight.length) return
+		const now = performance.now()
 		for (const sentPacket of this._inFlight) {
-			if (sentPacket.lastSent + IN_FLIGHT_TIMEOUT < performance.now()) {
+			if (sentPacket.lastSent + IN_FLIGHT_TIMEOUT < now) {
 				if (
 					sentPacket.resent <= MAX_PACKET_RETRIES &&
 					this._isPacketCoveredByAck(this._nextSendPacketId, sentPacket.packetId)
