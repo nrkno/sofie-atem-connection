@@ -3,8 +3,6 @@ import { BasicWritableCommand } from '../CommandBase'
 export class FairlightMixerResetPeakLevelsCommand extends BasicWritableCommand<{ all: boolean; master: boolean }> {
 	public static readonly rawName = 'RFLP'
 
-	public tmp = 0
-
 	public serialize(): Buffer {
 		const buffer = Buffer.alloc(4)
 

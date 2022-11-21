@@ -27451,7 +27451,7 @@
 	{
 		"name": "RFLP",
 		"firstVersion": 131094,
-		"bytes": "00-0C-00-00-52-46-4C-50-01-00-00-00",
+		"bytes": "00-0C-00-00-52-46-4C-50-01-01-00-00",
 		"command": {
 			"All": true,
 			"Master": false
@@ -27461,7 +27461,7 @@
 	{
 		"name": "RFLP",
 		"firstVersion": 131094,
-		"bytes": "00-0C-00-00-52-46-4C-50-02-00-00-00",
+		"bytes": "00-0C-00-00-52-46-4C-50-02-00-00-04",
 		"command": {
 			"All": false,
 			"Master": true
@@ -27481,7 +27481,7 @@
 	{
 		"name": "RFLP",
 		"firstVersion": 131094,
-		"bytes": "00-0C-00-00-52-46-4C-50-03-00-00-00",
+		"bytes": "00-0C-00-00-52-46-4C-50-03-01-00-04",
 		"command": {
 			"All": true,
 			"Master": true
