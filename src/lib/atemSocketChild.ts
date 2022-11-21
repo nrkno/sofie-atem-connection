@@ -8,6 +8,7 @@ import { performance } from 'perf_hooks'
 const IN_FLIGHT_TIMEOUT = 60 // ms
 const CONNECTION_TIMEOUT = 5000 // ms
 const CONNECTION_RETRY_INTERVAL = 1000 // ms
+const RETRANSMIT_INTERVAL = 10 // ms
 const MAX_PACKET_RETRIES = 10
 const MAX_PACKET_ID = 1 << 15 // Atem expects 15 not 16 bits before wrapping
 const MAX_PACKET_PER_ACK = 16
@@ -21,6 +22,8 @@ export enum ConnectionState {
 	Closed = 0x00,
 	SynSent = 0x01,
 	Established = 0x02,
+	/** Disconnected by the user (by calling `disconnect()`) */
+	Disconnected = 0x03,
 }
 
 export enum PacketFlag {
@@ -103,13 +106,11 @@ export class AtemSocketChild {
 				this._checkForRetransmit().catch((e) => {
 					this.log(`Failed to retransmit: ${e?.message ?? e}`)
 				})
-			}, 10)
+			}, RETRANSMIT_INTERVAL)
 		}
 	}
 
 	public async connect(address: string, port: number): Promise<void> {
-		this.startTimers()
-
 		this._address = address
 		this._port = port
 
@@ -117,7 +118,15 @@ export class AtemSocketChild {
 	}
 
 	public async disconnect(): Promise<void> {
-		// Stop timers, as they just cause pointless work now.
+		this._clearTimers()
+
+		return this._closeSocket().then(async () => {
+			this._connectionState = ConnectionState.Disconnected
+			return this.onDisconnect()
+		})
+	}
+
+	private _clearTimers() {
 		if (this._retransmitTimer) {
 			clearInterval(this._retransmitTimer)
 			this._retransmitTimer = undefined
@@ -126,26 +135,18 @@ export class AtemSocketChild {
 			clearInterval(this._reconnectTimer)
 			this._reconnectTimer = undefined
 		}
-
-		return new Promise<void>((resolve) => {
-			try {
-				this._socket.close(() => resolve())
-			} catch (e) {
-				resolve()
-			}
-		}).then(async () => {
-			this._connectionState = ConnectionState.Closed
-			this._createSocket()
-			return this.onDisconnect()
-		})
 	}
 
 	private async restartConnection(): Promise<void> {
+		this._clearTimers()
+
 		// This includes a 'disconnect'
 		if (this._connectionState === ConnectionState.Established) {
 			this._connectionState = ConnectionState.Closed
-			this._createSocket()
+			this._recreateSocket()
 			await this.onDisconnect()
+		} else if (this._connectionState === ConnectionState.Disconnected) {
+			this._createSocket()
 		}
 
 		// Reset connection
@@ -153,6 +154,8 @@ export class AtemSocketChild {
 		this._sessionId = 0
 		this._inFlight = []
 		this.log('reconnect')
+
+		this.startTimers()
 
 		// Try doing reconnect
 		this._sendPacket(COMMAND_CONNECT_HELLO)
@@ -195,6 +198,23 @@ export class AtemSocketChild {
 			lastSent: performance.now(),
 			payload: buffer,
 			resent: 0,
+		})
+	}
+
+	private _recreateSocket(): Socket {
+		this._closeSocket().catch((err) => {
+			this.log(`Error closing socket: ${err}`)
+		})
+		return this._createSocket()
+	}
+
+	private async _closeSocket(): Promise<void> {
+		return new Promise<void>((resolve) => {
+			try {
+				this._socket.close(() => resolve())
+			} catch (e) {
+				resolve()
+			}
 		})
 	}
 
