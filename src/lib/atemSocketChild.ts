@@ -202,8 +202,8 @@ export class AtemSocketChild {
 	}
 
 	private _recreateSocket(): Socket {
-		this._closeSocket().catch((err) => {
-			this.log(`Error closing socket: ${err}`)
+		this._closeSocket().catch((_err) => {
+			// do nothing because it always resolves
 		})
 		return this._createSocket()
 	}
@@ -212,7 +212,8 @@ export class AtemSocketChild {
 		return new Promise<void>((resolve) => {
 			try {
 				this._socket.close(() => resolve())
-			} catch (e) {
+			} catch (err) {
+				this.log(`Error closing socket: ${err}`)
 				resolve()
 			}
 		})
