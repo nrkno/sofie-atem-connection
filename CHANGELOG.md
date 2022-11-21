@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Convential Commits](https://www.conventionalcommits.org/en/v1.0.0/#specification) for commit guidelines.
 
+## [3.1.1](https://github.com/nrkno/sofie-atem-connection/compare/v3.1.0...v3.1.1) (Mon Nov 21 2022)
+
+
+### Fixes
+
+* FairlightMixerResetPeakLevelsCommand [d670fb5e](https://github.com/nrkno/sofie-atem-connection/commit/d670fb5e1b0b0b7030785c0fa4d78888d09750d5)
+
 ## [3.1.0](https://github.com/nrkno/sofie-atem-connection/compare/3.0.1...v3.1.0) (Tue Nov 01 2022)
 
 
