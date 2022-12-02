@@ -77,7 +77,7 @@ const ThreadedClassManagerSingleton = new ThreadedClassManagerMock()
 jest.spyOn(ThreadedClassManager, 'onEvent').mockImplementation(ThreadedClassManagerSingleton.onEvent)
 
 describe('AtemSocket', () => {
-	let clock: fakeTimers.Clock
+	let clock: fakeTimers.InstalledClock
 
 	function mockClear(lite?: boolean): void {
 		;(AtemSocketChild as any).mockClear()

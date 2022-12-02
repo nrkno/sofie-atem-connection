@@ -50,7 +50,7 @@ function createSocketChild(
 }
 
 describe('SocketChild', () => {
-	let clock: fakeTimers.Clock
+	let clock: fakeTimers.InstalledClock
 	beforeEach(() => {
 		clock = fakeTimers.install()
 	})

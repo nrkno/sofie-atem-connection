@@ -56,14 +56,14 @@
     "/LICENSE"
   ],
   "devDependencies": {
-    "@sinonjs/fake-timers": "^7.1.2",
+    "@sinonjs/fake-timers": "^10.0.0",
     "@sofie-automation/code-standard-preset": "~2.1.0",
     "@types/debug": "^4.1.7",
     "@types/jest": "^29.2.0",
     "@types/node": "^14.18.22",
     "@types/object-path": "^0.11.1",
     "@types/sinon": "^10.0.13",
-    "@types/sinonjs__fake-timers": "^6.0.4",
+    "@types/sinonjs__fake-timers": "^8.1.2",
     "jest": "^29.2.2",
     "jest-extended": "^3.1.0",
     "object-path": "^0.11.8",
