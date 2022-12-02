@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [Convential Commits](https://www.conventionalcommits.org/en/v1.0.0/#specification) for commit guidelines.
 
+## [3.1.3](https://github.com/nrkno/sofie-atem-connection/compare/v3.1.2...v3.1.3) (Fri Dec 02 2022)
+
+
+### Fixes
+
+* error logging when closing the socket fails [4f7b6d5f](https://github.com/nrkno/sofie-atem-connection/commit/4f7b6d5fbe66ed96acf6e995722d1730f657da9e)
+* leaking sockets on reconnection [5cfcb37d](https://github.com/nrkno/sofie-atem-connection/commit/5cfcb37d957083e7345395af259d8e3f81e087d0)
+* use performance.now instead of Date.now [effad296](https://github.com/nrkno/sofie-atem-connection/commit/effad296d0459b528cba64a6f73462f7ddd9409a)
+
 ## [3.1.2](https://github.com/nrkno/sofie-atem-connection/compare/v3.1.1...v3.1.2) (Mon Nov 21 2022)
 
 
