@@ -69,7 +69,7 @@ jobs:
       - name: Bump version and build
         if: ${{ steps.do-publish.outputs.publish }}
         run: |
-          PRERELEASE_TAG=nightly-${{ github.ref_name }}
+          PRERELEASE_TAG=nightly-$(echo "${{ github.ref_name }}" | sed -r 's/[^a-z0-9]+/-/gi')
           yarn release --prerelease $PRERELEASE_TAG
           yarn build
         env:
