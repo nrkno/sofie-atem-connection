@@ -60,7 +60,7 @@ jobs:
         env:
           CI: true
       - name: Send coverage
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         if: matrix.node-version == '14.x'
         with:
           fail_ci_if_error: true
@@ -112,10 +112,10 @@ jobs:
             if verlt $PUBLISHED_VERSION $THIS_VERSION
             then
               echo "Publishing latest"
-              echo ::set-output name=tag::"latest"
+              echo "tag=latest" >> $GITHUB_OUTPUT
             else
               echo "Publishing hotfix"
-              echo ::set-output name=tag::"hotfix"
+              echo "tag=hotfix" >> $GITHUB_OUTPUT
             fi
 
           fi

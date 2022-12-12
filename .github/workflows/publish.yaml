@@ -55,10 +55,10 @@ jobs:
             echo "No Token"
           elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
             echo "Publish nightly"
-            echo ::set-output name=publish::"nightly"
+            echo "publish=nightly" >> $GITHUB_OUTPUT
           else
             echo "Publish experimental"
-            echo ::set-output name=publish::"experimental"
+            echo "publish=experimental" >> $GITHUB_OUTPUT
           fi
       - name: Prepare Environment
         if: ${{ steps.do-publish.outputs.publish }}
@@ -66,15 +66,10 @@ jobs:
           yarn install
         env:
           CI: true
-      - name: Get the Prerelease tag
-        id: prerelease-tag
-        uses: yuya-takeyama/docker-tag-from-github-ref-action@2b0614b1338c8f19dd9d3ea433ca9bc0cc7057ba
-        with:
-          remove-version-tag-prefix: false
       - name: Bump version and build
         if: ${{ steps.do-publish.outputs.publish }}
         run: |
-          PRERELEASE_TAG=nightly-${{ steps.prerelease-tag.outputs.tag }}
+          PRERELEASE_TAG=nightly-$(echo "${{ github.ref_name }}" | sed -r 's/[^a-z0-9]+/-/gi')
           yarn release --prerelease $PRERELEASE_TAG
           yarn build
         env:
