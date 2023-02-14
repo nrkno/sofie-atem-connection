@@ -536,6 +536,11 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	public async captureMediaPoolStill(): Promise<void> {
+		const command = new Commands.MediaPoolCaptureStillCommand()
+		return this.sendCommand(command)
+	}
+
 	public async setSuperSourceBoxSettings(
 		newProps: Partial<SuperSource.SuperSourceBox>,
 		box = 0,

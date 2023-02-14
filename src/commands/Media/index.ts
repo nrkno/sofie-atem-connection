@@ -1,5 +1,6 @@
 export * from './MediaPlayerSourceCommand'
 export * from './MediaPlayerStatusCommand'
+export * from './MediaPoolCaptureStillCommand'
 export * from './MediaPoolClearClipCommand'
 export * from './MediaPoolClearStillCommand'
 export * from './MediaPoolClipDescription'
