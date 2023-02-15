@@ -1029,6 +1029,22 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	public async requestDisplayClockTime(): Promise<void> {
+		const command = new Commands.DisplayClockRequestTimeCommand()
+		return this.sendCommand(command)
+	}
+
+	public async setDisplayClockState(state: Enums.DisplayClockClockState): Promise<void> {
+		const command = new Commands.DisplayClockStateSetCommand(state)
+		return this.sendCommand(command)
+	}
+
+	public async setDisplayClockProperties(props: Partial<Commands.DisplayClockPropertiesExt>): Promise<void> {
+		const command = new Commands.DisplayClockPropertiesSetCommand()
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
 	public hasInternalMultiviewerLabelGeneration(): boolean {
 		return !!this.state && hasInternalMultiviewerLabelGeneration(this.state?.info.model)
 	}

@@ -8,6 +8,7 @@ import * as Settings from './settings'
 import * as Recording from './recording'
 import * as Streaming from './streaming'
 import * as Fairlight from './fairlight'
+import * as DisplayClock from './displayClock'
 import * as AtemStateUtil from './util'
 import { ColorGeneratorState } from './color'
 
@@ -23,6 +24,7 @@ export {
 	Recording,
 	Streaming,
 	Fairlight,
+	DisplayClock,
 	ColorGeneratorState,
 }
 
@@ -38,6 +40,7 @@ export interface AtemState {
 	recording?: Recording.RecordingState
 	streaming?: Streaming.StreamingState
 	colorGenerators?: { [index: number]: ColorGeneratorState | undefined }
+	displayClock?: DisplayClock.DisplayClockState
 }
 
 export class InvalidIdError extends Error {

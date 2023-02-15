@@ -1,6 +1,7 @@
 import { FairlightAudioInput } from '../state/fairlight'
 import { IDeserializedCommand } from '../commands'
 import { AtemStateUtil, AtemState, Settings } from '../state'
+import { DisplayClockClockMode, DisplayClockClockState } from '../enums'
 
 export function createEmptyState(cmd?: IDeserializedCommand): AtemState {
 	const state = AtemStateUtil.Create()
@@ -70,6 +71,30 @@ export function createEmptyState(cmd?: IDeserializedCommand): AtemState {
 				gain: 0,
 				bands: [undefined, undefined, undefined, undefined, undefined],
 			},
+		},
+	}
+	state.displayClock = {
+		properties: {
+			enabled: false,
+			opacity: 100,
+			size: 50,
+			positionX: 0,
+			positionY: 0,
+			autoHide: false,
+			startFrom: {
+				hours: 0,
+				minutes: 0,
+				seconds: 0,
+				frames: 0,
+			},
+			clockMode: DisplayClockClockMode.Countdown,
+			clockState: DisplayClockClockState.Reset,
+		},
+		currentTime: {
+			hours: 0,
+			minutes: 0,
+			seconds: 0,
+			frames: 0,
 		},
 	}
 

@@ -1,6 +1,7 @@
 export * from './Audio'
 export * from './DataTransfer'
 export * from './DeviceProfile'
+export * from './DisplayClock'
 export * from './DownstreamKey'
 export * from './Fairlight'
 export * from './Inputs'

@@ -364,3 +364,15 @@ export enum MultiViewerLayout {
 	ProgramLeft = TopRightSmall | BottomRightSmall,
 	ProgramTop = BottomLeftSmall | BottomRightSmall,
 }
+
+export enum DisplayClockClockState {
+	Stopped = 0,
+	Running = 1,
+	Reset = 2,
+}
+
+export enum DisplayClockClockMode {
+	Countdown = 0,
+	Countup = 1,
+	TimeOfDay = 2,
+}

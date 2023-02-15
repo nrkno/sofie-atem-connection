@@ -1432,4 +1432,32 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			qFactor: (v: number): PropertyAliasResult => ({ val: Math.round(v * 100) }),
 		},
 	},
+	DCPC: {
+		idAliases: {},
+		propertyAliases: {
+			positionX: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
+			positionY: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
+			startFrom: (val: any): PropertyAliasResult => ({
+				val: { hours: val.Hour, minutes: val.Minute, seconds: val.Second, frames: val.Frame },
+			}),
+		},
+	},
+	DCPV: {
+		idAliases: {},
+		propertyAliases: {
+			positionX: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
+			positionY: (val: any): PropertyAliasResult => ({ val: Math.round(val * 1000) }),
+			startFrom: (val: any): PropertyAliasResult => ({
+				val: { hours: val.Hour, minutes: val.Minute, seconds: val.Second, frames: val.Frame },
+			}),
+		},
+	},
+	DSTV: {
+		idAliases: {},
+		propertyAliases: {
+			time: (val: any): PropertyAliasResult => ({
+				val: { hours: val.Hour, minutes: val.Minute, seconds: val.Second, frames: val.Frame },
+			}),
+		},
+	},
 }
