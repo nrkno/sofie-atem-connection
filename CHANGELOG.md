@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [Convential Commits](https://www.conventionalcommits.org/en/v1.0.0/#specification) for commit guidelines.
 
+## [3.2.0](https://github.com/nrkno/sofie-atem-connection/compare/v3.1.3...v3.2.0) (Wed Feb 15 2023)
+
+
+### Features
+
+* add DisplayClock support [15b692c1](https://github.com/nrkno/sofie-atem-connection/commit/15b692c1c427826c1c83fdf9a0d7fbce37607a51)
+* add MediaPoolCaptureStillCommand [cef85b9b](https://github.com/nrkno/sofie-atem-connection/commit/cef85b9bf6acf21a597b3fe8a816c1bcc5ca4b25)
+
 ## [3.1.3](https://github.com/nrkno/sofie-atem-connection/compare/v3.1.2...v3.1.3) (Fri Dec 02 2022)
 
 
