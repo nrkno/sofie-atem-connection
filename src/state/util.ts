@@ -43,6 +43,7 @@ export function Create(): AtemState {
 			videoMode: 0,
 			mediaPool: undefined,
 		},
+		cameras: {}
 	}
 }
 
