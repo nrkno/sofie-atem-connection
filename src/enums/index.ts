@@ -20,9 +20,13 @@ export enum Model {
 	ConstellationHD1ME = 0x12,
 	ConstellationHD2ME = 0x13,
 	ConstellationHD4ME = 0x14,
-	SDI = 0x15, // Needs verification
-	SDIProISO = 0x16, // Needs verification
-	SDIExtremeISO = 0x17, // Needs verification
+	SDI = 0x15,
+	SDIProISO = 0x16,
+	SDIExtremeISO = 0x17,
+	// 0x18 ??
+	// 0x19 ??
+	TelevisionStudioHD8 = 0x1a,
+	TelevisionStudioHD8ISO = 0x1b,
 }
 
 export enum ProtocolVersion {
