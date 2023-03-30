@@ -383,4 +383,3 @@ export enum TransferState {
 	Transferring,
 	Finished
 }
-}
