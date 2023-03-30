@@ -380,3 +380,11 @@ export enum DisplayClockClockMode {
 	Countup = 1,
 	TimeOfDay = 2,
 }
+
+export enum TransferState {
+	Queued,
+	Locked,
+	Transferring,
+	Finished
+}
+}
