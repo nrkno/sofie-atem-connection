@@ -15,7 +15,7 @@ export class MacroRecordCommand extends BasicWritableCommand<{ name: string; des
 		const name = this.properties.name || ''
 		const description = this.properties.description || ''
 
-		const buffer = Buffer.alloc(Util.padToMultiple4(8 + name.length + description.length))
+		const buffer = Buffer.alloc(Util.padToMultiple(8 + name.length + description.length, 4))
 		buffer.writeUInt16BE(this.index, 0)
 		buffer.writeUInt16BE(name.length, 2)
 		buffer.writeUInt16BE(description.length, 4)

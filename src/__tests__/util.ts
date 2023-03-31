@@ -97,6 +97,10 @@ export function createEmptyState(cmd?: IDeserializedCommand): AtemState {
 			frames: 0,
 		},
 	}
+	state.cameras = {}
+	for (let i = 0; i < state.info.capabilities.sources; i++) {
+		state.cameras[i] = {} as any
+	}
 
 	if (cmd) {
 		// Some commands need some very specific bits of state defined that are hard to do in a generic way

@@ -385,6 +385,5 @@ export enum TransferState {
 	Queued,
 	Locked,
 	Transferring,
-	Finished
-}
+	Finished,
 }
