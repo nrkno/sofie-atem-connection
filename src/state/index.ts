@@ -10,7 +10,6 @@ import * as Streaming from './streaming'
 import * as Fairlight from './fairlight'
 import * as DisplayClock from './displayClock'
 import * as AtemStateUtil from './util'
-import * as Camera from './camera'
 import { ColorGeneratorState } from './color'
 
 export {
@@ -26,7 +25,6 @@ export {
 	Streaming,
 	Fairlight,
 	DisplayClock,
-	Camera,
 	ColorGeneratorState,
 }
 
@@ -43,7 +41,6 @@ export interface AtemState {
 	streaming?: Streaming.StreamingState
 	colorGenerators?: { [index: number]: ColorGeneratorState | undefined }
 	displayClock?: DisplayClock.DisplayClockState
-	cameras: { [cameraId: number]: Camera.Camera }
 }
 
 export class InvalidIdError extends Error {
