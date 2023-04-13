@@ -1460,4 +1460,48 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			}),
 		},
 	},
+	CCmd: {
+		idAliases: {
+			source: 'input',
+			category: 'category',
+			parameter: 'parameter',
+		},
+		propertyAliases: {},
+		customMutate: (cmd) => {
+			return {
+				input: cmd.input,
+				category: cmd.category,
+				parameter: cmd.parameter,
+				relative: cmd.relative,
+
+				type: cmd.type,
+				stringData: cmd.stringData,
+				boolData: cmd.boolData,
+				numberData: cmd.intData || cmd.floatData,
+				bigintData: cmd.longData?.map((v: string) => BigInt(v)),
+			}
+		},
+	},
+	CCdP: {
+		idAliases: {
+			source: 'input',
+			category: 'category',
+			parameter: 'parameter',
+		},
+		propertyAliases: {},
+		customMutate: (cmd) => {
+			return {
+				input: cmd.input,
+				category: cmd.category,
+				parameter: cmd.parameter,
+				periodicFlushEnabled: cmd.periodicFlushEnabled,
+
+				type: cmd.type,
+				stringData: cmd.stringData || '',
+				boolData: cmd.boolData || [],
+				numberData: (cmd.intData || cmd.floatData || []).map((v: number) => Number(v) + 0),
+				bigintData: (cmd.longData || []).map((v: string) => BigInt(v)),
+			}
+		},
+	},
 }
