@@ -125,7 +125,9 @@ function runTest(name: string, filename: string): void {
 						switch (cmd.constructor.name) {
 							case 'TallyBySourceCommand':
 							case 'LockStateUpdateCommand':
+							case 'CameraControlUpdateCommand': // Temporary?
 								// Some commands are not expected to update the state
+								expect(paths).toBeEmpty()
 								break
 							default:
 								expect(paths).not.toBeEmpty()
