@@ -1088,6 +1088,7 @@ export class Atem extends BasicAtem {
 		return this.dataTransferManager.uploadMultiViewerLabel(inputId, buffer)
 	}
 	
+	/*
 	//Set camera iris between 0.0 - 1.0
 	public setCameraIris(cameraId: number, irisLevel: number, isRel: boolean | false): Promise<void> {
 		var camera = this.state!.cameras[cameraId];
@@ -1268,4 +1269,5 @@ export class Atem extends BasicAtem {
 		
 		return Promise.reject()
 	}
+	*/
 }
