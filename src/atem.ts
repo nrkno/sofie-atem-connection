@@ -244,7 +244,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		const sentQueue = this._sentQueue
 		this._sentQueue = {}
 
-		Object.values(sentQueue).forEach((sent) => sent.reject())
+		Object.values<SentCommand>(sentQueue).forEach((sent) => sent.reject())
 	}
 }
 
