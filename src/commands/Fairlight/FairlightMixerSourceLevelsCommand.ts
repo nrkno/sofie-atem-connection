@@ -62,9 +62,11 @@ export class FairlightMixerSourceLevelsUpdateCommand extends DeserializedCommand
 		const source = input.sources[sourceIdStr] || {}
 		input.sources[sourceIdStr] = source
 
+		/*
 		if (!source.levels) {
 			throw new InvalidIdError('Fairlight.Inputs.Source.Levels', this.index, sourceIdStr)
 		}
+		*/
 
 		source.levels = this.properties
 
