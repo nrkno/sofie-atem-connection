@@ -852,6 +852,7 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	/*
 	public async startFairlightMixerSendLevels(): Promise<void> {
 		const command = new Commands.FairlightMixerSendLevelsCommand(true)
 		return this.sendCommand(command)
@@ -859,6 +860,14 @@ export class Atem extends BasicAtem {
 
 	public async stopFairlightMixerSendLevels(): Promise<void> {
 		const command = new Commands.FairlightMixerSendLevelsCommand(false)
+		return this.sendCommand(command)
+	}
+	*/
+
+	public async setFairlightMixerSendLevels(
+		props: Commands.FairlightMixerResetPeakLevelsCommand['properties']
+	): Promise<void> {
+		const command = new Commands.FairlightMixerSendLevelsCommand(props)
 		return this.sendCommand(command)
 	}
 
