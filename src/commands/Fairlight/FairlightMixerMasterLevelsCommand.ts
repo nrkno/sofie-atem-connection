@@ -32,7 +32,7 @@ export class FairlightMixerMasterLevelsUpdateCommand extends DeserializedCommand
 		return new FairlightMixerMasterLevelsUpdateCommand(properties)
 	}
 
-	public applyToState(state: AtemState): string {
+	/*public applyToState(state: AtemState): string {
 		if (!state.fairlight) {
 			throw new InvalidIdError('Fairlight')
 		}
@@ -44,5 +44,9 @@ export class FairlightMixerMasterLevelsUpdateCommand extends DeserializedCommand
 		state.fairlight.master.levels = this.properties
 
 		return `fairlight.master.levels`
+	}*/
+	public applyToState(): string[] {
+		// Not stored in the state
+		return []
 	}
 }

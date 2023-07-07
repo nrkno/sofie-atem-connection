@@ -45,7 +45,7 @@ export class FairlightMixerSourceLevelsUpdateCommand extends DeserializedCommand
 		return new FairlightMixerSourceLevelsUpdateCommand(index, source, properties)
 	}
 
-	public applyToState(state: AtemState): string {
+	/*public applyToState(state: AtemState): string {
 		if (!state.fairlight) {
 			throw new InvalidIdError('Fairlight')
 		}
@@ -62,5 +62,9 @@ export class FairlightMixerSourceLevelsUpdateCommand extends DeserializedCommand
 		source.levels = this.properties
 
 		return `fairlight.inputs.${this.index}.sources.${sourceIdStr}.levels`
+	}*/
+	public applyToState(): string[] {
+		// Not stored in the state
+		return []
 	}
 }
