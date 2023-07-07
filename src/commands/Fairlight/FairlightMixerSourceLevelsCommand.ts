@@ -1,4 +1,4 @@
-import { FairlightAudioInput, FairlightAudioSourceLevelsState } from '../../state/fairlight'
+import { /*FairlightAudioInput,*/ FairlightAudioSourceLevelsState } from '../../state/fairlight'
 import { AtemState, InvalidIdError } from '../../state'
 import { DeserializedCommand } from '../CommandBase'
 
