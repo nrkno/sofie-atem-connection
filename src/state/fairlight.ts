@@ -68,7 +68,7 @@ export interface FairlightAudioMasterChannel {
 
 	equalizer?: FairlightAudioEqualizerState
 	dynamics?: Omit<FairlightAudioDynamicsState, 'expander'>
-	levels?: FairlightAudioMasterLevelsState
+	//levels?: FairlightAudioMasterLevelsState
 }
 export interface FairlightAudioMasterLevelsState {
     inputLeftLevel: number
@@ -102,7 +102,7 @@ export interface FairlightAudioSource {
 	properties?: FairlightAudioSourcePropertiesState
 	equalizer?: FairlightAudioEqualizerState
 	dynamics?: FairlightAudioDynamicsState
-	levels?: FairlightAudioSourceLevelsState
+	//levels?: FairlightAudioSourceLevelsState
 }
 export interface FairlightAudioEqualizerState {
 	enabled: boolean
