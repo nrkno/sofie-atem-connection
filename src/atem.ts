@@ -67,7 +67,7 @@ export type AtemEvents = {
 	connected: []
 	disconnected: []
 	stateChanged: [AtemState, string[]]
-	levelChanged: [FairlightAudioMasterLevelsState | FairlightAudioSourceLevelsState, string[]]
+	levelChanged: [FairlightAudioMasterLevelsState | FairlightAudioSourceLevelsState, string]
 	receivedCommands: [IDeserializedCommand[]]
 	updatedTime: [TimeInfo]
 }
@@ -191,7 +191,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 			} else if (command instanceof Commands.FairlightMixerMasterLevelsUpdateCommand) {
 			    this.emit('levelChanged', command.properties, "master");
 			} else if (command instanceof Commands.FairlightMixerSourceLevelsUpdateCommand) {
-			    this.emit('levelChanged', command.properties, command.index);
+			    this.emit('levelChanged', command.properties, command.index.toString());
 			} else if (state) {
 				try {
 					const changePaths = command.applyToState(state)
