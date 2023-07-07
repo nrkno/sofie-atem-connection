@@ -10,23 +10,23 @@ export class FairlightMixerMasterLevelsUpdateCommand extends DeserializedCommand
 
 	public static deserialize(rawCommand: Buffer): FairlightMixerMasterLevelsUpdateCommand {
 		const properties = {
-			inputLeftLevel: rawCommand.readUInt16BE(0),
-			inputRightLevel: rawCommand.readUInt16BE(2),
-			inputLeftPeak: rawCommand.readUInt16BE(4),
-			inputRightPeak: rawCommand.readUInt16BE(6),
+			inputLeftLevel: rawCommand.readInt16BE(0),
+			inputRightLevel: rawCommand.readInt16BE(2),
+			inputLeftPeak: rawCommand.readInt16BE(4),
+			inputRightPeak: rawCommand.readInt16BE(6),
 
-			compressorGainReduction: rawCommand.readUInt16BE(8),
-			limiterGainReduction: rawCommand.readUInt16BE(10),
+			compressorGainReduction: rawCommand.readInt16BE(8),
+			limiterGainReduction: rawCommand.readInt16BE(10),
 		
-			outputLeftLevel: rawCommand.readUInt16BE(12),
-			outputRightLevel: rawCommand.readUInt16BE(14),
-			outputLeftPeak: rawCommand.readUInt16BE(16),
-			outputRightPeak: rawCommand.readUInt16BE(18),
+			outputLeftLevel: rawCommand.readInt16BE(12),
+			outputRightLevel: rawCommand.readInt16BE(14),
+			outputLeftPeak: rawCommand.readInt16BE(16),
+			outputRightPeak: rawCommand.readInt16BE(18),
 		
-			leftLevel: rawCommand.readUInt16BE(20),
-			rightLevel: rawCommand.readUInt16BE(22),
-			leftPeak: rawCommand.readUInt16BE(24),
-			rightPeak: rawCommand.readUInt16BE(26),
+			leftLevel: rawCommand.readInt16BE(20),
+			rightLevel: rawCommand.readInt16BE(22),
+			leftPeak: rawCommand.readInt16BE(24),
+			rightPeak: rawCommand.readInt16BE(26),
 		}
 
 		return new FairlightMixerMasterLevelsUpdateCommand(properties)
