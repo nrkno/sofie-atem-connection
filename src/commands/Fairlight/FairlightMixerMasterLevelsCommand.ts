@@ -11,23 +11,23 @@ export class FairlightMixerMasterLevelsUpdateCommand extends DeserializedCommand
 
 	public static deserialize(rawCommand: Buffer): FairlightMixerMasterLevelsUpdateCommand {
 		const properties = {
-			inputLeftLevel: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(0)),
-			inputRightLevel: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(2)),
-			inputLeftPeak: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(4)),
-			inputRightPeak: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(6)),
+			inputLeftLevel: rawCommand.readUInt16BE(0),
+			inputRightLevel: rawCommand.readUInt16BE(2),
+			inputLeftPeak: rawCommand.readUInt16BE(4),
+			inputRightPeak: rawCommand.readUInt16BE(6),
 
-			compressorGainReduction: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(8)),
-			limiterGainReduction: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(10)),
+			compressorGainReduction: rawCommand.readUInt16BE(8),
+			limiterGainReduction: rawCommand.readUInt16BE(10),
 		
-			outputLeftLevel: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(12)),
-			outputRightLevel: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(14)),
-			outputLeftPeak: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(16)),
-			outputRightPeak: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(18)),
+			outputLeftLevel: rawCommand.readUInt16BE(12),
+			outputRightLevel: rawCommand.readUInt16BE(14),
+			outputLeftPeak: rawCommand.readUInt16BE(16),
+			outputRightPeak: rawCommand.readUInt16BE(18),
 		
-			leftLevel: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(20)),
-			rightLevel: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(22)),
-			leftPeak: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(24)),
-			rightPeak: Util.UInt16BEToDecibel(rawCommand.readUInt16BE(26)),
+			leftLevel: rawCommand.readUInt16BE(20),
+			rightLevel: rawCommand.readUInt16BE(22),
+			leftPeak: rawCommand.readUInt16BE(24),
+			rightPeak: rawCommand.readUInt16BE(26),
 		}
 
 		return new FairlightMixerMasterLevelsUpdateCommand(properties)
