@@ -19,10 +19,8 @@ export class FairlightMixerSourceLevelsUpdateCommand extends DeserializedCommand
 	}
 
 	public static deserialize(rawCommand: Buffer): FairlightMixerSourceLevelsUpdateCommand {
-		//const source = rawCommand.readBigInt64BE(0)
-		//const index = rawCommand.readUInt16BE(8)
-		const source = rawCommand.readBigInt64BE(8)
-		const index = rawCommand.readUInt16BE(0)
+		const source = rawCommand.readBigInt64BE(0)
+		const index = rawCommand.readUInt16BE(8)
 		const properties = {
             inputLeftLevel: rawCommand.readUInt16BE(10),
             inputRightLevel: rawCommand.readUInt16BE(12),
