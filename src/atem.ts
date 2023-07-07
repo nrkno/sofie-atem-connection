@@ -865,7 +865,7 @@ export class Atem extends BasicAtem {
 	*/
 
 	public async setFairlightMixerSendLevels(
-		props: Commands.FairlightMixerResetPeakLevelsCommand['properties']
+		props: Commands.FairlightMixerSendLevelsCommand['properties']
 	): Promise<void> {
 		const command = new Commands.FairlightMixerSendLevelsCommand(props)
 		return this.sendCommand(command)
