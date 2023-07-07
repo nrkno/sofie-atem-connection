@@ -57,7 +57,7 @@ export class FairlightMixerSourceLevelsUpdateCommand extends DeserializedCommand
 		const oldSource = input.sources[sourceIdStr]
 
 		input.sources[sourceIdStr] = {
-			...oldSource,
+			//...oldSource,
             levels: {
 				inputLeftLevel: this.properties.inputLeftLevel,
 				inputRightLevel: this.properties.inputRightLevel,
