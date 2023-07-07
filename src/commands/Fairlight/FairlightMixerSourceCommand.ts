@@ -144,7 +144,6 @@ export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<
 
 		input.sources[sourceIdStr] = {
 			...oldSource,
-			...Util.omit(oldSource?.levels),
 			equalizer: {
 				...oldSource?.equalizer,
 				enabled: this.properties.equalizerEnabled,
