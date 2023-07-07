@@ -38,28 +38,12 @@ export class FairlightMixerMasterLevelsUpdateCommand extends DeserializedCommand
 			throw new InvalidIdError('Fairlight')
 		}
 
-		state.fairlight.master = {
-			levels: {
-				inputLeftLevel: this.properties.inputLeftLevel,
-				inputRightLevel: this.properties.inputRightLevel,
-				inputLeftPeak: this.properties.inputLeftPeak,
-				inputRightPeak: this.properties.inputRightPeak,
-				
-        		compressorGainReduction: this.properties.compressorGainReduction,
-				limiterGainReduction: this.properties.limiterGainReduction,
-        
-				outputLeftLevel: this.properties.outputLeftLevel,
-				outputRightLevel: this.properties.outputRightLevel,
-				outputLeftPeak: this.properties.outputLeftPeak,
-				outputRightPeak: this.properties.outputRightPeak,
-        
-				leftLevel: this.properties.leftLevel,
-				rightLevel: this.properties.rightLevel,
-				leftPeak: this.properties.leftPeak,
-				rightPeak: this.properties.rightPeak,
-			},
+		if (!state.fairlight.master) {
+			throw new InvalidIdError('Fairlight.Master')
 		}
 
-		return `fairlight.master`
+		state.fairlight.master.levels = this.properties
+
+		return `fairlight.master.levels`
 	}
 }
