@@ -36,6 +36,8 @@ import {
 	FairlightAudioLimiterState,
 	FairlightAudioEqualizerBandState,
 	FairlightAudioExpanderState,
+	FairlightAudioMasterLevelsState,
+	FairlightAudioSourceLevelsState
 } from './state/fairlight'
 import { FairlightDynamicsResetProps } from './commands/Fairlight/common'
 import { MultiViewerPropertiesState } from './state/settings'
@@ -67,6 +69,7 @@ export type AtemEvents = {
 	stateChanged: [AtemState, string[]]
 	receivedCommands: [IDeserializedCommand[]]
 	updatedTime: [TimeInfo]
+	updateLevels: [FairlightAudioMasterLevelsState | FairlightAudioSourceLevelsState]
 }
 
 interface SentCommand {
