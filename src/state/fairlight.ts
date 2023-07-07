@@ -70,6 +70,26 @@ export interface FairlightAudioMasterChannel {
 	dynamics?: Omit<FairlightAudioDynamicsState, 'expander'>
 }
 
+export interface FairlightAudioChannelLevelsState {
+    inputLeftLevel: number
+    inputRightLevel: number
+	inputLeftPeak: number
+	inputRightPeak: number
+
+	compressorGainReduction: number
+	limiterGainReduction: number
+
+	outputLeftLevel: number
+	outputRightLevel: number
+	outputLeftPeak: number
+	outputRightPeak: number
+
+	leftLevel: number
+	rightLevel: number
+	leftPeak: number
+	rightPeak: number
+}
+
 export interface FairlightAudioMonitorChannel {
 	gain: number
 	inputMasterGain: number
