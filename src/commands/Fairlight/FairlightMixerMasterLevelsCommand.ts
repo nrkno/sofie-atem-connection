@@ -1,10 +1,10 @@
-import { FairlightAudioChannelLevelsState } from '../../state/fairlight'
+import { FairlightAudioMasterLevelsState } from '../../state/fairlight'
 import { AtemState, InvalidIdError } from '../../state'
 import { DeserializedCommand } from '../CommandBase'
 
 
 export class FairlightMixerMasterLevelsUpdateCommand extends DeserializedCommand<
-	FairlightAudioChannelLevelsState
+	FairlightAudioMasterLevelsState
 > {
 	public static readonly rawName = 'FDLv'
 
