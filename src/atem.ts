@@ -185,6 +185,9 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		for (const command of commands) {
 			if (command instanceof TimeCommand) {
 				this.emit('updatedTime', command.properties)
+			} else if (command instanceof Commands.FairlightMixerMasterLevelsUpdateCommand ||
+					   command instanceof Commands.FairlightMixerSourceLevelsUpdateCommand) {
+			    this.emit('updateLevels', command.properties);
 			} else if (state) {
 				try {
 					const changePaths = command.applyToState(state)
