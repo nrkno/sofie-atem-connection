@@ -22,28 +22,27 @@ export class FairlightMixerSourceLevelsUpdateCommand extends DeserializedCommand
 		const source = rawCommand.readBigInt64BE(0)
 		const index = rawCommand.readUInt16BE(8)
 		const properties = {
-		inputLeftLevel: rawCommand.readUInt16BE(10),
-      	inputRightLevel: rawCommand.readUInt16BE(12),
-      	inputLeftPeak: rawCommand.readUInt16BE(14),
-      	inputRightPeak: rawCommand.readUInt16BE(16),
+            inputLeftLevel: rawCommand.readUInt16BE(10),
+            inputRightLevel: rawCommand.readUInt16BE(12),
+            inputLeftPeak: rawCommand.readUInt16BE(14),
+            inputRightPeak: rawCommand.readUInt16BE(16),
 
-      	expanderGainReduction: rawCommand.readUInt16BE(18),
-        compressorGainReduction: rawCommand.readUInt16BE(20),
-      	limiterGainReduction: rawCommand.readUInt16BE(22),
-      
-      	outputLeftLevel: rawCommand.readUInt16BE(24),
-      	outputRightLevel: rawCommand.readUInt16BE(26),
-      	outputLeftPeak: rawCommand.readUInt16BE(28),
-      	outputRightPeak: rawCommand.readUInt16BE(30),
-      
-      	leftLevel: rawCommand.readUInt16BE(32),
-      	rightLevel: rawCommand.readUInt16BE(34),
-      	leftPeak: rawCommand.readUInt16BE(36),
-      	rightPeak: rawCommand.readUInt16BE(38),
-      
+            expanderGainReduction: rawCommand.readUInt16BE(18),
+            compressorGainReduction: rawCommand.readUInt16BE(20),
+            limiterGainReduction: rawCommand.readUInt16BE(22),
+        
+            outputLeftLevel: rawCommand.readUInt16BE(24),
+            outputRightLevel: rawCommand.readUInt16BE(26),
+            outputLeftPeak: rawCommand.readUInt16BE(28),
+            outputRightPeak: rawCommand.readUInt16BE(30),
+        
+            leftLevel: rawCommand.readUInt16BE(32),
+            rightLevel: rawCommand.readUInt16BE(34),
+            leftPeak: rawCommand.readUInt16BE(36),
+            rightPeak: rawCommand.readUInt16BE(38),
 		}
 
-		return new FairlightMixerSourceLevelsUpdateCommand(properties)
+		return new FairlightMixerSourceLevelsUpdateCommand(index, source, properties)
 	}
 
 	public applyToState(state: AtemState): string {
