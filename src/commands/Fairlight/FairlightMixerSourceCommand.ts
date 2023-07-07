@@ -95,9 +95,9 @@ export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<
 	public static readonly rawName = 'FASP'
 
 	public readonly index: number
-	public readonly source: bigint
+	public readonly source: string //bigint
 
-	constructor(index: number, source: bigint, props: FairlightMixerSourceUpdateCommand['properties']) {
+	constructor(index: number, source: string /*bigint*/, props: FairlightMixerSourceUpdateCommand['properties']) {
 		super(props)
 
 		this.index = index
@@ -106,7 +106,7 @@ export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<
 
 	public static deserialize(rawCommand: Buffer): FairlightMixerSourceUpdateCommand {
 		const index = rawCommand.readUInt16BE(0)
-		const source = rawCommand.readBigInt64BE(8)
+		const source = Util.bufToNullTerminatedString(rawCommand, 8, 8) //rawCommand.readBigInt64BE(8)
 		const properties = {
 			sourceType: rawCommand.readUInt8(16),
 			maxFramesDelay: rawCommand.readUInt8(17),
@@ -139,7 +139,7 @@ export class FairlightMixerSourceUpdateCommand extends DeserializedCommand<
 		const input: FairlightAudioInput = state.fairlight.inputs[this.index] || { sources: {} }
 		state.fairlight.inputs[this.index] = input
 
-		const sourceIdStr = this.source.toString()
+		const sourceIdStr = this.source //.toString()
 		const oldSource = input.sources[sourceIdStr]
 
 		input.sources[sourceIdStr] = {
