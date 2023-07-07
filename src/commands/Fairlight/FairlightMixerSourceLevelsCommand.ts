@@ -50,11 +50,25 @@ export class FairlightMixerSourceLevelsUpdateCommand extends DeserializedCommand
 			throw new InvalidIdError('Fairlight')
 		}
 
-		const input: FairlightAudioInput = state.fairlight.inputs[this.index] || { sources: {} }
-		state.fairlight.inputs[this.index] = input
+		/*const input: FairlightAudioInput = state.fairlight.inputs[this.index] || { sources: {} }
+		state.fairlight.inputs[this.index] = input*/
+		
+		const input = state.fairlight.inputs[this.index]
+		if (!input) {
+			throw new InvalidIdError('Fairlight.Inputs', this.index)
+		}
 
 		const sourceIdStr = this.source.toString()
-		const oldSource = input.sources[sourceIdStr]
+		const source = input.sources[sourceIdStr] || {}
+		input.sources[sourceIdStr] = source
+
+		if (!source.levels) {
+			throw new InvalidIdError('Fairlight.Inputs.Source.Levels', this.index, sourceIdStr)
+		}
+
+		source.levels = this.properties
+
+		/*const oldSource = input.sources[sourceIdStr]
 
 		input.sources[sourceIdStr] = {
 			...oldSource,
@@ -78,7 +92,7 @@ export class FairlightMixerSourceLevelsUpdateCommand extends DeserializedCommand
 				leftPeak: this.properties.leftPeak,
 				rightPeak: this.properties.rightPeak,
 			},
-		}
+		}*/
 
 		return `fairlight.inputs.${this.index}.sources.${sourceIdStr}.levels`
 	}
