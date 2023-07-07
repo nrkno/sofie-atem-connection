@@ -852,6 +852,16 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	public async startFairlightMixerSendLevels(): Promise<void> {
+		const command = new Commands.FairlightMixerSendLevelsCommand(true)
+		return this.sendCommand(command)
+	}
+
+	public async stopFairlightMixerSendLevels(): Promise<void> {
+		const command = new Commands.FairlightMixerSendLevelsCommand(false)
+		return this.sendCommand(command)
+	}
+
 	public async setFairlightAudioMixerMonitorProps(
 		props: Partial<OmitReadonly<FairlightAudioMonitorChannel>>
 	): Promise<void> {
