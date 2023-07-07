@@ -1,7 +1,6 @@
 import { FairlightAudioMasterLevelsState } from '../../state/fairlight'
 import { AtemState, InvalidIdError } from '../../state'
 import { DeserializedCommand } from '../CommandBase'
-import * as Util from '../../lib/atemUtil'
 
 
 export class FairlightMixerMasterLevelsUpdateCommand extends DeserializedCommand<
