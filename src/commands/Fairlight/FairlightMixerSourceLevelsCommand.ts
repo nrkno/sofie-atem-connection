@@ -49,9 +49,6 @@ export class FairlightMixerSourceLevelsUpdateCommand extends DeserializedCommand
 		if (!state.fairlight) {
 			throw new InvalidIdError('Fairlight')
 		}
-
-		/*const input: FairlightAudioInput = state.fairlight.inputs[this.index] || { sources: {} }
-		state.fairlight.inputs[this.index] = input*/
 		
 		const input = state.fairlight.inputs[this.index]
 		if (!input) {
@@ -62,39 +59,7 @@ export class FairlightMixerSourceLevelsUpdateCommand extends DeserializedCommand
 		const source = input.sources[sourceIdStr] || {}
 		input.sources[sourceIdStr] = source
 
-		/*
-		if (!source.levels) {
-			throw new InvalidIdError('Fairlight.Inputs.Source.Levels', this.index, sourceIdStr)
-		}
-		*/
-
 		source.levels = this.properties
-
-		/*const oldSource = input.sources[sourceIdStr]
-
-		input.sources[sourceIdStr] = {
-			...oldSource,
-            levels: {
-				inputLeftLevel: this.properties.inputLeftLevel,
-				inputRightLevel: this.properties.inputRightLevel,
-				inputLeftPeak: this.properties.inputLeftPeak,
-				inputRightPeak: this.properties.inputRightPeak,
-				
-        		expanderGainReduction: this.properties.expanderGainReduction,
-                compressorGainReduction: this.properties.compressorGainReduction,
-				limiterGainReduction: this.properties.limiterGainReduction,
-        
-				outputLeftLevel: this.properties.outputLeftLevel,
-				outputRightLevel: this.properties.outputRightLevel,
-				outputLeftPeak: this.properties.outputLeftPeak,
-				outputRightPeak: this.properties.outputRightPeak,
-        
-				leftLevel: this.properties.leftLevel,
-				rightLevel: this.properties.rightLevel,
-				leftPeak: this.properties.leftPeak,
-				rightPeak: this.properties.rightPeak,
-			},
-		}*/
 
 		return `fairlight.inputs.${this.index}.sources.${sourceIdStr}.levels`
 	}
