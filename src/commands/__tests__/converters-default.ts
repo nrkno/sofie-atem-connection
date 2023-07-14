@@ -1504,4 +1504,30 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			}
 		},
 	},
+	ARSC: {
+		idAliases: {
+			id: 'id',
+		},
+		propertyAliases: {},
+	},
+	ARSP: {
+		idAliases: {
+			id: 'id',
+		},
+		propertyAliases: {
+			audioInputId: (v: number): PropertyAliasResult => ({ val: v, name: 'audioSourceId' }),
+		},
+	},
+	AROC: {
+		idAliases: {
+			id: 'id',
+		},
+		propertyAliases: {},
+	},
+	AROP: {
+		idAliases: {
+			id: 'id',
+		},
+		propertyAliases: {},
+	},
 }
