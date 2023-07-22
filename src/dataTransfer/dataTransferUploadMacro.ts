@@ -27,7 +27,7 @@ export class DataTransferUploadMacro extends DataTransferUploadBuffer {
 		return new DataTransferFileDescriptionCommand({
 			name: this.name,
 			description: undefined,
-			fileHash: '',
+			fileHash: Buffer.alloc(0),
 			transferId: transferId,
 		})
 	}

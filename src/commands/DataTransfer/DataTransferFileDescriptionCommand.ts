@@ -4,7 +4,7 @@ export interface DataTransferFileDescriptionProps {
 	transferId: number
 	name: string | undefined
 	description: string | undefined
-	fileHash: string
+	fileHash: Buffer
 }
 
 export class DataTransferFileDescriptionCommand extends BasicWritableCommand<DataTransferFileDescriptionProps> {
@@ -15,7 +15,7 @@ export class DataTransferFileDescriptionCommand extends BasicWritableCommand<Dat
 		buffer.writeUInt16BE(this.properties.transferId, 0)
 		if (this.properties.name) buffer.write(this.properties.name, 2, 64)
 		if (this.properties.description) buffer.write(this.properties.description, 66, 128)
-		Buffer.from(this.properties.fileHash, 'base64').copy(buffer, 194, 0, 16)
+		this.properties.fileHash.copy(buffer, 194, 0, 16)
 
 		return buffer
 	}

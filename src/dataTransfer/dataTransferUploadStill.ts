@@ -7,6 +7,7 @@ export default class DataTransferUploadStill extends DataTransferUploadBuffer {
 	readonly #stillIndex: number
 	readonly #name: string
 	readonly #description: string
+	readonly #dataLength: number
 
 	constructor(stillIndex: number, data: Buffer, name: string, description: string) {
 		super(data)
@@ -14,6 +15,7 @@ export default class DataTransferUploadStill extends DataTransferUploadBuffer {
 		this.#stillIndex = stillIndex
 		this.#name = name
 		this.#description = description
+		this.#dataLength = data.length
 	}
 
 	public async startTransfer(transferId: number): Promise<ProgressTransferResult> {
@@ -21,7 +23,7 @@ export default class DataTransferUploadStill extends DataTransferUploadBuffer {
 			transferId: transferId,
 			transferStoreId: 0,
 			transferIndex: this.#stillIndex,
-			size: this.data.length,
+			size: this.#dataLength,
 			mode: 1,
 		})
 

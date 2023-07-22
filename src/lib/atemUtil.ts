@@ -69,6 +69,48 @@ export function convertRGBAToYUV422(width: number, height: number, data: Buffer)
 	return buffer
 }
 
+export const RLE_HEADER = Buffer.from([0xfe, 0xfe, 0xfe, 0xfe, 0xfe, 0xfe, 0xfe, 0xfe])
+
+export function runLengthEncode(data: Buffer): Buffer {
+	let result = Buffer.alloc(0)
+	let lastblock = data.slice(0, 8)
+	let lastcount = 1
+
+	for (let offset = 8; offset < data.length; offset += 8) {
+		const block = data.slice(offset, offset + 8)
+
+		if (Buffer.compare(block, lastblock) === 0) {
+			lastcount++
+			lastblock = block
+			continue
+		}
+
+		if (lastcount > 3) {
+			const countBuffer = Buffer.allocUnsafe(8)
+			countBuffer.writeBigUInt64BE(BigInt(lastcount))
+			result = Buffer.concat([result, RLE_HEADER, countBuffer, lastblock])
+		} else if (lastcount === 3) {
+			result = Buffer.concat([result, lastblock, lastblock, lastblock])
+		} else if (lastcount === 2) {
+			result = Buffer.concat([result, lastblock, lastblock])
+		} else {
+			result = Buffer.concat([result, lastblock])
+		}
+		lastblock = block
+		lastcount = 1
+	}
+
+	if (lastcount > 1) {
+		const countBuffer = Buffer.allocUnsafe(8)
+		countBuffer.writeBigUInt64BE(BigInt(lastcount))
+		result = Buffer.concat([result, RLE_HEADER, countBuffer, lastblock])
+	} else {
+		result = Buffer.concat([result, lastblock])
+	}
+
+	return result
+}
+
 export interface VideoModeInfo {
 	format: Enums.VideoFormat
 	width: number

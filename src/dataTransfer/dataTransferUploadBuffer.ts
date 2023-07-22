@@ -10,11 +10,12 @@ import {
 import * as crypto from 'crypto'
 import { DataTransfer, ProgressTransferResult, DataTransferState } from './dataTransfer'
 import debug0 = require('debug')
+import * as Util from '../lib/atemUtil'
 
 const debug = debug0('atem-connection:data-transfer:upload-buffer')
 
 export abstract class DataTransferUploadBuffer extends DataTransfer<void> {
-	protected readonly hash: string
+	protected readonly hash: Buffer
 	protected readonly data: Buffer
 
 	#bytesSent = 0
@@ -22,8 +23,8 @@ export abstract class DataTransferUploadBuffer extends DataTransfer<void> {
 	constructor(data: Buffer) {
 		super()
 
-		this.data = data
-		this.hash = this.data ? crypto.createHash('md5').update(this.data).digest().toString() : ''
+		this.hash = data ? crypto.createHash('md5').update(data).digest() : Buffer.alloc(0)
+		this.data = Util.runLengthEncode(data)
 	}
 
 	protected abstract generateDescriptionCommand(transferId: number): ISerializableCommand
@@ -94,19 +95,35 @@ export abstract class DataTransferUploadBuffer extends DataTransfer<void> {
 		const commands: ISerializableCommand[] = []
 
 		// Take a little less because the atem does that?
-		const chunkSize = props.chunkSize - 4
+		// const chunkSize = props.chunkSize - 4
+		const chunkSize = Math.floor(props.chunkSize / 8) * 8
 
 		for (let i = 0; i < props.chunkCount; i++) {
 			// Make sure we don't end up with an empty slice
 			if (this.#bytesSent >= this.data.length) break
 
+			let shortenBy = 0
+			if (
+				Util.RLE_HEADER.compare(
+					this.data.slice(this.#bytesSent + chunkSize - 8, this.#bytesSent + chunkSize)
+				) === 0
+			) {
+				shortenBy = 8
+			} else if (
+				Util.RLE_HEADER.compare(
+					this.data.slice(this.#bytesSent + chunkSize - 16, this.#bytesSent + chunkSize - 8)
+				) === 0
+			) {
+				shortenBy = 16
+			}
+
 			commands.push(
 				new DataTransferDataCommand({
 					transferId: props.transferId,
-					body: this.data.slice(this.#bytesSent, this.#bytesSent + chunkSize),
+					body: this.data.slice(this.#bytesSent, this.#bytesSent + chunkSize - shortenBy),
 				})
 			)
-			this.#bytesSent += chunkSize
+			this.#bytesSent += chunkSize - shortenBy
 		}
 
 		debug(`Generated ${commands.length} chunks for size ${chunkSize}`)

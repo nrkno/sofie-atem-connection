@@ -11,7 +11,7 @@ import { DataTransferUploadMacro } from './dataTransferUploadMacro'
 import { LockObtainedCommand, LockStateUpdateCommand } from '../commands/DataTransfer'
 import debug0 from 'debug'
 
-const MAX_PACKETS_TO_SEND_PER_TICK = 10
+const MAX_PACKETS_TO_SEND_PER_TICK = 50
 const MAX_TRANSFER_INDEX = (1 << 16) - 1 // Inclusive maximum
 
 const debug = debug0('atem-connection:data-transfer:manager')
