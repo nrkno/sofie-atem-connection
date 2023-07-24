@@ -103,17 +103,11 @@ export abstract class DataTransferUploadBuffer extends DataTransfer<void> {
 			if (this.#bytesSent >= this.data.length) break
 
 			let shortenBy = 0
-			if (
-				Util.RLE_HEADER.compare(
-					this.data.slice(this.#bytesSent + chunkSize - 8, this.#bytesSent + chunkSize)
-				) === 0
-			) {
+			if (chunkSize + this.#bytesSent > this.data.length) {
+				shortenBy = this.#bytesSent + chunkSize - this.data.length
+			} else if (Util.RLE_HEADER === this.data.readBigUint64BE(this.#bytesSent + chunkSize - 8)) {
 				shortenBy = 8
-			} else if (
-				Util.RLE_HEADER.compare(
-					this.data.slice(this.#bytesSent + chunkSize - 16, this.#bytesSent + chunkSize - 8)
-				) === 0
-			) {
+			} else if (Util.RLE_HEADER === this.data.readBigUint64BE(this.#bytesSent + chunkSize - 16)) {
 				shortenBy = 16
 			}
 
