@@ -72,43 +72,41 @@ export function convertRGBAToYUV422(width: number, height: number, data: Buffer)
 export const RLE_HEADER = Buffer.from([0xfe, 0xfe, 0xfe, 0xfe, 0xfe, 0xfe, 0xfe, 0xfe])
 
 export function runLengthEncode(data: Buffer): Buffer {
-	let result = Buffer.alloc(0)
+	const result = Buffer.alloc(data.length)
 	let lastblock = data.slice(0, 8)
-	let lastcount = 1
+	let repetitionCount = 0
+	let resultOffset = -8
 
 	for (let offset = 8; offset < data.length; offset += 8) {
 		const block = data.slice(offset, offset + 8)
 
 		if (Buffer.compare(block, lastblock) === 0) {
-			lastcount++
+			++repetitionCount
 			lastblock = block
 			continue
 		}
 
-		if (lastcount > 3) {
-			const countBuffer = Buffer.allocUnsafe(8)
-			countBuffer.writeBigUInt64BE(BigInt(lastcount))
-			result = Buffer.concat([result, RLE_HEADER, countBuffer, lastblock])
-		} else if (lastcount === 3) {
-			result = Buffer.concat([result, lastblock, lastblock, lastblock])
-		} else if (lastcount === 2) {
-			result = Buffer.concat([result, lastblock, lastblock])
-		} else {
-			result = Buffer.concat([result, lastblock])
-		}
+		resultOffset = finishSequence(repetitionCount, result, resultOffset, lastblock)
 		lastblock = block
-		lastcount = 1
+		repetitionCount = 0
 	}
 
-	if (lastcount > 1) {
-		const countBuffer = Buffer.allocUnsafe(8)
-		countBuffer.writeBigUInt64BE(BigInt(lastcount))
-		result = Buffer.concat([result, RLE_HEADER, countBuffer, lastblock])
+	resultOffset = finishSequence(repetitionCount, result, resultOffset, lastblock)
+
+	return result.slice(0, resultOffset + 8)
+}
+
+function finishSequence(repetitionCount: number, result: Buffer, resultOffset: number, lastblock: Buffer) {
+	if (repetitionCount > 2) {
+		RLE_HEADER.copy(result, (resultOffset += 8))
+		result.writeBigUInt64BE(BigInt(repetitionCount + 1), (resultOffset += 8))
+		lastblock.copy(result, (resultOffset += 8))
 	} else {
-		result = Buffer.concat([result, lastblock])
+		for (let i = 0; i <= repetitionCount; ++i) {
+			lastblock.copy(result, (resultOffset += 8))
+		}
 	}
-
-	return result
+	return resultOffset
 }
 
 export interface VideoModeInfo {
