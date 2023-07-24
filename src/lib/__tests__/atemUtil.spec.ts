@@ -1,4 +1,4 @@
-import { runLengthEncode } from '../atemUtil'
+import { encodeRLE } from '../atemUtil'
 
 describe('RLE', () => {
 	test('no repetitions', () => {
@@ -6,7 +6,7 @@ describe('RLE', () => {
 cdcdcdcdcdcdcdcd\
 abababababababab\
 cdcdcdcdcdcdcdcd`
-		const encoded = runLengthEncode(Buffer.from(source, 'hex'))
+		const encoded = encodeRLE(Buffer.from(source, 'hex'))
 		expect(encoded.toString('hex')).toEqual(source)
 	})
 
@@ -16,7 +16,7 @@ abababababababab\
 cdcdcdcdcdcdcdcd\
 0000000000000000\
 1111111111111111`
-		const encoded = runLengthEncode(Buffer.from(source, 'hex'))
+		const encoded = encodeRLE(Buffer.from(source, 'hex'))
 		expect(encoded.toString('hex')).toEqual(source)
 	})
 
@@ -27,7 +27,7 @@ abababababababab\
 cdcdcdcdcdcdcdcd\
 0000000000000000\
 1111111111111111`
-		const encoded = runLengthEncode(Buffer.from(source, 'hex'))
+		const encoded = encodeRLE(Buffer.from(source, 'hex'))
 		expect(encoded.toString('hex')).toEqual(source)
 	})
 
@@ -45,7 +45,7 @@ abababababababab\
 cdcdcdcdcdcdcdcd\
 0000000000000000\
 1111111111111111`
-		const encoded = runLengthEncode(Buffer.from(source, 'hex'))
+		const encoded = encodeRLE(Buffer.from(source, 'hex'))
 		expect(encoded.toString('hex')).toEqual(expectation)
 	})
 
@@ -64,7 +64,7 @@ abababababababab\
 cdcdcdcdcdcdcdcd\
 0000000000000000\
 1111111111111111`
-		const encoded = runLengthEncode(Buffer.from(source, 'hex'))
+		const encoded = encodeRLE(Buffer.from(source, 'hex'))
 		expect(encoded.toString('hex')).toEqual(expectation)
 	})
 
@@ -85,7 +85,7 @@ abababababababab\
 cdcdcdcdcdcdcdcd\
 0000000000000000\
 1111111111111111`
-		const encoded = runLengthEncode(Buffer.from(source, 'hex'))
+		const encoded = encodeRLE(Buffer.from(source, 'hex'))
 		expect(encoded.toString('hex')).toEqual(expectation)
 	})
 
@@ -102,7 +102,7 @@ fefefefefefefefe\
 0000000000000005\
 abababababababab\
 cdcdcdcdcdcdcdcd`
-		const encoded = runLengthEncode(Buffer.from(source, 'hex'))
+		const encoded = encodeRLE(Buffer.from(source, 'hex'))
 		expect(encoded.toString('hex')).toEqual(expectation)
 	})
 
@@ -117,7 +117,7 @@ abababababababab`
 fefefefefefefefe\
 0000000000000005\
 abababababababab`
-		const encoded = runLengthEncode(Buffer.from(source, 'hex'))
+		const encoded = encodeRLE(Buffer.from(source, 'hex'))
 		expect(encoded.toString('hex')).toEqual(expectation)
 	})
 
@@ -130,7 +130,7 @@ abababababababab`
 		const expectation = `fefefefefefefefe\
 0000000000000005\
 abababababababab`
-		const encoded = runLengthEncode(Buffer.from(source, 'hex'))
+		const encoded = encodeRLE(Buffer.from(source, 'hex'))
 		expect(encoded.toString('hex')).toEqual(expectation)
 	})
 })

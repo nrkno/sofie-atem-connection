@@ -71,7 +71,7 @@ export function convertRGBAToYUV422(width: number, height: number, data: Buffer)
 
 export const RLE_HEADER = 0xfefefefefefefefen
 
-export function runLengthEncode(data: Buffer): Buffer {
+export function encodeRLE(data: Buffer): Buffer {
 	const result = Buffer.alloc(data.length)
 	let lastBlock = data.readBigUInt64BE()
 	let identicalCount = 0

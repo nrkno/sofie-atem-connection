@@ -1,9 +1,9 @@
 import { ISerializableCommand } from '../commands/CommandBase'
-import { DataTransferUploadBuffer } from './dataTransferUploadBuffer'
+import { DataTransferUploadBufferRle } from './dataTransferUploadBufferRle'
 import { DataTransferFileDescriptionCommand, DataTransferUploadRequestCommand } from '../commands/DataTransfer'
 import { ProgressTransferResult, DataTransferState } from './dataTransfer'
 
-export default class DataTransferUploadStill extends DataTransferUploadBuffer {
+export default class DataTransferUploadStill extends DataTransferUploadBufferRle {
 	readonly #stillIndex: number
 	readonly #name: string
 	readonly #description: string

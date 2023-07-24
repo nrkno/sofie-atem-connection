@@ -1,8 +1,8 @@
 import { IDeserializedCommand, ISerializableCommand } from '../commands/CommandBase'
 import { DataTransferFileDescriptionCommand, DataTransferUploadRequestCommand } from '../commands/DataTransfer'
 import { DataTransfer, DataTransferState, ProgressTransferResult } from './dataTransfer'
-import { DataTransferUploadBuffer } from './dataTransferUploadBuffer'
 import { MediaPoolClearClipCommand, MediaPoolSetClipCommand } from '../commands/Media'
+import { DataTransferUploadBufferRle } from './dataTransferUploadBufferRle'
 import debug0 = require('debug')
 
 const debug = debug0('atem-connection:data-transfer:upload-clip')
@@ -116,7 +116,7 @@ export class DataTransferUploadClip extends DataTransfer<void> {
 	}
 }
 
-export class DataTransferUploadClipFrame extends DataTransferUploadBuffer {
+export class DataTransferUploadClipFrame extends DataTransferUploadBufferRle {
 	readonly #clipIndex: number
 	readonly #frameIndex: number
 
