@@ -1,6 +1,7 @@
 import { BasicWritableCommand, DeserializedCommand } from '../CommandBase'
 import { AtemState, AtemStateUtil, InvalidIdError } from '../../state'
 import { MultiViewerSourceState } from '../../state/settings'
+import { isRunningInTests } from '../../lib/atemUtil'
 
 export class MultiViewerSourceCommand extends BasicWritableCommand<
 	Pick<MultiViewerSourceState, 'windowIndex' | 'source'>
@@ -47,14 +48,30 @@ export class MultiViewerSourceUpdateCommand extends DeserializedCommand<MultiVie
 		return new MultiViewerSourceUpdateCommand(multiViewerId, properties)
 	}
 
-	public applyToState(state: AtemState): string {
+	public applyToState(state: AtemState): string | string[] {
 		if (!state.info.multiviewer || this.multiViewerId >= state.info.multiviewer.count) {
 			throw new InvalidIdError('MultiViewer', this.multiViewerId)
 		}
 
 		const multiviewer = AtemStateUtil.getMultiViewer(state, this.multiViewerId)
+		const currentWindow = multiviewer.windows[this.properties.windowIndex]
+
+		// The Constellation HD range has a bug where it sends this command for every window on every frame
+		// This hides that from library consumers by doing a deep diff, when we usually do not.
+		if (currentWindow && !isRunningInTests()) {
+			let isChanged = false
+			for (const stringKey of Object.keys(this.properties)) {
+				const typedKey = stringKey as keyof MultiViewerSourceState
+				if (this.properties[typedKey] !== currentWindow[typedKey]) {
+					isChanged = true
+					break
+				}
+			}
+			if (!isChanged) return []
+		}
+
 		multiviewer.windows[this.properties.windowIndex] = {
-			...multiviewer.windows[this.properties.windowIndex],
+			...currentWindow,
 			...this.properties,
 		}
 
