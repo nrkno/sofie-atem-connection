@@ -29,6 +29,7 @@ import { OmitReadonly } from './lib/types'
 import { StreamingServiceProperties } from './state/streaming'
 import { commandStringify } from './lib/atemUtil'
 import * as bigInt from 'big-integer'
+import { FairlightAudioRoutingSource, FairlightAudioRoutingOutput } from './state/fairlight'
 
 export interface AtemOptions {
 	address?: string
@@ -724,6 +725,24 @@ export class Atem extends BasicAtem {
 
 	public setMediaPoolSettings(props: Commands.MediaPoolProps): Promise<void> {
 		const command = new Commands.MediaPoolSettingsSetCommand(props.maxFrames)
+		return this.sendCommand(command)
+	}
+
+	public async setFairlightAudioRoutingSourceProperties(
+		sourceId: number,
+		props: Partial<OmitReadonly<FairlightAudioRoutingSource>>
+	): Promise<void> {
+		const command = new Commands.AudioRoutingSourceCommand(sourceId)
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public async setFairlightAudioRoutingOutputProperties(
+		sourceId: number,
+		props: Partial<OmitReadonly<FairlightAudioRoutingOutput>>
+	): Promise<void> {
+		const command = new Commands.AudioRoutingOutputCommand(sourceId)
+		command.updateProps(props)
 		return this.sendCommand(command)
 	}
 }

@@ -4,7 +4,9 @@ import {
 	FairlightAnalogInputLevel,
 	FairlightAudioSourceType,
 	ExternalPortType,
-	FairlightInputType
+	FairlightInputType,
+	AudioChannelPair,
+	AudioInternalPortType
 } from '../enums'
 
 // export interface FairlightAudioMasterChannel {
@@ -59,7 +61,35 @@ export interface FairlightAudioInputProperties {
 	activeInputLevel: FairlightAnalogInputLevel
 }
 
+export interface FairlightAudioRoutingSource {
+	readonly audioSourceId: number
+	readonly audioChannelPair: AudioChannelPair
+
+	readonly externalPortType: ExternalPortType
+	readonly internalPortType: AudioInternalPortType
+
+	name: string
+}
+
+export interface FairlightAudioRoutingOutput {
+	readonly audioOutputId: number
+	readonly audioChannelPair: AudioChannelPair
+
+	readonly externalPortType: ExternalPortType
+	readonly internalPortType: AudioInternalPortType
+
+	sourceId: number
+	name: string
+}
+
+export interface FairlightAudioRouting {
+	sources: Record<number, FairlightAudioRoutingSource>
+	outputs: Record<number, FairlightAudioRoutingOutput>
+}
+
 export interface AtemFairlightAudioState {
 	inputs: { [input: number]: FairlightAudioInput | undefined }
 	// master?: FairlightAudioMasterChannel
+
+	audioRouting?: FairlightAudioRouting
 }

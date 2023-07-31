@@ -993,5 +993,31 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			stereoSimulation: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 			supportedMixOptions: (val: number): PropertyAliasResult => ({ val: Util.getComponents(val) })
 		}
+	},
+	ARSC: {
+		idAliases: {
+			id: 'id'
+		},
+		propertyAliases: {}
+	},
+	ARSP: {
+		idAliases: {
+			id: 'id'
+		},
+		propertyAliases: {
+			audioInputId: (v: number): PropertyAliasResult => ({ val: v, name: 'audioSourceId' })
+		}
+	},
+	AROC: {
+		idAliases: {
+			id: 'id'
+		},
+		propertyAliases: {}
+	},
+	AROP: {
+		idAliases: {
+			id: 'id'
+		},
+		propertyAliases: {}
 	}
 }
