@@ -1,5 +1,4 @@
 import { FairlightAudioMasterLevelsState } from '../../state/fairlight'
-//import { AtemState, InvalidIdError } from '../../state'
 import { DeserializedCommand } from '../CommandBase'
 
 
@@ -32,19 +31,6 @@ export class FairlightMixerMasterLevelsUpdateCommand extends DeserializedCommand
 		return new FairlightMixerMasterLevelsUpdateCommand(properties)
 	}
 
-	/*public applyToState(state: AtemState): string {
-		if (!state.fairlight) {
-			throw new InvalidIdError('Fairlight')
-		}
-
-		if (!state.fairlight.master) {
-			throw new InvalidIdError('Fairlight.Master')
-		}
-
-		state.fairlight.master.levels = this.properties
-
-		return `fairlight.master.levels`
-	}*/
 	public applyToState(): string[] {
 		// Not stored in the state
 		return []

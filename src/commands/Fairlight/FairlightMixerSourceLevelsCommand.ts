@@ -1,5 +1,4 @@
-import { /*FairlightAudioInput,*/ FairlightAudioSourceLevelsState } from '../../state/fairlight'
-//import { AtemState, InvalidIdError } from '../../state'
+import { FairlightAudioSourceLevelsState } from '../../state/fairlight'
 import { DeserializedCommand } from '../CommandBase'
 
 
@@ -45,24 +44,6 @@ export class FairlightMixerSourceLevelsUpdateCommand extends DeserializedCommand
 		return new FairlightMixerSourceLevelsUpdateCommand(index, source, properties)
 	}
 
-	/*public applyToState(state: AtemState): string {
-		if (!state.fairlight) {
-			throw new InvalidIdError('Fairlight')
-		}
-		
-		const input = state.fairlight.inputs[this.index]
-		if (!input) {
-			throw new InvalidIdError('Fairlight.Inputs', this.index)
-		}
-
-		const sourceIdStr = this.source.toString()
-		const source = input.sources[sourceIdStr] || {}
-		input.sources[sourceIdStr] = source
-
-		source.levels = this.properties
-
-		return `fairlight.inputs.${this.index}.sources.${sourceIdStr}.levels`
-	}*/
 	public applyToState(): string[] {
 		// Not stored in the state
 		return []
