@@ -16,3 +16,4 @@ wallaby.conf.js
 /.idea
 
 testframe.rgba
+.yarn
