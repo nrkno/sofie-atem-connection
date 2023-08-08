@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.5.0](https://github.com/nrkno/tv-automation-atem-connection/compare/2.4.0...2.5.0) (2023-08-08)
+
+
+### Features
+
+* atem tvs hd8 audio routing  SOFIE-2512 ([#146](https://github.com/nrkno/tv-automation-atem-connection/issues/146)) ([7191477](https://github.com/nrkno/tv-automation-atem-connection/commit/71914771746edef13909ccc76a4300e17abb0df4))
+* atem tvs hd8 audio routing  SOFIE-2512 ([#146](https://github.com/nrkno/tv-automation-atem-connection/issues/146)) ([7191477](https://github.com/nrkno/tv-automation-atem-connection/commit/71914771746edef13909ccc76a4300e17abb0df4))
+
 ## [2.4.0](https://github.com/nrkno/tv-automation-atem-connection/compare/2.3.1...2.4.0) (2021-11-15)
 
 
