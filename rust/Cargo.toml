@@ -1,0 +1,18 @@
+[package]
+edition = "2021"
+name = "sofie-atem-connection-rs"
+version = "0.0.0"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+# Enable napi feature, see https://nodejs.org/api/n-api.html#node-api-version-matrix
+napi = { version = "2.13.3", default-features = false, features = ["napi8"] }
+napi-derive = "2.13.0"
+
+[build-dependencies]
+napi-build = "2.0.1"
+
+[profile.release]
+lto = true

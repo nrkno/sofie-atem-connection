@@ -820,6 +820,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@napi-rs/cli@npm:^2.16.3":
+  version: 2.16.3
+  resolution: "@napi-rs/cli@npm:2.16.3"
+  bin:
+    napi: scripts/index.js
+  checksum: 11f78b09548bc5c22df56e4fab4a87b68c2d3f2a18a55cf11e775e6a4cb5739ec0e21a14e614db2cdc2b9773cb42536c6bd00c3f85d3b461f956594f8a89ddcb
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -1561,6 +1570,7 @@ __metadata:
   resolution: "atem-connection@workspace:."
   dependencies:
     "@julusian/freetype2": ^1.1.2
+    "@napi-rs/cli": ^2.16.3
     "@sinonjs/fake-timers": ^10.0.2
     "@sofie-automation/code-standard-preset": ~2.4.6
     "@types/debug": ^4.1.7

@@ -25,7 +25,10 @@
     }
   ],
   "scripts": {
-    "build": "rimraf dist && run build:main",
+    "build": "yarn build:rs && yarn build:js",
+    "build:rs": "napi build --cargo-cwd rust --platform --release --js-package-name sofie-atem-connection/rust/target --js=false --dts index.d.ts rust",
+    "build:rs:debug": "napi build --cargo-cwd rust --platform rust",
+    "build:js": "rimraf dist && run build:main",
     "build:main": "tsc -p tsconfig.build.json",
     "lint:raw": "run eslint --ext .ts --ext .js --ext .tsx --ext .jsx ",
     "lint": "run lint:raw .",
@@ -87,6 +90,7 @@
   ],
   "dependencies": {
     "@julusian/freetype2": "^1.1.2",
+    "@napi-rs/cli": "^2.16.3",
     "debug": "^4.3.4",
     "eventemitter3": "^4.0.7",
     "exit-hook": "^2.2.1",
@@ -105,6 +109,15 @@
     "*.{ts,tsx,js,jsx}": [
       "yarn lint-fix"
     ]
+  },
+  "napi": {
+    "name": "sofie-atem-connection-rs",
+    "triples": {
+      "additional": [
+        "aarch64-apple-darwin",
+        "aarch64-unknown-linux-gnu"
+      ]
+    }
   },
   "packageManager": "yarn@3.5.0"
 }
