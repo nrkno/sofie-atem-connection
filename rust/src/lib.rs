@@ -27,6 +27,9 @@ pub fn convert_rgba_to_yuv_422(
   let mut output_vec = output.into_value()?;
 
   let pixel_count = (width * height) as usize;
+  if width % 2 != 0 {
+    env.throw_error("Width must be a multiple of 2", None)?;
+  }
   let byte_count = pixel_count * 4;
   if input_vec.len() != byte_count {
     env.throw_error("Input buffer has incorrect length", None)?;
@@ -58,7 +61,8 @@ pub fn convert_rgba_to_yuv_422(
   let KBoKRi: f32 = (KB / KRi) * HalfCbCrRange;
   let KGoKRi: f32 = (KG / KRi) * HalfCbCrRange;
 
-  for i in 0..pixel_count {
+  let sample_count = pixel_count / 2;
+  for i in 0..sample_count {
     let offset = i * 8;
 
     let r1 = input_vec[offset + 0] as f32;
@@ -77,10 +81,11 @@ pub fn convert_rgba_to_yuv_422(
     let y16b = YOffset + KR * YRange * r2 + KG * YRange * g2 + KB * YRange * b2;
     let cr16 = CbCrOffset + (HalfCbCrRange * r1 - KGoKRi * g1 - KBoKRi * b1);
 
+    // TODO - check endianness
     let block1 = gen_color(a1.into(), cb16, y16a).to_be_bytes();
     let block2 = gen_color(a2.into(), cr16, y16b).to_be_bytes();
 
-    // TODO - is this 'cleverness' more or less efficient
+    // TODO - is this 'cleverness' more or less efficient than writing bytes individually?
     let offset4 = offset + 4;
     let offset8 = offset + 8;
     output_vec[offset..offset4].copy_from_slice(&block1);

@@ -36,14 +36,14 @@ switch (platform) {
 		switch (arch) {
 			case 'arm64':
 				try {
-					nativeBinding = runtimeRequire('julusian-image-rs.android-arm64.node')
+					nativeBinding = runtimeRequire('sofie-atem-connection-rs.android-arm64.node')
 				} catch (e) {
 					loadError = e
 				}
 				break
 			case 'arm':
 				try {
-					nativeBinding = runtimeRequire('julusian-image-rs.android-arm-eabi.node')
+					nativeBinding = runtimeRequire('sofie-atem-connection-rs.android-arm-eabi.node')
 				} catch (e) {
 					loadError = e
 				}
@@ -56,21 +56,21 @@ switch (platform) {
 		switch (arch) {
 			case 'x64':
 				try {
-					nativeBinding = runtimeRequire('julusian-image-rs.win32-x64-msvc.node')
+					nativeBinding = runtimeRequire('sofie-atem-connection-rs.win32-x64-msvc.node')
 				} catch (e) {
 					loadError = e
 				}
 				break
 			case 'ia32':
 				try {
-					nativeBinding = runtimeRequire('julusian-image-rs.win32-ia32-msvc.node')
+					nativeBinding = runtimeRequire('sofie-atem-connection-rs.win32-ia32-msvc.node')
 				} catch (e) {
 					loadError = e
 				}
 				break
 			case 'arm64':
 				try {
-					nativeBinding = runtimeRequire('julusian-image-rs.win32-arm64-msvc.node')
+					nativeBinding = runtimeRequire('sofie-atem-connection-rs.win32-arm64-msvc.node')
 				} catch (e) {
 					loadError = e
 				}
@@ -81,20 +81,20 @@ switch (platform) {
 		break
 	case 'darwin':
 		try {
-			nativeBinding = runtimeRequire('julusian-image-rs.darwin-universal.node')
+			nativeBinding = runtimeRequire('sofie-atem-connection-rs.darwin-universal.node')
 			if (nativeBinding) break
 		} catch {}
 		switch (arch) {
 			case 'x64':
 				try {
-					nativeBinding = runtimeRequire('julusian-image-rs.darwin-x64.node')
+					nativeBinding = runtimeRequire('sofie-atem-connection-rs.darwin-x64.node')
 				} catch (e) {
 					loadError = e
 				}
 				break
 			case 'arm64':
 				try {
-					nativeBinding = runtimeRequire('julusian-image-rs.darwin-arm64.node')
+					nativeBinding = runtimeRequire('sofie-atem-connection-rs.darwin-arm64.node')
 				} catch (e) {
 					loadError = e
 				}
@@ -108,7 +108,7 @@ switch (platform) {
 			throw new Error(`Unsupported architecture on FreeBSD: ${arch}`)
 		}
 		try {
-			nativeBinding = runtimeRequire('julusian-image-rs.freebsd-x64.node')
+			nativeBinding = runtimeRequire('sofie-atem-connection-rs.freebsd-x64.node')
 		} catch (e) {
 			loadError = e
 		}
@@ -118,13 +118,13 @@ switch (platform) {
 			case 'x64':
 				if (isMusl()) {
 					try {
-						nativeBinding = runtimeRequire('julusian-image-rs.linux-x64-musl.node')
+						nativeBinding = runtimeRequire('sofie-atem-connection-rs.linux-x64-musl.node')
 					} catch (e) {
 						loadError = e
 					}
 				} else {
 					try {
-						nativeBinding = runtimeRequire('julusian-image-rs.linux-x64-gnu.node')
+						nativeBinding = runtimeRequire('sofie-atem-connection-rs.linux-x64-gnu.node')
 					} catch (e) {
 						loadError = e
 					}
@@ -133,13 +133,13 @@ switch (platform) {
 			case 'arm64':
 				if (isMusl()) {
 					try {
-						nativeBinding = runtimeRequire('julusian-image-rs.linux-arm64-musl.node')
+						nativeBinding = runtimeRequire('sofie-atem-connection-rs.linux-arm64-musl.node')
 					} catch (e) {
 						loadError = e
 					}
 				} else {
 					try {
-						nativeBinding = runtimeRequire('julusian-image-rs.linux-arm64-gnu.node')
+						nativeBinding = runtimeRequire('sofie-atem-connection-rs.linux-arm64-gnu.node')
 					} catch (e) {
 						loadError = e
 					}
@@ -147,7 +147,7 @@ switch (platform) {
 				break
 			case 'arm':
 				try {
-					nativeBinding = runtimeRequire('julusian-image-rs.linux-arm-gnueabihf.node')
+					nativeBinding = runtimeRequire('sofie-atem-connection-rs.linux-arm-gnueabihf.node')
 				} catch (e) {
 					loadError = e
 				}
