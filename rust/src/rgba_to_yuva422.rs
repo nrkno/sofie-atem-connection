@@ -4,11 +4,12 @@ const CB_CR_OFFSET: f32 = 512.0;
 const CB_CR_SCALE: f32 = 224.0 / 64.0;
 const HALF_CB_CR_SCALE: f32 = CB_CR_SCALE / 2.0;
 
-const ALPHA_SCALE: f32 = 219.0 / 255.0;
+const ALPHA_SCALE: f32 = 219.0 / 255.0 * 4.0;
 const LUMA_SCALE: f32 = 219.0 / 64.0;
 const ALPHA_OFFSET: u32 = 64;
 const LUMA_OFFSET: u32 = 64;
 
+#[inline(always)]
 pub fn rgb_to_yuv422(constants: &YuvConstants, rgba1: &[u8], rgba2: &[u8], target: &mut [u8]) {
   let y16a = calc_y(constants, rgba1);
   let cb16 = calc_cb(constants, rgba1);
@@ -57,9 +58,8 @@ fn calc_cr(constants: &YuvConstants, rgba: &[u8]) -> u32 {
 
 #[inline(always)]
 fn alpha_8_to_10bit(val: u8) -> u32 {
-  let val10bit = (val as u32) << 2;
   // TODO - do round instead of floor
-  ALPHA_OFFSET + (val10bit as f32 * ALPHA_SCALE).floor() as u32
+  ALPHA_OFFSET + (val as f32 * ALPHA_SCALE).floor() as u32
 }
 
 pub struct YuvConstants {

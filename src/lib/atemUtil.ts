@@ -25,22 +25,24 @@ export function convertRGBAToYUV422(width: number, height: number, data: Buffer)
 	const KRi = 1 - KR
 	const KBi = 1 - KB
 
-	const YRange = 219
-	const CbCrRange = 224
+	const YRange = 219 / 64
+	const CbCrRange = 224 / 64
 	const HalfCbCrRange = CbCrRange / 2
 
-	const YOffset = 16 << 8
-	const CbCrOffset = 128 << 8
+	const YOffset = 64
+	const CbCrOffset = 512
 
-	const KRoKBi = (KR / KBi) * HalfCbCrRange
-	const KGoKBi = (KG / KBi) * HalfCbCrRange
-	const KBoKRi = (KB / KRi) * HalfCbCrRange
-	const KGoKRi = (KG / KRi) * HalfCbCrRange
+	const KRoKBi = KR / KBi
+	const KGoKBi = KG / KBi
+	const KBoKRi = KB / KRi
+	const KGoKRi = KG / KRi
+
+	const AlphaScale = (219 / 255) * 4 // limited range, and 8 -> 10bit
 
 	const genColor = (rawA: number, uv16: number, y16: number): number => {
-		const a = ((rawA << 2) * 219) / 255 + (16 << 2)
-		const y = Math.round(y16) >> 6
-		const uv = Math.round(uv16) >> 6
+		const a = Math.floor(AlphaScale * rawA) + 64
+		const y = Math.floor(y16)
+		const uv = Math.floor(uv16)
 
 		return (a << 20) + (uv << 10) + y
 	}
@@ -58,13 +60,13 @@ export function convertRGBAToYUV422(width: number, height: number, data: Buffer)
 		const a1 = data[i + 3]
 		const a2 = data[i + 7]
 
-		const y16a = YOffset + KR * YRange * r1 + KG * YRange * g1 + KB * YRange * b1
-		const cb16 = CbCrOffset + (-KRoKBi * r1 - KGoKBi * g1 + HalfCbCrRange * b1)
-		const y16b = YOffset + KR * YRange * r2 + KG * YRange * g2 + KB * YRange * b2
-		const cr16 = CbCrOffset + (HalfCbCrRange * r1 - KGoKRi * g1 - KBoKRi * b1)
+		const y16a = KR * r1 + KG * g1 + KB * b1
+		const cb16 = -KRoKBi * r1 - KGoKBi * g1 + b1
+		const y16b = KR * r2 + KG * g2 + KB * b2
+		const cr16 = r1 - KGoKRi * g1 - KBoKRi * b1
 
-		buffer.writeUInt32BE(genColor(a1, cb16, y16a), i)
-		buffer.writeUInt32BE(genColor(a2, cr16, y16b), i + 4)
+		buffer.writeUInt32BE(genColor(a1, CbCrOffset + cb16 * HalfCbCrRange, YOffset + y16a * YRange), i)
+		buffer.writeUInt32BE(genColor(a2, CbCrOffset + cr16 * HalfCbCrRange, YOffset + y16b * YRange), i + 4)
 	}
 	return buffer
 }
