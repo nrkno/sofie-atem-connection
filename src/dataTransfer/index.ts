@@ -10,11 +10,16 @@ import { DataTransferDownloadMacro } from './dataTransferDownloadMacro'
 import { DataTransferUploadMacro } from './dataTransferUploadMacro'
 import { LockObtainedCommand, LockStateUpdateCommand } from '../commands/DataTransfer'
 import debug0 from 'debug'
+import { generateBufferInfo } from './dataTransferUploadBuffer'
 
-const MAX_PACKETS_TO_SEND_PER_TICK = 10
+const MAX_PACKETS_TO_SEND_PER_TICK = 50
 const MAX_TRANSFER_INDEX = (1 << 16) - 1 // Inclusive maximum
 
 const debug = debug0('atem-connection:data-transfer:manager')
+
+export interface UploadStillEncodingOptions {
+	disableRLE?: boolean
+}
 
 export class DataTransferManager {
 	#nextTransferIdInner = 0
@@ -165,21 +170,30 @@ export class DataTransferManager {
 		}
 	}
 
-	public async uploadStill(index: number, data: Buffer, name: string, description: string): Promise<void> {
-		const transfer = new DataTransferUploadStill(index, data, name, description)
+	public async uploadStill(
+		index: number,
+		data: Buffer,
+		name: string,
+		description: string,
+		options?: UploadStillEncodingOptions
+	): Promise<void> {
+		const buffer = generateBufferInfo(data, !options?.disableRLE)
+		const transfer = new DataTransferUploadStill(index, buffer, name, description)
 		return this.#stillsLock.enqueue(transfer)
 	}
 
 	public async uploadClip(
 		index: number,
 		data: Iterable<Buffer> | AsyncIterable<Buffer>,
-		name: string
+		name: string,
+		options?: UploadStillEncodingOptions
 	): Promise<void> {
 		const provideFrame = async function* (): AsyncGenerator<DataTransferUploadClipFrame, undefined> {
 			let id = -1
 			for await (const frame of data) {
 				id++
-				yield new DataTransferUploadClipFrame(index, id, frame)
+				const buffer = generateBufferInfo(frame, !options?.disableRLE)
+				yield new DataTransferUploadClipFrame(index, id, buffer)
 			}
 			return undefined
 		}

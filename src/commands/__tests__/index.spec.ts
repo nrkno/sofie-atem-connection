@@ -43,10 +43,8 @@ function runTestForCommand(commandParser: CommandParser, i: number, testCase: Te
 
 	const versionName = ProtocolVersion[testCase.firstVersion] || `v${testCase.firstVersion}`
 
-	// if (testCase.name !== 'DCPC') return
-	// if (i !== 69) {
-	// 	return
-	// }
+	// if (testCase.name !== 'FTFD') return
+	// if (i !== 1673) return
 
 	let matchedCase = false
 	if (cmdConstructor) {

@@ -15,3 +15,4 @@ import * as InputState from './state/input'
 import * as MacroState from './state/macro'
 import * as SettingsState from './state/settings'
 export { VideoState, AudioState, MediaState, InfoState, InputState, MacroState, SettingsState }
+export { UploadStillEncodingOptions } from './dataTransfer'
