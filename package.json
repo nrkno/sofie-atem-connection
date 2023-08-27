@@ -25,25 +25,28 @@
     }
   ],
   "scripts": {
-    "build": "rimraf dist && yarn build:main",
+    "build": "rimraf dist && run build:main",
     "build:main": "tsc -p tsconfig.build.json",
-    "lint:raw": "eslint --ext .ts --ext .js --ext .tsx --ext .jsx ",
-    "lint": "yarn lint:raw .",
-    "lint-fix": "yarn lint --fix",
-    "unit": "jest --forceExit",
-    "test": "yarn lint && yarn unit",
-    "watch": "jest --watch",
-    "cov": "jest --coverage; open-cli coverage/lcov-report/index.html",
+    "lint:raw": "run eslint --ext .ts --ext .js --ext .tsx --ext .jsx ",
+    "lint": "run lint:raw .",
+    "lint-fix": "run lint --fix",
+    "unit": "run jest --forceExit",
+    "test": "run lint && run unit",
+    "watch": "run jest --watch",
+    "cov": "run jest --coverage; open-cli coverage/lcov-report/index.html",
     "cov-open": "open-cli coverage/lcov-report/index.html",
-    "docs": "yarn docs:html && open-cli docs/index.html",
-    "docs:test": "yarn docs:html",
+    "docs": "run docs:html && open-cli docs/index.html",
+    "docs:test": "run docs:html",
     "docs:html": "typedoc --tsconfig tsconfig.docs.json --entryPoints src/index.ts --excludePrivate --theme default --out docs",
     "docs:json": "typedoc --tsconfig tsconfig.docs.json --json docs/typedoc.json --entryPoints src/index.ts",
     "release": "sofie-version",
     "reset": "git clean -dfx && git reset --hard && yarn",
-    "validate:dependencies": "yarn audit --groups dependencies && yarn license-validate",
-    "validate:dev-dependencies": "yarn audit --groups devDependencies",
-    "license-validate": "yarn sofie-licensecheck --allowPackages caniuse-lite@1.0.30001319"
+    "validate:dependencies": "yarn npm audit --environment production && run license-validate",
+    "validate:dev-dependencies": "yarn npm audit --environment development",
+    "license-validate": "sofie-licensecheck --allowPackages caniuse-lite@1.0.30001319",
+    "eslint": "./node_modules/.bin/eslint",
+    "prettier": "./node_modules/.bin/prettier",
+    "lint-staged": "./node_modules/.bin/lint-staged"
   },
   "engines": {
     "node": "^14.18 || ^16.14 || ^18.0"
@@ -56,21 +59,21 @@
     "/LICENSE"
   ],
   "devDependencies": {
-    "@sinonjs/fake-timers": "^10.0.0",
-    "@sofie-automation/code-standard-preset": "~2.1.0",
+    "@sinonjs/fake-timers": "^10.0.2",
+    "@sofie-automation/code-standard-preset": "~2.4.6",
     "@types/debug": "^4.1.7",
-    "@types/jest": "^29.2.0",
+    "@types/jest": "^29.5.1",
     "@types/node": "^14.18.22",
     "@types/object-path": "^0.11.1",
-    "@types/sinon": "^10.0.13",
+    "@types/sinon": "^10.0.14",
     "@types/sinonjs__fake-timers": "^8.1.2",
-    "jest": "^29.2.2",
-    "jest-extended": "^3.1.0",
+    "jest": "^29.5.0",
+    "jest-extended": "^3.2.4",
     "object-path": "^0.11.8",
-    "open-cli": "^7.1.0",
-    "rimraf": "^3.0.2",
+    "open-cli": "^7.2.0",
+    "rimraf": "^5.0.0",
     "sinon": "^14.0.2",
-    "ts-jest": "^29.0.3",
+    "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
     "typedoc": "^0.22.18",
     "typescript": "~4.5"
@@ -83,15 +86,15 @@
     "video"
   ],
   "dependencies": {
-    "@julusian/freetype2": "^1.1.0",
+    "@julusian/freetype2": "^1.1.2",
     "debug": "^4.3.4",
     "eventemitter3": "^4.0.7",
     "exit-hook": "^2.2.1",
     "nanotimer": "^0.3.15",
     "p-lazy": "^3.1.0",
     "p-queue": "^6.6.2",
-    "threadedclass": "^1.1.1",
-    "tslib": "^2.3.1",
+    "threadedclass": "^1.2.1",
+    "tslib": "^2.5.0",
     "wavefile": "^8.4.4"
   },
   "prettier": "@sofie-automation/code-standard-preset/.prettierrc.json",
@@ -102,5 +105,6 @@
     "*.{ts,tsx,js,jsx}": [
       "yarn lint-fix"
     ]
-  }
+  },
+  "packageManager": "yarn@3.5.0"
 }

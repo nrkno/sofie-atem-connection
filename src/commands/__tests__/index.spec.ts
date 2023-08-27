@@ -187,7 +187,7 @@ describe('Commands vs LibAtem', () => {
 	test('Ensure all commands have test cases', () => {
 		// Verify that all commands were tested
 		let knownNames: string[] = []
-		for (const [name, cmds] of Object.entries(commandParser.commands)) {
+		for (const [name, cmds] of Object.entries<any[]>(commandParser.commands)) {
 			for (const cmd of cmds) {
 				knownNames.push(`${name}_${cmd.minimumVersion || ProtocolVersion.V7_2}`)
 			}

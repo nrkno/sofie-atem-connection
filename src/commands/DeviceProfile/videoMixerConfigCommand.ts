@@ -39,7 +39,7 @@ export class VideoMixerConfigCommand extends DeserializedCommand<Array<Supported
 
 function readVideoModeBitmask(rawVal: number): Array<VideoMode> {
 	const modes: Array<VideoMode> = []
-	for (const possibleMode of Object.values(VideoMode)) {
+	for (const possibleMode of Object.values<VideoMode | string>(VideoMode)) {
 		if (typeof possibleMode === 'number' && (rawVal & (1 << possibleMode)) != 0) modes.push(possibleMode)
 	}
 

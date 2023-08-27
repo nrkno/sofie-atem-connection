@@ -346,3 +346,7 @@ export function omit<T, K extends keyof T>(o: T, ...keys: K[]): Omit<T, K> {
 export function assertNever(_val: never): void {
 	// Nothing to do
 }
+
+export function isRunningInTests(): boolean {
+	return process.env.JEST_WORKER_ID !== undefined
+}
