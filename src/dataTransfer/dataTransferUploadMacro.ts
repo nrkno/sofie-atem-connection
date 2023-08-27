@@ -5,7 +5,11 @@ import { DataTransferUploadBuffer } from './dataTransferUploadBuffer'
 
 export class DataTransferUploadMacro extends DataTransferUploadBuffer {
 	constructor(public readonly macroIndex: number, public readonly data: Buffer, private name: string) {
-		super(data)
+		super({
+			encodedData: data,
+			rawDataLength: data.length,
+			hash: null,
+		})
 	}
 
 	public async startTransfer(transferId: number): Promise<ProgressTransferResult> {

@@ -1,27 +1,21 @@
 import { ISerializableCommand } from '../commands/CommandBase'
-import { DataTransferUploadBufferRle, DataTransferUploadBufferRleOptions } from './dataTransferUploadBufferRle'
 import { DataTransferFileDescriptionCommand, DataTransferUploadRequestCommand } from '../commands/DataTransfer'
 import { ProgressTransferResult, DataTransferState } from './dataTransfer'
+import { DataTransferUploadBuffer, UploadBufferInfo } from './dataTransferUploadBuffer'
 
-export default class DataTransferUploadStill extends DataTransferUploadBufferRle {
+export default class DataTransferUploadStill extends DataTransferUploadBuffer {
 	readonly #stillIndex: number
 	readonly #name: string
 	readonly #description: string
 	readonly #dataLength: number
 
-	constructor(
-		stillIndex: number,
-		data: Buffer,
-		name: string,
-		description: string,
-		options: DataTransferUploadBufferRleOptions
-	) {
-		super(data, options)
+	constructor(stillIndex: number, buffer: UploadBufferInfo, name: string, description: string) {
+		super(buffer)
 
 		this.#stillIndex = stillIndex
 		this.#name = name
 		this.#description = description
-		this.#dataLength = data.length
+		this.#dataLength = buffer.rawDataLength
 	}
 
 	public async startTransfer(transferId: number): Promise<ProgressTransferResult> {

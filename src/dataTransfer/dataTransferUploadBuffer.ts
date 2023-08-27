@@ -14,21 +14,35 @@ import * as Util from '../lib/atemUtil'
 
 const debug = debug0('atem-connection:data-transfer:upload-buffer')
 
+export interface UploadBufferInfo {
+	encodedData: Buffer
+	rawDataLength: number
+	hash: string | null
+}
+
+export function generateHashForBuffer(data: Buffer): string {
+	return data ? crypto.createHash('md5').update(data).digest().toString() : ''
+}
+
+export function generateBufferInfo(data: Buffer, shouldEncodeRLE: boolean): UploadBufferInfo {
+	return {
+		encodedData: shouldEncodeRLE ? Util.encodeRLE(data) : data,
+		rawDataLength: data.length,
+		hash: generateHashForBuffer(data),
+	}
+}
+
 export abstract class DataTransferUploadBuffer extends DataTransfer<void> {
 	protected readonly hash: string
 	protected readonly data: Buffer
 
 	#bytesSent = 0
 
-	constructor(data: Buffer) {
+	constructor(buffer: UploadBufferInfo) {
 		super()
 
-		this.hash = data ? crypto.createHash('md5').update(data).digest().toString() : ''
-		this.data = this.encodeData(data)
-	}
-
-	protected encodeData(data: Buffer): Buffer {
-		return data
+		this.hash = buffer.hash ?? generateHashForBuffer(buffer.encodedData)
+		this.data = buffer.encodedData
 	}
 
 	protected abstract generateDescriptionCommand(transferId: number): ISerializableCommand

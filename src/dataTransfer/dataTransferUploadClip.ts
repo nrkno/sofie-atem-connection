@@ -2,8 +2,8 @@ import { IDeserializedCommand, ISerializableCommand } from '../commands/CommandB
 import { DataTransferFileDescriptionCommand, DataTransferUploadRequestCommand } from '../commands/DataTransfer'
 import { DataTransfer, DataTransferState, ProgressTransferResult } from './dataTransfer'
 import { MediaPoolClearClipCommand, MediaPoolSetClipCommand } from '../commands/Media'
-import { DataTransferUploadBufferRle, DataTransferUploadBufferRleOptions } from './dataTransferUploadBufferRle'
 import debug0 = require('debug')
+import { DataTransferUploadBuffer, UploadBufferInfo } from './dataTransferUploadBuffer'
 
 const debug = debug0('atem-connection:data-transfer:upload-clip')
 
@@ -116,24 +116,26 @@ export class DataTransferUploadClip extends DataTransfer<void> {
 	}
 }
 
-export class DataTransferUploadClipFrame extends DataTransferUploadBufferRle {
+export class DataTransferUploadClipFrame extends DataTransferUploadBuffer {
 	readonly #clipIndex: number
 	readonly #frameIndex: number
+	readonly #dataLength: number
 
-	constructor(clipIndex: number, frameIndex: number, data: Buffer, options: DataTransferUploadBufferRleOptions) {
-		super(data, options)
+	constructor(clipIndex: number, frameIndex: number, buffer: UploadBufferInfo) {
+		super(buffer)
 
 		this.#clipIndex = clipIndex
 		this.#frameIndex = frameIndex
+		this.#dataLength = buffer.rawDataLength
 	}
 
 	public async startTransfer(transferId: number): Promise<ProgressTransferResult> {
-		debug(`Start transfer ${transferId} (${this.data.length})`)
+		debug(`Start transfer ${transferId} (${this.#dataLength})`)
 		const command = new DataTransferUploadRequestCommand({
 			transferId: transferId,
 			transferStoreId: this.#clipIndex + 1,
 			transferIndex: this.#frameIndex,
-			size: this.data.length,
+			size: this.#dataLength,
 			mode: 1,
 		})
 

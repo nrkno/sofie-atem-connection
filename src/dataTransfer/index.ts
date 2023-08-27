@@ -10,14 +10,16 @@ import { DataTransferDownloadMacro } from './dataTransferDownloadMacro'
 import { DataTransferUploadMacro } from './dataTransferUploadMacro'
 import { LockObtainedCommand, LockStateUpdateCommand } from '../commands/DataTransfer'
 import debug0 from 'debug'
-import { DataTransferUploadBufferRleOptions } from './dataTransferUploadBufferRle'
+import { generateBufferInfo } from './dataTransferUploadBuffer'
 
 const MAX_PACKETS_TO_SEND_PER_TICK = 50
 const MAX_TRANSFER_INDEX = (1 << 16) - 1 // Inclusive maximum
 
 const debug = debug0('atem-connection:data-transfer:manager')
 
-export type UploadStillOptions = DataTransferUploadBufferRleOptions
+export interface UploadStillOptions {
+	disableRLE?: boolean
+}
 
 export class DataTransferManager {
 	#nextTransferIdInner = 0
@@ -175,7 +177,8 @@ export class DataTransferManager {
 		description: string,
 		options?: UploadStillOptions
 	): Promise<void> {
-		const transfer = new DataTransferUploadStill(index, data, name, description, options ?? {})
+		const buffer = generateBufferInfo(data, !options?.disableRLE)
+		const transfer = new DataTransferUploadStill(index, buffer, name, description)
 		return this.#stillsLock.enqueue(transfer)
 	}
 
@@ -189,7 +192,8 @@ export class DataTransferManager {
 			let id = -1
 			for await (const frame of data) {
 				id++
-				yield new DataTransferUploadClipFrame(index, id, frame, options ?? {})
+				const buffer = generateBufferInfo(frame, !options?.disableRLE)
+				yield new DataTransferUploadClipFrame(index, id, buffer)
 			}
 			return undefined
 		}

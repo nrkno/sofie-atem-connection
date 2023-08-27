@@ -7,7 +7,11 @@ export default class DataTransferUploadMultiViewerLabel extends DataTransferUplo
 	readonly #sourceId: number
 
 	constructor(sourceId: number, data: Buffer) {
-		super(data)
+		super({
+			encodedData: data,
+			rawDataLength: data.length,
+			hash: null,
+		})
 
 		this.#sourceId = sourceId
 	}

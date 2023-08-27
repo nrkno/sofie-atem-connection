@@ -8,7 +8,11 @@ export default class DataTransferUploadAudio extends DataTransferUploadBuffer {
 	readonly #name: string
 
 	constructor(clipIndex: number, data: Buffer, name: string) {
-		super(data)
+		super({
+			encodedData: data,
+			rawDataLength: data.length,
+			hash: null,
+		})
 
 		this.#clipIndex = clipIndex
 		this.#name = name
