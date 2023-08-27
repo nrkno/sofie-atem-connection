@@ -1,10 +1,7 @@
 import { FairlightAudioMasterLevelsState } from '../../state/fairlight'
 import { DeserializedCommand } from '../CommandBase'
 
-
-export class FairlightMixerMasterLevelsUpdateCommand extends DeserializedCommand<
-	FairlightAudioMasterLevelsState
-> {
+export class FairlightMixerMasterLevelsUpdateCommand extends DeserializedCommand<FairlightAudioMasterLevelsState> {
 	public static readonly rawName = 'FDLv'
 
 	public static deserialize(rawCommand: Buffer): FairlightMixerMasterLevelsUpdateCommand {
@@ -16,12 +13,12 @@ export class FairlightMixerMasterLevelsUpdateCommand extends DeserializedCommand
 
 			compressorGainReduction: rawCommand.readInt16BE(8),
 			limiterGainReduction: rawCommand.readInt16BE(10),
-		
+
 			outputLeftLevel: rawCommand.readInt16BE(12),
 			outputRightLevel: rawCommand.readInt16BE(14),
 			outputLeftPeak: rawCommand.readInt16BE(16),
 			outputRightPeak: rawCommand.readInt16BE(18),
-		
+
 			leftLevel: rawCommand.readInt16BE(20),
 			rightLevel: rawCommand.readInt16BE(22),
 			leftPeak: rawCommand.readInt16BE(24),

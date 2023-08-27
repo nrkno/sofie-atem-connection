@@ -1,7 +1,7 @@
 import { BasicWritableCommand } from '../CommandBase'
 
 export class FairlightMixerSendLevelsCommand extends BasicWritableCommand<{ sendLevels: boolean }> {
-    public static readonly rawName = 'SFLN'
+	public static readonly rawName = 'SFLN'
 
 	constructor(sendLevels: boolean) {
 		super({ sendLevels })
@@ -12,5 +12,4 @@ export class FairlightMixerSendLevelsCommand extends BasicWritableCommand<{ send
 		buffer.writeUInt8(this.properties.sendLevels ? 1 : 0, 0)
 		return buffer
 	}
-
 }

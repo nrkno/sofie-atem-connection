@@ -73,8 +73,8 @@ export interface FairlightAudioMasterChannel {
 	//levels?: FairlightAudioMasterLevelsState | undefined
 }
 export interface FairlightAudioMasterLevelsState {
-    inputLeftLevel: number
-    inputRightLevel: number
+	inputLeftLevel: number
+	inputRightLevel: number
 	inputLeftPeak: number
 	inputRightPeak: number
 
@@ -128,8 +128,8 @@ export interface FairlightAudioSourcePropertiesState {
 	mixOption: FairlightAudioMixOption
 }
 export interface FairlightAudioSourceLevelsState {
-    inputLeftLevel: number
-    inputRightLevel: number
+	inputLeftLevel: number
+	inputRightLevel: number
 	inputLeftPeak: number
 	inputRightPeak: number
 
