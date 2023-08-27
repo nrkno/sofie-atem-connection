@@ -177,7 +177,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 
 	private _mutateState(commands: IDeserializedCommand[]): void {
 		// Is this the start of a new connection?
-		if (commands.find((cmd) => cmd.constructor.name === Commands.VersionCommand.name)) {
+		if (commands.find((cmd) => cmd instanceof Commands.VersionCommand)) {
 			// On start of connection, create a new state object
 			this._state = AtemStateUtil.Create()
 			this._status = AtemConnectionStatus.CONNECTING
@@ -238,7 +238,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 			}
 		}
 
-		const initComplete = commands.find((cmd) => cmd.constructor.name === Commands.InitCompleteCommand.name)
+		const initComplete = commands.find((cmd) => cmd instanceof Commands.InitCompleteCommand)
 		if (initComplete) {
 			this._status = AtemConnectionStatus.CONNECTED
 			this._onInitComplete()

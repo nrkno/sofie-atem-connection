@@ -195,10 +195,9 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 						this._commandParser.version
 					)
 
-					if (cmdConstructor.name === VersionCommand.name) {
+					if (cmd instanceof VersionCommand) {
 						// init started
-						const verCmd = cmd as VersionCommand
-						this._commandParser.version = verCmd.properties.version
+						this._commandParser.version = cmd.properties.version
 					}
 
 					parsedCommands.push(cmd)
