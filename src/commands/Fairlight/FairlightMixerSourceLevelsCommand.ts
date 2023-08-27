@@ -1,7 +1,7 @@
-import { FairlightAudioSourceLevelsState } from '../../state/fairlight'
+import { FairlightAudioLevels } from '../../state/levels'
 import { DeserializedCommand } from '../CommandBase'
 
-export class FairlightMixerSourceLevelsUpdateCommand extends DeserializedCommand<FairlightAudioSourceLevelsState> {
+export class FairlightMixerSourceLevelsUpdateCommand extends DeserializedCommand<FairlightAudioLevels> {
 	public static readonly rawName = 'FMLv'
 
 	public readonly index: number

@@ -38,8 +38,6 @@ import {
 	FairlightAudioExpanderState,
 	FairlightAudioRoutingSource,
 	FairlightAudioRoutingOutput,
-	FairlightAudioMasterLevelsState,
-	FairlightAudioSourceLevelsState,
 } from './state/fairlight'
 import { FairlightDynamicsResetProps } from './commands/Fairlight/common'
 import { MultiViewerPropertiesState } from './state/settings'
@@ -53,6 +51,7 @@ import { FontFace } from '@julusian/freetype2'
 import PLazy = require('p-lazy')
 import { TimeCommand } from './commands'
 import { TimeInfo } from './state/info'
+import { SomeAtemAudioLevels } from './state/levels'
 
 export interface AtemOptions {
 	address?: string
@@ -69,7 +68,7 @@ export type AtemEvents = {
 	connected: []
 	disconnected: []
 	stateChanged: [AtemState, string[]]
-	levelChanged: [FairlightAudioMasterLevelsState | FairlightAudioSourceLevelsState, string]
+	levelChanged: [SomeAtemAudioLevels]
 	receivedCommands: [IDeserializedCommand[]]
 	updatedTime: [TimeInfo]
 }
@@ -191,9 +190,19 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 			if (command instanceof TimeCommand) {
 				this.emit('updatedTime', command.properties)
 			} else if (command instanceof Commands.FairlightMixerMasterLevelsUpdateCommand) {
-				this.emit('levelChanged', command.properties, 'master')
+				this.emit('levelChanged', {
+					system: 'fairlight',
+					type: 'master',
+					levels: command.properties,
+				})
 			} else if (command instanceof Commands.FairlightMixerSourceLevelsUpdateCommand) {
-				this.emit('levelChanged', command.properties, command.index.toString())
+				this.emit('levelChanged', {
+					system: 'fairlight',
+					type: 'source',
+					source: command.source,
+					index: command.index,
+					levels: command.properties,
+				})
 			} else if (state) {
 				try {
 					const changePaths = command.applyToState(state)

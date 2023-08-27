@@ -72,25 +72,6 @@ export interface FairlightAudioMasterChannel {
 	dynamics?: Omit<FairlightAudioDynamicsState, 'expander'>
 	//levels?: FairlightAudioMasterLevelsState | undefined
 }
-export interface FairlightAudioMasterLevelsState {
-	inputLeftLevel: number
-	inputRightLevel: number
-	inputLeftPeak: number
-	inputRightPeak: number
-
-	compressorGainReduction: number
-	limiterGainReduction: number
-
-	outputLeftLevel: number
-	outputRightLevel: number
-	outputLeftPeak: number
-	outputRightPeak: number
-
-	leftLevel: number
-	rightLevel: number
-	leftPeak: number
-	rightPeak: number
-}
 
 export interface FairlightAudioMonitorChannel {
 	gain: number
@@ -126,26 +107,6 @@ export interface FairlightAudioSourcePropertiesState {
 
 	readonly supportedMixOptions: FairlightAudioMixOption[]
 	mixOption: FairlightAudioMixOption
-}
-export interface FairlightAudioSourceLevelsState {
-	inputLeftLevel: number
-	inputRightLevel: number
-	inputLeftPeak: number
-	inputRightPeak: number
-
-	expanderGainReduction: number
-	compressorGainReduction: number
-	limiterGainReduction: number
-
-	outputLeftLevel: number
-	outputRightLevel: number
-	outputLeftPeak: number
-	outputRightPeak: number
-
-	leftLevel: number
-	rightLevel: number
-	leftPeak: number
-	rightPeak: number
 }
 
 export interface FairlightAudioInput {
