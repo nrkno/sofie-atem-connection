@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [Convential Commits](https://www.conventionalcommits.org/en/v1.0.0/#specification) for commit guidelines.
 
+## [3.3.0](https://github.com/nrkno/sofie-atem-connection/compare/v3.2.0...v3.3.0) (Sun Aug 27 2023)
+
+
+### Fixes
+
+* remove some usages of constructor.name #74 [e4004358](https://github.com/nrkno/sofie-atem-connection/commit/e40043587ba8b5a74233b7dfe55dc7900d5661af)
+* prevent 'Lost lock mid-transfer' error with multiple transfers (#147) [3a331ffc](https://github.com/nrkno/sofie-atem-connection/commit/3a331ffca6c921094d40933640b199e161e23307)
+* disconnect called before connection has completed #107 (#150) [005f0d57](https://github.com/nrkno/sofie-atem-connection/commit/005f0d5723880d5a2a0900e54db220d09fa013ad)
+* perform deep diff for `MultiViewerSourceUpdateCommand` before updating state #132 [6350a5b1](https://github.com/nrkno/sofie-atem-connection/commit/6350a5b1754b4deae9122c8498930984c1a6a5ec)
+
+### Features
+
+* fairlight mixer send levels (#148) [56eb26cc](https://github.com/nrkno/sofie-atem-connection/commit/56eb26cce296ae8e1c6d3eb18d990473f0955552)
+* atem tvs hd8 audio routing  SOFIE-2512 (#146) [1caeb348](https://github.com/nrkno/sofie-atem-connection/commit/1caeb3483db6c3a8e47f52a43520d5ca0cf57c00)
+* add CameraControlCommand (#144) [1951a9ce](https://github.com/nrkno/sofie-atem-connection/commit/1951a9cea9b8fe70cb737aa34a5c689bf99eb16d)
+
 ## [3.2.0](https://github.com/nrkno/sofie-atem-connection/compare/v3.1.3...v3.2.0) (Wed Feb 15 2023)
 
 
