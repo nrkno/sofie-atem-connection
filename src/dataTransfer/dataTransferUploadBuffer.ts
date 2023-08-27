@@ -21,7 +21,7 @@ export interface UploadBufferInfo {
 }
 
 export function generateHashForBuffer(data: Buffer): string {
-	return data ? crypto.createHash('md5').update(data).digest().toString() : ''
+	return data ? crypto.createHash('md5').update(data).digest('base64') : ''
 }
 
 export function generateBufferInfo(data: Buffer, shouldEncodeRLE: boolean): UploadBufferInfo {

@@ -15,7 +15,7 @@ export class DataTransferFileDescriptionCommand extends BasicWritableCommand<Dat
 		buffer.writeUInt16BE(this.properties.transferId, 0)
 		if (this.properties.name) buffer.write(this.properties.name, 2, 64)
 		if (this.properties.description) buffer.write(this.properties.description, 66, 128)
-		buffer.write(this.properties.fileHash, 194, 16)
+		Buffer.from(this.properties.fileHash, 'base64').copy(buffer, 194, 0, 16)
 
 		return buffer
 	}

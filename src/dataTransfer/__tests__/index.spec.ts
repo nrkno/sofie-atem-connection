@@ -63,7 +63,7 @@ test('Still upload', async () => {
 	const newBuffer = Buffer.alloc(1920 * 1080 * 4, 0)
 
 	const manager = runDataTransferTest(spec)
-	await manager.uploadStill(2, newBuffer, 'some still', '')
+	await manager.uploadStill(2, newBuffer, 'some still', '', { disableRLE: true })
 
 	await new Promise((resolve) => setTimeout(resolve, 200))
 
@@ -91,7 +91,7 @@ test('clip upload', async () => {
 	const newBuffer = Buffer.alloc(1920 * 1080 * 4, 0)
 
 	const manager = runDataTransferTest(spec)
-	await manager.uploadClip(1, [newBuffer, newBuffer, newBuffer], 'clip file')
+	await manager.uploadClip(1, [newBuffer, newBuffer, newBuffer], 'clip file', { disableRLE: true })
 
 	await new Promise((resolve) => setTimeout(resolve, 200))
 
