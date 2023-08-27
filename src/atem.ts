@@ -726,7 +726,13 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
-	public async uploadStill(index: number, data: Buffer, name: string, description: string): Promise<void> {
+	public async uploadStill(
+		index: number,
+		data: Buffer,
+		name: string,
+		description: string,
+		options?: DT.UploadStillOptions
+	): Promise<void> {
 		if (!this.state) return Promise.reject()
 		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
 		if (!resolution) return Promise.reject()
@@ -734,14 +740,16 @@ export class Atem extends BasicAtem {
 			index,
 			Util.convertRGBAToYUV422(resolution.width, resolution.height, data),
 			name,
-			description
+			description,
+			options
 		)
 	}
 
 	public async uploadClip(
 		index: number,
 		frames: Iterable<Buffer> | AsyncIterable<Buffer>,
-		name: string
+		name: string,
+		options?: DT.UploadStillOptions
 	): Promise<void> {
 		if (!this.state) return Promise.reject()
 		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
@@ -751,7 +759,7 @@ export class Atem extends BasicAtem {
 				yield Util.convertRGBAToYUV422(resolution.width, resolution.height, frame)
 			}
 		}
-		return this.dataTransferManager.uploadClip(index, provideFrame(), name)
+		return this.dataTransferManager.uploadClip(index, provideFrame(), name, options)
 	}
 
 	public async uploadAudio(index: number, data: Buffer, name: string): Promise<void> {

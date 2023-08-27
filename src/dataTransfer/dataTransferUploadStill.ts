@@ -1,5 +1,5 @@
 import { ISerializableCommand } from '../commands/CommandBase'
-import { DataTransferUploadBufferRle } from './dataTransferUploadBufferRle'
+import { DataTransferUploadBufferRle, DataTransferUploadBufferRleOptions } from './dataTransferUploadBufferRle'
 import { DataTransferFileDescriptionCommand, DataTransferUploadRequestCommand } from '../commands/DataTransfer'
 import { ProgressTransferResult, DataTransferState } from './dataTransfer'
 
@@ -9,8 +9,14 @@ export default class DataTransferUploadStill extends DataTransferUploadBufferRle
 	readonly #description: string
 	readonly #dataLength: number
 
-	constructor(stillIndex: number, data: Buffer, name: string, description: string) {
-		super(data)
+	constructor(
+		stillIndex: number,
+		data: Buffer,
+		name: string,
+		description: string,
+		options: DataTransferUploadBufferRleOptions
+	) {
+		super(data, options)
 
 		this.#stillIndex = stillIndex
 		this.#name = name
