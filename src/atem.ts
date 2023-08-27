@@ -51,6 +51,7 @@ import { FontFace } from '@julusian/freetype2'
 import PLazy = require('p-lazy')
 import { TimeCommand } from './commands'
 import { TimeInfo } from './state/info'
+import { SomeAtemAudioLevels } from './state/levels'
 
 export interface AtemOptions {
 	address?: string
@@ -67,6 +68,7 @@ export type AtemEvents = {
 	connected: []
 	disconnected: []
 	stateChanged: [AtemState, string[]]
+	levelChanged: [SomeAtemAudioLevels]
 	receivedCommands: [IDeserializedCommand[]]
 	updatedTime: [TimeInfo]
 }
@@ -187,6 +189,20 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		for (const command of commands) {
 			if (command instanceof TimeCommand) {
 				this.emit('updatedTime', command.properties)
+			} else if (command instanceof Commands.FairlightMixerMasterLevelsUpdateCommand) {
+				this.emit('levelChanged', {
+					system: 'fairlight',
+					type: 'master',
+					levels: command.properties,
+				})
+			} else if (command instanceof Commands.FairlightMixerSourceLevelsUpdateCommand) {
+				this.emit('levelChanged', {
+					system: 'fairlight',
+					type: 'source',
+					source: command.source,
+					index: command.index,
+					levels: command.properties,
+				})
 			} else if (state) {
 				try {
 					const changePaths = command.applyToState(state)
@@ -851,6 +867,16 @@ export class Atem extends BasicAtem {
 		props: Commands.FairlightMixerResetPeakLevelsCommand['properties']
 	): Promise<void> {
 		const command = new Commands.FairlightMixerResetPeakLevelsCommand(props)
+		return this.sendCommand(command)
+	}
+
+	public async startFairlightMixerSendLevels(): Promise<void> {
+		const command = new Commands.FairlightMixerSendLevelsCommand(true)
+		return this.sendCommand(command)
+	}
+
+	public async stopFairlightMixerSendLevels(): Promise<void> {
+		const command = new Commands.FairlightMixerSendLevelsCommand(false)
 		return this.sendCommand(command)
 	}
 
