@@ -15,6 +15,7 @@ export * from './SuperSource'
 
 export * from './CommandBase'
 export * from './AuxSourceCommand'
+export * from './CameraControlCommand'
 export * from './ColorGeneratorCommand'
 export * from './InitCompleteCommand'
 export * from './PowerStatusCommand'

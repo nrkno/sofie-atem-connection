@@ -125,7 +125,9 @@ function runTest(name: string, filename: string): void {
 						switch (cmd.constructor.name) {
 							case 'TallyBySourceCommand':
 							case 'LockStateUpdateCommand':
+							case 'CameraControlUpdateCommand': // Temporary?
 								// Some commands are not expected to update the state
+								expect(paths).toBeEmpty()
 								break
 							default:
 								expect(paths).not.toBeEmpty()
@@ -189,4 +191,5 @@ describe('connection', () => {
 	runTest('mini pro iso v8.4', 'mini-pro-iso-v8.4')
 	runTest('mini extreme v8.6', 'mini-extreme-v8.6')
 	runTest('constellation hd 2me v8.7', 'constellation-2me-hd-v8.7.0')
+	runTest('tvs hd8 v9.0', 'tvs-hd8-v9.0')
 })

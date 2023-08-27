@@ -17,3 +17,11 @@ wallaby.conf.js
 /.idea
 
 testframe.rgba
+
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

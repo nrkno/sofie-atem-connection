@@ -1,3 +1,5 @@
+export * from './AudioRouting'
+
 // export * from './FairlightMixerAnalogAudioCommand'
 export * from './FairlightMixerInputCommand'
 export * from './FairlightMixerMasterCommand'

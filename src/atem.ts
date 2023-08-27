@@ -36,8 +36,10 @@ import {
 	FairlightAudioLimiterState,
 	FairlightAudioEqualizerBandState,
 	FairlightAudioExpanderState,
+	FairlightAudioRoutingSource,
+	FairlightAudioRoutingOutput,
 	FairlightAudioMasterLevelsState,
-	FairlightAudioSourceLevelsState
+	FairlightAudioSourceLevelsState,
 } from './state/fairlight'
 import { FairlightDynamicsResetProps } from './commands/Fairlight/common'
 import { MultiViewerPropertiesState } from './state/settings'
@@ -189,9 +191,9 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 			if (command instanceof TimeCommand) {
 				this.emit('updatedTime', command.properties)
 			} else if (command instanceof Commands.FairlightMixerMasterLevelsUpdateCommand) {
-			    this.emit('levelChanged', command.properties, "master");
+				this.emit('levelChanged', command.properties, 'master')
 			} else if (command instanceof Commands.FairlightMixerSourceLevelsUpdateCommand) {
-			    this.emit('levelChanged', command.properties, command.index.toString());
+				this.emit('levelChanged', command.properties, command.index.toString())
 			} else if (state) {
 				try {
 					const changePaths = command.applyToState(state)
@@ -251,7 +253,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		const sentQueue = this._sentQueue
 		this._sentQueue = {}
 
-		Object.values(sentQueue).forEach((sent) => sent.reject())
+		Object.values<SentCommand>(sentQueue).forEach((sent) => sent.reject())
 	}
 }
 
@@ -1058,6 +1060,24 @@ export class Atem extends BasicAtem {
 
 	public async setDisplayClockProperties(props: Partial<Commands.DisplayClockPropertiesExt>): Promise<void> {
 		const command = new Commands.DisplayClockPropertiesSetCommand()
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public async setFairlightAudioRoutingSourceProperties(
+		sourceId: number,
+		props: Partial<OmitReadonly<FairlightAudioRoutingSource>>
+	): Promise<void> {
+		const command = new Commands.AudioRoutingSourceCommand(sourceId)
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public async setFairlightAudioRoutingOutputProperties(
+		sourceId: number,
+		props: Partial<OmitReadonly<FairlightAudioRoutingOutput>>
+	): Promise<void> {
+		const command = new Commands.AudioRoutingOutputCommand(sourceId)
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}

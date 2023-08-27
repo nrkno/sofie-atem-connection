@@ -1510,4 +1510,74 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 			rightPeak: (val: number): PropertyAliasResult => ({ val: Math.round(val * 100) }),
 		},
 	},
+	CCmd: {
+		idAliases: {
+			source: 'input',
+			category: 'category',
+			parameter: 'parameter',
+		},
+		propertyAliases: {},
+		customMutate: (cmd) => {
+			return {
+				input: cmd.input,
+				category: cmd.category,
+				parameter: cmd.parameter,
+				relative: cmd.relative,
+
+				type: cmd.type,
+				stringData: cmd.stringData,
+				boolData: cmd.boolData,
+				numberData: cmd.intData || cmd.floatData,
+				bigintData: cmd.longData?.map((v: string) => BigInt(v)),
+			}
+		},
+	},
+	CCdP: {
+		idAliases: {
+			source: 'input',
+			category: 'category',
+			parameter: 'parameter',
+		},
+		propertyAliases: {},
+		customMutate: (cmd) => {
+			return {
+				input: cmd.input,
+				category: cmd.category,
+				parameter: cmd.parameter,
+				periodicFlushEnabled: cmd.periodicFlushEnabled,
+
+				type: cmd.type,
+				stringData: cmd.stringData || '',
+				boolData: cmd.boolData || [],
+				numberData: (cmd.intData || cmd.floatData || []).map((v: number) => Number(v) + 0),
+				bigintData: (cmd.longData || []).map((v: string) => BigInt(v)),
+			}
+		},
+	},
+	ARSC: {
+		idAliases: {
+			id: 'id',
+		},
+		propertyAliases: {},
+	},
+	ARSP: {
+		idAliases: {
+			id: 'id',
+		},
+		propertyAliases: {
+			audioInputId: (v: number): PropertyAliasResult => ({ val: v, name: 'audioSourceId' }),
+		},
+	},
+	AROC: {
+		idAliases: {
+			id: 'id',
+		},
+		propertyAliases: {},
+	},
+	AROP: {
+		idAliases: {
+			id: 'id',
+		},
+		propertyAliases: {},
+	},
 }

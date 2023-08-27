@@ -250,12 +250,12 @@ export function BalanceToInt(input: number): number {
 	return Math.round(input * 200)
 }
 
-export function padToMultiple4(val: number): number {
-	const r = val % 4
+export function padToMultiple(val: number, multiple: number): number {
+	const r = val % multiple
 	if (r === 0) {
 		return val
 	} else {
-		return val + (4 - r)
+		return val + (multiple - r)
 	}
 }
 
@@ -287,4 +287,12 @@ export function omit<T, K extends keyof T>(o: T, ...keys: K[]): Omit<T, K> {
 		delete obj[key]
 	}
 	return obj
+}
+
+export function assertNever(_val: never): void {
+	// Nothing to do
+}
+
+export function isRunningInTests(): boolean {
+	return process.env.JEST_WORKER_ID !== undefined
 }
