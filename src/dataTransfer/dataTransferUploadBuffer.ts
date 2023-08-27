@@ -117,15 +117,19 @@ export abstract class DataTransferUploadBuffer extends DataTransfer<void> {
 		const chunkSize = Math.floor(props.chunkSize / 8) * 8
 
 		for (let i = 0; i < props.chunkCount; i++) {
-			// Make sure we don't end up with an empty slice
+			// Make sure the packet isn't empty
 			if (this.#bytesSent >= this.data.length) break
 
+			// Make sure the packet doesn't end in the middle of a RLE block
 			let shortenBy = 0
 			if (chunkSize + this.#bytesSent > this.data.length) {
+				// The last chunk can't end with a RLE header
 				shortenBy = this.#bytesSent + chunkSize - this.data.length
 			} else if (Util.RLE_HEADER === this.data.readBigUint64BE(this.#bytesSent + chunkSize - 8)) {
+				// RLE header starts 8 bytes before the end
 				shortenBy = 8
 			} else if (Util.RLE_HEADER === this.data.readBigUint64BE(this.#bytesSent + chunkSize - 16)) {
+				// RLE header starts 16 bytes before the end
 				shortenBy = 16
 			}
 
