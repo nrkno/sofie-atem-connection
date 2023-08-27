@@ -733,7 +733,7 @@ export class Atem extends BasicAtem {
 		data: Buffer,
 		name: string,
 		description: string,
-		options?: DT.UploadStillOptions
+		options?: DT.UploadStillEncodingOptions
 	): Promise<void> {
 		if (!this.state) return Promise.reject()
 		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
@@ -751,7 +751,7 @@ export class Atem extends BasicAtem {
 		index: number,
 		frames: Iterable<Buffer> | AsyncIterable<Buffer>,
 		name: string,
-		options?: DT.UploadStillOptions
+		options?: DT.UploadStillEncodingOptions
 	): Promise<void> {
 		if (!this.state) return Promise.reject()
 		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)

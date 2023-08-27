@@ -17,7 +17,7 @@ const MAX_TRANSFER_INDEX = (1 << 16) - 1 // Inclusive maximum
 
 const debug = debug0('atem-connection:data-transfer:manager')
 
-export interface UploadStillOptions {
+export interface UploadStillEncodingOptions {
 	disableRLE?: boolean
 }
 
@@ -175,7 +175,7 @@ export class DataTransferManager {
 		data: Buffer,
 		name: string,
 		description: string,
-		options?: UploadStillOptions
+		options?: UploadStillEncodingOptions
 	): Promise<void> {
 		const buffer = generateBufferInfo(data, !options?.disableRLE)
 		const transfer = new DataTransferUploadStill(index, buffer, name, description)
@@ -186,7 +186,7 @@ export class DataTransferManager {
 		index: number,
 		data: Iterable<Buffer> | AsyncIterable<Buffer>,
 		name: string,
-		options?: UploadStillOptions
+		options?: UploadStillEncodingOptions
 	): Promise<void> {
 		const provideFrame = async function* (): AsyncGenerator<DataTransferUploadClipFrame, undefined> {
 			let id = -1
