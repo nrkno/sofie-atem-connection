@@ -270,17 +270,20 @@ export class DataTransferLockingQueue extends DataTransferQueueBase {
 
 	/** The status of the lock has changed */
 	public updateLock(locked: boolean): void {
+		const wasLocked = this.isLocked
 		this.isLocked = locked
 
-		if (!locked) {
+		if (wasLocked && !locked) {
+			// only abort when it becomes unlocked unexpectedly, otherwise we're likely waiting to
+			// obtain lock for a transfer queued shortly after sending unlock command
 			this.tryAbortTransfer(new Error('Lost lock mid-transfer'))
 		}
 	}
 
 	protected transferCompleted(): void {
-		if (this.isLocked) {
-			// Make sure that we don't try to start the next before the unlock completes
-			// TODO - is this durable?
+		if (this.isLocked && !this.taskQueue.length) {
+			// unlock only when queue is empty
+
 			this.isLocked = false
 
 			debug(`Completing transfer`)
