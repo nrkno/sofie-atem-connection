@@ -8,7 +8,6 @@ scratch
 /docs
 .nyc_output
 *.log
-*.node
 
 wallaby.conf.js
 
