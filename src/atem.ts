@@ -52,6 +52,7 @@ import PLazy = require('p-lazy')
 import { TimeCommand } from './commands'
 import { TimeInfo } from './state/info'
 import { SomeAtemAudioLevels } from './state/levels'
+import { convertRGBAToYUV422 } from '@atem-connection/image-tools'
 
 export interface AtemOptions {
 	address?: string
@@ -756,7 +757,7 @@ export class Atem extends BasicAtem {
 		if (!resolution) return Promise.reject()
 		return this.dataTransferManager.uploadStill(
 			index,
-			Util.convertRGBAToYUV422(resolution.width, resolution.height, data),
+			convertRGBAToYUV422(resolution.width, resolution.height, data),
 			name,
 			description,
 			options
@@ -774,7 +775,7 @@ export class Atem extends BasicAtem {
 		if (!resolution) return Promise.reject()
 		const provideFrame = async function* (): AsyncGenerator<Buffer> {
 			for await (const frame of frames) {
-				yield Util.convertRGBAToYUV422(resolution.width, resolution.height, frame)
+				yield convertRGBAToYUV422(resolution.width, resolution.height, frame)
 			}
 		}
 		return this.dataTransferManager.uploadClip(index, provideFrame(), name, options)
