@@ -86,7 +86,7 @@
     "video"
   ],
   "dependencies": {
-    "@atem-connection/image-tools": "portal:../sofie-atem-connection-tools",
+    "@atem-connection/image-tools": "^0.0.4",
     "@julusian/freetype2": "^1.1.2",
     "debug": "^4.3.4",
     "eventemitter3": "^4.0.7",
