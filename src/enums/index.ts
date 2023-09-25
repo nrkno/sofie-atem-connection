@@ -27,6 +27,9 @@ export enum Model {
 	// 0x19 ??
 	TelevisionStudioHD8 = 0x1a,
 	TelevisionStudioHD8ISO = 0x1b,
+	// 0x1c ??
+	// 0x1d ??
+	Constellation4K4ME = 0x1e,
 }
 
 export enum ProtocolVersion {
