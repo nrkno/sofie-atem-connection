@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Convential Commits](https://www.conventionalcommits.org/en/v1.0.0/#specification) for commit guidelines.
 
+## [3.3.1](https://github.com/nrkno/sofie-atem-connection/compare/v3.3.0...v3.3.1) (Tue Sep 26 2023)
+
+
+### Fixes
+
+* add ModelId for Constellation4ME4K [496d3e3a](https://github.com/nrkno/sofie-atem-connection/commit/496d3e3a53a44b457e555d98d876b5e190efb7c4)
+
 ## [3.3.0](https://github.com/nrkno/sofie-atem-connection/compare/v3.2.0...v3.3.0) (Sun Aug 27 2023)
 
 
