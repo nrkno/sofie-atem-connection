@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Convential Commits](https://www.conventionalcommits.org/en/v1.0.0/#specification) for commit guidelines.
 
+## [3.3.2](https://github.com/nrkno/sofie-atem-connection/compare/v3.3.1...v3.3.2) (Thu Sep 28 2023)
+
+
+### Fixes
+
+* allow using with nodejs 20 [ca2e1bd6](https://github.com/nrkno/sofie-atem-connection/commit/ca2e1bd601256c0b8d50dfff4ae116647695380b)
+
 ## [3.3.1](https://github.com/nrkno/sofie-atem-connection/compare/v3.3.0...v3.3.1) (Tue Sep 26 2023)
 
 
