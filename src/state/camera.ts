@@ -2,16 +2,14 @@
 
 export interface Camera {
 	readonly cameraID: number
-	iris: number,
 	autoIris: boolean,
-	focus: number,
-	autoFocused: boolean,
-	gain: string,
-	gainValue: number,
-	whiteBalance: string,
+	bars: boolean,
+	calltally: boolean,
+	tint: number,
+	gaindb: number,
+	shutterValue: number,
 	whiteBalanceValue: number,
-	zoomPosition: number,
-	zoomSpeed: number,
+	iris: number,
 	liftR: number,
 	gammaR: number,
 	gainR: number,
@@ -24,14 +22,10 @@ export interface Camera {
 	liftY: number,
 	gammaY: number,
 	gainY: number,
-	liftRGBY: number[],
-	gainRGBY: number[],
-	gammaRGBY: number[],
 	lumMix: number,
 	hue: number,
-	shutter: string,
-	shutterValue: number,
 	contrast: number,
+	pivot: number,
 	saturation: number,
 	command: string
 }
