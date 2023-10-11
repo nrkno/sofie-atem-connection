@@ -1,6 +1,6 @@
 {
   "name": "atem-connection-ccu",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "Typescript Node.js library for connecting with an ATEM switcher with ccu data.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
