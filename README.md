@@ -1,3 +1,45 @@
+# Atem connection lybrary with CCU data
+
+This library is forked from Sofie: The Modern TV News Studio Automation System (ATEM connection library)
+The official readme is below.
+
+The CCU library add another object named Cameras to Atem.state.
+
+```javascript
+cameras: {
+    '1': {
+      bars: false,
+      cameraID: 1,
+      autoIris: false,
+      calltally: false,
+      tint: 0,
+      gaindb: 0,
+      shutterValue: 3,
+      whiteBalanceValue: 5600,
+      iris: 10240,
+      liftR: 0,
+      gammaR: 0,
+      gainR: 2048,
+      liftG: 0,
+      gammaG: 0,
+      gainG: 2048,
+      liftB: 0,
+      gammaB: 0,
+      gainB: 2048,
+      liftY: 0,
+      gammaY: 0,
+      gainY: 2048,
+      lumMix: 2048,
+      hue: 0,
+      contrast: 2048,
+      pivot: 1024,
+      saturation: 2048,
+      command: 'hue+sat'
+    },
+    ...
+}
+```
+
 # Sofie: The Modern TV News Studio Automation System (ATEM connection library)
 
 [![Node CI](https://github.com/nrkno/sofie-atem-connection/actions/workflows/node.yaml/badge.svg)](https://github.com/nrkno/sofie-atem-connection/actions/workflows/node.yaml)

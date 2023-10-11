@@ -1,18 +1,18 @@
 {
-  "name": "atem-connection",
+  "name": "atem-connection-ccu",
   "version": "3.2.0",
-  "description": "Typescript Node.js library for connecting with an ATEM switcher.",
+  "description": "Typescript Node.js library for connecting with an ATEM switcher with ccu data.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nrkno/sofie-atem-connection.git"
+    "url": "git+https://github.com/scnmtv/atem-connection.git"
   },
   "bugs": {
-    "url": "https://github.com/nrkno/sofie-atem-connection/issues"
+    "url": "https://github.com/scnmtv/atem-connection/issues"
   },
-  "homepage": "https://github.com/nrkno/sofie-atem-connection#readme",
+  "homepage": "https://github.com/scnmtv/atem-connection#readme",
   "contributors": [
     {
       "name": "Balte de Wit",
