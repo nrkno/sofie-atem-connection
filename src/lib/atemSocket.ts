@@ -104,7 +104,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 		commands: Array<{ rawCommand: ISerializableCommand; trackingId: number }>
 	): Promise<void> {
 		if (this._socketProcess) {
-			const wrappedCommands = commands.map((cmd) => {
+			const wrappedPackets = commands.map((cmd) => {
 				if (typeof cmd.rawCommand.serialize !== 'function') {
 					throw new Error(`Command ${cmd.rawCommand.constructor.name} is not serializable`)
 				}
@@ -113,14 +113,24 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 				if (this._debugBuffers)
 					this.emit('debug', `PAYLOAD ${cmd.rawCommand.constructor.name} ${payload.toString('hex')}`)
 
+				const rawName: string = (cmd.rawCommand.constructor as any).rawName
+
+				const buffer = Buffer.alloc(payload.length + 8)
+				// Command
+				buffer.writeUInt16BE(payload.length + 8, 0)
+				buffer.write(rawName, 4, 4)
+
+				// Body
+				payload.copy(buffer, 8)
+
 				return {
-					payload: [...payload],
-					rawName: (cmd.rawCommand.constructor as any).rawName,
+					payloadLength: buffer.length,
+					payloadHex: buffer.toString('hex'),
 					trackingId: cmd.trackingId,
 				}
 			})
 
-			await this._socketProcess.sendCommands(wrappedCommands)
+			await this._socketProcess.sendPackets(wrappedPackets)
 		} else {
 			throw new Error('Socket process is not open')
 		}

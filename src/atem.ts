@@ -59,6 +59,10 @@ export interface AtemOptions {
 	debugBuffers?: boolean
 	disableMultithreaded?: boolean
 	childProcessTimeout?: number
+	/**
+	 * Maximum size of packets to transmit
+	 */
+	packetMtu?: number
 }
 
 export type AtemEvents = {
@@ -86,6 +90,7 @@ export enum AtemConnectionStatus {
 }
 
 export const DEFAULT_PORT = 9910
+export const DEFAULT_MTU = 1500
 
 export class BasicAtem extends EventEmitter<AtemEvents> {
 	private readonly socket: AtemSocket
@@ -97,14 +102,16 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 	constructor(options?: AtemOptions) {
 		super()
 
+		// const packetMtu = options?.packetMtu ?? DEFAULT_MTU
+
 		this._state = AtemStateUtil.Create()
 		this._status = AtemConnectionStatus.CLOSED
 		this.socket = new AtemSocket({
-			debugBuffers: (options || {}).debugBuffers || false,
-			address: (options || {}).address || '',
-			port: (options || {}).port || DEFAULT_PORT,
-			disableMultithreaded: (options || {}).disableMultithreaded || false,
-			childProcessTimeout: (options || {}).childProcessTimeout || 600,
+			debugBuffers: options?.debugBuffers ?? false,
+			address: options?.address || '',
+			port: options?.port || DEFAULT_PORT,
+			disableMultithreaded: options?.disableMultithreaded ?? false,
+			childProcessTimeout: options?.childProcessTimeout || 600,
 		})
 		this.dataTransferManager = new DT.DataTransferManager(this.sendCommands.bind(this))
 

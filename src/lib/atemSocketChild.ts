@@ -167,29 +167,24 @@ export class AtemSocketChild {
 		void this.onLog(message)
 	}
 
-	public sendCommands(commands: Array<{ payload: number[]; rawName: string; trackingId: number }>): void {
-		commands.forEach((cmd) => {
-			this.sendCommand(cmd.payload, cmd.rawName, cmd.trackingId)
-		})
+	public sendPackets(packets: Array<{ payloadLength: number; payloadHex: string; trackingId: number }>): void {
+		for (const packet of packets) {
+			this.sendPacket(packet.payloadLength, packet.payloadHex, packet.trackingId)
+		}
 	}
 
-	private sendCommand(payload: number[], rawName: string, trackingId: number): void {
+	private sendPacket(payloadLength: number, payloadHex: string, trackingId: number): void {
 		const packetId = this._nextSendPacketId++
 		if (this._nextSendPacketId >= MAX_PACKET_ID) this._nextSendPacketId = 0
 
 		const opcode = PacketFlag.AckRequest << 11
 
-		const buffer = Buffer.alloc(20 + payload.length, 0)
-		buffer.writeUInt16BE(opcode | (payload.length + 20), 0) // Opcode & Length
+		const buffer = Buffer.alloc(12 + payloadLength, 0)
+		buffer.writeUInt16BE(opcode | (payloadLength + 12), 0) // Opcode & Length
 		buffer.writeUInt16BE(this._sessionId, 2)
 		buffer.writeUInt16BE(packetId, 10)
 
-		// Command
-		buffer.writeUInt16BE(payload.length + 8, 12)
-		buffer.write(rawName, 16, 4)
-
-		// Body
-		Buffer.from(payload).copy(buffer, 20)
+		buffer.write(payloadHex, 12, payloadLength, 'hex')
 		this._sendPacket(buffer)
 
 		this._inFlight.push({
