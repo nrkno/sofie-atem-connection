@@ -77,8 +77,7 @@ export type AtemEvents = {
 	updatedTime: [TimeInfo]
 }
 
-interface SentCommand {
-	command: ISerializableCommand
+interface SentPackets {
 	resolve: () => void
 	reject: () => void
 }
@@ -96,7 +95,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 	private readonly socket: AtemSocket
 	protected readonly dataTransferManager: DT.DataTransferManager
 	private _state: AtemState | undefined
-	private _sentQueue: { [packetId: string]: SentCommand } = {}
+	private _sentQueue: { [packetId: string]: SentPackets } = {}
 	private _status: AtemConnectionStatus
 
 	constructor(options?: AtemOptions) {
@@ -158,28 +157,27 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		return this.socket.destroy()
 	}
 
-	private sendCommands(commands: ISerializableCommand[]): Array<Promise<void>> {
-		const commands2 = commands.map((cmd) => ({
-			rawCommand: cmd,
-			trackingId: this.socket.nextCommandTrackingId,
-		}))
+	public async sendCommands(commands: ISerializableCommand[]): Promise<void> {
+		const trackingIds = await this.socket.sendCommands(commands)
 
-		const sendPromise = this.socket.sendCommands(commands2)
+		const promises: Promise<void>[] = []
 
-		return commands2.map(async (cmd) => {
-			await sendPromise
-			return new Promise<void>((resolve, reject) => {
-				this._sentQueue[cmd.trackingId] = {
-					command: cmd.rawCommand,
-					resolve,
-					reject,
-				}
-			})
-		})
+		for (const trackingId of trackingIds) {
+			promises.push(
+				new Promise<void>((resolve, reject) => {
+					this._sentQueue[trackingId] = {
+						resolve,
+						reject,
+					}
+				})
+			)
+		}
+
+		await Promise.allSettled(promises)
 	}
 
 	public async sendCommand(command: ISerializableCommand): Promise<void> {
-		return this.sendCommands([command])[0]
+		return await this.sendCommands([command])
 	}
 
 	private _mutateState(commands: IDeserializedCommand[]): void {
@@ -269,7 +267,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		const sentQueue = this._sentQueue
 		this._sentQueue = {}
 
-		Object.values<SentCommand>(sentQueue).forEach((sent) => sent.reject())
+		Object.values<SentPackets>(sentQueue).forEach((sent) => sent.reject())
 	}
 }
 
