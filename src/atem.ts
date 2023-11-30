@@ -101,8 +101,6 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 	constructor(options?: AtemOptions) {
 		super()
 
-		// const packetMtu = options?.packetMtu ?? DEFAULT_MTU
-
 		this._state = AtemStateUtil.Create()
 		this._status = AtemConnectionStatus.CLOSED
 		this.socket = new AtemSocket({
@@ -111,6 +109,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 			port: options?.port || DEFAULT_PORT,
 			disableMultithreaded: options?.disableMultithreaded ?? false,
 			childProcessTimeout: options?.childProcessTimeout || 600,
+			packetMtu: options?.packetMtu ?? DEFAULT_MTU,
 		})
 		this.dataTransferManager = new DT.DataTransferManager(this.sendCommands.bind(this))
 

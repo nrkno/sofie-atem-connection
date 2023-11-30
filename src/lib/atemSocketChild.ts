@@ -42,6 +42,12 @@ interface InFlightPacket {
 	resent: number
 }
 
+export interface OutboundPacketInfo {
+	payloadLength: number
+	payloadHex: string
+	trackingId: number
+}
+
 export class AtemSocketChild {
 	private readonly _debugBuffers: boolean
 
@@ -167,7 +173,7 @@ export class AtemSocketChild {
 		void this.onLog(message)
 	}
 
-	public sendPackets(packets: Array<{ payloadLength: number; payloadHex: string; trackingId: number }>): void {
+	public sendPackets(packets: OutboundPacketInfo[]): void {
 		for (const packet of packets) {
 			this.sendPacket(packet.payloadLength, packet.payloadHex, packet.trackingId)
 		}
