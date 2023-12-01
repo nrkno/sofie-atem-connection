@@ -7,6 +7,7 @@ export class PacketBuilder {
 
 	readonly #completedBuffers: Buffer[] = []
 
+	#finished = false
 	#currentPacketBuffer: Buffer
 	#currentPacketFilled: number
 
@@ -19,16 +20,17 @@ export class PacketBuilder {
 	}
 
 	public addCommand(cmd: ISerializableCommand): void {
+		if (this.#finished) throw new Error('Packets have been finished')
+
 		if (typeof cmd.serialize !== 'function') {
 			throw new Error(`Command ${cmd.constructor.name} is not serializable`)
 		}
 
+		const rawName: string = (cmd.constructor as any).rawName
 		const payload = cmd.serialize(this.#protocolVersion)
 
-		const rawName: string = (cmd.constructor as any).rawName
-
 		const totalLength = payload.length + 8
-		if (totalLength >= this.#maxPacketSize) {
+		if (totalLength > this.#maxPacketSize) {
 			throw new Error(`Comamnd ${cmd.constructor.name} is too large for a single packet`)
 		}
 
@@ -37,11 +39,9 @@ export class PacketBuilder {
 			this.#finishBuffer()
 		}
 
-		// Command name
+		// Add to packet
 		this.#currentPacketBuffer.writeUInt16BE(payload.length + 8, this.#currentPacketFilled + 0)
 		this.#currentPacketBuffer.write(rawName, this.#currentPacketFilled + 4, 4)
-
-		// Body
 		payload.copy(this.#currentPacketBuffer, this.#currentPacketFilled + 8)
 
 		this.#currentPacketFilled += totalLength
@@ -50,11 +50,13 @@ export class PacketBuilder {
 	public getPackets(): Buffer[] {
 		this.#finishBuffer(true)
 
+		this.#finished = true
+
 		return this.#completedBuffers
 	}
 
 	#finishBuffer(skipCreateNext?: boolean) {
-		if (this.#currentPacketFilled === 0) return
+		if (this.#currentPacketFilled === 0 || this.#finished) return
 
 		this.#completedBuffers.push(this.#currentPacketBuffer.subarray(0, this.#currentPacketFilled))
 
