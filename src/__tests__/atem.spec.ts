@@ -110,11 +110,11 @@ describe('Atem', () => {
 			expect(socket).toBeTruthy()
 
 			let nextId = 123
-			Object.defineProperty(socket, 'nextCommandTrackingId', {
+			Object.defineProperty(socket, 'nextPacketTrackingId', {
 				get: jest.fn(() => nextId++),
 				set: jest.fn(),
 			})
-			expect(socket.nextCommandTrackingId).toEqual(123)
+			expect(socket.nextPacketTrackingId).toEqual(123)
 
 			socket.sendCommands = jest.fn(() => Promise.resolve([124]) as any)
 
@@ -150,11 +150,11 @@ describe('Atem', () => {
 			expect(socket).toBeTruthy()
 
 			let nextId = 123
-			Object.defineProperty(socket, 'nextCommandTrackingId', {
+			Object.defineProperty(socket, 'nextPacketTrackingId', {
 				get: jest.fn(() => nextId++),
 				set: jest.fn(),
 			})
-			expect(socket.nextCommandTrackingId).toEqual(123)
+			expect(socket.nextPacketTrackingId).toEqual(123)
 
 			socket.sendCommands = jest.fn(() => Promise.reject(35) as any)
 

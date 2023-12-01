@@ -198,12 +198,12 @@ describe('AtemSocket', () => {
 		expect(AtemSocketChildSingleton.connect).toHaveBeenCalledWith('new', 455)
 	})
 
-	test('nextCommandTrackingId', () => {
+	test('nextPacketTrackingId', () => {
 		const socket = createSocket()
 
-		expect(socket.nextCommandTrackingId).toEqual(1)
-		expect(socket.nextCommandTrackingId).toEqual(2)
-		expect(socket.nextCommandTrackingId).toEqual(3)
+		expect(socket.nextPacketTrackingId).toEqual(1)
+		expect(socket.nextPacketTrackingId).toEqual(2)
+		expect(socket.nextPacketTrackingId).toEqual(3)
 	})
 
 	test('disconnect', async () => {
@@ -293,7 +293,7 @@ describe('AtemSocket', () => {
 		}
 
 		const cmd = new MockCommand({})
-		;(socket as any)._nextCommandTrackingId = 835
+		;(socket as any)._nextPacketTrackingId = 835
 		await socket.sendCommands([cmd])
 
 		// connect was called explicitly

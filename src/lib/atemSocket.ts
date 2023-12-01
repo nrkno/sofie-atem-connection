@@ -31,7 +31,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	private readonly _packetMtu: number
 	private readonly _commandParser: CommandParser = new CommandParser()
 
-	private _nextCommandTrackingId = 0
+	private _nextPacketTrackingId = 0
 	private _isDisconnecting = false
 	private _address: string
 	private _port: number = DEFAULT_PORT
@@ -96,11 +96,11 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 		}
 	}
 
-	get nextCommandTrackingId(): number {
-		if (this._nextCommandTrackingId >= Number.MAX_SAFE_INTEGER) {
-			this._nextCommandTrackingId = 0
+	get nextPacketTrackingId(): number {
+		if (this._nextPacketTrackingId >= Number.MAX_SAFE_INTEGER) {
+			this._nextPacketTrackingId = 0
 		}
-		return ++this._nextCommandTrackingId
+		return ++this._nextPacketTrackingId
 	}
 
 	public async sendCommands(commands: Array<ISerializableCommand>): Promise<number[]> {
@@ -118,7 +118,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 		const startNewBuffer = (skipCreate?: boolean) => {
 			if (currentPacketFilled === 0) return
 
-			const trackingId = this.nextCommandTrackingId
+			const trackingId = this.nextPacketTrackingId
 			trackingIds.push(trackingId)
 
 			packets.push({
