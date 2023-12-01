@@ -48,19 +48,19 @@ export class PacketBuilder {
 	}
 
 	public getPackets(): Buffer[] {
-		this.#finishBuffer(true)
+		this.#finishBuffer(false)
 
 		this.#finished = true
 
 		return this.#completedBuffers
 	}
 
-	#finishBuffer(skipCreateNext?: boolean) {
+	#finishBuffer(allocNewBuffer = true) {
 		if (this.#currentPacketFilled === 0 || this.#finished) return
 
 		this.#completedBuffers.push(this.#currentPacketBuffer.subarray(0, this.#currentPacketFilled))
 
-		if (!skipCreateNext) {
+		if (allocNewBuffer) {
 			this.#currentPacketBuffer = Buffer.alloc(this.#maxPacketSize)
 			this.#currentPacketFilled = 0
 		}
