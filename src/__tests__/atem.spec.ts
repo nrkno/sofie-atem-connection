@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { Atem, DEFAULT_PORT } from '../atem'
+import { Atem, DEFAULT_MTU, DEFAULT_PORT } from '../atem'
 import { CutCommand } from '../commands'
 import { promisify } from 'util'
 import { EventEmitter } from 'events'
@@ -35,13 +35,14 @@ describe('Atem', () => {
 				disableMultithreaded: true,
 				log: (conn as any)._log,
 				port: DEFAULT_PORT,
+				packetMtu: DEFAULT_MTU,
 			})
 		} finally {
 			await conn.destroy()
 		}
 	})
 	test('constructor test 2', async () => {
-		const conn = new Atem({ debugBuffers: true, address: 'test1', port: 23 })
+		const conn = new Atem({ debugBuffers: true, address: 'test1', port: 23, packetMtu: 500 })
 
 		try {
 			const socket = (conn as any).socket as AtemSocket
@@ -55,6 +56,7 @@ describe('Atem', () => {
 				disableMultithreaded: false,
 				log: (conn as any)._log,
 				port: 23,
+				packetMtu: 500,
 			})
 		} finally {
 			await conn.destroy()
@@ -114,23 +116,19 @@ describe('Atem', () => {
 			})
 			expect(socket.nextCommandTrackingId).toEqual(123)
 
-			socket.sendCommands = jest.fn(() => Promise.resolve(35) as any)
+			socket.sendCommands = jest.fn(() => Promise.resolve([124]) as any)
 
 			const sentQueue = (conn as any)._sentQueue as Record<string, unknown>
 			expect(Object.keys(sentQueue)).toHaveLength(0)
 
 			const cmd = new CutCommand(0)
 			const res = conn.sendCommand(cmd)
+			res.catch(() => null) // Dismiss UnhandledPromiseRejection
 			await setImmediatePromise()
 			expect(Object.keys(sentQueue)).toHaveLength(1)
 
 			expect(socket.sendCommands).toHaveBeenCalledTimes(1)
-			expect(socket.sendCommands).toHaveBeenCalledWith([
-				{
-					rawCommand: cmd,
-					trackingId: 124,
-				},
-			])
+			expect(socket.sendCommands).toHaveBeenCalledWith([cmd])
 
 			// Trigger the ack, and it should switfy resolve
 			socket.emit('commandsAck', [124])
@@ -165,15 +163,11 @@ describe('Atem', () => {
 
 			const cmd = new CutCommand(0)
 			const res = conn.sendCommand(cmd)
+			res.catch(() => null) // Dismiss UnhandledPromiseRejection
 
 			// Send command should be called
 			expect(socket.sendCommands).toHaveBeenCalledTimes(1)
-			expect(socket.sendCommands).toHaveBeenCalledWith([
-				{
-					rawCommand: cmd,
-					trackingId: 124,
-				},
-			])
+			expect(socket.sendCommands).toHaveBeenCalledWith([cmd])
 
 			expect(Object.keys(sentQueue)).toHaveLength(0)
 

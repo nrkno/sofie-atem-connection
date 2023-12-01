@@ -36,10 +36,10 @@ function mangleCommand(cmd: any, dir: string): any {
 }
 
 function runDataTransferTest(spec: any): DataTransferManager {
-	const manager = new DataTransferManager((cmds) =>
-		cmds.map(async (cmd) => {
+	const manager = new DataTransferManager(async (cmds) => {
+		for (const rawCmd of cmds) {
 			const expectedCmd = spec.shift()
-			const gotCmd = mangleCommand(cmd, 'send')
+			const gotCmd = mangleCommand(rawCmd, 'send')
 			expect(gotCmd).toEqual(expectedCmd)
 
 			while (spec.length > 0) {
@@ -49,10 +49,8 @@ function runDataTransferTest(spec: any): DataTransferManager {
 				if (!nextCmd2) throw new Error(`Failed specToCommandClass ${nextCmd.name}`)
 				manager.queueHandleCommand(nextCmd2)
 			}
-
-			return Promise.resolve()
-		})
-	)
+		}
+	})
 	manager.startCommandSending(true)
 	return manager
 }
