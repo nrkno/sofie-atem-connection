@@ -18,18 +18,18 @@ class AtemSocketChildMock implements AtemSocketChild {
 	public onDisconnect: () => Promise<void>
 	public onLog: (message: string) => Promise<void>
 	public onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>
-	public onCommandsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
+	public onPacketsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
 
 	constructor(
 		onDisconnect: () => Promise<void>,
 		onLog: (message: string) => Promise<void>,
 		onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>,
-		onCommandsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
+		onPacketsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
 	) {
 		this.onDisconnect = onDisconnect
 		this.onLog = onLog
 		this.onCommandsReceived = onCommandsReceived
-		this.onCommandsAcknowledged = onCommandsAcknowledged
+		this.onPacketsAcknowledged = onPacketsAcknowledged
 	}
 
 	public connect = jest.fn(async () => Promise.resolve())
@@ -43,9 +43,9 @@ class AtemSocketChildMock implements AtemSocketChild {
 		onDisconnect: () => Promise<void>,
 		onLog: (message: string) => Promise<void>,
 		onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>,
-		onCommandsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
+		onPacketsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
 	) => {
-		return new AtemSocketChildMock(onDisconnect, onLog, onCommandsReceived, onCommandsAcknowledged)
+		return new AtemSocketChildMock(onDisconnect, onLog, onCommandsReceived, onPacketsAcknowledged)
 	}
 )
 

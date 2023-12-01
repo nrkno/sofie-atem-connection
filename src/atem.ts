@@ -113,11 +113,11 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		})
 		this.dataTransferManager = new DT.DataTransferManager(this.sendCommands.bind(this))
 
-		this.socket.on('commandsReceived', (commands) => {
+		this.socket.on('receivedCommands', (commands) => {
 			this.emit('receivedCommands', commands)
 			this._mutateState(commands)
 		})
-		this.socket.on('commandsAck', (trackingIds) => this._resolveCommands(trackingIds))
+		this.socket.on('ackPackets', (trackingIds) => this._resolveCommands(trackingIds))
 		this.socket.on('info', (msg) => this.emit('info', msg))
 		this.socket.on('debug', (msg) => this.emit('debug', msg))
 		this.socket.on('error', (e) => this.emit('error', e))

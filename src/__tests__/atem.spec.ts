@@ -131,7 +131,7 @@ describe('Atem', () => {
 			expect(socket.sendCommands).toHaveBeenCalledWith([cmd])
 
 			// Trigger the ack, and it should switfy resolve
-			socket.emit('commandsAck', [124])
+			socket.emit('ackPackets', [124])
 			expect(Object.keys(sentQueue)).toHaveLength(0)
 
 			// Finally, it should now resolve without a timeout

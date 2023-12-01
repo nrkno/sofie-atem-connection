@@ -20,8 +20,8 @@ export type AtemSocketEvents = {
 	info: [string]
 	debug: [string]
 	error: [string]
-	commandsReceived: [IDeserializedCommand[]]
-	commandsAck: [number[]]
+	receivedCommands: [IDeserializedCommand[]]
+	ackPackets: [number[]]
 }
 
 export class AtemSocket extends EventEmitter<AtemSocketEvents> {
@@ -194,10 +194,10 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 				}, // onCommandsReceived
 				async (ids: Array<{ packetId: number; trackingId: number }>): Promise<void> => {
 					this.emit(
-						'commandsAck',
+						'ackPackets',
 						ids.map((id) => id.trackingId)
 					)
-				}, // onCommandsAcknowledged
+				}, // onPacketsAcknowledged
 			],
 			{
 				instanceName: 'atem-connection',
@@ -260,7 +260,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 		}
 
 		if (parsedCommands.length > 0) {
-			this.emit('commandsReceived', parsedCommands)
+			this.emit('receivedCommands', parsedCommands)
 		}
 		return parsedCommands
 	}

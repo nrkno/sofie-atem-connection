@@ -32,7 +32,7 @@ function fakeConnect(child: AtemSocketChild): void {
 
 function createSocketChild(
 	onCommandsReceived?: (payload: Buffer, packetId: number) => Promise<void>,
-	onCommandsAcknowledged?: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>,
+	onPacketsAcknowledged?: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>,
 	onDisconnect?: () => Promise<void>
 ): AtemSocketChild {
 	return new AtemSocketChild(
@@ -45,7 +45,7 @@ function createSocketChild(
 		// async msg => { console.log(msg) },
 		async (): Promise<void> => Promise.resolve(),
 		onCommandsReceived || (async (): Promise<void> => Promise.resolve()),
-		onCommandsAcknowledged || (async (): Promise<void> => Promise.resolve())
+		onPacketsAcknowledged || (async (): Promise<void> => Promise.resolve())
 	)
 }
 
