@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { Atem, DEFAULT_MTU, DEFAULT_PORT } from '../atem'
+import { Atem, DEFAULT_MAX_PACKET_SIZE, DEFAULT_PORT } from '../atem'
 import { CutCommand } from '../commands'
 import { promisify } from 'util'
 import { EventEmitter } from 'events'
@@ -35,14 +35,14 @@ describe('Atem', () => {
 				disableMultithreaded: true,
 				log: (conn as any)._log,
 				port: DEFAULT_PORT,
-				packetMtu: DEFAULT_MTU,
+				maxPacketSize: DEFAULT_MAX_PACKET_SIZE,
 			})
 		} finally {
 			await conn.destroy()
 		}
 	})
 	test('constructor test 2', async () => {
-		const conn = new Atem({ debugBuffers: true, address: 'test1', port: 23, packetMtu: 500 })
+		const conn = new Atem({ debugBuffers: true, address: 'test1', port: 23, maxPacketSize: 500 })
 
 		try {
 			const socket = (conn as any).socket as AtemSocket
@@ -56,7 +56,7 @@ describe('Atem', () => {
 				disableMultithreaded: false,
 				log: (conn as any)._log,
 				port: 23,
-				packetMtu: 500,
+				maxPacketSize: 500,
 			})
 		} finally {
 			await conn.destroy()

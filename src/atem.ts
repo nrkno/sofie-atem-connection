@@ -62,7 +62,7 @@ export interface AtemOptions {
 	/**
 	 * Maximum size of packets to transmit
 	 */
-	packetMtu?: number
+	maxPacketSize?: number
 }
 
 export type AtemEvents = {
@@ -89,7 +89,7 @@ export enum AtemConnectionStatus {
 }
 
 export const DEFAULT_PORT = 9910
-export const DEFAULT_MTU = 1500
+export const DEFAULT_MAX_PACKET_SIZE = 1416 // Matching ATEM software
 
 export class BasicAtem extends EventEmitter<AtemEvents> {
 	private readonly socket: AtemSocket
@@ -109,7 +109,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 			port: options?.port || DEFAULT_PORT,
 			disableMultithreaded: options?.disableMultithreaded ?? false,
 			childProcessTimeout: options?.childProcessTimeout || 600,
-			packetMtu: options?.packetMtu ?? DEFAULT_MTU,
+			maxPacketSize: options?.maxPacketSize ?? DEFAULT_MAX_PACKET_SIZE,
 		})
 		this.dataTransferManager = new DT.DataTransferManager(this.sendCommands.bind(this))
 

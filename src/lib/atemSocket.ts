@@ -13,7 +13,7 @@ export interface AtemSocketOptions {
 	debugBuffers: boolean
 	disableMultithreaded: boolean
 	childProcessTimeout: number
-	packetMtu: number
+	maxPacketSize: number
 }
 
 export type AtemSocketEvents = {
@@ -29,7 +29,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	private readonly _debugBuffers: boolean
 	private readonly _disableMultithreaded: boolean
 	private readonly _childProcessTimeout: number
-	private readonly _packetMtu: number
+	private readonly _maxPacketSize: number
 	private readonly _commandParser: CommandParser = new CommandParser()
 
 	private _nextPacketTrackingId = 0
@@ -47,7 +47,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 		this._debugBuffers = options.debugBuffers
 		this._disableMultithreaded = options.disableMultithreaded
 		this._childProcessTimeout = options.childProcessTimeout
-		this._packetMtu = options.packetMtu
+		this._maxPacketSize = options.maxPacketSize
 	}
 
 	public async connect(address?: string, port?: number): Promise<void> {
@@ -107,7 +107,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	public async sendCommands(commands: Array<ISerializableCommand>): Promise<number[]> {
 		if (!this._socketProcess) throw new Error('Socket process is not open')
 
-		const maxPacketSize = this._packetMtu - 28 - 12 // MTU minus UDP header and ATEM header
+		const maxPacketSize = this._maxPacketSize - 12 // MTU minus ATEM header
 		const packetBuilder = new PacketBuilder(maxPacketSize, this._commandParser.version)
 
 		for (const cmd of commands) {

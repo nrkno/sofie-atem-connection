@@ -108,7 +108,7 @@ describe('AtemSocket', () => {
 			port: 890,
 			disableMultithreaded: true,
 			childProcessTimeout: 100,
-			packetMtu: 1500,
+			maxPacketSize: 1416,
 		})
 	}
 
