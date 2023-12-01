@@ -5,6 +5,7 @@ import { VersionCommand, ISerializableCommand, IDeserializedCommand } from '../c
 import { DEFAULT_PORT } from '../atem'
 import { threadedClass, ThreadedClass, ThreadedClassManager } from 'threadedclass'
 import type { AtemSocketChild, OutboundPacketInfo } from './atemSocketChild'
+import { PacketBuilder } from './packetBuilder'
 
 export interface AtemSocketOptions {
 	address: string
@@ -106,71 +107,25 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	public async sendCommands(commands: Array<ISerializableCommand>): Promise<number[]> {
 		if (!this._socketProcess) throw new Error('Socket process is not open')
 
-		const trackingIds: number[] = []
-
-		const packets: Array<OutboundPacketInfo> = []
-
 		const maxPacketSize = this._packetMtu - 28 - 12 // MTU minus UDP header and ATEM header
-
-		let currentPacketBuffer = Buffer.alloc(maxPacketSize)
-		let currentPacketFilled = 0
-
-		const startNewBuffer = (skipCreate?: boolean) => {
-			if (currentPacketFilled === 0) return
-
-			const trackingId = this.nextPacketTrackingId
-			trackingIds.push(trackingId)
-
-			packets.push({
-				payloadLength: currentPacketFilled,
-				payloadHex: currentPacketBuffer.subarray(0, currentPacketFilled).toString('hex'),
-				trackingId,
-			})
-
-			if (!skipCreate) {
-				currentPacketBuffer = Buffer.alloc(maxPacketSize)
-				currentPacketFilled = 0
-			}
-		}
+		const packetBuilder = new PacketBuilder(maxPacketSize, this._commandParser.version)
 
 		for (const cmd of commands) {
-			if (typeof cmd.serialize !== 'function') {
-				throw new Error(`Command ${cmd.constructor.name} is not serializable`)
-			}
-
-			const payload = cmd.serialize(this._commandParser.version)
-			if (this._debugBuffers) this.emit('debug', `PAYLOAD ${cmd.constructor.name} ${payload.toString('hex')}`)
-
-			const rawName: string = (cmd.constructor as any).rawName
-
-			const totalLength = payload.length + 8
-			if (totalLength >= maxPacketSize) {
-				throw new Error(`Comamnd ${cmd.constructor.name} is too large for a single packet`)
-			}
-
-			// Ensure the packet will fit into the current buffer
-			if (totalLength + currentPacketFilled > maxPacketSize) {
-				startNewBuffer()
-			}
-
-			// Command name
-			currentPacketBuffer.writeUInt16BE(payload.length + 8, currentPacketFilled + 0)
-			currentPacketBuffer.write(rawName, currentPacketFilled + 4, 4)
-
-			// Body
-			payload.copy(currentPacketBuffer, currentPacketFilled + 8)
-
-			currentPacketFilled += totalLength
+			packetBuilder.addCommand(cmd)
 		}
 
-		// Push the buffer to the queue
-		startNewBuffer(true)
+		const packets: OutboundPacketInfo[] = packetBuilder.getPackets().map((buffer) => ({
+			payloadLength: buffer.length,
+			payloadHex: buffer.toString('hex'),
+			trackingId: this.nextPacketTrackingId,
+		}))
+		if (this._debugBuffers) this.emit('debug', `PAYLOAD PACKETS ${JSON.stringify(packets)}`)
 
 		if (packets.length > 0) {
 			await this._socketProcess.sendPackets(packets)
 		}
 
-		return trackingIds
+		return packets.map((packet) => packet.trackingId)
 	}
 
 	private async _createSocketProcess(): Promise<void> {
