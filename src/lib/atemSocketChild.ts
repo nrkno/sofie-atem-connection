@@ -2,7 +2,6 @@
  * Note: this file wants as few imports as possible, as it gets loaded in a worker-thread and may require its own webpack bundle
  */
 import { createSocket, Socket, RemoteInfo } from 'dgram'
-import * as NanoTimer from 'nanotimer'
 import { performance } from 'perf_hooks'
 
 const IN_FLIGHT_TIMEOUT = 60 // ms
@@ -47,7 +46,7 @@ export class AtemSocketChild {
 
 	private _connectionState = ConnectionState.Closed
 	private _reconnectTimer: NodeJS.Timer | undefined
-	private _retransmitTimer: NodeJS.Timer | undefined
+	private _retransmitTimer: NodeJS.Timeout | undefined
 
 	private _nextSendPacketId = 1
 	private _sessionId = 0
@@ -59,8 +58,7 @@ export class AtemSocketChild {
 	private _lastReceivedAt: number = performance.now()
 	private _lastReceivedPacketId = 0
 	private _inFlight: InFlightPacket[] = []
-	private readonly _ackTimer = new NanoTimer()
-	private _ackTimerRunning = false
+	private _ackTimer: NodeJS.Timeout | undefined
 	private _receivedWithoutAck = 0
 
 	private readonly onDisconnect: () => Promise<void>
@@ -100,14 +98,6 @@ export class AtemSocketChild {
 				})
 			}, CONNECTION_RETRY_INTERVAL)
 		}
-		// Check for retransmits every 10 milliseconds
-		if (!this._retransmitTimer) {
-			this._retransmitTimer = setInterval(() => {
-				this._checkForRetransmit().catch((e) => {
-					this.log(`Failed to retransmit: ${e?.message ?? e}`)
-				})
-			}, RETRANSMIT_INTERVAL)
-		}
 	}
 
 	public async connect(address: string, port: number): Promise<void> {
@@ -128,7 +118,7 @@ export class AtemSocketChild {
 
 	private _clearTimers() {
 		if (this._retransmitTimer) {
-			clearInterval(this._retransmitTimer)
+			clearTimeout(this._retransmitTimer)
 			this._retransmitTimer = undefined
 		}
 		if (this._reconnectTimer) {
@@ -199,6 +189,7 @@ export class AtemSocketChild {
 			payload: buffer,
 			resent: 0,
 		})
+		this._triggerRetransmitTimer()
 	}
 
 	private _recreateSocket(): Socket {
@@ -307,6 +298,8 @@ export class AtemSocketChild {
 						return true
 					}
 				})
+				this._triggerRetransmitTimer()
+
 				ps.push(this.onCommandsAcknowledged(ackedCommands))
 				// this.log(`${Date.now()} Got ack ${ackPacketId} Remaining=${this._inFlight.length}`)
 			}
@@ -326,21 +319,19 @@ export class AtemSocketChild {
 		this._receivedWithoutAck++
 		if (this._receivedWithoutAck >= MAX_PACKET_PER_ACK) {
 			this._receivedWithoutAck = 0
-			this._ackTimerRunning = false
-			this._ackTimer.clearTimeout()
+
+			if (this._ackTimer) {
+				clearTimeout(this._ackTimer)
+				delete this._ackTimer
+			}
+
 			this._sendAck(this._lastReceivedPacketId)
-		} else if (!this._ackTimerRunning) {
-			this._ackTimerRunning = true
-			// timeout for 5 ms (syntax for nanotimer says m)
-			this._ackTimer.setTimeout(
-				() => {
-					this._receivedWithoutAck = 0
-					this._ackTimerRunning = false
-					this._sendAck(this._lastReceivedPacketId)
-				},
-				[],
-				'5m'
-			)
+		} else if (!this._ackTimer) {
+			this._ackTimer = setTimeout(() => {
+				delete this._ackTimer
+				this._receivedWithoutAck = 0
+				this._sendAck(this._lastReceivedPacketId)
+			}, 5)
 		}
 	}
 
@@ -382,8 +373,28 @@ export class AtemSocketChild {
 		}
 	}
 
+	private _triggerRetransmitTimer(): void {
+		if (!this._inFlight.length && this._retransmitTimer) {
+			clearTimeout(this._retransmitTimer)
+			delete this._retransmitTimer
+			return
+		}
+
+		if (!this._retransmitTimer) {
+			this._retransmitTimer = setTimeout(() => {
+				delete this._retransmitTimer
+				this._checkForRetransmit().catch((e) => {
+					this.log(`Failed to retransmit: ${e?.message ?? e}`)
+				})
+			}, RETRANSMIT_INTERVAL)
+		}
+	}
+
 	private async _checkForRetransmit(): Promise<void> {
 		if (!this._inFlight.length) return
+
+		this._triggerRetransmitTimer()
+
 		const now = performance.now()
 		for (const sentPacket of this._inFlight) {
 			if (sentPacket.lastSent + IN_FLIGHT_TIMEOUT < now) {
