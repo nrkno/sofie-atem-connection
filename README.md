@@ -5,15 +5,13 @@
 
 This is the _ATEM Connection_ library of the [**Sofie** TV Automation System](https://github.com/nrkno/Sofie-TV-automation/). The library is used for connecting to Blackmagic Design's ATEM devices.
 
-## Repository-specific Info for Developers
-* [Developer Info](DEVELOPER.md)
-* [Contribution Guidelines](CONTRIBUTING.md)
-
-## General Sofie System Info
+### General Sofie System Info
 * [Documentation](https://nrkno.github.io/sofie-core/)
 * [Releases](https://nrkno.github.io/sofie-core/releases)
+* [Contribution Guidelines](CONTRIBUTING.md)
+*  [License](LICENSE)
 
-***
+---
 
 ## Device support
 
