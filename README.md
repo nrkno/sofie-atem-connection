@@ -1,10 +1,17 @@
-# Sofie: The Modern TV News Studio Automation System (ATEM connection library)
-
+# Sofie ATEM Connection Library
 [![Node CI](https://github.com/nrkno/sofie-atem-connection/actions/workflows/node.yaml/badge.svg)](https://github.com/nrkno/sofie-atem-connection/actions/workflows/node.yaml)
 [![codecov](https://codecov.io/gh/nrkno/sofie-atem-connection/branch/master/graph/badge.svg)](https://codecov.io/gh/nrkno/sofie-atem-connection/)
 [![npm](https://img.shields.io/npm/v/atem-connection)](https://www.npmjs.com/package/atem-connection)
 
-This library is used in the [**Sofie** TV News Studio Automation System](https://github.com/nrkno/Sofie-TV-automation/) for connecting to Blackmagic Design ATEM devices.
+This is the _ATEM Connection_ library of the [**Sofie** TV Automation System](https://github.com/nrkno/Sofie-TV-automation/). The library is used for connecting to Blackmagic Design's ATEM devices.
+
+## General Sofie System Information
+* [_Sofie_ Documentation](https://nrkno.github.io/sofie-core/)
+* [_Sofie_ Releases](https://nrkno.github.io/sofie-core/releases)
+* [Contribution Guidelines](CONTRIBUTING.md)
+* [License](LICENSE)
+
+---
 
 ## Device support
 
@@ -19,19 +26,17 @@ Additionally any newly unimplemented functionality will generally only be writte
 
 We have no intention of dropping support for older firmwares, but we may do at some point. If we do this will be done in a major version bump, and will only be for significantly older firmware.
 
-It is tested on a variety of models spanning every generation, and the aim is to provide support for every model.
+The library is tested on a variety of models spanning every generation, and the aim is to provide support for every model.
 
 Note: USB control of devices is not supported by this library.
 
-## Technology highlights
-
+## Technology Highlights
 - Typescript
 - Jest
 - standard-version
 - codecov
 
 ## Installation
-
 For usage by library consumers installation is as easy as:
 
 ```sh
@@ -46,7 +51,7 @@ yarn
 yarn build
 ```
 
-We welcome any contributions. Please read [our guide](.github/CONTRIBUTING.md) on how to add new commands before raising a PR.
+We welcome any contributions. Please read [our guide](CONTRIBUTING.md) on how to add new commands before raising a PR.
 
 ## Usage
 
@@ -128,4 +133,8 @@ This module run tests with jest.
 $ yarn unit
 ```
 
-There is a suite of generated serialization tests, using [atem-connection-test-generator](https://github.com/LibAtem/atem-connection-test-generator) as the [LibAtem](https://github.com/LibAtem) project has tests to verify its serialization against the Blackmagic Atem SDK
+There is a suite of generated serialization tests, using [atem-connection-test-generator](https://github.com/LibAtem/atem-connection-test-generator) as the [LibAtem](https://github.com/LibAtem) project has tests to verify its serialization against the Blackmagic Design's ATEM SDK.
+
+---
+
+_The NRK logo is a registered trademark of Norsk rikskringkasting AS. The license does not grant any right to use, in any way, any trademarks, service marks or logos of Norsk rikskringkasting AS._
