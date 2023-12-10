@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [Convential Commits](https://www.conventionalcommits.org/en/v1.0.0/#specification) for commit guidelines.
 
+## [3.3.3](https://github.com/nrkno/sofie-atem-connection/compare/v3.3.2...v3.3.3) (Sun Dec 10 2023)
+
+
+### Fixes
+
+* add tvs-4k8 modelid and testcase [49935e2a](https://github.com/nrkno/sofie-atem-connection/commit/49935e2aff22219c186870f8f577ab0eb5197707)
+
 ## [3.3.2](https://github.com/nrkno/sofie-atem-connection/compare/v3.3.1...v3.3.2) (Thu Sep 28 2023)
 
 
