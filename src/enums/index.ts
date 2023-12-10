@@ -30,6 +30,8 @@ export enum Model {
 	// 0x1c ??
 	// 0x1d ??
 	Constellation4K4ME = 0x1e,
+	// 0x1f ??
+	TelevisionStudio4K8 = 0x20,
 }
 
 export enum ProtocolVersion {

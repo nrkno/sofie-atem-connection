@@ -194,4 +194,5 @@ describe('connection', () => {
 	runTest('tvs hd8 v9.0', 'tvs-hd8-v9.0')
 	runTest('sdi extreme iso v8.8', 'sdi-extreme-iso-v8.8')
 	runTest('constellation 4k 4me v9.1', 'constellation-4me-4k-v9.1')
+	runTest('tvs 4k8 v9.3', 'tvs-4k8-v9.3')
 })
