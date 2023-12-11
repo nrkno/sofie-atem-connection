@@ -42,6 +42,12 @@ interface InFlightPacket {
 	resent: number
 }
 
+export interface OutboundPacketInfo {
+	payloadLength: number
+	payloadHex: string
+	trackingId: number
+}
+
 export class AtemSocketChild {
 	private readonly _debugBuffers: boolean
 
@@ -66,7 +72,7 @@ export class AtemSocketChild {
 	private readonly onDisconnect: () => Promise<void>
 	private readonly onLog: (message: string) => Promise<void>
 	private readonly onCommandsReceived: (payload: Buffer, packetId: number) => Promise<void>
-	private readonly onCommandsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
+	private readonly onPacketsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
 
 	constructor(
 		options: { address: string; port: number; debugBuffers: boolean },
@@ -82,7 +88,7 @@ export class AtemSocketChild {
 		this.onDisconnect = onDisconnect
 		this.onLog = onLog
 		this.onCommandsReceived = onCommandReceived
-		this.onCommandsAcknowledged = onCommandAcknowledged
+		this.onPacketsAcknowledged = onCommandAcknowledged
 
 		this._socket = this._createSocket()
 	}
@@ -167,29 +173,24 @@ export class AtemSocketChild {
 		void this.onLog(message)
 	}
 
-	public sendCommands(commands: Array<{ payload: number[]; rawName: string; trackingId: number }>): void {
-		commands.forEach((cmd) => {
-			this.sendCommand(cmd.payload, cmd.rawName, cmd.trackingId)
-		})
+	public sendPackets(packets: OutboundPacketInfo[]): void {
+		for (const packet of packets) {
+			this.sendPacket(packet.payloadLength, packet.payloadHex, packet.trackingId)
+		}
 	}
 
-	private sendCommand(payload: number[], rawName: string, trackingId: number): void {
+	private sendPacket(payloadLength: number, payloadHex: string, trackingId: number): void {
 		const packetId = this._nextSendPacketId++
 		if (this._nextSendPacketId >= MAX_PACKET_ID) this._nextSendPacketId = 0
 
 		const opcode = PacketFlag.AckRequest << 11
 
-		const buffer = Buffer.alloc(20 + payload.length, 0)
-		buffer.writeUInt16BE(opcode | (payload.length + 20), 0) // Opcode & Length
+		const buffer = Buffer.alloc(12 + payloadLength, 0)
+		buffer.writeUInt16BE(opcode | (payloadLength + 12), 0) // Opcode & Length
 		buffer.writeUInt16BE(this._sessionId, 2)
 		buffer.writeUInt16BE(packetId, 10)
 
-		// Command
-		buffer.writeUInt16BE(payload.length + 8, 12)
-		buffer.write(rawName, 16, 4)
-
-		// Body
-		Buffer.from(payload).copy(buffer, 20)
+		buffer.write(payloadHex, 12, payloadLength, 'hex')
 		this._sendPacket(buffer)
 
 		this._inFlight.push({
@@ -307,7 +308,7 @@ export class AtemSocketChild {
 						return true
 					}
 				})
-				ps.push(this.onCommandsAcknowledged(ackedCommands))
+				ps.push(this.onPacketsAcknowledged(ackedCommands))
 				// this.log(`${Date.now()} Got ack ${ackPacketId} Remaining=${this._inFlight.length}`)
 			}
 		}
@@ -395,7 +396,7 @@ export class AtemSocketChild {
 					// Retransmit the packet and anything after it
 					return this._retransmitFrom(sentPacket.packetId)
 				} else {
-					// A command has timed out, so we need to reset to avoid getting stuck
+					// A packet has timed out, so we need to reset to avoid getting stuck
 					this.log(`Packet timed out: ${sentPacket.packetId}`)
 					return this.restartConnection()
 				}

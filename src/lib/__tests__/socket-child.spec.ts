@@ -32,7 +32,7 @@ function fakeConnect(child: AtemSocketChild): void {
 
 function createSocketChild(
 	onCommandsReceived?: (payload: Buffer, packetId: number) => Promise<void>,
-	onCommandsAcknowledged?: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>,
+	onPacketsAcknowledged?: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>,
 	onDisconnect?: () => Promise<void>
 ): AtemSocketChild {
 	return new AtemSocketChild(
@@ -45,7 +45,7 @@ function createSocketChild(
 		// async msg => { console.log(msg) },
 		async (): Promise<void> => Promise.resolve(),
 		onCommandsReceived || (async (): Promise<void> => Promise.resolve()),
-		onCommandsAcknowledged || (async (): Promise<void> => Promise.resolve())
+		onPacketsAcknowledged || (async (): Promise<void> => Promise.resolve())
 	)
 }
 
@@ -396,14 +396,20 @@ describe('SocketChild', () => {
 			}
 
 			// Send something
-			const buf1 = [0, 1, 2]
+			const buf1 = Buffer.from([0, 1, 2])
 			const cmdName = 'test'
 			const buf1Expected = Buffer.alloc(11)
 			buf1Expected.writeUInt16BE(buf1Expected.length, 0)
 			buf1Expected.write(cmdName, 4, 4)
 			Buffer.from(buf1).copy(buf1Expected, 8)
 
-			child.sendCommands([{ payload: buf1, rawName: cmdName, trackingId: 1 }])
+			child.sendPackets([
+				{
+					payloadLength: buf1Expected.length,
+					payloadHex: buf1Expected.toString('hex'),
+					trackingId: 1,
+				},
+			])
 			expect(received).toEqual([
 				{
 					id: 123,
@@ -414,7 +420,13 @@ describe('SocketChild', () => {
 			expect(getInflightIds(child)).toEqual([123])
 
 			// Send another
-			child.sendCommands([{ payload: buf1, rawName: cmdName, trackingId: 1 }])
+			child.sendPackets([
+				{
+					payloadLength: buf1Expected.length,
+					payloadHex: buf1Expected.toString('hex'),
+					trackingId: 1,
+				},
+			])
 			expect(received).toEqual([
 				{
 					id: 124,
@@ -472,16 +484,16 @@ describe('SocketChild', () => {
 			acked = []
 
 			// Send some stuff
-			const buf1 = [0, 1, 2]
-			child.sendCommands([
-				{ payload: buf1, rawName: '', trackingId: 5 },
-				{ payload: buf1, rawName: '', trackingId: 6 },
-				{ payload: buf1, rawName: '', trackingId: 7 },
+			const buf1 = Buffer.from([0, 1, 2])
+			child.sendPackets([
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 5 },
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 6 },
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 7 },
 			])
-			child.sendCommands([{ payload: buf1, rawName: '', trackingId: 8 }])
-			child.sendCommands([
-				{ payload: buf1, rawName: '', trackingId: 9 },
-				{ payload: buf1, rawName: '', trackingId: 10 },
+			child.sendPackets([{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 8 }])
+			child.sendPackets([
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 9 },
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 10 },
 			])
 			expect(received).toEqual([123, 124, 125, 126, 127, 128])
 			received = []
@@ -531,18 +543,18 @@ describe('SocketChild', () => {
 			acked = []
 
 			// Send some stuff
-			const buf1 = [0, 1, 2]
-			child.sendCommands([
-				{ payload: buf1, rawName: '', trackingId: 5 }, // 32764
-				{ payload: buf1, rawName: '', trackingId: 6 }, // 32765
-				{ payload: buf1, rawName: '', trackingId: 7 }, // 32766
+			const buf1 = Buffer.from([0, 1, 2])
+			child.sendPackets([
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 5 }, // 32764
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 6 }, // 32765
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 7 }, // 32766
 			])
-			child.sendCommands([
-				{ payload: buf1, rawName: '', trackingId: 8 }, // 32767
+			child.sendPackets([
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 8 }, // 32767
 			])
-			child.sendCommands([
-				{ payload: buf1, rawName: '', trackingId: 9 }, // 0
-				{ payload: buf1, rawName: '', trackingId: 10 }, // 1
+			child.sendPackets([
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 9 }, // 0
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 10 }, // 1
 			])
 			expect(received).toEqual([32764, 32765, 32766, 32767, 0, 1])
 			received = []
@@ -595,14 +607,14 @@ describe('SocketChild', () => {
 			acked = []
 
 			// Send some stuff
-			const buf1 = [0, 1, 2]
-			child.sendCommands([
-				{ payload: buf1, rawName: '', trackingId: 5 }, // 32764
-				{ payload: buf1, rawName: '', trackingId: 6 }, // 32765
-				{ payload: buf1, rawName: '', trackingId: 7 }, // 32766
-				{ payload: buf1, rawName: '', trackingId: 8 }, // 32767
-				{ payload: buf1, rawName: '', trackingId: 9 }, // 0
-				{ payload: buf1, rawName: '', trackingId: 10 }, // 1
+			const buf1 = Buffer.from([0, 1, 2])
+			child.sendPackets([
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 5 }, // 32764
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 6 }, // 32765
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 7 }, // 32766
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 8 }, // 32767
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 9 }, // 0
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 10 }, // 1
 			])
 			expect(received).toEqual([32764, 32765, 32766, 32767, 0, 1])
 			received = []
@@ -631,8 +643,8 @@ describe('SocketChild', () => {
 			received = []
 
 			// Add another to the queue
-			child.sendCommands([
-				{ payload: buf1, rawName: '', trackingId: 11 }, // 2
+			child.sendPackets([
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 11 }, // 2
 			])
 			expect(received).toEqual([2])
 			received = []
@@ -692,14 +704,14 @@ describe('SocketChild', () => {
 			acked = []
 
 			// Send some stuff
-			const buf1 = [0, 1, 2]
-			child.sendCommands([
-				{ payload: buf1, rawName: '', trackingId: 5 }, // 32764
-				{ payload: buf1, rawName: '', trackingId: 6 }, // 32765
-				{ payload: buf1, rawName: '', trackingId: 7 }, // 32766
-				{ payload: buf1, rawName: '', trackingId: 8 }, // 32767
-				{ payload: buf1, rawName: '', trackingId: 9 }, // 0
-				{ payload: buf1, rawName: '', trackingId: 10 }, // 1
+			const buf1 = Buffer.from([0, 1, 2])
+			child.sendPackets([
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 5 }, // 32764
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 6 }, // 32765
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 7 }, // 32766
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 8 }, // 32767
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 9 }, // 0
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 10 }, // 1
 			])
 			expect(received).toEqual([32764, 32765, 32766, 32767, 0, 1])
 			received = []
@@ -753,10 +765,10 @@ describe('SocketChild', () => {
 			connected = true
 
 			// Send some stuff
-			const buf1 = [0, 1, 2]
-			child.sendCommands([
-				{ payload: buf1, rawName: '', trackingId: 5 }, // 32767
-				{ payload: buf1, rawName: '', trackingId: 6 }, // 0
+			const buf1 = Buffer.from([0, 1, 2])
+			child.sendPackets([
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 5 }, // 32767
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 6 }, // 0
 			])
 			expect(getInflightIds(child)).toEqual([32767, 0])
 			expect(acked).toEqual([])
@@ -793,10 +805,10 @@ describe('SocketChild', () => {
 			connected = true
 
 			// Send some stuff
-			const buf1 = [0, 1, 2]
-			child.sendCommands([
-				{ payload: buf1, rawName: '', trackingId: 5 }, // 32767
-				{ payload: buf1, rawName: '', trackingId: 6 }, // 0
+			const buf1 = Buffer.from([0, 1, 2])
+			child.sendPackets([
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 5 }, // 32767
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 6 }, // 0
 			])
 			expect(getInflightIds(child)).toEqual([32767, 0])
 			expect(acked).toEqual([])
@@ -835,10 +847,10 @@ describe('SocketChild', () => {
 			acked = []
 
 			// Send some stuff
-			const buf1 = [0, 1, 2]
-			child.sendCommands([
-				{ payload: buf1, rawName: '', trackingId: 5 }, // 32767
-				{ payload: buf1, rawName: '', trackingId: 6 }, // 0
+			const buf1 = Buffer.from([0, 1, 2])
+			child.sendPackets([
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 5 }, // 32767
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 6 }, // 0
 			])
 			expect(getInflightIds(child)).toEqual([32767, 0])
 			expect(acked).toEqual([])
@@ -868,8 +880,8 @@ describe('SocketChild', () => {
 			// Not quite
 			await clock.tickAsync(1990)
 			expect(connected).toBeTrue()
-			child.sendCommands([
-				{ payload: buf1, rawName: '', trackingId: 7 }, // 1
+			child.sendPackets([
+				{ payloadLength: buf1.length, payloadHex: buf1.toString('hex'), trackingId: 7 }, // 1
 			])
 			expect(getInflightIds(child)).toEqual([1])
 			expect(acked).toEqual([])

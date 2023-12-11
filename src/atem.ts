@@ -59,6 +59,10 @@ export interface AtemOptions {
 	debugBuffers?: boolean
 	disableMultithreaded?: boolean
 	childProcessTimeout?: number
+	/**
+	 * Maximum size of packets to transmit
+	 */
+	maxPacketSize?: number
 }
 
 export type AtemEvents = {
@@ -73,8 +77,7 @@ export type AtemEvents = {
 	updatedTime: [TimeInfo]
 }
 
-interface SentCommand {
-	command: ISerializableCommand
+interface SentPackets {
 	resolve: () => void
 	reject: () => void
 }
@@ -86,12 +89,13 @@ export enum AtemConnectionStatus {
 }
 
 export const DEFAULT_PORT = 9910
+export const DEFAULT_MAX_PACKET_SIZE = 1416 // Matching ATEM software
 
 export class BasicAtem extends EventEmitter<AtemEvents> {
 	private readonly socket: AtemSocket
 	protected readonly dataTransferManager: DT.DataTransferManager
 	private _state: AtemState | undefined
-	private _sentQueue: { [packetId: string]: SentCommand } = {}
+	private _sentQueue: { [packetId: string]: SentPackets } = {}
 	private _status: AtemConnectionStatus
 
 	constructor(options?: AtemOptions) {
@@ -100,19 +104,20 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		this._state = AtemStateUtil.Create()
 		this._status = AtemConnectionStatus.CLOSED
 		this.socket = new AtemSocket({
-			debugBuffers: (options || {}).debugBuffers || false,
-			address: (options || {}).address || '',
-			port: (options || {}).port || DEFAULT_PORT,
-			disableMultithreaded: (options || {}).disableMultithreaded || false,
-			childProcessTimeout: (options || {}).childProcessTimeout || 600,
+			debugBuffers: options?.debugBuffers ?? false,
+			address: options?.address || '',
+			port: options?.port || DEFAULT_PORT,
+			disableMultithreaded: options?.disableMultithreaded ?? false,
+			childProcessTimeout: options?.childProcessTimeout || 600,
+			maxPacketSize: options?.maxPacketSize ?? DEFAULT_MAX_PACKET_SIZE,
 		})
 		this.dataTransferManager = new DT.DataTransferManager(this.sendCommands.bind(this))
 
-		this.socket.on('commandsReceived', (commands) => {
+		this.socket.on('receivedCommands', (commands) => {
 			this.emit('receivedCommands', commands)
 			this._mutateState(commands)
 		})
-		this.socket.on('commandsAck', (trackingIds) => this._resolveCommands(trackingIds))
+		this.socket.on('ackPackets', (trackingIds) => this._resolveCommands(trackingIds))
 		this.socket.on('info', (msg) => this.emit('info', msg))
 		this.socket.on('debug', (msg) => this.emit('debug', msg))
 		this.socket.on('error', (e) => this.emit('error', e))
@@ -151,28 +156,27 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		return this.socket.destroy()
 	}
 
-	private sendCommands(commands: ISerializableCommand[]): Array<Promise<void>> {
-		const commands2 = commands.map((cmd) => ({
-			rawCommand: cmd,
-			trackingId: this.socket.nextCommandTrackingId,
-		}))
+	public async sendCommands(commands: ISerializableCommand[]): Promise<void> {
+		const trackingIds = await this.socket.sendCommands(commands)
 
-		const sendPromise = this.socket.sendCommands(commands2)
+		const promises: Promise<void>[] = []
 
-		return commands2.map(async (cmd) => {
-			await sendPromise
-			return new Promise<void>((resolve, reject) => {
-				this._sentQueue[cmd.trackingId] = {
-					command: cmd.rawCommand,
-					resolve,
-					reject,
-				}
-			})
-		})
+		for (const trackingId of trackingIds) {
+			promises.push(
+				new Promise<void>((resolve, reject) => {
+					this._sentQueue[trackingId] = {
+						resolve,
+						reject,
+					}
+				})
+			)
+		}
+
+		await Promise.allSettled(promises)
 	}
 
 	public async sendCommand(command: ISerializableCommand): Promise<void> {
-		return this.sendCommands([command])[0]
+		return await this.sendCommands([command])
 	}
 
 	private _mutateState(commands: IDeserializedCommand[]): void {
@@ -262,7 +266,7 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		const sentQueue = this._sentQueue
 		this._sentQueue = {}
 
-		Object.values<SentCommand>(sentQueue).forEach((sent) => sent.reject())
+		Object.values<SentPackets>(sentQueue).forEach((sent) => sent.reject())
 	}
 }
 

@@ -4,7 +4,8 @@ import exitHook = require('exit-hook')
 import { VersionCommand, ISerializableCommand, IDeserializedCommand } from '../commands'
 import { DEFAULT_PORT } from '../atem'
 import { threadedClass, ThreadedClass, ThreadedClassManager } from 'threadedclass'
-import type { AtemSocketChild } from './atemSocketChild'
+import type { AtemSocketChild, OutboundPacketInfo } from './atemSocketChild'
+import { PacketBuilder } from './packetBuilder'
 
 export interface AtemSocketOptions {
 	address: string
@@ -12,6 +13,7 @@ export interface AtemSocketOptions {
 	debugBuffers: boolean
 	disableMultithreaded: boolean
 	childProcessTimeout: number
+	maxPacketSize: number
 }
 
 export type AtemSocketEvents = {
@@ -19,17 +21,18 @@ export type AtemSocketEvents = {
 	info: [string]
 	debug: [string]
 	error: [string]
-	commandsReceived: [IDeserializedCommand[]]
-	commandsAck: [number[]]
+	receivedCommands: [IDeserializedCommand[]]
+	ackPackets: [number[]]
 }
 
 export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	private readonly _debugBuffers: boolean
 	private readonly _disableMultithreaded: boolean
 	private readonly _childProcessTimeout: number
+	private readonly _maxPacketSize: number
 	private readonly _commandParser: CommandParser = new CommandParser()
 
-	private _nextCommandTrackingId = 0
+	private _nextPacketTrackingId = 0
 	private _isDisconnecting = false
 	private _address: string
 	private _port: number = DEFAULT_PORT
@@ -44,6 +47,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 		this._debugBuffers = options.debugBuffers
 		this._disableMultithreaded = options.disableMultithreaded
 		this._childProcessTimeout = options.childProcessTimeout
+		this._maxPacketSize = options.maxPacketSize
 	}
 
 	public async connect(address?: string, port?: number): Promise<void> {
@@ -93,37 +97,35 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 		}
 	}
 
-	get nextCommandTrackingId(): number {
-		if (this._nextCommandTrackingId >= Number.MAX_SAFE_INTEGER) {
-			this._nextCommandTrackingId = 0
+	get nextPacketTrackingId(): number {
+		if (this._nextPacketTrackingId >= Number.MAX_SAFE_INTEGER) {
+			this._nextPacketTrackingId = 0
 		}
-		return ++this._nextCommandTrackingId
+		return ++this._nextPacketTrackingId
 	}
 
-	public async sendCommands(
-		commands: Array<{ rawCommand: ISerializableCommand; trackingId: number }>
-	): Promise<void> {
-		if (this._socketProcess) {
-			const wrappedCommands = commands.map((cmd) => {
-				if (typeof cmd.rawCommand.serialize !== 'function') {
-					throw new Error(`Command ${cmd.rawCommand.constructor.name} is not serializable`)
-				}
+	public async sendCommands(commands: Array<ISerializableCommand>): Promise<number[]> {
+		if (!this._socketProcess) throw new Error('Socket process is not open')
 
-				const payload = cmd.rawCommand.serialize(this._commandParser.version)
-				if (this._debugBuffers)
-					this.emit('debug', `PAYLOAD ${cmd.rawCommand.constructor.name} ${payload.toString('hex')}`)
+		const maxPacketSize = this._maxPacketSize - 12 // MTU minus ATEM header
+		const packetBuilder = new PacketBuilder(maxPacketSize, this._commandParser.version)
 
-				return {
-					payload: [...payload],
-					rawName: (cmd.rawCommand.constructor as any).rawName,
-					trackingId: cmd.trackingId,
-				}
-			})
-
-			await this._socketProcess.sendCommands(wrappedCommands)
-		} else {
-			throw new Error('Socket process is not open')
+		for (const cmd of commands) {
+			packetBuilder.addCommand(cmd)
 		}
+
+		const packets: OutboundPacketInfo[] = packetBuilder.getPackets().map((buffer) => ({
+			payloadLength: buffer.length,
+			payloadHex: buffer.toString('hex'),
+			trackingId: this.nextPacketTrackingId,
+		}))
+		if (this._debugBuffers) this.emit('debug', `PAYLOAD PACKETS ${JSON.stringify(packets)}`)
+
+		if (packets.length > 0) {
+			await this._socketProcess.sendPackets(packets)
+		}
+
+		return packets.map((packet) => packet.trackingId)
 	}
 
 	private async _createSocketProcess(): Promise<void> {
@@ -147,10 +149,10 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 				}, // onCommandsReceived
 				async (ids: Array<{ packetId: number; trackingId: number }>): Promise<void> => {
 					this.emit(
-						'commandsAck',
+						'ackPackets',
 						ids.map((id) => id.trackingId)
 					)
-				}, // onCommandsAcknowledged
+				}, // onPacketsAcknowledged
 			],
 			{
 				instanceName: 'atem-connection',
@@ -213,7 +215,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 		}
 
 		if (parsedCommands.length > 0) {
-			this.emit('commandsReceived', parsedCommands)
+			this.emit('receivedCommands', parsedCommands)
 		}
 		return parsedCommands
 	}

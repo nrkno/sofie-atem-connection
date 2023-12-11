@@ -30,7 +30,7 @@ export class DataTransferManager {
 	}
 
 	readonly #sendLockCommand = (/*lock: DataTransferLockingQueue,*/ cmd: ISerializableCommand): void => {
-		Promise.all(this.#rawSendCommands([cmd])).catch((e) => {
+		this.#rawSendCommands([cmd]).catch((e) => {
 			debug(`Failed to send lock command: ${e}`)
 			console.log('Failed to send lock command')
 		})
@@ -41,12 +41,12 @@ export class DataTransferManager {
 	readonly #labelsLock = new DataTransferSimpleQueue(this.#nextTransferId)
 	readonly #macroLock = new DataTransferSimpleQueue(this.#nextTransferId)
 
-	readonly #rawSendCommands: (cmds: ISerializableCommand[]) => Array<Promise<void>>
+	readonly #rawSendCommands: (cmds: ISerializableCommand[]) => Promise<void>
 
 	private interval?: NodeJS.Timer
 	private exitUnsubscribe?: () => void
 
-	constructor(rawSendCommands: (cmds: ISerializableCommand[]) => Array<Promise<void>>) {
+	constructor(rawSendCommands: (cmds: ISerializableCommand[]) => Promise<void>) {
 		this.#rawSendCommands = rawSendCommands
 	}
 
@@ -75,7 +75,7 @@ export class DataTransferManager {
 					const commandsToSend = lock.popQueuedCommands(MAX_PACKETS_TO_SEND_PER_TICK) // Take some, it is unlikely that multiple will run at once
 					if (commandsToSend && commandsToSend.length > 0) {
 						// debug(`Sending ${commandsToSend.length} commands `)
-						Promise.all(this.#rawSendCommands(commandsToSend)).catch((e) => {
+						this.#rawSendCommands(commandsToSend).catch((e) => {
 							// Failed to send/queue something, so abort it
 							lock.tryAbortTransfer(new Error(`Command send failed: ${e}`))
 						})
