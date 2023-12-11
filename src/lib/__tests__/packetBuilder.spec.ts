@@ -76,7 +76,14 @@ describe('PacketBuilder', () => {
 		const builder = new PacketBuilder(500, ProtocolVersion.V8_1_1)
 
 		const cmd = new FakeCommand(501)
-		expect(() => builder.addCommand(cmd)).toThrow('too large')
+		expect(cmd.lengthWithHeader).toBe(501 + 8)
+		const smallCmd = new FakeCommand(10)
+
+		builder.addCommand(cmd)
+		builder.addCommand(smallCmd)
+		expect(builder.getPackets()).toHaveLength(2)
+		expect(builder.getPackets()[0]).toHaveLength(cmd.lengthWithHeader)
+		expect(builder.getPackets()[1]).toHaveLength(smallCmd.lengthWithHeader)
 	})
 
 	it('Command same size as packet', () => {

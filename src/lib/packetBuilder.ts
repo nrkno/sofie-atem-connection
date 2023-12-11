@@ -31,11 +31,12 @@ export class PacketBuilder {
 
 		const totalLength = payload.length + 8
 		if (totalLength > this.#maxPacketSize) {
-			throw new Error(`Comamnd ${cmd.constructor.name} is too large for a single packet`)
+			// Command is too large for a normal packet, try sending it on its own anyway
+			this.#finishBuffer(totalLength)
 		}
 
 		// Ensure the packet will fit into the current buffer
-		if (totalLength + this.#currentPacketFilled > this.#maxPacketSize) {
+		if (totalLength + this.#currentPacketFilled > this.#currentPacketBuffer.length) {
 			this.#finishBuffer()
 		}
 
@@ -48,20 +49,22 @@ export class PacketBuilder {
 	}
 
 	public getPackets(): Buffer[] {
-		this.#finishBuffer(false)
+		this.#finishBuffer(0)
 
 		this.#finished = true
 
 		return this.#completedBuffers
 	}
 
-	#finishBuffer(allocNewBuffer = true) {
-		if (this.#currentPacketFilled === 0 || this.#finished) return
+	#finishBuffer(newBufferLength = this.#maxPacketSize) {
+		if (this.#finished) return
 
-		this.#completedBuffers.push(this.#currentPacketBuffer.subarray(0, this.#currentPacketFilled))
+		if (this.#currentPacketFilled > 0) {
+			this.#completedBuffers.push(this.#currentPacketBuffer.subarray(0, this.#currentPacketFilled))
+		}
 
-		if (allocNewBuffer) {
-			this.#currentPacketBuffer = Buffer.alloc(this.#maxPacketSize)
+		if (newBufferLength > 0) {
+			this.#currentPacketBuffer = Buffer.alloc(newBufferLength)
 			this.#currentPacketFilled = 0
 		}
 	}
