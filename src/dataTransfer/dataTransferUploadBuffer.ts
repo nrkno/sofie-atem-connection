@@ -17,6 +17,7 @@ const debug = debug0('atem-connection:data-transfer:upload-buffer')
 export interface UploadBufferInfo {
 	encodedData: Buffer
 	rawDataLength: number
+	isRleEncoded: boolean
 	hash: string | null
 }
 
@@ -24,11 +25,37 @@ export function generateHashForBuffer(data: Buffer): string {
 	return data ? crypto.createHash('md5').update(data).digest('base64') : ''
 }
 
-export function generateBufferInfo(data: Buffer, shouldEncodeRLE: boolean): UploadBufferInfo {
-	return {
-		encodedData: shouldEncodeRLE ? Util.encodeRLE(data) : data,
-		rawDataLength: data.length,
-		hash: generateHashForBuffer(data),
+export function generateUploadBufferInfo(
+	data: Buffer | UploadBufferInfo,
+	resolution: Util.VideoModeInfo,
+	shouldEncodeRLE: boolean
+): UploadBufferInfo {
+	const expectedLength = resolution.width * resolution.height * 4
+	if (Buffer.isBuffer(data)) {
+		if (data.length !== expectedLength)
+			throw new Error(`Pixel buffer has incorrect length. Received ${data.length} expected ${expectedLength}`)
+
+		const encodedData = Util.convertRGBAToYUV422(resolution.width, resolution.height, data)
+
+		return {
+			encodedData: shouldEncodeRLE ? Util.encodeRLE(encodedData) : encodedData,
+			rawDataLength: encodedData.length,
+			isRleEncoded: shouldEncodeRLE,
+			hash: generateHashForBuffer(encodedData),
+		}
+	} else {
+		const result: UploadBufferInfo = { ...data }
+		if (data.rawDataLength !== expectedLength)
+			throw new Error(
+				`Pixel buffer has incorrect length. Received ${data.rawDataLength} expected ${expectedLength}`
+			)
+
+		if (shouldEncodeRLE && !data.isRleEncoded) {
+			data.isRleEncoded = true
+			data.encodedData = Util.encodeRLE(data.encodedData)
+		}
+
+		return result
 	}
 }
 

@@ -52,6 +52,7 @@ import PLazy = require('p-lazy')
 import { TimeCommand } from './commands'
 import { TimeInfo } from './state/info'
 import { SomeAtemAudioLevels } from './state/levels'
+import { generateUploadBufferInfo, UploadBufferInfo } from './dataTransfer/dataTransferUploadBuffer'
 
 export interface AtemOptions {
 	address?: string
@@ -750,38 +751,36 @@ export class Atem extends BasicAtem {
 
 	public async uploadStill(
 		index: number,
-		data: Buffer,
+		data: Buffer | UploadBufferInfo,
 		name: string,
 		description: string,
 		options?: DT.UploadStillEncodingOptions
 	): Promise<void> {
-		if (!this.state) return Promise.reject()
+		if (!this.state) throw new Error('Unable to check current resolution')
 		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
-		if (!resolution) return Promise.reject()
-		return this.dataTransferManager.uploadStill(
-			index,
-			Util.convertRGBAToYUV422(resolution.width, resolution.height, data),
-			name,
-			description,
-			options
-		)
+		if (!resolution) throw new Error('Failed to determine required resolution')
+
+		const encodedData = generateUploadBufferInfo(data, resolution, !options?.disableRLE)
+
+		return this.dataTransferManager.uploadStill(index, encodedData, name, description)
 	}
 
 	public async uploadClip(
 		index: number,
-		frames: Iterable<Buffer> | AsyncIterable<Buffer>,
+		frames: Iterable<Buffer> | AsyncIterable<Buffer> | Iterable<UploadBufferInfo> | AsyncIterable<UploadBufferInfo>,
 		name: string,
 		options?: DT.UploadStillEncodingOptions
 	): Promise<void> {
-		if (!this.state) return Promise.reject()
+		if (!this.state) throw new Error('Unable to check current resolution')
 		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
-		if (!resolution) return Promise.reject()
-		const provideFrame = async function* (): AsyncGenerator<Buffer> {
+		if (!resolution) throw new Error('Failed to determine required resolution')
+
+		const provideFrame = async function* (): AsyncGenerator<UploadBufferInfo> {
 			for await (const frame of frames) {
-				yield Util.convertRGBAToYUV422(resolution.width, resolution.height, frame)
+				yield generateUploadBufferInfo(frame, resolution, !options?.disableRLE)
 			}
 		}
-		return this.dataTransferManager.uploadClip(index, provideFrame(), name, options)
+		return this.dataTransferManager.uploadClip(index, provideFrame(), name)
 	}
 
 	public async uploadAudio(index: number, data: Buffer, name: string): Promise<void> {
