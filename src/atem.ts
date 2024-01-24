@@ -749,6 +749,19 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	/**
+	 * Upload a still image to the ATEM media pool
+	 *
+	 * Note: This performs colour conversions in JS, which is not very CPU efficient. If performance is important,
+	 * consider using [@atem-connection/image-tools](https://www.npmjs.com/package/@atem-connection/image-tools) to
+	 * pre-convert the images with more optimal algorithms
+	 * @param index Still index to upload to
+	 * @param data a RGBA pixel buffer, or an already YUVA encoded image
+	 * @param name Name to give the uploaded image
+	 * @param description Description for the uploaded image
+	 * @param options Upload options
+	 * @returns Promise which resolves once the image is uploaded
+	 */
 	public async uploadStill(
 		index: number,
 		data: Buffer | UploadBufferInfo,
@@ -765,6 +778,18 @@ export class Atem extends BasicAtem {
 		return this.dataTransferManager.uploadStill(index, encodedData, name, description)
 	}
 
+	/**
+	 * Upload a clip to the ATEM media pool
+	 *
+	 * Note: This performs colour conversions in JS, which is not very CPU efficient. If performance is important,
+	 * consider using [@atem-connection/image-tools](https://www.npmjs.com/package/@atem-connection/image-tools) to
+	 * pre-convert the images with more optimal algorithms
+	 * @param index Clip index to upload to
+	 * @param frames Array or generator of frames. Each frame can be a RGBA pixel buffer, or an already YUVA encoded image
+	 * @param name Name to give the uploaded clip
+	 * @param options Upload options
+	 * @returns Promise which resolves once the clip is uploaded
+	 */
 	public async uploadClip(
 		index: number,
 		frames: Iterable<Buffer> | AsyncIterable<Buffer> | Iterable<UploadBufferInfo> | AsyncIterable<UploadBufferInfo>,
@@ -783,6 +808,13 @@ export class Atem extends BasicAtem {
 		return this.dataTransferManager.uploadClip(index, provideFrame(), name)
 	}
 
+	/**
+	 * Upload clip audio to the ATEM media pool
+	 * @param index Clip index to upload to
+	 * @param data stereo 48khz 24bit WAV audio data
+	 * @param name Name to give the uploaded audio
+	 * @returns Promise which resolves once the clip audio is uploaded
+	 */
 	public async uploadAudio(index: number, data: Buffer, name: string): Promise<void> {
 		return this.dataTransferManager.uploadAudio(index, Util.convertWAVToRaw(data, this.state?.info?.model), name)
 	}
