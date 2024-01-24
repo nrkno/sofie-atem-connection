@@ -13,7 +13,7 @@ export function bufToNullTerminatedString(buffer: Buffer, start: number, length:
 }
 
 /**
- * @todo: BALTE - 2018-5-24:
+ * @todo: MINT - 2018-5-24:
  * Create util functions that handle proper colour spaces in UHD.
  */
 export function convertRGBAToYUV422(width: number, height: number, data: Buffer): Buffer {
