@@ -11,6 +11,7 @@ export default class DataTransferUploadAudio extends DataTransferUploadBuffer {
 		super({
 			encodedData: data,
 			rawDataLength: data.length,
+			isRleEncoded: false,
 			hash: null,
 		})
 
