@@ -211,6 +211,8 @@ describe('Commands vs LibAtem', () => {
 			case 'KeFS': // TODO - TMP!
 			case '_MvC': // Not all properties parsed
 			case 'FTSU': // Unkown props getting overwritten by generator: https://github.com/LibAtem/LibAtem/blob/master/LibAtem/Commands/DataTransfer/DataTransferDownloadRequestCommand.cs
+			case 'CCmd': // LibAtem is incorrect
+			case 'CCdP': // LibAtem is incorrect
 				continue
 		}
 
