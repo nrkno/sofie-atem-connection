@@ -15,9 +15,23 @@ import * as Util from '../lib/atemUtil'
 const debug = debug0('atem-connection:data-transfer:upload-buffer')
 
 export interface UploadBufferInfo {
+	/**
+	 * Encoded data in ATEM native format (eg YUVA for pixels, 24bit audio)
+	 */
 	encodedData: Buffer
+	/**
+	 * Length of the encoded data, before any RLE encoding
+	 */
 	rawDataLength: number
+	/**
+	 * Whether RLE encoding has been performed on this buffer (when supported)
+	 */
 	isRleEncoded: boolean
+	/**
+	 * Hash for the encoded data, intended as a unique identifier/checksum
+	 * When `null`, one will be generated from the `encodedData`
+	 * This is returned by the ATEM when describing what is in each slot
+	 */
 	hash: string | null
 }
 
