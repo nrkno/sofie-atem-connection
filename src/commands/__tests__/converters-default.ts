@@ -1580,4 +1580,10 @@ export const DefaultCommandConverters: CommandTestConverterSet = {
 		},
 		propertyAliases: {},
 	},
+	ISOi: {
+		idAliases: {},
+		propertyAliases: {
+			iSORecordAllInputs: (val) => ({ val, name: 'recordAllInputs' }),
+		},
+	},
 }
