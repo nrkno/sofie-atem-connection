@@ -61,6 +61,8 @@ jobs:
           CI: true
       - name: Send coverage
         uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         if: matrix.node-version == '18.x'
       - name: Check docs generation
         if: matrix.node-version == '18.x'
