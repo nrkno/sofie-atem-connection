@@ -134,22 +134,9 @@ export class CameraControlCommand extends BasicWritableCommand<CameraControlPack
 				buffer.writeUint16BE(this.properties.numberData.length, header16BitPos)
 
 				let offset = headerSize
-				for (let i = 0; i < this.properties.numberData.length; i++) {
-					let rawValue = this.properties.numberData[i]
-
-					// This is encoding the 5.11 fixed point floats
-					// These use Two's complement to handle negative values
-
-					const invert = rawValue < 0
-					if (invert) rawValue = -rawValue
-
-					const decimal = Math.floor((rawValue % 1) * 0x800) // TODO - or round?
-					const real = Math.floor(rawValue)
-
-					let encodedValue = (real << 11) + decimal
-					if (invert) encodedValue = 65536 - encodedValue
-
-					buffer.writeUInt16BE(encodedValue, offset)
+				for (const value of this.properties.numberData) {
+					// Values are encoded as 5.11 fixed point floats
+					buffer.writeInt16BE(value * 2048, offset)
 					offset += 2
 				}
 
@@ -252,20 +239,10 @@ export class CameraControlUpdateCommand extends DeserializedCommand<CameraContro
 			}
 			case CameraControlDataType.FLOAT: {
 				for (let i = 0; i < count16Bit; i++) {
-					let decodedValue = rawCommand.readUInt16BE(offset) // 0x7ff
+					const decodedValue = rawCommand.readInt16BE(offset)
 
-					// This is decoding the 5.11 fixed point floats
-					// These use Two's complement to handle negative values
-
-					const invert = decodedValue & 0x8000
-					if (invert) decodedValue = 0x10000 - decodedValue
-
-					const decimal = (decodedValue & 0x7ff) / 0x800
-					let real = (decodedValue >> 11) + decimal
-
-					if (invert) real = -real
-
-					props.numberData.push(real)
+					// Values are encoded as 5.11 fixed point floats
+					props.numberData.push(decodedValue / 2048)
 					offset += 2
 				}
 				break
