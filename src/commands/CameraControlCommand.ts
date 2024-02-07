@@ -133,11 +133,10 @@ export class CameraControlCommand extends BasicWritableCommand<CameraControlPack
 				buffer = Buffer.alloc(headerSize + padToMultiple(this.properties.numberData.length * 2, 8))
 				buffer.writeUint16BE(this.properties.numberData.length, header16BitPos)
 
-				// TODO - verify this encoding is correct
 				let offset = headerSize
-				for (let i = 0; i < this.properties.numberData.length; i++) {
-					const encodedValue = this.properties.numberData[i] * 0x7ff
-					buffer.writeInt16BE(encodedValue, offset)
+				for (const value of this.properties.numberData) {
+					// Values are encoded as 5.11 fixed point floats
+					buffer.writeInt16BE(value * 2048, offset)
 					offset += 2
 				}
 
@@ -239,10 +238,11 @@ export class CameraControlUpdateCommand extends DeserializedCommand<CameraContro
 				break
 			}
 			case CameraControlDataType.FLOAT: {
-				// TODO - verify this encoding is correct
 				for (let i = 0; i < count16Bit; i++) {
-					const decodedValue = rawCommand.readInt16BE(offset) / 0x7ff
-					props.numberData.push(decodedValue)
+					const decodedValue = rawCommand.readInt16BE(offset)
+
+					// Values are encoded as 5.11 fixed point floats
+					props.numberData.push(decodedValue / 2048)
 					offset += 2
 				}
 				break
