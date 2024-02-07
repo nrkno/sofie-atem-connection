@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [Convential Commits](https://www.conventionalcommits.org/en/v1.0.0/#specification) for commit guidelines.
 
+## [3.5.0](https://github.com/nrkno/sofie-atem-connection/compare/v3.4.0...v3.5.0) (Wed Feb 07 2024)
+
+
+### Fixes
+
+* camera control float encoding (#161) [37e4fec9](https://github.com/nrkno/sofie-atem-connection/commit/37e4fec9ac6ad467179b5a311d915c8e04449bfd)
+
+### Features
+
+* support enabling/disabling iso recording [d1fdfdbf](https://github.com/nrkno/sofie-atem-connection/commit/d1fdfdbfad10e894447af0eccec5aaef8ffaa63c)
+* support external colour conversions in uploadStill and uploadClip api (#160) [038a28ca](https://github.com/nrkno/sofie-atem-connection/commit/038a28cabaaf77aed92c01c247ee31a4961ebf09)
+
 ## [3.4.0](https://github.com/nrkno/sofie-atem-connection/compare/v3.3.3...v3.4.0) (Mon Dec 11 2023)
 
 
