@@ -5,6 +5,8 @@ export interface RecordingState {
 	status?: RecordingStateStatus
 	properties: RecordingStateProperties
 
+	recordAllInputs?: boolean
+
 	duration?: Timecode
 
 	disks: { [id: number]: RecordingDiskProperties | undefined }

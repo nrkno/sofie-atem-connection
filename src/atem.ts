@@ -1078,6 +1078,11 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	public async setEnableISORecording(enabled: boolean): Promise<void> {
+		const command = new Commands.RecordingISOCommand(enabled)
+		return this.sendCommand(command)
+	}
+
 	public async saveStartupState(): Promise<void> {
 		const command = new Commands.StartupStateSaveCommand()
 		return this.sendCommand(command)
