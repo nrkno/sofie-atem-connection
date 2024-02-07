@@ -15,8 +15,23 @@ import * as Util from '../lib/atemUtil'
 const debug = debug0('atem-connection:data-transfer:upload-buffer')
 
 export interface UploadBufferInfo {
+	/**
+	 * Encoded data in ATEM native format (eg YUVA for pixels, 24bit audio)
+	 */
 	encodedData: Buffer
+	/**
+	 * Length of the encoded data, before any RLE encoding
+	 */
 	rawDataLength: number
+	/**
+	 * Whether RLE encoding has been performed on this buffer (when supported)
+	 */
+	isRleEncoded: boolean
+	/**
+	 * Hash for the encoded data, intended as a unique identifier/checksum
+	 * When `null`, one will be generated from the `encodedData`
+	 * This is returned by the ATEM when describing what is in each slot
+	 */
 	hash: string | null
 }
 
@@ -24,11 +39,37 @@ export function generateHashForBuffer(data: Buffer): string {
 	return data ? crypto.createHash('md5').update(data).digest('base64') : ''
 }
 
-export function generateBufferInfo(data: Buffer, shouldEncodeRLE: boolean): UploadBufferInfo {
-	return {
-		encodedData: shouldEncodeRLE ? Util.encodeRLE(data) : data,
-		rawDataLength: data.length,
-		hash: generateHashForBuffer(data),
+export function generateUploadBufferInfo(
+	data: Buffer | UploadBufferInfo,
+	resolution: Util.VideoModeInfo,
+	shouldEncodeRLE: boolean
+): UploadBufferInfo {
+	const expectedLength = resolution.width * resolution.height * 4
+	if (Buffer.isBuffer(data)) {
+		if (data.length !== expectedLength)
+			throw new Error(`Pixel buffer has incorrect length. Received ${data.length} expected ${expectedLength}`)
+
+		const encodedData = Util.convertRGBAToYUV422(resolution.width, resolution.height, data)
+
+		return {
+			encodedData: shouldEncodeRLE ? Util.encodeRLE(encodedData) : encodedData,
+			rawDataLength: encodedData.length,
+			isRleEncoded: shouldEncodeRLE,
+			hash: generateHashForBuffer(encodedData),
+		}
+	} else {
+		const result: UploadBufferInfo = { ...data }
+		if (data.rawDataLength !== expectedLength)
+			throw new Error(
+				`Pixel buffer has incorrect length. Received ${data.rawDataLength} expected ${expectedLength}`
+			)
+
+		if (shouldEncodeRLE && !data.isRleEncoded) {
+			data.isRleEncoded = true
+			data.encodedData = Util.encodeRLE(data.encodedData)
+		}
+
+		return result
 	}
 }
 

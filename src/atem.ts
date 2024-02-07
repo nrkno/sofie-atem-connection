@@ -52,6 +52,7 @@ import PLazy = require('p-lazy')
 import { TimeCommand } from './commands'
 import { TimeInfo } from './state/info'
 import { SomeAtemAudioLevels } from './state/levels'
+import { generateUploadBufferInfo, UploadBufferInfo } from './dataTransfer/dataTransferUploadBuffer'
 
 export interface AtemOptions {
 	address?: string
@@ -748,42 +749,72 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	/**
+	 * Upload a still image to the ATEM media pool
+	 *
+	 * Note: This performs colour conversions in JS, which is not very CPU efficient. If performance is important,
+	 * consider using [@atem-connection/image-tools](https://www.npmjs.com/package/@atem-connection/image-tools) to
+	 * pre-convert the images with more optimal algorithms
+	 * @param index Still index to upload to
+	 * @param data a RGBA pixel buffer, or an already YUVA encoded image
+	 * @param name Name to give the uploaded image
+	 * @param description Description for the uploaded image
+	 * @param options Upload options
+	 * @returns Promise which resolves once the image is uploaded
+	 */
 	public async uploadStill(
 		index: number,
-		data: Buffer,
+		data: Buffer | UploadBufferInfo,
 		name: string,
 		description: string,
 		options?: DT.UploadStillEncodingOptions
 	): Promise<void> {
-		if (!this.state) return Promise.reject()
+		if (!this.state) throw new Error('Unable to check current resolution')
 		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
-		if (!resolution) return Promise.reject()
-		return this.dataTransferManager.uploadStill(
-			index,
-			Util.convertRGBAToYUV422(resolution.width, resolution.height, data),
-			name,
-			description,
-			options
-		)
+		if (!resolution) throw new Error('Failed to determine required resolution')
+
+		const encodedData = generateUploadBufferInfo(data, resolution, !options?.disableRLE)
+
+		return this.dataTransferManager.uploadStill(index, encodedData, name, description)
 	}
 
+	/**
+	 * Upload a clip to the ATEM media pool
+	 *
+	 * Note: This performs colour conversions in JS, which is not very CPU efficient. If performance is important,
+	 * consider using [@atem-connection/image-tools](https://www.npmjs.com/package/@atem-connection/image-tools) to
+	 * pre-convert the images with more optimal algorithms
+	 * @param index Clip index to upload to
+	 * @param frames Array or generator of frames. Each frame can be a RGBA pixel buffer, or an already YUVA encoded image
+	 * @param name Name to give the uploaded clip
+	 * @param options Upload options
+	 * @returns Promise which resolves once the clip is uploaded
+	 */
 	public async uploadClip(
 		index: number,
-		frames: Iterable<Buffer> | AsyncIterable<Buffer>,
+		frames: Iterable<Buffer> | AsyncIterable<Buffer> | Iterable<UploadBufferInfo> | AsyncIterable<UploadBufferInfo>,
 		name: string,
 		options?: DT.UploadStillEncodingOptions
 	): Promise<void> {
-		if (!this.state) return Promise.reject()
+		if (!this.state) throw new Error('Unable to check current resolution')
 		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
-		if (!resolution) return Promise.reject()
-		const provideFrame = async function* (): AsyncGenerator<Buffer> {
+		if (!resolution) throw new Error('Failed to determine required resolution')
+
+		const provideFrame = async function* (): AsyncGenerator<UploadBufferInfo> {
 			for await (const frame of frames) {
-				yield Util.convertRGBAToYUV422(resolution.width, resolution.height, frame)
+				yield generateUploadBufferInfo(frame, resolution, !options?.disableRLE)
 			}
 		}
-		return this.dataTransferManager.uploadClip(index, provideFrame(), name, options)
+		return this.dataTransferManager.uploadClip(index, provideFrame(), name)
 	}
 
+	/**
+	 * Upload clip audio to the ATEM media pool
+	 * @param index Clip index to upload to
+	 * @param data stereo 48khz 24bit WAV audio data
+	 * @param name Name to give the uploaded audio
+	 * @returns Promise which resolves once the clip audio is uploaded
+	 */
 	public async uploadAudio(index: number, data: Buffer, name: string): Promise<void> {
 		return this.dataTransferManager.uploadAudio(index, Util.convertWAVToRaw(data, this.state?.info?.model), name)
 	}

@@ -8,6 +8,7 @@ export class DataTransferUploadMacro extends DataTransferUploadBuffer {
 		super({
 			encodedData: data,
 			rawDataLength: data.length,
+			isRleEncoded: false,
 			hash: null,
 		})
 	}

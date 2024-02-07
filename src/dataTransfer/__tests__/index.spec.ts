@@ -2,7 +2,8 @@ import * as DataTransferCommands from '../../commands/DataTransfer'
 import { readFileSync } from 'fs'
 import * as path from 'path'
 import { DataTransferManager } from '..'
-import { Commands } from '../..'
+import { Commands, UploadBufferInfo } from '../..'
+import { generateHashForBuffer } from '../dataTransferUploadBuffer'
 
 function specToCommandClass(spec: any): Commands.IDeserializedCommand | undefined {
 	for (const commandName in DataTransferCommands) {
@@ -59,9 +60,15 @@ test('Still upload', async () => {
 	const spec: any[] = JSON.parse(readFileSync(path.join(__dirname, './upload-still-sequence.json')).toString())
 
 	const newBuffer = Buffer.alloc(1920 * 1080 * 4, 0)
+	const wrappedBuffer: UploadBufferInfo = {
+		encodedData: newBuffer,
+		rawDataLength: newBuffer.length,
+		isRleEncoded: false,
+		hash: generateHashForBuffer(newBuffer),
+	}
 
 	const manager = runDataTransferTest(spec)
-	await manager.uploadStill(2, newBuffer, 'some still', '', { disableRLE: true })
+	await manager.uploadStill(2, wrappedBuffer, 'some still', '')
 
 	await new Promise((resolve) => setTimeout(resolve, 200))
 
@@ -87,9 +94,15 @@ test('clip upload', async () => {
 	const spec: any[] = JSON.parse(readFileSync(path.join(__dirname, './upload-clip-sequence.json')).toString())
 
 	const newBuffer = Buffer.alloc(1920 * 1080 * 4, 0)
+	const wrappedBuffer: UploadBufferInfo = {
+		encodedData: newBuffer,
+		rawDataLength: newBuffer.length,
+		isRleEncoded: false,
+		hash: generateHashForBuffer(newBuffer),
+	}
 
 	const manager = runDataTransferTest(spec)
-	await manager.uploadClip(1, [newBuffer, newBuffer, newBuffer], 'clip file', { disableRLE: true })
+	await manager.uploadClip(1, [wrappedBuffer, wrappedBuffer, wrappedBuffer], 'clip file')
 
 	await new Promise((resolve) => setTimeout(resolve, 200))
 

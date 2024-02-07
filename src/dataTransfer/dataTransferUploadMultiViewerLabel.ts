@@ -10,6 +10,7 @@ export default class DataTransferUploadMultiViewerLabel extends DataTransferUplo
 		super({
 			encodedData: data,
 			rawDataLength: data.length,
+			isRleEncoded: false,
 			hash: null,
 		})
 
