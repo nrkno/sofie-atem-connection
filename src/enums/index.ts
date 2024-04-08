@@ -412,3 +412,8 @@ export enum AudioInternalPortType {
 	AuxOut = 10,
 	AudioAuxOut = 11, // TODO - verify
 }
+
+export enum TimeMode {
+	FreeRun = 0,
+	TimeOfDay = 1,
+}

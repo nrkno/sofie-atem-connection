@@ -439,6 +439,11 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	public async setTimeMode(mode: Enums.TimeMode): Promise<void> {
+		const command = new Commands.TimeConfigCommand(mode)
+		return this.sendCommand(command)
+	}
+
 	public async requestTime(): Promise<void> {
 		const command = new Commands.TimeRequestCommand()
 		return this.sendCommand(command)

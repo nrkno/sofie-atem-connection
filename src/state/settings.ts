@@ -1,4 +1,4 @@
-import { VideoMode, MultiViewerLayout } from '../enums'
+import { VideoMode, MultiViewerLayout, TimeMode } from '../enums'
 
 export interface MultiViewerSourceState {
 	source: number
@@ -33,4 +33,5 @@ export interface SettingsState {
 	readonly multiViewers: Array<MultiViewer | undefined>
 	videoMode: VideoMode
 	mediaPool?: MediaPool
+	timeMode?: TimeMode
 }
