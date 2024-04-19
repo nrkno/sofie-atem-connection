@@ -43,7 +43,7 @@ function runTestForCommand(commandParser: CommandParser, i: number, testCase: Te
 
 	const versionName = ProtocolVersion[testCase.firstVersion] || `v${testCase.firstVersion}`
 
-	// if (testCase.name !== 'FTFD') return
+	// if (testCase.name !== 'CFMH') return
 	// if (i !== 1673) return
 
 	let matchedCase = false
@@ -197,7 +197,14 @@ describe('Commands vs LibAtem', () => {
 			.sort()
 
 		// Temporarily ignore these missing cases
-		knownNames = knownNames.filter((n) => !n.startsWith('InCm') && !n.startsWith('TlSr') && !n.startsWith('_VMC'))
+		knownNames = knownNames.filter(
+			(n) =>
+				!n.startsWith('InCm') &&
+				!n.startsWith('TlSr') &&
+				!n.startsWith('_VMC') &&
+				!n.startsWith('FAMS') &&
+				!n.startsWith('CFMS')
+		)
 
 		knownNames.sort()
 
@@ -213,6 +220,7 @@ describe('Commands vs LibAtem', () => {
 			case 'FTSU': // Unkown props getting overwritten by generator: https://github.com/LibAtem/LibAtem/blob/master/LibAtem/Commands/DataTransfer/DataTransferDownloadRequestCommand.cs
 			case 'CCmd': // LibAtem is incorrect
 			case 'CCdP': // LibAtem is incorrect
+			case 'CFMH': // LibAtem is missing properties
 				continue
 		}
 
