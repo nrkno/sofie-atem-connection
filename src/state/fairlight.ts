@@ -78,7 +78,15 @@ export interface FairlightAudioMonitorChannel {
 	inputMasterGain: number
 	inputMasterMuted: boolean
 	inputTalkbackGain: number
+	inputTalkbackMuted: boolean
 	inputSidetoneGain: number
+	// inputSidetoneMuted: boolean
+}
+
+export interface FairlightAudioMonitorSolo {
+	solo: boolean
+	index: number
+	source: string
 }
 
 export interface FairlightAudioSource {
@@ -162,6 +170,7 @@ export interface AtemFairlightAudioState {
 	inputs: { [input: number]: FairlightAudioInput | undefined }
 	master?: FairlightAudioMasterChannel
 	monitor?: FairlightAudioMonitorChannel
+	solo?: FairlightAudioMonitorSolo
 
 	audioFollowVideoCrossfadeTransitionEnabled?: boolean
 

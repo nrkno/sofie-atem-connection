@@ -9,6 +9,7 @@ export class FairlightMixerMonitorCommand extends WritableCommand<OmitReadonly<F
 		inputMasterGain: 1 << 1,
 		inputMasterMuted: 1 << 2,
 		inputTalkbackGain: 1 << 3,
+		inputTalkbackMuted: 1 << 4,
 		inputSidetoneGain: 1 << 7,
 	}
 
@@ -22,6 +23,7 @@ export class FairlightMixerMonitorCommand extends WritableCommand<OmitReadonly<F
 		buffer.writeInt32BE(this.properties.inputMasterGain || 0, 8)
 		buffer.writeUInt8(this.properties.inputMasterMuted ? 0 : 1, 12)
 		buffer.writeInt32BE(this.properties.inputTalkbackGain || 0, 16)
+		buffer.writeUInt8(this.properties.inputTalkbackMuted ? 0 : 1, 20)
 		buffer.writeInt32BE(this.properties.inputSidetoneGain || 0, 32)
 		return buffer
 	}
@@ -36,6 +38,7 @@ export class FairlightMixerMonitorUpdateCommand extends DeserializedCommand<Fair
 			inputMasterGain: rawCommand.readInt32BE(4),
 			inputMasterMuted: rawCommand.readUInt8(8) === 0,
 			inputTalkbackGain: rawCommand.readInt32BE(12),
+			inputTalkbackMuted: rawCommand.readUInt8(16) === 0,
 			inputSidetoneGain: rawCommand.readInt32BE(28),
 		}
 

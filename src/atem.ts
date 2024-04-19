@@ -38,6 +38,7 @@ import {
 	FairlightAudioExpanderState,
 	FairlightAudioRoutingSource,
 	FairlightAudioRoutingOutput,
+	FairlightAudioMonitorSolo,
 } from './state/fairlight'
 import { FairlightDynamicsResetProps } from './commands/Fairlight/common'
 import { MultiViewerPropertiesState } from './state/settings'
@@ -932,6 +933,14 @@ export class Atem extends BasicAtem {
 		props: Partial<OmitReadonly<FairlightAudioMonitorChannel>>
 	): Promise<void> {
 		const command = new Commands.FairlightMixerMonitorCommand()
+		command.updateProps(props)
+		return this.sendCommand(command)
+	}
+
+	public async setFairlightAudioMixerMonitorSolo(
+		props: Partial<OmitReadonly<FairlightAudioMonitorSolo>>
+	): Promise<void> {
+		const command = new Commands.FairlightMixerMonitorSoloCommand()
 		command.updateProps(props)
 		return this.sendCommand(command)
 	}
