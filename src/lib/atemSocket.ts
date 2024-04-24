@@ -3,16 +3,17 @@ import { CommandParser } from './atemCommandParser'
 import exitHook = require('exit-hook')
 import { VersionCommand, ISerializableCommand, IDeserializedCommand } from '../commands'
 import { DEFAULT_PORT } from '../atem'
-import { threadedClass, ThreadedClass, ThreadedClassManager } from 'threadedclass'
-import type { AtemSocketChild, OutboundPacketInfo } from './atemSocketChild'
+import type { OutboundPacketInfo } from './atemSocketChild'
 import { PacketBuilder } from './packetBuilder'
+import * as Comlink from 'comlink'
+import type { Api } from './atemSocketChild2'
+import { Worker } from 'worker_threads'
+import nodeEndpoint from 'comlink/dist/umd/node-adapter'
 
 export interface AtemSocketOptions {
 	address: string
 	port: number
 	debugBuffers: boolean
-	disableMultithreaded: boolean
-	childProcessTimeout: number
 	maxPacketSize: number
 }
 
@@ -27,8 +28,6 @@ export type AtemSocketEvents = {
 
 export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	private readonly _debugBuffers: boolean
-	private readonly _disableMultithreaded: boolean
-	private readonly _childProcessTimeout: number
 	private readonly _maxPacketSize: number
 	private readonly _commandParser: CommandParser = new CommandParser()
 
@@ -36,7 +35,8 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	private _isDisconnecting = false
 	private _address: string
 	private _port: number = DEFAULT_PORT
-	private _socketProcess: ThreadedClass<AtemSocketChild> | undefined
+	private _socketWorker: Worker | undefined
+	private _socketProcess: Comlink.Remote<Api> | undefined
 	private _creatingSocket: Promise<void> | undefined
 	private _exitUnsubscribe?: () => void
 
@@ -45,8 +45,6 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 		this._address = options.address
 		this._port = options.port
 		this._debugBuffers = options.debugBuffers
-		this._disableMultithreaded = options.disableMultithreaded
-		this._childProcessTimeout = options.childProcessTimeout
 		this._maxPacketSize = options.maxPacketSize
 	}
 
@@ -80,9 +78,11 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 		if (this._creatingSocket) await this._creatingSocket.catch(() => null)
 
 		if (this._socketProcess) {
-			await ThreadedClassManager.destroy(this._socketProcess)
+			this._socketWorker?.terminate().catch(() => null)
 			this._socketProcess = undefined
+			this._socketWorker = undefined
 		}
+
 		if (this._exitUnsubscribe) {
 			this._exitUnsubscribe()
 			this._exitUnsubscribe = undefined
@@ -129,49 +129,46 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	}
 
 	private async _createSocketProcess(): Promise<void> {
-		this._socketProcess = await threadedClass<AtemSocketChild, typeof AtemSocketChild>(
-			'./atemSocketChild',
-			'AtemSocketChild',
-			[
-				{
-					address: this._address,
-					port: this._port,
-					debugBuffers: this._debugBuffers,
-				},
-				async (): Promise<void> => {
+		const worker = new Worker(`${__dirname}/atemSocketChild2.js`, { workerData: {} })
+		worker.on('error', (e) => this.emit('error', e?.message || 'Worker error'))
+		worker.on('exit', (_code) => {
+			this._socketProcess = undefined
+			this._socketWorker = undefined
+			worker.terminate().catch(() => null)
+			this.emit('disconnect')
+		})
+
+		this._socketProcess = Comlink.wrap<Api>(nodeEndpoint(worker))
+		this._socketWorker = worker
+
+		await this._socketProcess.init(
+			Comlink.proxy({
+				debugBuffers: this._debugBuffers,
+				onDisconnect: async (): Promise<void> => {
 					this.emit('disconnect')
-				}, // onDisconnect
-				async (message: string): Promise<void> => {
+				},
+				onLog: async (message: string): Promise<void> => {
 					this.emit('info', message)
-				}, // onLog
-				async (payload: Buffer): Promise<void> => {
+				},
+				onCommandsReceived: async (payload: Buffer): Promise<void> => {
 					this._parseCommands(Buffer.from(payload))
-				}, // onCommandsReceived
-				async (ids: Array<{ packetId: number; trackingId: number }>): Promise<void> => {
+				},
+				onPacketsAcknowledged: async (ids: Array<{ packetId: number; trackingId: number }>): Promise<void> => {
 					this.emit(
 						'ackPackets',
 						ids.map((id) => id.trackingId)
 					)
-				}, // onPacketsAcknowledged
-			],
-			{
-				instanceName: 'atem-connection',
-				freezeLimit: this._childProcessTimeout,
-				autoRestart: true,
-				disableMultithreading: this._disableMultithreaded,
-			}
+				},
+			})
 		)
 
-		ThreadedClassManager.onEvent(this._socketProcess, 'restarted', () => {
-			this.connect().catch((error) => {
-				const errorMsg = `Failed to reconnect after respawning socket process: ${error}`
-				this.emit('error', errorMsg)
-			})
-		})
-		ThreadedClassManager.onEvent(this._socketProcess, 'thread_closed', () => {
-			this.emit('disconnect')
-		})
-
+		// nocommit: reimplement a restart mechanism
+		// ThreadedClassManager.onEvent(this._socketProcess, 'restarted', () => {
+		// 	this.connect().catch((error) => {
+		// 		const errorMsg = `Failed to reconnect after respawning socket process: ${error}`
+		// 		this.emit('error', errorMsg)
+		// 	})
+		// })
 		this._exitUnsubscribe = exitHook(() => {
 			this.destroy().catch(() => null)
 		})

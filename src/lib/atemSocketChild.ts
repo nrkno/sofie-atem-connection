@@ -2,7 +2,7 @@
  * Note: this file wants as few imports as possible, as it gets loaded in a worker-thread and may require its own webpack bundle
  */
 import { createSocket, Socket, RemoteInfo } from 'dgram'
-import * as NanoTimer from 'nanotimer'
+import NanoTimer from 'nanotimer'
 import { performance } from 'perf_hooks'
 
 const IN_FLIGHT_TIMEOUT = 60 // ms
@@ -180,6 +180,10 @@ export class AtemSocketChild {
 	}
 
 	private sendPacket(payloadLength: number, payloadHex: string, trackingId: number): void {
+		if (this._connectionState == ConnectionState.Disconnected) {
+			throw new Error('Socket is disconnected')
+		}
+
 		const packetId = this._nextSendPacketId++
 		if (this._nextSendPacketId >= MAX_PACKET_ID) this._nextSendPacketId = 0
 

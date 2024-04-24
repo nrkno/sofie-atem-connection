@@ -1758,6 +1758,7 @@ __metadata:
     "@types/object-path": ^0.11.4
     "@types/sinon": ^10.0.20
     "@types/sinonjs__fake-timers": ^8.1.5
+    comlink: ^4.4.1
     debug: ^4.3.4
     eventemitter3: ^4.0.7
     exit-hook: ^2.2.1
@@ -2218,6 +2219,13 @@ __metadata:
   version: 2.0.20
   resolution: "colorette@npm:2.0.20"
   checksum: 0c016fea2b91b733eb9f4bcdb580018f52c0bc0979443dad930e5037a968237ac53d9beb98e218d2e9235834f8eebce7f8e080422d6194e957454255bde71d3d
+  languageName: node
+  linkType: hard
+
+"comlink@npm:^4.4.1":
+  version: 4.4.1
+  resolution: "comlink@npm:4.4.1"
+  checksum: 16d58a8f590087fc45432e31d6c138308dfd4b75b89aec0b7f7bb97ad33d810381bd2b1e608a1fb2cf05979af9cbfcdcaf1715996d5fcf77aeb013b6da3260af
   languageName: node
   linkType: hard
 
