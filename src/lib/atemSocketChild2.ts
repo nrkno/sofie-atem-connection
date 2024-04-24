@@ -6,19 +6,18 @@ import { AtemSocketChild, OutboundPacketInfo } from './atemSocketChild'
 if (!parentPort) {
 	throw new Error('InvalidWorker')
 }
-
-export interface InitData {
-	debugBuffers: boolean
-	onDisconnect: () => Promise<void>
-	onLog: (message: string) => Promise<void>
-	onCommandsReceived: (payload: Buffer) => Promise<void>
-	onPacketsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
-}
+parentPort.setMaxListeners(100)
 
 export class Api {
 	private tempChild: AtemSocketChild | undefined
 
-	public init({ debugBuffers, onDisconnect, onLog, onCommandsReceived, onPacketsAcknowledged }: InitData): void {
+	public init(
+		debugBuffers: boolean,
+		onDisconnect: () => Promise<void>,
+		onLog: (message: string) => Promise<void>,
+		onCommandsReceived: (payload: Buffer) => Promise<void>,
+		onPacketsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
+	): void {
 		if (this.tempChild) throw new Error('Already initialised!')
 
 		this.tempChild = new AtemSocketChild(
@@ -50,13 +49,5 @@ export class Api {
 		this.tempChild.sendPackets(packets)
 	}
 }
-
-setInterval(() => {
-	console.log('im alive')
-}, 1000)
-
-setTimeout(() => {
-	process.exit(1)
-}, 5000)
 
 comlink.expose(new Api(), nodeEndpoint(parentPort))

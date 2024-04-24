@@ -37,6 +37,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	private _socketProcess: Comlink.Remote<Api> | undefined
 	private _creatingSocket: Promise<void> | undefined
 	private _exitUnsubscribe?: () => void
+	private _targetState: 'connected' | 'disconnected' = 'disconnected'
 
 	constructor(options: AtemSocketOptions) {
 		super()
@@ -62,6 +63,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 			}
 		}
 
+		this._targetState = 'connected'
 		await this._socketProcess.connect(this._address, this._port || DEFAULT_PORT)
 	}
 
@@ -84,6 +86,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	}
 
 	public async disconnect(): Promise<void> {
+		this._targetState = 'disconnected'
 		this._isDisconnecting = true
 
 		if (this._socketProcess) {
@@ -130,39 +133,37 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 			this._socketWorker = undefined
 			worker.terminate().catch(() => null)
 			this.emit('disconnect')
+
+			if (this._targetState === 'connected') {
+				// Trigger a reconnect
+				this.connect().catch((error) =>
+					this.emit('error', `Failed to reconnect after socket process exit: ${error}`)
+				)
+			}
 		})
 
 		this._socketProcess = Comlink.wrap<Api>(nodeEndpoint(worker))
 		this._socketWorker = worker
 
 		await this._socketProcess.init(
-			Comlink.proxy({
-				debugBuffers: this._debugBuffers,
-				onDisconnect: async (): Promise<void> => {
-					this.emit('disconnect')
-				},
-				onLog: async (message: string): Promise<void> => {
-					this.emit('info', message)
-				},
-				onCommandsReceived: async (payload: Buffer): Promise<void> => {
-					this._parseCommands(Buffer.from(payload))
-				},
-				onPacketsAcknowledged: async (ids: Array<{ packetId: number; trackingId: number }>): Promise<void> => {
-					this.emit(
-						'ackPackets',
-						ids.map((id) => id.trackingId)
-					)
-				},
+			this._debugBuffers,
+			Comlink.proxy(async (): Promise<void> => {
+				this.emit('disconnect')
+			}),
+			Comlink.proxy(async (message: string): Promise<void> => {
+				this.emit('info', message)
+			}),
+			Comlink.proxy(async (payload: Buffer): Promise<void> => {
+				this._parseCommands(Buffer.from(payload))
+			}),
+			Comlink.proxy(async (ids: Array<{ packetId: number; trackingId: number }>): Promise<void> => {
+				this.emit(
+					'ackPackets',
+					ids.map((id) => id.trackingId)
+				)
 			})
 		)
 
-		// nocommit: reimplement a restart mechanism
-		// ThreadedClassManager.onEvent(this._socketProcess, 'restarted', () => {
-		// 	this.connect().catch((error) => {
-		// 		const errorMsg = `Failed to reconnect after respawning socket process: ${error}`
-		// 		this.emit('error', errorMsg)
-		// 	})
-		// })
 		this._exitUnsubscribe = exitHook(() => {
 			this.destroy().catch(() => null)
 		})
