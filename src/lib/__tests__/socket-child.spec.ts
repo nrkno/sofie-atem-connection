@@ -27,6 +27,7 @@ function fakeConnect(child: AtemSocketChild): void {
 	const child2 = child as any
 	child2._connectionState = ConnectionState.Established
 	child2._address = '127.0.0.1'
+	child2._port = 9910
 	child2.startTimers()
 }
 

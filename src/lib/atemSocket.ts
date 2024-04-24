@@ -6,7 +6,7 @@ import { DEFAULT_PORT } from '../atem'
 import type { OutboundPacketInfo } from './atemSocketChild'
 import { PacketBuilder } from './packetBuilder'
 import * as Comlink from 'comlink'
-import { SocketWorkerApi } from './atemSocketChild2'
+import { SocketWorkerApi } from './atemSocketChildWrapper'
 import { Worker } from 'worker_threads'
 import nodeEndpoint from 'comlink/dist/umd/node-adapter'
 

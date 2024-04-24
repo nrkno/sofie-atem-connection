@@ -1,7 +1,7 @@
 import { AtemSocketChild, OutboundPacketInfo } from './atemSocketChild'
 
 export class SocketWorkerApi {
-	private tempChild: AtemSocketChild | undefined
+	private wrappedChild: AtemSocketChild | undefined
 
 	public async init(
 		debugBuffers: boolean,
@@ -10,9 +10,9 @@ export class SocketWorkerApi {
 		onCommandsReceived: (payload: Buffer) => Promise<void>,
 		onPacketsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
 	): Promise<void> {
-		if (this.tempChild) throw new Error('Already initialised!')
+		if (this.wrappedChild) throw new Error('Already initialised!')
 
-		this.tempChild = new AtemSocketChild(
+		this.wrappedChild = new AtemSocketChild(
 			{
 				debugBuffers,
 			},
@@ -24,20 +24,20 @@ export class SocketWorkerApi {
 	}
 
 	public async connect(address: string, port: number): Promise<void> {
-		if (!this.tempChild) throw new Error('Not initialised!')
+		if (!this.wrappedChild) throw new Error('Not initialised!')
 
-		await this.tempChild.connect(address, port)
+		await this.wrappedChild.connect(address, port)
 	}
 
 	public async disconnect(): Promise<void> {
-		if (!this.tempChild) throw new Error('Not initialised!')
+		if (!this.wrappedChild) throw new Error('Not initialised!')
 
-		await this.tempChild.disconnect()
+		await this.wrappedChild.disconnect()
 	}
 
 	public async sendPackets(packets: OutboundPacketInfo[]): Promise<void> {
-		if (!this.tempChild) throw new Error('Not initialised!')
+		if (!this.wrappedChild) throw new Error('Not initialised!')
 
-		this.tempChild.sendPackets(packets)
+		this.wrappedChild.sendPackets(packets)
 	}
 }
