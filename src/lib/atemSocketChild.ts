@@ -58,8 +58,8 @@ export class AtemSocketChild {
 	private _nextSendPacketId = 1
 	private _sessionId = 0
 
-	private _address: string
-	private _port: number
+	private _address: string | undefined
+	private _port: number | undefined
 	private _socket: Socket
 
 	private _lastReceivedAt: number = performance.now()
@@ -75,15 +75,13 @@ export class AtemSocketChild {
 	private readonly onPacketsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
 
 	constructor(
-		options: { address: string; port: number; debugBuffers: boolean },
+		options: { debugBuffers: boolean },
 		onDisconnect: () => Promise<void>,
 		onLog: (message: string) => Promise<void>,
 		onCommandReceived: (payload: Buffer, packetId: number) => Promise<void>,
 		onCommandAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
 	) {
 		this._debugBuffers = options.debugBuffers
-		this._address = options.address
-		this._port = options.port
 
 		this.onDisconnect = onDisconnect
 		this.onLog = onLog
@@ -323,6 +321,7 @@ export class AtemSocketChild {
 	}
 
 	private _sendPacket(packet: Buffer): void {
+		if (!this._address || !this._port) throw new Error('Missing address or port')
 		if (this._debugBuffers) this.log(`SEND ${packet.toString('hex')}`)
 		this._socket.send(packet, 0, packet.length, this._port, this._address)
 	}

@@ -109,8 +109,6 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		this._status = AtemConnectionStatus.CLOSED
 		this.socket = new AtemSocket({
 			debugBuffers: options?.debugBuffers ?? false,
-			address: options?.address || '',
-			port: options?.port || DEFAULT_PORT,
 			maxPacketSize: options?.maxPacketSize ?? DEFAULT_MAX_PACKET_SIZE,
 		})
 		this.dataTransferManager = new DT.DataTransferManager(this.sendCommands.bind(this))

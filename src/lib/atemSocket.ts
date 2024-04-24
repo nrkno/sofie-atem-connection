@@ -11,8 +11,6 @@ import { Worker } from 'worker_threads'
 import nodeEndpoint from 'comlink/dist/umd/node-adapter'
 
 export interface AtemSocketOptions {
-	address: string
-	port: number
 	debugBuffers: boolean
 	maxPacketSize: number
 }
@@ -33,8 +31,8 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 
 	private _nextPacketTrackingId = 0
 	private _isDisconnecting = false
-	private _address: string
-	private _port: number = DEFAULT_PORT
+	private _address: string | undefined
+	private _port: number | undefined
 	private _socketWorker: Worker | undefined
 	private _socketProcess: Comlink.Remote<Api> | undefined
 	private _creatingSocket: Promise<void> | undefined
@@ -42,8 +40,6 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 
 	constructor(options: AtemSocketOptions) {
 		super()
-		this._address = options.address
-		this._port = options.port
 		this._debugBuffers = options.debugBuffers
 		this._maxPacketSize = options.maxPacketSize
 	}
@@ -51,12 +47,10 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	public async connect(address?: string, port?: number): Promise<void> {
 		this._isDisconnecting = false
 
-		if (address) {
-			this._address = address
-		}
-		if (port) {
-			this._port = port
-		}
+		if (address) this._address = address
+		if (port) this._port = port
+
+		if (!this._address) throw new Error('Address not set')
 
 		if (!this._socketProcess) {
 			// cache the creation promise, in case `destroy` is called before it completes
@@ -68,7 +62,7 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 			}
 		}
 
-		await this._socketProcess.connect(this._address, this._port)
+		await this._socketProcess.connect(this._address, this._port || DEFAULT_PORT)
 	}
 
 	public async destroy(): Promise<void> {

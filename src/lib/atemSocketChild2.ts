@@ -23,8 +23,6 @@ export class Api {
 
 		this.tempChild = new AtemSocketChild(
 			{
-				address: '127.0.0.1', // TODO - remove?
-				port: 9910,
 				debugBuffers,
 			},
 			onDisconnect,
