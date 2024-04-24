@@ -90,7 +90,7 @@
   ],
   "dependencies": {
     "@julusian/freetype2": "^1.1.2",
-    "comlink": "^4.4.1",
+    "comlink": "npm:@superflytv/comlink@^4.4.2",
     "debug": "^4.3.4",
     "eventemitter3": "^4.0.7",
     "exit-hook": "^2.2.1",

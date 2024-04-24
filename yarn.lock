@@ -1758,7 +1758,7 @@ __metadata:
     "@types/object-path": ^0.11.4
     "@types/sinon": ^10.0.20
     "@types/sinonjs__fake-timers": ^8.1.5
-    comlink: ^4.4.1
+    comlink: "npm:@superflytv/comlink@^4.4.2"
     debug: ^4.3.4
     eventemitter3: ^4.0.7
     exit-hook: ^2.2.1
@@ -2222,10 +2222,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"comlink@npm:^4.4.1":
-  version: 4.4.1
-  resolution: "comlink@npm:4.4.1"
-  checksum: 16d58a8f590087fc45432e31d6c138308dfd4b75b89aec0b7f7bb97ad33d810381bd2b1e608a1fb2cf05979af9cbfcdcaf1715996d5fcf77aeb013b6da3260af
+"comlink@npm:@superflytv/comlink@^4.4.2":
+  version: 4.4.2
+  resolution: "@superflytv/comlink@npm:4.4.2"
+  checksum: 5bfc8fbb9ef9a7055322074f2519e5c5820714af7aa7dda707c57b7a669e837b669097681c50ce558828e01810c2629b4adddaaf25d5d4856d456c83a349b494
   languageName: node
   linkType: hard
 
