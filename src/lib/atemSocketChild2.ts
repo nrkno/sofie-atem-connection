@@ -1,23 +1,15 @@
-import { parentPort } from 'worker_threads'
-import * as comlink from 'comlink'
-import nodeEndpoint from 'comlink/dist/umd/node-adapter'
 import { AtemSocketChild, OutboundPacketInfo } from './atemSocketChild'
 
-if (!parentPort) {
-	throw new Error('InvalidWorker')
-}
-parentPort.setMaxListeners(100)
-
-export class Api {
+export class SocketWorkerApi {
 	private tempChild: AtemSocketChild | undefined
 
-	public init(
+	public async init(
 		debugBuffers: boolean,
 		onDisconnect: () => Promise<void>,
 		onLog: (message: string) => Promise<void>,
 		onCommandsReceived: (payload: Buffer) => Promise<void>,
 		onPacketsAcknowledged: (ids: Array<{ packetId: number; trackingId: number }>) => Promise<void>
-	): void {
+	): Promise<void> {
 		if (this.tempChild) throw new Error('Already initialised!')
 
 		this.tempChild = new AtemSocketChild(
@@ -49,5 +41,3 @@ export class Api {
 		this.tempChild.sendPackets(packets)
 	}
 }
-
-comlink.expose(new Api(), nodeEndpoint(parentPort))

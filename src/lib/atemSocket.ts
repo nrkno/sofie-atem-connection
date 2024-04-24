@@ -6,11 +6,14 @@ import { DEFAULT_PORT } from '../atem'
 import type { OutboundPacketInfo } from './atemSocketChild'
 import { PacketBuilder } from './packetBuilder'
 import * as Comlink from 'comlink'
-import type { Api } from './atemSocketChild2'
+import { SocketWorkerApi } from './atemSocketChild2'
 import { Worker } from 'worker_threads'
 import nodeEndpoint from 'comlink/dist/umd/node-adapter'
 
 export interface AtemSocketOptions {
+	address?: string
+	port?: number
+	disableMultithreaded: boolean
 	debugBuffers: boolean
 	maxPacketSize: number
 }
@@ -34,13 +37,17 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	private _address: string | undefined
 	private _port: number | undefined
 	private _socketWorker: Worker | undefined
-	private _socketProcess: Comlink.Remote<Api> | undefined
+	private _socketProcess: Comlink.Remote<SocketWorkerApi> | SocketWorkerApi | undefined
+	private _disableMultithreaded: boolean
 	private _creatingSocket: Promise<void> | undefined
 	private _exitUnsubscribe?: () => void
 	private _targetState: 'connected' | 'disconnected' = 'disconnected'
 
 	constructor(options: AtemSocketOptions) {
 		super()
+		this._address = options.address
+		this._port = options.port
+		this._disableMultithreaded = options.disableMultithreaded
 		this._debugBuffers = options.debugBuffers
 		this._maxPacketSize = options.maxPacketSize
 	}
@@ -126,24 +133,28 @@ export class AtemSocket extends EventEmitter<AtemSocketEvents> {
 	}
 
 	private async _createSocketProcess(): Promise<void> {
-		const worker = new Worker(`${__dirname}/atemSocketChild2.js`, { workerData: {} })
-		worker.on('error', (e) => this.emit('error', e?.message || 'Worker error'))
-		worker.on('exit', (_code) => {
-			this._socketProcess = undefined
-			this._socketWorker = undefined
-			worker.terminate().catch(() => null)
-			this.emit('disconnect')
+		if (this._disableMultithreaded) {
+			this._socketProcess = new SocketWorkerApi()
+		} else {
+			const worker = new Worker(`${__dirname}/socket-worker.js`, { workerData: {} })
+			worker.on('error', (e) => this.emit('error', e?.message || 'Worker error'))
+			worker.on('exit', (_code) => {
+				this._socketProcess = undefined
+				this._socketWorker = undefined
+				worker.terminate().catch(() => null)
+				this.emit('disconnect')
 
-			if (this._targetState === 'connected') {
-				// Trigger a reconnect
-				this.connect().catch((error) =>
-					this.emit('error', `Failed to reconnect after socket process exit: ${error}`)
-				)
-			}
-		})
+				if (this._targetState === 'connected') {
+					// Trigger a reconnect
+					this.connect().catch((error) =>
+						this.emit('error', `Failed to reconnect after socket process exit: ${error}`)
+					)
+				}
+			})
 
-		this._socketProcess = Comlink.wrap<Api>(nodeEndpoint(worker))
-		this._socketWorker = worker
+			this._socketProcess = Comlink.wrap<SocketWorkerApi>(nodeEndpoint(worker))
+			this._socketWorker = worker
+		}
 
 		await this._socketProcess.init(
 			this._debugBuffers,

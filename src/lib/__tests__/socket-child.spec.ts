@@ -37,8 +37,6 @@ function createSocketChild(
 ): AtemSocketChild {
 	return new AtemSocketChild(
 		{
-			address: ADDRESS,
-			port: DEFAULT_PORT,
 			debugBuffers: false,
 		},
 		onDisconnect || (async (): Promise<void> => Promise.resolve()),
