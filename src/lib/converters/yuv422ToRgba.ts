@@ -33,8 +33,7 @@ export function convertYUV422ToRGBA(width: number, height: number, data: Buffer)
 		a10: number
 	): [r: number, g: number, b: number, a: number] => {
 		const r = clamp(Math.round(y8 + constants.KRi * cr8))
-		// TODO - use more constants
-		const g = clamp(Math.round(y8 - ((0.2126 * 1.5748) / 0.7152) * cr8 - ((0.0722 * 1.8556) / 0.7152) * cb8))
+		const g = clamp(Math.round(y8 - constants.KRKRioKG * cr8 - constants.KBKBioKG * cb8))
 		const b = clamp(Math.round(y8 + constants.KBi * cb8))
 		const a = Math.round(a10)
 
