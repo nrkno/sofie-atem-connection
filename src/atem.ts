@@ -19,6 +19,7 @@ import { InputChannel } from './state/input'
 import { DownstreamKeyerGeneral, DownstreamKeyerMask } from './state/video/downstreamKeyers'
 import * as DT from './dataTransfer'
 import * as Util from './lib/atemUtil'
+import { getVideoModeInfo } from './lib/videoMode'
 import * as Enums from './enums'
 import {
 	ClassicAudioMonitorChannel,
@@ -54,6 +55,7 @@ import { TimeCommand } from './commands'
 import { TimeInfo } from './state/info'
 import { SomeAtemAudioLevels } from './state/levels'
 import { generateUploadBufferInfo, UploadBufferInfo } from './dataTransfer/dataTransferUploadBuffer'
+import { convertWAVToRaw } from './lib/converters/wavAudio'
 
 export interface AtemOptions {
 	address?: string
@@ -776,7 +778,7 @@ export class Atem extends BasicAtem {
 		options?: DT.UploadStillEncodingOptions
 	): Promise<void> {
 		if (!this.state) throw new Error('Unable to check current resolution')
-		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
+		const resolution = getVideoModeInfo(this.state.settings.videoMode)
 		if (!resolution) throw new Error('Failed to determine required resolution')
 
 		const encodedData = generateUploadBufferInfo(data, resolution, !options?.disableRLE)
@@ -803,7 +805,7 @@ export class Atem extends BasicAtem {
 		options?: DT.UploadStillEncodingOptions
 	): Promise<void> {
 		if (!this.state) throw new Error('Unable to check current resolution')
-		const resolution = Util.getVideoModeInfo(this.state.settings.videoMode)
+		const resolution = getVideoModeInfo(this.state.settings.videoMode)
 		if (!resolution) throw new Error('Failed to determine required resolution')
 
 		const provideFrame = async function* (): AsyncGenerator<UploadBufferInfo> {
@@ -822,7 +824,7 @@ export class Atem extends BasicAtem {
 	 * @returns Promise which resolves once the clip audio is uploaded
 	 */
 	public async uploadAudio(index: number, data: Buffer, name: string): Promise<void> {
-		return this.dataTransferManager.uploadAudio(index, Util.convertWAVToRaw(data, this.state?.info?.model), name)
+		return this.dataTransferManager.uploadAudio(index, convertWAVToRaw(data, this.state?.info?.model), name)
 	}
 
 	public async setClassicAudioMixerInputProps(

@@ -1,6 +1,6 @@
-import { encodeRLE } from '../atemUtil'
+import { encodeRLE } from '../rle'
 
-describe('RLE', () => {
+describe('encodeRLE', () => {
 	test('no repetitions', () => {
 		const source = `abababababababab\
 cdcdcdcdcdcdcdcd\

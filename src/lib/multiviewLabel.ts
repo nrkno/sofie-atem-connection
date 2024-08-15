@@ -1,7 +1,7 @@
 import { FontFace, NewMemoryFace } from '@julusian/freetype2'
 import { Model, VideoFormat, VideoMode } from '../enums'
 import { AtemState } from '../state'
-import { getVideoModeInfo } from './atemUtil'
+import { getVideoModeInfo } from './videoMode'
 import { readFile } from 'fs/promises'
 import path = require('path')
 

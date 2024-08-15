@@ -10,7 +10,9 @@ import {
 import * as crypto from 'crypto'
 import { DataTransfer, ProgressTransferResult, DataTransferState } from './dataTransfer'
 import debug0 = require('debug')
-import * as Util from '../lib/atemUtil'
+import { VideoModeInfo } from '../lib/videoMode'
+import { convertRGBAToYUV422 } from '../lib/converters/rgbaToYuv422'
+import { RLE_HEADER, encodeRLE } from '../lib/converters/rle'
 
 const debug = debug0('atem-connection:data-transfer:upload-buffer')
 
@@ -41,7 +43,7 @@ export function generateHashForBuffer(data: Buffer): string {
 
 export function generateUploadBufferInfo(
 	data: Buffer | UploadBufferInfo,
-	resolution: Util.VideoModeInfo,
+	resolution: VideoModeInfo,
 	shouldEncodeRLE: boolean
 ): UploadBufferInfo {
 	const expectedLength = resolution.width * resolution.height * 4
@@ -49,10 +51,10 @@ export function generateUploadBufferInfo(
 		if (data.length !== expectedLength)
 			throw new Error(`Pixel buffer has incorrect length. Received ${data.length} expected ${expectedLength}`)
 
-		const encodedData = Util.convertRGBAToYUV422(resolution.width, resolution.height, data)
+		const encodedData = convertRGBAToYUV422(resolution.width, resolution.height, data)
 
 		return {
-			encodedData: shouldEncodeRLE ? Util.encodeRLE(encodedData) : encodedData,
+			encodedData: shouldEncodeRLE ? encodeRLE(encodedData) : encodedData,
 			rawDataLength: encodedData.length,
 			isRleEncoded: shouldEncodeRLE,
 			hash: generateHashForBuffer(encodedData),
@@ -66,7 +68,7 @@ export function generateUploadBufferInfo(
 
 		if (shouldEncodeRLE && !data.isRleEncoded) {
 			data.isRleEncoded = true
-			data.encodedData = Util.encodeRLE(data.encodedData)
+			data.encodedData = encodeRLE(data.encodedData)
 		}
 
 		return result
@@ -166,10 +168,10 @@ export abstract class DataTransferUploadBuffer extends DataTransfer<void> {
 			if (chunkSize + this.#bytesSent > this.data.length) {
 				// The last chunk can't end with a RLE header
 				shortenBy = this.#bytesSent + chunkSize - this.data.length
-			} else if (Util.RLE_HEADER === this.data.readBigUint64BE(this.#bytesSent + chunkSize - 8)) {
+			} else if (RLE_HEADER === this.data.readBigUint64BE(this.#bytesSent + chunkSize - 8)) {
 				// RLE header starts 8 bytes before the end
 				shortenBy = 8
-			} else if (Util.RLE_HEADER === this.data.readBigUint64BE(this.#bytesSent + chunkSize - 16)) {
+			} else if (RLE_HEADER === this.data.readBigUint64BE(this.#bytesSent + chunkSize - 16)) {
 				// RLE header starts 16 bytes before the end
 				shortenBy = 16
 			}
