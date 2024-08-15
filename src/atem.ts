@@ -19,7 +19,7 @@ import { InputChannel } from './state/input'
 import { DownstreamKeyerGeneral, DownstreamKeyerMask } from './state/video/downstreamKeyers'
 import * as DT from './dataTransfer'
 import * as Util from './lib/atemUtil'
-import { getVideoModeInfo } from './lib/videoMode'
+import { VideoModeInfo, getVideoModeInfo } from './lib/videoMode'
 import * as Enums from './enums'
 import {
 	ClassicAudioMonitorChannel,
@@ -56,6 +56,8 @@ import { TimeInfo } from './state/info'
 import { SomeAtemAudioLevels } from './state/levels'
 import { generateUploadBufferInfo, UploadBufferInfo } from './dataTransfer/dataTransferUploadBuffer'
 import { convertWAVToRaw } from './lib/converters/wavAudio'
+import { decodeRLE } from './lib/converters/rle'
+import { convertYUV422ToRGBA } from './lib/converters/yuv422ToRgba'
 
 export interface AtemOptions {
 	address?: string
@@ -145,6 +147,12 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 
 	get state(): Readonly<AtemState> | undefined {
 		return this._state
+	}
+
+	get videoMode(): Readonly<VideoModeInfo> | undefined {
+		if (!this.state) return undefined
+
+		return getVideoModeInfo(this.state.settings.videoMode)
 	}
 
 	public async connect(address: string, port?: number): Promise<void> {
@@ -755,6 +763,28 @@ export class Atem extends BasicAtem {
 		const command = new Commands.MixEffectKeyTypeSetCommand(me, keyer)
 		command.updateProps(newProps)
 		return this.sendCommand(command)
+	}
+
+	public async downloadStill(index: number, format: 'raw' | 'rgba' | 'yuv' = 'rgba'): Promise<Buffer> {
+		let rawBuffer = await this.dataTransferManager.downloadStill(index)
+
+		if (format === 'raw') {
+			return rawBuffer
+		}
+
+		if (!this.state) throw new Error('Unable to check current resolution')
+		const resolution = getVideoModeInfo(this.state.settings.videoMode)
+		if (!resolution) throw new Error('Failed to determine required resolution')
+
+		rawBuffer = decodeRLE(rawBuffer, resolution.width * resolution.height * 4)
+
+		switch (format) {
+			case 'yuv':
+				return rawBuffer
+			case 'rgba':
+			default:
+				return convertYUV422ToRGBA(resolution.width, resolution.height, rawBuffer)
+		}
 	}
 
 	/**

@@ -51,3 +51,34 @@ export function encodeRLE(data: Buffer): Buffer {
 
 	return result.slice(0, resultOffset + 8)
 }
+
+export function decodeRLE(data: Buffer, fullSize: number): Buffer {
+	const result = Buffer.alloc(fullSize)
+
+	let resultOffset = -8
+
+	for (let sourceOffset = 0; sourceOffset < data.length; sourceOffset += 8) {
+		const block = data.readBigUInt64BE(sourceOffset)
+
+		// read a header, start a repeating block
+		if (block === RLE_HEADER) {
+			// Read the count
+			sourceOffset += 8
+			const repeatCount = Number(data.readBigUInt64BE(sourceOffset))
+
+			// Read the repeated sample
+			sourceOffset += 8
+			const repeatBlock = data.readBigUInt64BE(sourceOffset)
+
+			// Write to the output
+			for (let i = 0; i < repeatCount; i++) {
+				result.writeBigUInt64BE(repeatBlock, (resultOffset += 8))
+			}
+		} else {
+			// No RLE, repeat unchanged
+			result.writeBigUInt64BE(block, (resultOffset += 8))
+		}
+	}
+
+	return result
+}
