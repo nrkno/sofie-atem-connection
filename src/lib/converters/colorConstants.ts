@@ -23,10 +23,10 @@ export interface ColorConvertConstants {
 }
 
 function createColorConvertConstants(KR: number, KB: number): ColorConvertConstants {
-	const KG = 1 - KR - KB // 0.7152
+	const KG = 1 - KR - KB
 
-	const KRi = 1 - KR // 0.7874 -> 1.5748
-	const KBi = 1 - KB // 0.9278 -> 1.8556
+	const KRi = 1 - KR
+	const KBi = 1 - KB
 
 	const YRange = 219
 	const CbCrRange = 224
