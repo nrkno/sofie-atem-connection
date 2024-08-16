@@ -149,6 +149,9 @@ export class BasicAtem extends EventEmitter<AtemEvents> {
 		return this._state
 	}
 
+	/**
+	 * Get the current videomode of the ATEM, if known
+	 */
 	get videoMode(): Readonly<VideoModeInfo> | undefined {
 		if (!this.state) return undefined
 
@@ -765,6 +768,16 @@ export class Atem extends BasicAtem {
 		return this.sendCommand(command)
 	}
 
+	/**
+	 * Download a still image from the ATEM media pool
+	 *
+	 * Note: This performs colour conversions in JS, which is not very CPU efficient. If performance is important,
+	 * consider using [@atem-connection/image-tools](https://www.npmjs.com/package/@atem-connection/image-tools) to
+	 * pre-convert the images with more optimal algorithms
+	 * @param index Still index to download
+	 * @param format The pixel format to return for the downloaded image. 'raw' passes through unchanged, and will be RLE encoded.
+	 * @returns Promise which returns the image once downloaded. If the still slot is not in use, this will throw
+	 */
 	public async downloadStill(index: number, format: 'raw' | 'rgba' | 'yuv' = 'rgba'): Promise<Buffer> {
 		let rawBuffer = await this.dataTransferManager.downloadStill(index)
 
