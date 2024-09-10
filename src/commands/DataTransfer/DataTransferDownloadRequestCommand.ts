@@ -16,7 +16,7 @@ export class DataTransferDownloadRequestCommand extends BasicWritableCommand<Dat
 		buffer.writeUInt16BE(this.properties.transferStoreId, 2)
 		buffer.writeUInt16BE(this.properties.transferIndex, 6)
 
-		buffer.writeUInt8(this.properties.transferType, 8)
+		buffer.writeUInt16BE(this.properties.transferType, 8)
 
 		return buffer
 	}

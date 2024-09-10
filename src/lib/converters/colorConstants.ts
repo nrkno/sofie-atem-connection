@@ -13,6 +13,9 @@ export interface ColorConvertConstants {
 	readonly YOffset: number
 	readonly CbCrOffset: number
 
+	readonly KRKRioKG: number
+	readonly KBKBioKG: number
+
 	readonly KRoKBi: number
 	readonly KGoKBi: number
 	readonly KBoKRi: number
@@ -43,6 +46,9 @@ function createColorConvertConstants(KR: number, KB: number): ColorConvertConsta
 
 		YOffset: 16 << 8,
 		CbCrOffset: 128 << 8,
+
+		KRKRioKG: (KR * KRi * 2) / KG,
+		KBKBioKG: (KB * KBi * 2) / KG,
 
 		KRoKBi: (KR / KBi) * HalfCbCrRange,
 		KGoKBi: (KG / KBi) * HalfCbCrRange,

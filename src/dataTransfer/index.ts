@@ -11,6 +11,7 @@ import { DataTransferUploadMacro } from './dataTransferUploadMacro'
 import { LockObtainedCommand, LockStateUpdateCommand } from '../commands/DataTransfer'
 import debug0 from 'debug'
 import type { UploadBufferInfo } from './dataTransferUploadBuffer'
+import { DataTransferDownloadStill } from './dataTransferDownloadStill'
 
 const MAX_PACKETS_TO_SEND_PER_TICK = 50
 const MAX_TRANSFER_INDEX = (1 << 16) - 1 // Inclusive maximum
@@ -168,6 +169,12 @@ export class DataTransferManager {
 			// 	// debugging:
 			// 	console.log('UNKNOWN COMMAND:', command)
 		}
+	}
+
+	public async downloadStill(index: number): Promise<Buffer> {
+		const transfer = new DataTransferDownloadStill(index)
+
+		return this.#stillsLock.enqueue(transfer)
 	}
 
 	public async uploadStill(index: number, data: UploadBufferInfo, name: string, description: string): Promise<void> {
