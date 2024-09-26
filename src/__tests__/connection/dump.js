@@ -26,7 +26,7 @@ socket.on('disconnect', () => {
 
 const output = []
 
-socket.on('commandsReceived', (cmds) => {
+socket.on('receivedCommands', (cmds) => {
 	const initComplete = cmds.find((cmd) => cmd.constructor.name === 'InitCompleteCommand')
 	if (initComplete) {
 		console.log('complete')

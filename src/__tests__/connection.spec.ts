@@ -7,6 +7,7 @@ import { BasicAtem } from '../atem'
 import { AtemState, InvalidIdError } from '../state'
 import { IDeserializedCommand } from '../commands'
 import * as objectPath from 'object-path'
+import { ProtocolVersion } from '../enums'
 jest.mock('../lib/atemSocketChild')
 
 function cloneJson<T>(v: T): T {
@@ -91,6 +92,8 @@ function runTest(name: string, filename: string): void {
 			}
 
 			expect(errors).toEqual([])
+
+			expect(conn.state?.info.apiVersion).toBeOneOf(Object.values<any>(ProtocolVersion))
 		})
 
 		describe('Paths', () => {
@@ -196,4 +199,5 @@ describe('connection', () => {
 	runTest('constellation 4k 4me v9.1', 'constellation-4me-4k-v9.1')
 	runTest('tvs 4k8 v9.3', 'tvs-4k8-v9.3')
 	runTest('mini extreme iso v9.5', 'mini-extreme-iso-v9.5')
+	runTest('constellation hd 2me v9.6.2', 'constellation-2me-hd-v9.6.2')
 })
